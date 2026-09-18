@@ -149,8 +149,8 @@ where
     DV: Validity,
     Src: ?Sized,
     Dst: SharedCompatible<Src>
-        + TransmuteFrom<Src, SV, DV, C, Forward>
-        + TransmuteFrom<Src, SV, DV, C, Reverse>
+        + TransmuteFrom<Src, SV, DV, Via<C>, Forward>
+        + TransmuteFrom<Src, SV, DV, Via<C>, Reverse>
         + ?Sized,
     C: CastExact<Src, Dst>,
 {
@@ -177,7 +177,7 @@ where
     SV: Validity,
     DV: Validity,
     Src: ?Sized,
-    Dst: TransmuteFrom<Src, SV, DV, C, Reverse> + ?Sized,
+    Dst: TransmuteFrom<Src, SV, DV, Via<C>, Reverse> + ?Sized,
     C: CastExact<Src, Dst>,
 {
 }
@@ -286,7 +286,7 @@ unsafe impl<T: ?Sized> SharedCompatible<ManuallyDrop<T>> for T {}
 ///
 /// `Dst: TransmuteFromPtr<Src, A, SV, DV, C, _>` is equivalent to `Dst:
 /// TryTransmuteFromPtr<Src, A, SV, DV, C, _> +
-/// TransmuteFrom<Src, SV, DV, C, Forward>`.
+/// TransmuteFrom<Src, SV, DV, Via<C>, Forward>`.
 pub unsafe trait TransmuteFromPtr<
     Src: ?Sized,
     A: Aliasing,
@@ -295,7 +295,7 @@ pub unsafe trait TransmuteFromPtr<
     C: CastExact<Src, Self>,
     R,
 >: TryTransmuteFromPtr<Src, A, SV, DV, C, R>
-    + TransmuteFrom<Src, SV, DV, C, Forward>
+    + TransmuteFrom<Src, SV, DV, Via<C>, Forward>
 {
 }
 
@@ -311,7 +311,7 @@ unsafe impl<
         R,
     > TransmuteFromPtr<Src, A, SV, DV, C, R> for Dst
 where
-    Dst: TransmuteFrom<Src, SV, DV, C, Forward>
+    Dst: TransmuteFrom<Src, SV, DV, Via<C>, Forward>
         + TryTransmuteFromPtr<Src, A, SV, DV, C, R>,
 {
 }
@@ -320,6 +320,13 @@ where
 /// of source and destination referents.
 #[allow(missing_copy_implementations, missing_debug_implementations)]
 pub enum AnyReferents {}
+
+/// Names a particular exact referent correspondence.
+///
+/// The nominal wrapper keeps an explicit cast-relative relation disjoint, for
+/// trait coherence, from the legacy `AnyReferents` relation.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+pub struct Via<C>(core::marker::PhantomData<C>);
 
 /// The admissible-state implication follows the exact correspondence from
 /// source to destination.
@@ -338,13 +345,13 @@ pub enum Reverse {}
 /// equally-sized source and destination referents, every `SV`-admissible
 /// source state is `DV`-admissible for the destination.
 ///
-/// New code should name a concrete exact correspondence `C`. Given
+/// New code should name a concrete exact correspondence as `Via<C>`. Given
 /// `C: CastExact<Src, Dst>`, let `dst = C(src)` for an arbitrary concrete
 /// source referent:
 ///
-/// - `Dst: TransmuteFrom<Src, SV, DV, C, Forward>` means every
+/// - `Dst: TransmuteFrom<Src, SV, DV, Via<C>, Forward>` means every
 ///   `SV`-admissible state of `src` is `DV`-admissible for `dst`.
-/// - `Dst: TransmuteFrom<Src, SV, DV, C, Reverse>` means every
+/// - `Dst: TransmuteFrom<Src, SV, DV, Via<C>, Reverse>` means every
 ///   `DV`-admissible state of `dst` is `SV`-admissible for `src`.
 ///
 /// `Reverse` deliberately uses the same one-way `C: Src -> Dst`; it does
@@ -431,7 +438,7 @@ where
 // Cast-relative relations used by exact pointer transmutation.
 
 // SAFETY: `Src: IntoBytes` makes every `Safe` source state fully initialized.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Safe, Initialized, C, Forward> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Safe, Initialized, Via<C>, Forward> for Dst
 where
     Src: IntoBytes + ?Sized,
     Dst: ?Sized,
@@ -441,7 +448,7 @@ where
 
 // SAFETY: `Src: FromBytes` makes every fully initialized state `Safe` for
 // `Src`.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Safe, Initialized, C, Reverse> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Safe, Initialized, Via<C>, Reverse> for Dst
 where
     Src: FromBytes + ?Sized,
     Dst: ?Sized,
@@ -451,7 +458,7 @@ where
 
 // SAFETY: `Dst: FromBytes` makes every fully initialized state `Safe` for
 // `Dst`.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Safe, C, Forward> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Safe, Via<C>, Forward> for Dst
 where
     Src: ?Sized,
     Dst: FromBytes + ?Sized,
@@ -461,7 +468,7 @@ where
 
 // SAFETY: `Dst: IntoBytes` makes every `Safe` destination state fully
 // initialized.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Safe, C, Reverse> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Safe, Via<C>, Reverse> for Dst
 where
     Src: ?Sized,
     Dst: IntoBytes + ?Sized,
@@ -471,7 +478,7 @@ where
 
 // SAFETY: `Initialized` has identical semantics at both ends of an exact
 // correspondence.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Initialized, C, Forward> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Initialized, Via<C>, Forward> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
@@ -479,7 +486,7 @@ where
 {
 }
 // SAFETY: See previous safety comment.
-unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Initialized, C, Reverse> for Dst
+unsafe impl<Src, Dst, C> TransmuteFrom<Src, Initialized, Initialized, Via<C>, Reverse> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
@@ -488,7 +495,7 @@ where
 }
 
 // SAFETY: `Uninit` permits every destination state.
-unsafe impl<Src, Dst, V, C> TransmuteFrom<Src, V, Uninit, C, Forward> for Dst
+unsafe impl<Src, Dst, V, C> TransmuteFrom<Src, V, Uninit, Via<C>, Forward> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
@@ -498,7 +505,7 @@ where
 }
 
 // SAFETY: `Uninit` permits every source state.
-unsafe impl<Src, Dst, V, C> TransmuteFrom<Src, Uninit, V, C, Reverse> for Dst
+unsafe impl<Src, Dst, V, C> TransmuteFrom<Src, Uninit, V, Via<C>, Reverse> for Dst
 where
     Src: ?Sized,
     Dst: ?Sized,
@@ -509,7 +516,7 @@ where
 
 // SAFETY: `AsBytesCast` pairs exactly the same bytes. `Src: IntoBytes`
 // guarantees that every `Safe` source state is a `Safe` byte slice.
-unsafe impl<Src> TransmuteFrom<Src, Safe, Safe, cast::AsBytesCast, Forward> for [u8]
+unsafe impl<Src> TransmuteFrom<Src, Safe, Safe, Via<cast::AsBytesCast>, Forward> for [u8]
 where
     Src: IntoBytes + crate::KnownLayout + ?Sized,
 {
@@ -517,7 +524,7 @@ where
 
 // SAFETY: A `Safe` byte slice is fully initialized and `Src: FromBytes`
 // makes every fully initialized state `Safe` for `Src`.
-unsafe impl<Src> TransmuteFrom<Src, Safe, Safe, cast::AsBytesCast, Reverse> for [u8]
+unsafe impl<Src> TransmuteFrom<Src, Safe, Safe, Via<cast::AsBytesCast>, Reverse> for [u8]
 where
     Src: FromBytes + crate::KnownLayout + ?Sized,
 {
@@ -627,9 +634,7 @@ impl_transitive_transmute_from!(T: ?Sized => UnsafeCell<T> => T => Cell<T>);
 unsafe impl<T> TransmuteFrom<T, Uninit, Safe> for MaybeUninit<T> {}
 
 // SAFETY: Every state is `Safe` for `MaybeUninit<T>`.
-unsafe impl<T> TransmuteFrom<T, Uninit, Safe, CastSizedExact, Forward> for MaybeUninit<T> {}
-// SAFETY: `Uninit` permits every source state.
-unsafe impl<T> TransmuteFrom<T, Uninit, Safe, CastSizedExact, Reverse> for MaybeUninit<T> {}
+unsafe impl<T> TransmuteFrom<T, Uninit, Safe, Via<CastSizedExact>, Forward> for MaybeUninit<T> {}
 
 impl<T> SizeEq<T> for MaybeUninit<T> {
     type CastFrom = CastSizedExact;

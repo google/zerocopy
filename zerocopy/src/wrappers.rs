@@ -11,7 +11,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{Forward, Reverse, SizeEq, TransmuteFrom, invariant::Safe};
+use crate::pointer::{Forward, Reverse, SizeEq, TransmuteFrom, Via, invariant::Safe};
 
 /// A type with no alignment requirement.
 ///
@@ -710,23 +710,23 @@ const _: () = {
 // SAFETY: `ReadOnly<T>` is representation-transparent over `T`; corresponding
 // referents selected by `CastToReadOnly` have equivalent `Safe` states.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<T, Safe, Safe, CastToReadOnly, Forward> for ReadOnly<T>
+    TransmuteFrom<T, Safe, Safe, Via<<ReadOnly<T> as SizeEq<T>>::CastFrom>, Forward> for ReadOnly<T>
 {
 }
 // SAFETY: Same paired states, reverse implication.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<T, Safe, Safe, CastToReadOnly, Reverse> for ReadOnly<T>
+    TransmuteFrom<T, Safe, Safe, Via<<ReadOnly<T> as SizeEq<T>>::CastFrom>, Reverse> for ReadOnly<T>
 {
 }
 
 // SAFETY: Same guarantee for the `ReadOnly<T> -> T` correspondence.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<ReadOnly<T>, Safe, Safe, CastFromReadOnly, Forward> for T
+    TransmuteFrom<ReadOnly<T>, Safe, Safe, Via<<T as SizeEq<ReadOnly<T>>>::CastFrom>, Forward> for T
 {
 }
 // SAFETY: Same paired states, reverse implication.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<ReadOnly<T>, Safe, Safe, CastFromReadOnly, Reverse> for T
+    TransmuteFrom<ReadOnly<T>, Safe, Safe, Via<<T as SizeEq<ReadOnly<T>>>::CastFrom>, Reverse> for T
 {
 }
 
