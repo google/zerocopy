@@ -3466,23 +3466,15 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
 
     fn _assert_same_representation<T>()
     where
-        T: pointer::SizeEq<Wrapping<T>>
-            + pointer::TransmuteFrom<
-                Wrapping<T>,
-                invariant::Safe,
-                invariant::Safe,
-                <T as pointer::SizeEq<Wrapping<T>>>::CastFrom,
-                pointer::Forward,
-            >,
+        Wrapping<T>: pointer::transmute::ByteReprEq<T>,
     {
     }
 
     _assert_same_representation::<T>();
 
     // SAFETY: We just validated that `candidate` contains a valid
-    // `Wrapping<T>`. The preceding assertion supplies an exact
-    // `Wrapping<T> -> T` correspondence and a `Safe` implication along it, so
-    // the same bytes are a valid `T`.
+    // `Wrapping<T>`. The preceding assertion supplies exact representation
+    // equivalence with `T`, so the same bytes are a valid `T`.
     Ok(unsafe { candidate.assume_init() })
 }
 

@@ -11,7 +11,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Safe, Forward, Reverse, SizeEq, TransmuteFrom};
+use crate::pointer::{invariant::Safe, SizeEq, SpliceFrom, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -707,26 +707,27 @@ const _: () = {
     }
 };
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, so the
-// paired referents have the same admissible `Safe` states in either logical
-// direction along either exact executable cast.
-unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Forward>
-    for ReadOnly<T>
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, so
+// the paired referents have the same admissible `Safe` states.
+unsafe impl<T: ?Sized>
+    TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom> for ReadOnly<T>
 {
 }
-// SAFETY: Same paired referents as above, with the implication reversed.
+// SAFETY: Replacing the entire exact `T` referent with a valid `ReadOnly<T>`
+// representation leaves a valid `T`.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<ReadOnly<T>, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Reverse> for T
+    SpliceFrom<ReadOnly<T>, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom> for T
 {
 }
 // SAFETY: Same representation equivalence for the reverse executable cast.
 unsafe impl<T: ?Sized>
-    TransmuteFrom<ReadOnly<T>, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Forward> for T
+    TransmuteFrom<ReadOnly<T>, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom> for T
 {
 }
-// SAFETY: Same paired referents as above, with the implication reversed.
-unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Reverse>
-    for ReadOnly<T>
+// SAFETY: Replacing the entire exact `ReadOnly<T>` referent with a valid `T`
+// representation leaves a valid `ReadOnly<T>`.
+unsafe impl<T: ?Sized>
+    SpliceFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom> for ReadOnly<T>
 {
 }
 

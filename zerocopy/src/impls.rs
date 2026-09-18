@@ -421,64 +421,105 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SizeEq, TransmuteDirection, TransmuteFrom, invariant::Safe};
+            use crate::pointer::{SpliceFrom, TransmuteFrom, invariant::Safe};
 
             $(
-                // SAFETY: The caller promises that `$atomic` and `$prim` have
-                // the same size and admissible `Safe` states. Since both are
-                // sized, any exact correspondence pairs their unique referent
-                // shapes over the same bytes.
-                unsafe impl<$($tyvar,)? C, Direction>
-                    TransmuteFrom<$atomic, Safe, Safe, C, Direction> for $prim
-                where
-                    Direction: TransmuteDirection<$atomic, $prim, C>,
+                // SAFETY: The caller promised that `$atomic` and `$prim` have
+                // the same size and admissible `Safe` states. Both are sized,
+                // so `CastSizedExact` pairs their unique referent shapes.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<
+                        $atomic,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $prim
                 {}
-                // SAFETY: Same argument in the opposite logical direction.
-                unsafe impl<$($tyvar,)? C, Direction>
-                    TransmuteFrom<$prim, Safe, Safe, C, Direction> for $atomic
-                where
-                    Direction: TransmuteDirection<$prim, $atomic, C>,
+                // SAFETY: Replacing the entire exact referent with a valid
+                // `$prim` leaves a valid `$atomic`.
+                unsafe impl<$($tyvar)?>
+                    SpliceFrom<
+                        $prim,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $atomic
+                {}
+                // SAFETY: Same representation equivalence in the opposite
+                // executable direction.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<
+                        $prim,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $atomic
+                {}
+                // SAFETY: Replacing the entire exact referent with a valid
+                // `$atomic` leaves a valid `$prim`.
+                unsafe impl<$($tyvar)?>
+                    SpliceFrom<
+                        $atomic,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $prim
                 {}
 
-                impl<$($tyvar)?> SizeEq<$atomic> for $prim {
-                    type CastFrom = $crate::pointer::cast::CastSizedExact;
-                }
-                impl<$($tyvar)?> SizeEq<$prim> for $atomic {
-                    type CastFrom = $crate::pointer::cast::CastSizedExact;
-                }
                 impl<$($tyvar)?> SizeEq<ReadOnly<$atomic>> for ReadOnly<$prim> {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
                 // the same admissible `Safe` states. `UnsafeCell<T>` has the
-                // same in-memory representation as `T` [1], so the same holds
-                // for `$atomic` and `UnsafeCell<$prim>`. All involved types are
-                // sized, so any exact correspondence pairs their unique shapes.
+                // same in-memory representation as `T` [1].
                 //
                 // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
                 //
                 //   `UnsafeCell<T>` has the same in-memory representation as
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar,)? C, Direction>
-                    TransmuteFrom<$atomic, Safe, Safe, C, Direction>
-                    for core::cell::UnsafeCell<$prim>
-                where
-                    Direction: TransmuteDirection<$atomic, core::cell::UnsafeCell<$prim>, C>,
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<
+                        $atomic,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for core::cell::UnsafeCell<$prim>
                 {}
-                // SAFETY: Same argument in the opposite logical direction.
-                unsafe impl<$($tyvar,)? C, Direction>
-                    TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe, C, Direction>
-                    for $atomic
-                where
-                    Direction: TransmuteDirection<core::cell::UnsafeCell<$prim>, $atomic, C>,
+                // SAFETY: Same exact representation relation for write-back.
+                unsafe impl<$($tyvar)?>
+                    SpliceFrom<
+                        core::cell::UnsafeCell<$prim>,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $atomic
+                {}
+                // SAFETY: Same representation equivalence in the opposite
+                // executable direction.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<
+                        core::cell::UnsafeCell<$prim>,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for $atomic
+                {}
+                // SAFETY: Same exact representation relation for write-back.
+                unsafe impl<$($tyvar)?>
+                    SpliceFrom<
+                        $atomic,
+                        Safe,
+                        Safe,
+                        $crate::pointer::cast::CastSizedExact,
+                    > for core::cell::UnsafeCell<$prim>
                 {}
             )*
         }};
     }
 
-    #[cfg(target_has_atomic = "8")]
+        #[cfg(target_has_atomic = "8")]
     #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "8")))]
     mod atomic_8 {
         use core::sync::atomic::{AtomicBool, AtomicI8, AtomicU8};
