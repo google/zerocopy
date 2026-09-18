@@ -1,0 +1,48 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Reverse-before development
+
+'on':
+  push:
+    branches: [fix-transmute-reverse-before]
+    paths:
+      - .github/workflows/reverse-before-development.yml
+      - tools/reverse-before-development.py
+
+permissions:
+  contents: read
+
+concurrency:
+  group: reverse-before-development
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-transmute-reverse-before'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 1
+      - name: Archive the exact development source
+        run: |
+          set -euo pipefail
+          git archive --format=tar HEAD > "$RUNNER_TEMP/reverse-before-source.tar"
+          git rev-parse HEAD > "$RUNNER_TEMP/reverse-before-source.sha"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: reverse-before-source
+          path: |
+            ${{ runner.temp }}/reverse-before-source.tar
+            ${{ runner.temp }}/reverse-before-source.sha
+          retention-days: 1
+          if-no-files-found: error
