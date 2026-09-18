@@ -165,11 +165,12 @@ macro_rules! unsafe_impl {
     };
 }
 
-/// Implements `$trait` for `$ty` where `$ty: TransmuteFrom<$repr>` (and
-/// vice-versa).
+/// Implements one of the supported byte traits for `$ty` by transferring the
+/// corresponding implementation on `$repr` through `ByteReprEq`.
 ///
-/// This macro is intended to be safe to call. The current proof is incomplete;
-/// see FIXME(#3691) below.
+/// Calling this macro is safe; the generated impl checks the representation
+/// witness and source trait implementation at compile time without exposing the
+/// private witness in the public impl's bounds.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -177,36 +178,46 @@ macro_rules! impl_for_transmute_from {
         => $trait:ident for $ty:ty [$repr:ty]
     ) => {
         const _: () = {
-            $(#[$attr])*
-            #[allow(non_local_definitions)]
-
-            // SAFETY: `is_trait<T, R>` (defined and used below) requires
-            // reciprocal `TransmuteFrom<_, Safe, Safe>` bounds and `R: $trait`.
-            // If `T` and `R` have the same size, the reciprocal bounds imply
-            // that they permit the same `Safe` bit patterns. The call below
-            // instantiates `T` with `$ty` and `R` with `$repr`, and establishes
-            // `$repr: $trait`. The supported traits - `TryFromBytes`,
-            // `FromZeros`, `FromBytes`, and `IntoBytes` - are defined only in
-            // terms of bit validity, so these premises are sufficient when
-            // `$ty` and `$repr` have the same size.
+            // SAFETY: Fix an arbitrary `$ty` referent. The generated impl
+            // must establish the trait property for every such referent.
+            // `$ty: ByteReprEq<$repr>` supplies `ToRepr`, a total exact
+            // mapping from this arbitrary `$ty` referent to one particular
+            // `$repr` referent over exactly the same bytes, and guarantees
+            // equivalent `Safe` validity for that pair. For DSTs, `ToRepr`
+            // may transform pointer metadata. Its direction is load-bearing:
+            // because the property is transferred from `$repr` to `$ty`, we
+            // need an `$repr` witness for every `$ty` referent; a reverse-only
+            // mapping would not provide that without an additional surjectivity
+            // guarantee. `$repr: $trait` supplies the property being
+            // transferred. `@assert_is_supported_trait` rejects every trait
+            // except the four cases below:
             //
-            // FIXME(#3691): This macro does not establish that `$ty` and
-            // `$repr` have the same size. Without that premise, `TransmuteFrom`
-            // conveys no safety guarantee, so these bounds do not make
-            // arbitrary invocations of this macro sound.
+            // - `FromZeros`: the all-zero representation is `Safe` for the
+            //   corresponding `$repr`; representation equivalence makes the
+            //   same bytes `Safe` for `$ty`.
+            // - `FromBytes`: every fully initialized representation is `Safe`
+            //   for the corresponding `$repr`; representation equivalence makes
+            //   every such representation `Safe` for `$ty`.
+            // - `IntoBytes`: every `Safe` `$ty` representation is also `Safe`
+            //   for its corresponding `$repr`. `$repr: IntoBytes` therefore
+            //   guarantees that every byte in that exact referent range
+            //   is initialized.
+            // - `TryFromBytes`: the generated `is_safe` implementation below
+            //   uses the witness's exact cast to validate the corresponding
+            //   `$repr` referent. On success, representation equivalence makes
+            //   the original `$ty` referent `Safe`.
+            $(#[$attr])*
+            #[allow(non_local_definitions, clippy::undocumented_unsafe_blocks)]
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {
-                    use crate::pointer::{*, invariant::Safe};
-
                     impl_for_transmute_from!(@assert_is_supported_trait $trait);
 
                     fn is_trait<T, R>()
                     where
-                        T: TransmuteFrom<R, Safe, Safe> + ?Sized,
-                        R: TransmuteFrom<T, Safe, Safe> + ?Sized,
-                        R: $trait,
+                        T: $crate::pointer::transmute::ByteReprEq<R> + ?Sized,
+                        R: $trait + ?Sized,
                     {
                     }
 
@@ -238,10 +249,25 @@ macro_rules! impl_for_transmute_from {
         where
             Alignment: $crate::invariant::Alignment,
         {
-            // SAFETY: This macro ensures that `$repr` and `Self` have the same
-            // size and bit validity. Thus, a bit-valid instance of `$repr` is
-            // also a bit-valid instance of `Self`.
-            <$repr as TryFromBytes>::is_safe(candidate.transmute::<_, _, BecauseImmutable>())
+            // The transmute below changes only the referent type while keeping
+            // validity `Initialized`. That validity has type-independent
+            // semantics; `BecauseImmutable` is applicable because both
+            // `ReadOnly<Self>` and `ReadOnly<$repr>` are immutable. The cast is
+            // exactly the metadata-aware correspondence chosen by
+            // `ByteReprEq`.
+            let candidate = candidate.transmute_with::<
+                $crate::wrappers::ReadOnly<$repr>,
+                $crate::pointer::invariant::Initialized,
+                <Self as $crate::pointer::transmute::ByteReprEq<$repr>>::ToRepr,
+                $crate::pointer::BecauseImmutable,
+            >();
+
+            // SAFETY: If the delegated validator returns `true`, the mapped
+            // referent is `Safe` for `$repr`. `ByteReprEq` guarantees that
+            // `Safe` validity is equivalent between this mapped `$repr`
+            // referent and the original `Self` referent. Returning the delegated
+            // result therefore satisfies `TryFromBytes::is_safe`'s contract.
+            <$repr as TryFromBytes>::is_safe(candidate)
         }
     };
     (
@@ -747,14 +773,9 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Safe};
+        use crate::pointer::{SpliceFrom, TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Safe};
         use crate::wrappers::ReadOnly;
 
-        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
-        // bit validity.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe> for $wrapper<T> {}
-        // SAFETY: See previous safety comment.
-        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe> for T {}
         // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
         // size-preserving.
         define_cast!(unsafe { $vis CastToWrapper<T $(: ?$optbound)? > = T => $wrapper<T> });
@@ -767,6 +788,27 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         // SAFETY: The caller promises that a `$wrapper<T>` to `T` cast is
         // size-preserving.
         unsafe impl<T $(: ?$optbound)?> CastExact<$wrapper<T>, T> for CastFromWrapper {}
+
+        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
+        // same admissible `Safe` states on the referents paired by this exact
+        // cast.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe, CastToWrapper>
+            for $wrapper<T>
+        {}
+        // SAFETY: Any valid wrapper write replaces the entire exact referent
+        // with bytes which are also valid for `T`.
+        unsafe impl<T $(: ?$optbound)?> SpliceFrom<$wrapper<T>, Safe, Safe, CastToWrapper> for T {}
+
+        // SAFETY: Same representation equivalence for the reverse executable
+        // cast.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe, CastFromWrapper>
+            for T
+        {}
+        // SAFETY: Any valid `T` write replaces the entire exact referent with
+        // bytes which are also valid for the wrapper.
+        unsafe impl<T $(: ?$optbound)?> SpliceFrom<T, Safe, Safe, CastFromWrapper>
+            for $wrapper<T>
+        {}
 
         impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
             type CastFrom = CastToWrapper;
@@ -810,7 +852,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use crate::pointer::{TransmuteFrom, SizeEq, invariant::Safe};
+            use crate::pointer::{SpliceFrom, TransmuteFrom, SizeEq, invariant::Safe};
 
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
@@ -824,14 +866,29 @@ macro_rules! impl_transitive_transmute_from {
                 >;
             }
 
-            // SAFETY: Since `$u: TransmuteFrom<$t, Safe, Safe>`, it is sound to
-            // transmute a bit-valid `$t` to a bit-valid `$u`. Since `$v:
-            // TransmuteFrom<$u, Safe, Safe>`, it is sound to transmute that
-            // bit-valid `$u` to a bit-valid `$v`.
-            unsafe impl<$($tyvar $(: ?$optbound)?)?> TransmuteFrom<$t, Safe, Safe> for $v
+            // SAFETY: Projecting through the composed exact cast is equivalent
+            // to projecting first to `$u` and then to `$v`.
+            unsafe impl<$($tyvar $(: ?$optbound)?)?>
+                TransmuteFrom<$t, Safe, Safe, <$v as SizeEq<$t>>::CastFrom> for $v
             where
-                $u: TransmuteFrom<$t, Safe, Safe>,
-                $v: TransmuteFrom<$u, Safe, Safe>,
+                $u: SizeEq<$t>
+                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
+                $v: SizeEq<$u>
+                    + TransmuteFrom<$u, Safe, Safe, <$v as SizeEq<$u>>::CastFrom>,
+            {}
+
+            // SAFETY: Start from a valid `$t`. Its projection is a valid
+            // `$u` by the forward relation above. A valid `$v` write spliced
+            // into that `$u` preserves `$u`; splicing the resulting valid
+            // `$u` into the original `$t` preserves `$t`.
+            unsafe impl<$($tyvar $(: ?$optbound)?)?>
+                SpliceFrom<$v, Safe, Safe, <$v as SizeEq<$t>>::CastFrom> for $t
+            where
+                $u: SizeEq<$t>
+                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
+                $t: SpliceFrom<$u, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
+                $v: SizeEq<$u>,
+                $u: SpliceFrom<$v, Safe, Safe, <$v as SizeEq<$u>>::CastFrom>,
             {}
         };
     };
