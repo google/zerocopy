@@ -14,6 +14,7 @@ name: Reverse-before development
     paths:
       - .github/workflows/reverse-before-development.yml
       - tools/reverse-before-development.py
+      - tools/reverse-before-adjustments.py
 
 permissions:
   contents: read
@@ -40,8 +41,13 @@ jobs:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 1
-      - name: Apply the exact reviewed patch
-        run: python3 tools/reverse-before-development.py
+      - name: Apply the exact reviewed patch and adjustments
+        run: |
+          python3 tools/reverse-before-development.py
+          python3 tools/reverse-before-adjustments.py
+          rm .github/workflows/reverse-before-development.yml
+          rm tools/reverse-before-development.py tools/reverse-before-adjustments.py
+          rm tools/reverse-before-patch.{0,1,2,3,4}
       - name: Format and validate
         shell: bash
         run: |
@@ -60,9 +66,14 @@ jobs:
           run_check format ./ci/check_fmt.sh --fix
           run_check msrv ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
           run_check stable ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
+          run_check default ./cargo.sh +stable check --no-default-features
           run_check nightly ./cargo.sh +nightly test --lib --features __internal_use_only_features_that_work_on_stable
-          run_check clippy ./cargo.sh +nightly clippy --tests --features __internal_use_only_features_that_work_on_stable
+          run_check all-features ./cargo.sh +nightly check --tests --all-features
+          run_check clippy ./cargo.sh +nightly clippy --tests --all-features --workspace
+          run_check miri ./cargo.sh +nightly miri test --lib pointer::transmute
+          run_check rustdoc ./cargo.sh +nightly doc --no-deps --features __internal_use_only_features_that_work_on_stable
           cd ..
+          run_check hooks ./githooks/pre-push
           run_check diff-check git diff --check
           git add -N zerocopy/src/pointer/transmute/reverse_tests.rs
           git diff --binary > "$out/implementation.patch"
