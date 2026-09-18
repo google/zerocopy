@@ -224,7 +224,7 @@ macro_rules! impl_for_transmute_from {
                     T,
                     $crate::pointer::invariant::Safe,
                     $crate::pointer::invariant::Safe,
-                    <R as $crate::pointer::SizeEq<T>>::CastFrom,
+                    $crate::pointer::Via<<R as $crate::pointer::SizeEq<T>>::CastFrom>,
                     $crate::pointer::Forward,
                 >,
         {}
@@ -241,7 +241,7 @@ macro_rules! impl_for_transmute_from {
                     T,
                     $crate::pointer::invariant::Safe,
                     $crate::pointer::invariant::Safe,
-                    <R as $crate::pointer::SizeEq<T>>::CastFrom,
+                    $crate::pointer::Via<<R as $crate::pointer::SizeEq<T>>::CastFrom>,
                     $crate::pointer::Reverse,
                 >,
         {}
@@ -271,10 +271,13 @@ macro_rules! impl_for_transmute_from {
                     $repr,
                     $crate::pointer::cast::TransitiveProject<
                         Self,
-                        $crate::wrappers::CastFromReadOnly,
+                        <Self as $crate::pointer::SizeEq<
+                            $crate::wrappers::ReadOnly<Self>,
+                        >>::CastFrom,
                         ToRepr<Self, $repr>,
                     >,
-                    $crate::wrappers::CastToReadOnly,
+                    <$crate::wrappers::ReadOnly<$repr> as
+                        $crate::pointer::SizeEq<$repr>>::CastFrom,
                 >,
                 $crate::pointer::BecauseImmutable,
             >();
@@ -787,7 +790,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         crate::util::macros::__unsafe();
 
         use crate::pointer::{
-            Forward, Reverse, TransmuteFrom,
+            Forward, Reverse, TransmuteFrom, Via,
             cast::{CastExact, TransitiveProject},
             SizeEq,
             invariant::Safe,
@@ -806,16 +809,16 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 
         // SAFETY: Corresponding referents have equivalent `Safe` states.
         unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<T, Safe, Safe, CastToWrapper, Forward> for $wrapper<T> {}
+            TransmuteFrom<T, Safe, Safe, Via<CastToWrapper>, Forward> for $wrapper<T> {}
         // SAFETY: Same paired states, reverse implication.
         unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<T, Safe, Safe, CastToWrapper, Reverse> for $wrapper<T> {}
+            TransmuteFrom<T, Safe, Safe, Via<CastToWrapper>, Reverse> for $wrapper<T> {}
         // SAFETY: Same guarantee in the opposite cast orientation.
         unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<$wrapper<T>, Safe, Safe, CastFromWrapper, Forward> for T {}
+            TransmuteFrom<$wrapper<T>, Safe, Safe, Via<CastFromWrapper>, Forward> for T {}
         // SAFETY: Same paired states, reverse implication.
         unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<$wrapper<T>, Safe, Safe, CastFromWrapper, Reverse> for T {}
+            TransmuteFrom<$wrapper<T>, Safe, Safe, Via<CastFromWrapper>, Reverse> for T {}
 
         impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
             type CastFrom = CastToWrapper;
@@ -859,7 +862,7 @@ macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
             use crate::pointer::{
-                Forward, Reverse, TransmuteFrom, SizeEq, invariant::Safe,
+                Forward, Reverse, TransmuteFrom, Via, SizeEq, invariant::Safe,
             };
 
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
@@ -877,25 +880,25 @@ macro_rules! impl_transitive_transmute_from {
             // SAFETY: The two forward implications compose along the same
             // transitive exact correspondence.
             unsafe impl<$($tyvar $(: ?$optbound)?)?>
-                TransmuteFrom<$t, Safe, Safe, <$v as SizeEq<$t>>::CastFrom, Forward> for $v
+                TransmuteFrom<$t, Safe, Safe, Via<<$v as SizeEq<$t>>::CastFrom>, Forward> for $v
             where
                 $u: SizeEq<$t>
-                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom, Forward>,
+                    + TransmuteFrom<$t, Safe, Safe, Via<<$u as SizeEq<$t>>::CastFrom>, Forward>,
                 $v: SizeEq<$u>
                     + SizeEq<$t>
-                    + TransmuteFrom<$u, Safe, Safe, <$v as SizeEq<$u>>::CastFrom, Forward>,
+                    + TransmuteFrom<$u, Safe, Safe, Via<<$v as SizeEq<$u>>::CastFrom>, Forward>,
             {}
 
             // SAFETY: Reverse implications compose logically as `v -> u -> t`
             // along those same referent pairs; no inverse cast is required.
             unsafe impl<$($tyvar $(: ?$optbound)?)?>
-                TransmuteFrom<$t, Safe, Safe, <$v as SizeEq<$t>>::CastFrom, Reverse> for $v
+                TransmuteFrom<$t, Safe, Safe, Via<<$v as SizeEq<$t>>::CastFrom>, Reverse> for $v
             where
                 $u: SizeEq<$t>
-                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom, Reverse>,
+                    + TransmuteFrom<$t, Safe, Safe, Via<<$u as SizeEq<$t>>::CastFrom>, Reverse>,
                 $v: SizeEq<$u>
                     + SizeEq<$t>
-                    + TransmuteFrom<$u, Safe, Safe, <$v as SizeEq<$u>>::CastFrom, Reverse>,
+                    + TransmuteFrom<$u, Safe, Safe, Via<<$v as SizeEq<$u>>::CastFrom>, Reverse>,
             {}
         };
     };

@@ -3471,7 +3471,7 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
             T,
             invariant::Safe,
             invariant::Safe,
-            <Wrapping<T> as pointer::SizeEq<T>>::CastFrom,
+            pointer::Via<<Wrapping<T> as pointer::SizeEq<T>>::CastFrom>,
             pointer::Reverse,
         >,
     {
