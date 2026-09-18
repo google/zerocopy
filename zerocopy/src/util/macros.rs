@@ -166,12 +166,11 @@ macro_rules! unsafe_impl {
 }
 
 /// Implements one of the supported byte traits for `$ty` by transferring the
-/// corresponding implementation on `$repr` through a cast-relative
-/// `TransmuteFrom` proof.
+/// corresponding implementation on `$repr` through `ByteReprEq`.
 ///
-/// The exact cast is selected by `$repr: SizeEq<$ty>`, so every `$ty`
-/// referent is paired with one particular `$repr` referent over exactly the
-/// same bytes. For DSTs, the cast may transform pointer metadata.
+/// Calling this macro is safe; the generated impl checks the representation
+/// witness and source trait implementation at compile time without exposing the
+/// private witness in the public impl's bounds.
 macro_rules! impl_for_transmute_from {
     (
         $(#[$attr:meta])*
@@ -179,29 +178,53 @@ macro_rules! impl_for_transmute_from {
         => $trait:ident for $ty:ty [$repr:ty]
     ) => {
         const _: () = {
-            // SAFETY: Fix an arbitrary `$ty` referent. `$repr: SizeEq<$ty>`
-            // supplies an exact cast from this referent to one particular
-            // `$repr` referent over exactly the same bytes. The supported
-            // traits reduce to one `Safe` validity implication along that
-            // exact correspondence:
+            // SAFETY: Fix an arbitrary `$ty` referent. The generated impl
+            // must establish the trait property for every such referent.
+            // `$ty: ByteReprEq<$repr>` supplies `ToRepr`, a total exact
+            // mapping from this arbitrary `$ty` referent to one particular
+            // `$repr` referent over exactly the same bytes, and guarantees
+            // equivalent `Safe` validity for that pair. For DSTs, `ToRepr`
+            // may transform pointer metadata. Its direction is load-bearing:
+            // because the property is transferred from `$repr` to `$ty`, we
+            // need an `$repr` witness for every `$ty` referent; a reverse-only
+            // mapping would not provide that without an additional surjectivity
+            // guarantee. `$repr: $trait` supplies the property being
+            // transferred. `@assert_is_supported_trait` rejects every trait
+            // except the four cases below:
             //
-            // - `FromZeros`, `FromBytes`, and `TryFromBytes` require
-            //   `Safe($repr) -> Safe($ty)` along the `$ty -> $repr` cast.
-            // - `IntoBytes` requires `Safe($ty) -> Safe($repr)` along that
-            //   same cast, after which `$repr: IntoBytes` establishes that
-            //   every byte in the exact referent range is initialized.
-            //
-            // `@assert_trait` checks exactly the implication needed by the
-            // selected trait. `TryFromBytes::is_safe` below additionally
-            // executes the same underlying correspondence, lifted through
-            // `ReadOnly`, in order to delegate the runtime validator.
+            // - `FromZeros`: the all-zero representation is `Safe` for the
+            //   corresponding `$repr`; representation equivalence makes the
+            //   same bytes `Safe` for `$ty`.
+            // - `FromBytes`: every fully initialized representation is `Safe`
+            //   for the corresponding `$repr`; representation equivalence makes
+            //   every such representation `Safe` for `$ty`.
+            // - `IntoBytes`: every `Safe` `$ty` representation is also `Safe`
+            //   for its corresponding `$repr`. `$repr: IntoBytes` therefore
+            //   guarantees that every byte in that exact referent range
+            //   is initialized.
+            // - `TryFromBytes`: the generated `is_safe` implementation below
+            //   uses the witness's exact cast to validate the corresponding
+            //   `$repr` referent. On success, representation equivalence makes
+            //   the original `$ty` referent `Safe`.
             $(#[$attr])*
             #[allow(non_local_definitions, clippy::undocumented_unsafe_blocks)]
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
                 fn only_derive_is_allowed_to_implement_this_trait() {
-                    impl_for_transmute_from!(@assert_trait $trait, $ty, $repr);
+                    impl_for_transmute_from!(@assert_is_supported_trait $trait);
+
+                    fn is_trait<T, R>()
+                    where
+                        T: $crate::pointer::transmute::ByteReprEq<R> + ?Sized,
+                        R: $trait + ?Sized,
+                    {
+                    }
+
+                    #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
+                    fn f<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?>() {
+                        is_trait::<$ty, $repr>();
+                    }
                 }
 
                 impl_for_transmute_from!(
@@ -212,69 +235,10 @@ macro_rules! impl_for_transmute_from {
             }
         };
     };
-    (@assert_trait TryFromBytes, $ty:ty, $repr:ty) => {
-        fn is_trait<T, R>()
-        where
-            T: ?Sized + $crate::pointer::TransmuteFrom<
-                R,
-                $crate::invariant::Safe,
-                $crate::invariant::Safe,
-                <R as $crate::pointer::SizeEq<T>>::CastFrom,
-                $crate::pointer::Reverse,
-            >,
-            R: ?Sized + TryFromBytes + $crate::pointer::SizeEq<T>,
-        {
-        }
-        is_trait::<$ty, $repr>();
-    };
-    (@assert_trait FromZeros, $ty:ty, $repr:ty) => {
-        fn is_trait<T, R>()
-        where
-            T: ?Sized + $crate::pointer::TransmuteFrom<
-                R,
-                $crate::invariant::Safe,
-                $crate::invariant::Safe,
-                <R as $crate::pointer::SizeEq<T>>::CastFrom,
-                $crate::pointer::Reverse,
-            >,
-            R: ?Sized + FromZeros + $crate::pointer::SizeEq<T>,
-        {
-        }
-        is_trait::<$ty, $repr>();
-    };
-    (@assert_trait FromBytes, $ty:ty, $repr:ty) => {
-        fn is_trait<T, R>()
-        where
-            T: ?Sized + $crate::pointer::TransmuteFrom<
-                R,
-                $crate::invariant::Safe,
-                $crate::invariant::Safe,
-                <R as $crate::pointer::SizeEq<T>>::CastFrom,
-                $crate::pointer::Reverse,
-            >,
-            R: ?Sized + FromBytes + $crate::pointer::SizeEq<T>,
-        {
-        }
-        is_trait::<$ty, $repr>();
-    };
-    (@assert_trait IntoBytes, $ty:ty, $repr:ty) => {
-        fn is_trait<T, R>()
-        where
-            T: ?Sized,
-            R: ?Sized
-                + IntoBytes
-                + $crate::pointer::SizeEq<T>
-                + $crate::pointer::TransmuteFrom<
-                    T,
-                    $crate::invariant::Safe,
-                    $crate::invariant::Safe,
-                    <R as $crate::pointer::SizeEq<T>>::CastFrom,
-                    $crate::pointer::Forward,
-                >,
-        {
-        }
-        is_trait::<$ty, $repr>();
-    };
+    (@assert_is_supported_trait TryFromBytes) => {};
+    (@assert_is_supported_trait FromZeros) => {};
+    (@assert_is_supported_trait FromBytes) => {};
+    (@assert_is_supported_trait IntoBytes) => {};
     (
         @is_safe
         $(<$tyvar:ident $(: $(? $optbound:ident $(+)?)* $($bound:ident $(+)?)* )?>)?
@@ -285,29 +249,24 @@ macro_rules! impl_for_transmute_from {
         where
             Alignment: $crate::invariant::Alignment,
         {
-            // Lift the exact `$ty -> $repr` correspondence through
-            // `ReadOnly` without changing its metadata mapping.
-            type ToRepr<T, R> = $crate::pointer::cast::TransitiveProject<
-                R,
-                $crate::pointer::cast::TransitiveProject<
-                    T,
-                    <T as $crate::pointer::SizeEq<$crate::wrappers::ReadOnly<T>>>::CastFrom,
-                    <R as $crate::pointer::SizeEq<T>>::CastFrom,
-                >,
-                <$crate::wrappers::ReadOnly<R> as $crate::pointer::SizeEq<R>>::CastFrom,
-            >;
-
+            // The transmute below changes only the referent type while keeping
+            // validity `Initialized`. That validity has type-independent
+            // semantics; `BecauseImmutable` is applicable because both
+            // `ReadOnly<Self>` and `ReadOnly<$repr>` are immutable. The cast is
+            // exactly the metadata-aware correspondence chosen by
+            // `ByteReprEq`.
             let candidate = candidate.transmute_with::<
                 $crate::wrappers::ReadOnly<$repr>,
                 $crate::pointer::invariant::Initialized,
-                ToRepr<$ty, $repr>,
+                <Self as $crate::pointer::transmute::ByteReprEq<$repr>>::ToRepr,
                 $crate::pointer::BecauseImmutable,
             >();
 
-            // SAFETY: If the delegated validator returns true, the mapped
-            // `$repr` referent is `Safe`. The compile-time relation checked
-            // above is the reverse implication along the same `$ty -> $repr`
-            // correspondence, so the original `$ty` referent is also `Safe`.
+            // SAFETY: If the delegated validator returns `true`, the mapped
+            // referent is `Safe` for `$repr`. `ByteReprEq` guarantees that
+            // `Safe` validity is equivalent between this mapped `$repr`
+            // referent and the original `Self` referent. Returning the delegated
+            // result therefore satisfies `TryFromBytes::is_safe`'s contract.
             <$repr as TryFromBytes>::is_safe(candidate)
         }
     };
@@ -814,7 +773,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
     ($vis:vis T $(: ?$optbound:ident)? => $wrapper:ident<T>) => {{
         crate::util::macros::__unsafe();
 
-        use crate::pointer::{Forward, Reverse, TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Safe};
+        use crate::pointer::{SpliceFrom, TransmuteFrom, cast::{CastExact, TransitiveProject}, SizeEq, invariant::Safe};
         use crate::wrappers::ReadOnly;
 
         // SAFETY: The caller promises that a `T` to `$wrapper<T>` cast is
@@ -830,25 +789,25 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
         // size-preserving.
         unsafe impl<T $(: ?$optbound)?> CastExact<$wrapper<T>, T> for CastFromWrapper {}
 
-        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the same
-        // admissible `Safe` states for referents paired by this exact cast.
-        unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<T, Safe, Safe, CastToWrapper, Forward> for $wrapper<T>
+        // SAFETY: The caller promises that `T` and `$wrapper<T>` have the
+        // same admissible `Safe` states on the referents paired by this exact
+        // cast.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<T, Safe, Safe, CastToWrapper>
+            for $wrapper<T>
         {}
-        // SAFETY: Same paired referents as above, with the logical implication
-        // reversed.
-        unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<$wrapper<T>, Safe, Safe, CastToWrapper, Reverse> for T
+        // SAFETY: Any valid wrapper write replaces the entire exact referent
+        // with bytes which are also valid for `T`.
+        unsafe impl<T $(: ?$optbound)?> SpliceFrom<$wrapper<T>, Safe, Safe, CastToWrapper> for T {}
+
+        // SAFETY: Same representation equivalence for the reverse executable
+        // cast.
+        unsafe impl<T $(: ?$optbound)?> TransmuteFrom<$wrapper<T>, Safe, Safe, CastFromWrapper>
+            for T
         {}
-        // SAFETY: The caller promises the same equivalence for the exact
-        // reverse executable cast.
-        unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<$wrapper<T>, Safe, Safe, CastFromWrapper, Forward> for T
-        {}
-        // SAFETY: Same paired referents as above, with the logical implication
-        // reversed.
-        unsafe impl<T $(: ?$optbound)?>
-            TransmuteFrom<T, Safe, Safe, CastFromWrapper, Reverse> for $wrapper<T>
+        // SAFETY: Any valid `T` write replaces the entire exact referent with
+        // bytes which are also valid for the wrapper.
+        unsafe impl<T $(: ?$optbound)?> SpliceFrom<T, Safe, Safe, CastFromWrapper>
+            for $wrapper<T>
         {}
 
         impl<T $(: ?$optbound)?> SizeEq<T> for $wrapper<T> {
@@ -893,7 +852,7 @@ macro_rules! unsafe_impl_for_transparent_wrapper {
 macro_rules! impl_transitive_transmute_from {
     ($($tyvar:ident $(: ?$optbound:ident)?)? => $t:ty => $u:ty => $v:ty) => {
         const _: () = {
-            use crate::pointer::{Forward, Reverse, TransmuteFrom, SizeEq, invariant::Safe};
+            use crate::pointer::{SpliceFrom, TransmuteFrom, SizeEq, invariant::Safe};
 
             impl<$($tyvar $(: ?$optbound)?)?> SizeEq<$t> for $v
             where
@@ -907,62 +866,29 @@ macro_rules! impl_transitive_transmute_from {
                 >;
             }
 
-            // SAFETY: The two component forward implications compose along
-            // the same two exact casts as the `TransitiveProject` above.
+            // SAFETY: Projecting through the composed exact cast is equivalent
+            // to projecting first to `$u` and then to `$v`.
             unsafe impl<$($tyvar $(: ?$optbound)?)?>
-                TransmuteFrom<
-                    $t,
-                    Safe,
-                    Safe,
-                    <$v as SizeEq<$t>>::CastFrom,
-                    Forward,
-                > for $v
+                TransmuteFrom<$t, Safe, Safe, <$v as SizeEq<$t>>::CastFrom> for $v
             where
                 $u: SizeEq<$t>
-                    + TransmuteFrom<
-                        $t,
-                        Safe,
-                        Safe,
-                        <$u as SizeEq<$t>>::CastFrom,
-                        Forward,
-                    >,
+                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
                 $v: SizeEq<$u>
-                    + TransmuteFrom<
-                        $u,
-                        Safe,
-                        Safe,
-                        <$v as SizeEq<$u>>::CastFrom,
-                        Forward,
-                    >,
+                    + TransmuteFrom<$u, Safe, Safe, <$v as SizeEq<$u>>::CastFrom>,
             {}
 
-            // SAFETY: The reverse implications compose over those same paired
-            // referents; no inverse executable cast is required.
+            // SAFETY: Start from a valid `$t`. Its projection is a valid
+            // `$u` by the forward relation above. A valid `$v` write spliced
+            // into that `$u` preserves `$u`; splicing the resulting valid
+            // `$u` into the original `$t` preserves `$t`.
             unsafe impl<$($tyvar $(: ?$optbound)?)?>
-                TransmuteFrom<
-                    $v,
-                    Safe,
-                    Safe,
-                    <$v as SizeEq<$t>>::CastFrom,
-                    Reverse,
-                > for $t
+                SpliceFrom<$v, Safe, Safe, <$v as SizeEq<$t>>::CastFrom> for $t
             where
-                $u: SizeEq<$t>,
-                $t: TransmuteFrom<
-                    $u,
-                    Safe,
-                    Safe,
-                    <$u as SizeEq<$t>>::CastFrom,
-                    Reverse,
-                >,
+                $u: SizeEq<$t>
+                    + TransmuteFrom<$t, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
+                $t: SpliceFrom<$u, Safe, Safe, <$u as SizeEq<$t>>::CastFrom>,
                 $v: SizeEq<$u>,
-                $u: TransmuteFrom<
-                    $v,
-                    Safe,
-                    Safe,
-                    <$v as SizeEq<$u>>::CastFrom,
-                    Reverse,
-                >,
+                $u: SpliceFrom<$v, Safe, Safe, <$v as SizeEq<$u>>::CastFrom>,
             {}
         };
     };
