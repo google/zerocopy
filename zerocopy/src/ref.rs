@@ -10,7 +10,7 @@
 // those terms.
 use super::*;
 use crate::pointer::{
-    BecauseMutationCompatible, BecauseSharedCompatible, MutationCompatible, TransmuteFromPtr,
+    BecauseMutationCompatible, BecauseSharedCompatible, TransmuteFromPtr,
 };
 
 mod def {

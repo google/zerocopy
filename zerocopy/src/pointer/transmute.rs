@@ -346,9 +346,8 @@ mod transmute_direction {
 #[doc(hidden)]
 pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>: transmute_direction::Sealed {}
 
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward
-where
-    C: CastExact<Src, Dst>,
+impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward where
+    C: CastExact<Src, Dst>
 {
 }
 
