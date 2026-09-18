@@ -11,9 +11,6 @@
 #[macro_use]
 pub(crate) mod macros;
 
-#[macro_use]
-pub(crate) mod byte_repr;
-
 #[doc(hidden)]
 pub mod macro_util;
 
@@ -374,8 +371,8 @@ where
 ///
 /// # Errors
 ///
-/// Returns an error on allocation failure. Allocation failure is guaranteed never to cause a
-/// panic or an abort.
+/// Returns an error on allocation failure. Allocation failure is guaranteed
+/// never to cause a panic or an abort.
 ///
 /// # Safety
 ///
