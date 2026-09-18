@@ -341,21 +341,44 @@ impl<T: ?Sized> SizeEq<T> for T {
 ///
 /// `ByteReprEq<R>` chooses a [`CastExact`] from `ReadOnly<Self>` to
 /// `ReadOnly<R>`. For dynamically-sized types, that cast defines which `R`
-/// pointer metadata corresponds to each `Self` pointer metadata value.
+/// referent corresponds to each `Self` referent. The cast may transform pointer
+/// metadata; the source and destination metadata need not be identical or even
+/// have the same type. What matters is that each mapped pair addresses exactly
+/// the same set of referent bytes.
+///
+/// `Self::Cast` is a proof witness for every consumer of `ByteReprEq`.
+/// `FromZeros`, `FromBytes`, and `IntoBytes` do not execute the cast, but
+/// they rely on it to select the particular `R` referent shape whose
+/// representation is equivalent to a given `Self` referent. `TryFromBytes`
+/// additionally executes the same mapping in order to delegate its runtime
+/// validity check.
+///
+/// `ByteReprEq` makes no aliasing-compatibility claim such as
+/// [`SharedCompatible`]. A consumer which actually performs a pointer cast must
+/// discharge aliasing separately. The current runtime consumer casts
+/// `ReadOnly<_>` wrappers using `BecauseImmutable`.
 ///
 /// # Safety
 ///
 /// For every possible `ReadOnly<Self>` referent, let `src` denote that
 /// referent, and let `dst` denote the `ReadOnly<R>` referent produced by
-/// [`Self::Cast`]. For every possible state of their common byte range, `src`
-/// must satisfy [`Safe`] validity for `Self` if and only if `dst` satisfies
-/// `Safe` validity for `R`.
+/// [`Self::Cast`]. By `Self::Cast: CastExact`, `src` and `dst` address
+/// exactly the same referent bytes. For every possible byte state of that exact
+/// range, including which bytes are initialized, `src` must satisfy [`Safe`]
+/// validity for `Self` if and only if `dst` satisfies `Safe` validity for
+/// `R`.
 ///
 /// This requirement applies only to referents related by `Self::Cast`. It makes
 /// no claim about other `Self` and `R` metadata values which happen to produce
-/// the same referent size.
+/// the same referent size. This cast-relative byte-state relation is
+/// intentionally stronger and more specific than reciprocal `TransmuteFrom`
+/// bounds: `TransmuteFrom` is phrased in terms of equally-sized referents and
+/// allowed bit patterns, while this witness fixes one metadata-aware referent
+/// correspondence and also preserves the initialization-state reasoning needed
+/// by `IntoBytes`.
 ///
 /// [`Safe`]: crate::pointer::invariant::Safe
+/// [`SharedCompatible`]: crate::pointer::SharedCompatible
 pub(crate) unsafe trait ByteReprEq<R: ?Sized> {
     type Cast: CastExact<ReadOnly<Self>, ReadOnly<R>>;
 }

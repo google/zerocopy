@@ -180,9 +180,12 @@ macro_rules! impl_for_transmute_from {
         const _: () = {
             // SAFETY: Fix an arbitrary concrete referent shape of `$ty`.
             // `$ty: ByteReprEq<$repr>` supplies an exact cast to one particular
-            // `$repr` referent shape over the same bytes and guarantees that
-            // `Safe` validity is equivalent on those two corresponding
-            // referents. `$repr: $trait` supplies the property being
+            // `$repr` referent shape over exactly the same bytes and guarantees
+            // that `Safe` validity is equivalent on those two corresponding
+            // referents. For DSTs, this cast may transform pointer metadata. Its
+            // existence is load-bearing even for the marker traits below which
+            // do not execute it: it fixes which `$repr` referent corresponds to
+            // each `$ty` referent. `$repr: $trait` supplies the property being
             // transferred. `@assert_is_supported_trait` rejects every trait
             // except the four cases below:
             //
