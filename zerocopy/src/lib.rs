@@ -3464,18 +3464,25 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
         return Err(ValidityError::new(source).into());
     }
 
-    fn _assert_same_size_and_validity<T>()
+    fn _assert_corresponding_validity<T>()
     where
-        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Safe, invariant::Safe>,
-        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Safe, invariant::Safe>,
+        Wrapping<T>: pointer::SizeEq<T>,
+        Wrapping<T>: pointer::TransmuteFrom<
+            T,
+            invariant::Safe,
+            invariant::Safe,
+            <Wrapping<T> as pointer::SizeEq<T>>::CastFrom,
+            pointer::Reverse,
+        >,
     {
     }
 
-    _assert_same_size_and_validity::<T>();
+    _assert_corresponding_validity::<T>();
 
     // SAFETY: We just validated that `candidate` contains a valid
-    // `Wrapping<T>`, which has the same size and bit validity as `T`, as
-    // guaranteed by the preceding type assertion.
+    // `Wrapping<T>`. The preceding assertion establishes an exact `T ->`
+    // `Wrapping<T>` correspondence and the reverse `Safe` implication, so
+    // the same referent state is `Safe` for `T`.
     Ok(unsafe { candidate.assume_init() })
 }
 

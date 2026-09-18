@@ -411,42 +411,75 @@ mod atomics {
         };
     }
 
-    /// Implements `TransmuteFrom` for `$atomic`, `$prim`, and
-    /// `UnsafeCell<$prim>`.
+    /// Implements cast-relative `TransmuteFrom` and `SizeEq` for
+    /// `$atomic`, `$prim`, and `UnsafeCell<$prim>`.
     ///
     /// # Safety
     ///
-    /// `$atomic` must have the same size and bit validity as `$prim`.
+    /// `$atomic` must have the same size and `Safe` admissible states as
+    /// `$prim`.
     macro_rules! unsafe_impl_transmute_from_for_atomic {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Safe};
+            use crate::pointer::{
+                Forward, Reverse, SizeEq, TransmuteFrom, invariant::Safe,
+            };
 
             $(
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for $prim {}
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Safe, Safe> for $atomic {}
+                impl<$($tyvar)?> SizeEq<$atomic> for $prim {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
+                impl<$($tyvar)?> SizeEq<$prim> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
+
+                // SAFETY: Corresponding atomic and primitive referents have
+                // equivalent `Safe` states.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$atomic, Safe, Safe, $crate::pointer::cast::CastSizedExact, Forward>
+                    for $prim {}
+                // SAFETY: Same paired states, reverse implication.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$atomic, Safe, Safe, $crate::pointer::cast::CastSizedExact, Reverse>
+                    for $prim {}
+                // SAFETY: Same guarantee in the opposite cast orientation.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$prim, Safe, Safe, $crate::pointer::cast::CastSizedExact, Forward>
+                    for $atomic {}
+                // SAFETY: Same paired states, reverse implication.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$prim, Safe, Safe, $crate::pointer::cast::CastSizedExact, Reverse>
+                    for $atomic {}
 
                 impl<$($tyvar)?> SizeEq<ReadOnly<$atomic>> for ReadOnly<$prim> {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same bit validity. `UnsafeCell<T>` has the same bit
-                // validity as `T` [1].
-                //
-                // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
-                //
-                //   `UnsafeCell<T>` has the same in-memory representation as
-                //   its inner type `T`. A consequence of this guarantee is that
-                //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for core::cell::UnsafeCell<$prim> {}
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe> for $atomic {}
+                impl<$($tyvar)?> SizeEq<$atomic> for core::cell::UnsafeCell<$prim> {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
+                impl<$($tyvar)?> SizeEq<core::cell::UnsafeCell<$prim>> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
+
+                // SAFETY: `UnsafeCell<$prim>` has the same representation and
+                // referent-local typed validity as `$prim`.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$atomic, Safe, Safe, $crate::pointer::cast::CastSizedExact, Forward>
+                    for core::cell::UnsafeCell<$prim> {}
+                // SAFETY: Same paired states, reverse implication.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<$atomic, Safe, Safe, $crate::pointer::cast::CastSizedExact, Reverse>
+                    for core::cell::UnsafeCell<$prim> {}
+                // SAFETY: Same guarantee in the opposite cast orientation.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe, $crate::pointer::cast::CastSizedExact, Forward>
+                    for $atomic {}
+                // SAFETY: Same paired states, reverse implication.
+                unsafe impl<$($tyvar)?>
+                    TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe, $crate::pointer::cast::CastSizedExact, Reverse>
+                    for $atomic {}
             )*
         }};
     }
