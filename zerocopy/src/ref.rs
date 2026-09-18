@@ -633,7 +633,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, BecauseImmutable, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -685,7 +685,7 @@ where
                 cast_for_sized::<
                     T,
                     _,
-                    (BecauseRead, BecauseExclusive),
+                    BecauseExclusive,
                     (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
@@ -953,26 +953,6 @@ where
     }
 }
 
-enum CastForSized {}
-
-// SAFETY: `CastForSized` is private and is only used by `cast_for_sized`, whose
-// caller promises that the source referent has exactly `size_of::<T>()` bytes.
-// Under that precondition, the projection preserves the source byte range and
-// provenance.
-unsafe impl<T: ?Sized + KnownLayout> crate::pointer::cast::Project<[u8], T> for CastForSized {
-    #[inline(always)]
-    fn project(src: PtrInner<'_, [u8]>) -> *mut T {
-        T::raw_from_ptr_len(
-            src.as_non_null().cast(),
-            <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
-        )
-        .as_ptr()
-    }
-}
-
-// SAFETY: The `Project::project` impl preserves referent address.
-unsafe impl<T: ?Sized + KnownLayout> crate::pointer::cast::Cast<[u8], T> for CastForSized {}
-
 /// # Safety
 ///
 /// `T: Sized` and `ptr`'s referent must have size `size_of::<T>()`.
@@ -983,11 +963,34 @@ unsafe fn cast_for_sized<'a, T, A, R, S>(
 where
     T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
-    [u8]: MutationCompatible<T, A, Initialized, Initialized, CastForSized, R>,
-    T: TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
+    [u8]: crate::pointer::invariant::Read<A, R>,
+    T: crate::pointer::invariant::Read<A, R>
+        + TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
 {
+    use crate::pointer::cast::{Cast, Project};
+
+    enum CastForSized {}
+
+    // SAFETY: `CastForSized` is only used below with the input `ptr`, which the
+    // caller promises has size `size_of::<T>()`. Thus, the referent produced in
+    // this cast has the same size as `ptr`'s referent. All operations preserve
+    // provenance.
+    unsafe impl<T: ?Sized + KnownLayout> Project<[u8], T> for CastForSized {
+        #[inline(always)]
+        fn project(src: PtrInner<'_, [u8]>) -> *mut T {
+            T::raw_from_ptr_len(
+                src.as_non_null().cast(),
+                <T::PointerMetadata as crate::PointerMetadata>::from_elem_count(0),
+            )
+            .as_ptr()
+        }
+    }
+
+    // SAFETY: The `Project::project` impl preserves referent address.
+    unsafe impl<T: ?Sized + KnownLayout> Cast<[u8], T> for CastForSized {}
+
     ptr.recall_validity::<Initialized, (_, (_, _))>()
-        .cast::<_, CastForSized, _>()
+        .cast::<_, CastForSized, (BecauseRead, R)>()
         .recall_validity::<Safe, _>()
 }
 
