@@ -45,14 +45,14 @@ jobs:
       - name: Format and validate
         shell: bash
         run: |
+          set +e
           set -uo pipefail
           mkdir -p "$RUNNER_TEMP/reverse-before-results"
           out="$RUNNER_TEMP/reverse-before-results"
           run_check() {
             label="$1"
             shift
-            "$@" > "$out/$label.log" 2>&1
-            status=$?
+            if "$@" > "$out/$label.log" 2>&1; then status=0; else status=$?; fi
             printf '%s %s\n' "$label" "$status" | tee -a "$out/status.txt"
             tail -n 100 "$out/$label.log"
           }
@@ -63,7 +63,8 @@ jobs:
           run_check nightly ./cargo.sh +nightly test --lib --features __internal_use_only_features_that_work_on_stable
           run_check clippy ./cargo.sh +nightly clippy --tests --features __internal_use_only_features_that_work_on_stable
           cd ..
-          git diff --check > "$out/diff-check.log" 2>&1
+          run_check diff-check git diff --check
+          git add -N zerocopy/src/pointer/transmute/reverse_tests.rs
           git diff --binary > "$out/implementation.patch"
           git status --short > "$out/worktree.txt"
           tar -cf "$out/source.tar" -T "$RUNNER_TEMP/reverse-before-paths.txt"
