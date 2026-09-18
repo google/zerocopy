@@ -339,19 +339,24 @@ impl<T: ?Sized> SizeEq<T> for T {
 /// Proof that two types have equivalent representations under a particular
 /// exact referent mapping.
 ///
-/// `ByteReprEq<R>` chooses a [`CastExact`] from `ReadOnly<Self>` to
-/// `ReadOnly<R>`. For dynamically-sized types, that cast defines which `R`
-/// referent corresponds to each `Self` referent. The cast may transform pointer
-/// metadata; the source and destination metadata need not be identical or even
-/// have the same type. What matters is that each mapped pair addresses exactly
-/// the same set of referent bytes.
+/// `ByteReprEq<R>` provides a total mapping from every `ReadOnly<Self>`
+/// referent to a `ReadOnly<R>` referent. The mapping is carried by
+/// [`Self::ToRepr`], a [`CastExact`]. For dynamically-sized types, it may
+/// transform pointer metadata; metadata identity is not required. Each mapped
+/// pair must address exactly the same set of referent bytes.
 ///
-/// `Self::Cast` is a proof witness for every consumer of `ByteReprEq`.
-/// `FromZeros`, `FromBytes`, and `IntoBytes` do not execute the cast, but
-/// they rely on it to select the particular `R` referent shape whose
-/// representation is equivalent to a given `Self` referent. `TryFromBytes`
-/// additionally executes the same mapping in order to delegate its runtime
-/// validity check.
+/// The direction of this mapping is part of the contract. Consumers use a known
+/// representation property of `R` to prove that property for `Self`, so they
+/// must be able to start from an arbitrary `Self` referent and obtain a
+/// corresponding `R` referent. A reverse-only mapping from `R` to `Self`
+/// would cover only `Self` referents in its image unless it separately
+/// guaranteed surjectivity. `TryFromBytes` additionally needs this direction
+/// operationally in order to map its runtime `Self` candidate to the `R`
+/// candidate passed to `R::is_safe`.
+///
+/// `FromZeros`, `FromBytes`, and `IntoBytes` do not execute
+/// `Self::ToRepr`, but still use it as a proof witness selecting the
+/// corresponding `R` referent for each `Self` referent.
 ///
 /// `ByteReprEq` makes no aliasing-compatibility claim such as
 /// [`SharedCompatible`]. A consumer which actually performs a pointer cast must
@@ -360,17 +365,16 @@ impl<T: ?Sized> SizeEq<T> for T {
 ///
 /// # Safety
 ///
-/// For every possible `ReadOnly<Self>` referent, let `src` denote that
-/// referent, and let `dst` denote the `ReadOnly<R>` referent produced by
-/// [`Self::Cast`]. By `Self::Cast: CastExact`, `src` and `dst` address
-/// exactly the same referent bytes. For every possible byte state of that exact
-/// range, including which bytes are initialized, `src` must satisfy [`Safe`]
-/// validity for `Self` if and only if `dst` satisfies `Safe` validity for
-/// `R`.
+/// For every possible referent `src: ReadOnly<Self>`, let `dst: ReadOnly<R>`
+/// be the referent produced by [`Self::ToRepr`]. By
+/// `Self::ToRepr: CastExact`, `src` and `dst` address exactly the same
+/// referent bytes. For every possible byte state of that exact range, including
+/// which bytes are initialized, `src` must satisfy [`Safe`] validity for
+/// `Self` if and only if `dst` satisfies `Safe` validity for `R`.
 ///
-/// This requirement applies only to referents related by `Self::Cast`. It makes
-/// no claim about other `Self` and `R` metadata values which happen to produce
-/// the same referent size. This cast-relative byte-state relation is
+/// This requirement applies only to referents related by `Self::ToRepr`. It
+/// makes no claim about other `Self` and `R` metadata values which happen to
+/// produce the same referent size. This cast-relative byte-state relation is
 /// intentionally stronger and more specific than reciprocal `TransmuteFrom`
 /// bounds: `TransmuteFrom` is phrased in terms of equally-sized referents and
 /// allowed bit patterns, while this witness fixes one metadata-aware referent
@@ -380,7 +384,7 @@ impl<T: ?Sized> SizeEq<T> for T {
 /// [`Safe`]: crate::pointer::invariant::Safe
 /// [`SharedCompatible`]: crate::pointer::SharedCompatible
 pub(crate) unsafe trait ByteReprEq<R: ?Sized> {
-    type Cast: CastExact<ReadOnly<Self>, ReadOnly<R>>;
+    type ToRepr: CastExact<ReadOnly<Self>, ReadOnly<R>>;
 }
 
 // SAFETY: `Wrapping<T>` is `#[repr(transparent)]` with one public field of type
@@ -398,7 +402,7 @@ pub(crate) unsafe trait ByteReprEq<R: ?Sized> {
 //
 //   `pub struct Wrapping<T>(pub T);`
 unsafe impl<T> ByteReprEq<T> for Wrapping<T> {
-    type Cast = <ReadOnly<T> as SizeEq<ReadOnly<Wrapping<T>>>>::CastFrom;
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<Wrapping<T>>>>::CastFrom;
 }
 
 // SAFETY: The standard library guarantees that `ManuallyDrop<T>` has the same
@@ -412,7 +416,7 @@ unsafe impl<T> ByteReprEq<T> for Wrapping<T> {
 //   `ManuallyDrop<T>` is guaranteed to have the same layout and bit validity as
 //   `T`, and is subject to the same layout optimizations as `T`.
 unsafe impl<T: ?Sized> ByteReprEq<T> for ManuallyDrop<T> {
-    type Cast = <ReadOnly<T> as SizeEq<ReadOnly<ManuallyDrop<T>>>>::CastFrom;
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<ManuallyDrop<T>>>>::CastFrom;
 }
 
 // SAFETY: The standard library guarantees that `Cell<T>` has the same in-memory
@@ -426,7 +430,7 @@ unsafe impl<T: ?Sized> ByteReprEq<T> for ManuallyDrop<T> {
 //   particular, this means that `Cell<T>` has the same in-memory representation
 //   as its inner type `T`.
 unsafe impl<T: ?Sized> ByteReprEq<T> for Cell<T> {
-    type Cast = <ReadOnly<T> as SizeEq<ReadOnly<Cell<T>>>>::CastFrom;
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<Cell<T>>>>::CastFrom;
 }
 
 // SAFETY: The standard library guarantees that `UnsafeCell<T>` has the same
@@ -440,7 +444,7 @@ unsafe impl<T: ?Sized> ByteReprEq<T> for Cell<T> {
 //   `T`. A consequence of this guarantee is that it is possible to convert
 //   between `T` and `UnsafeCell<T>`.
 unsafe impl<T: ?Sized> ByteReprEq<T> for UnsafeCell<T> {
-    type Cast = <ReadOnly<T> as SizeEq<ReadOnly<UnsafeCell<T>>>>::CastFrom;
+    type ToRepr = <ReadOnly<T> as SizeEq<ReadOnly<UnsafeCell<T>>>>::CastFrom;
 }
 
 // SAFETY: `AtomicBool` and `bool` are both `Sized`, so they have no nontrivial
@@ -452,7 +456,7 @@ unsafe impl<T: ?Sized> ByteReprEq<T> for UnsafeCell<T> {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicBool.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<bool> for core::sync::atomic::AtomicBool {
-    type Cast = <ReadOnly<bool> as SizeEq<ReadOnly<core::sync::atomic::AtomicBool>>>::CastFrom;
+    type ToRepr = <ReadOnly<bool> as SizeEq<ReadOnly<core::sync::atomic::AtomicBool>>>::CastFrom;
 }
 
 // SAFETY: `AtomicI8` and `i8` are both `Sized`, so they have no nontrivial
@@ -464,7 +468,7 @@ unsafe impl ByteReprEq<bool> for core::sync::atomic::AtomicBool {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI8.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<i8> for core::sync::atomic::AtomicI8 {
-    type Cast = <ReadOnly<i8> as SizeEq<ReadOnly<core::sync::atomic::AtomicI8>>>::CastFrom;
+    type ToRepr = <ReadOnly<i8> as SizeEq<ReadOnly<core::sync::atomic::AtomicI8>>>::CastFrom;
 }
 
 // SAFETY: `AtomicU8` and `u8` are both `Sized`, so they have no nontrivial
@@ -476,7 +480,7 @@ unsafe impl ByteReprEq<i8> for core::sync::atomic::AtomicI8 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU8.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "8"))]
 unsafe impl ByteReprEq<u8> for core::sync::atomic::AtomicU8 {
-    type Cast = <ReadOnly<u8> as SizeEq<ReadOnly<core::sync::atomic::AtomicU8>>>::CastFrom;
+    type ToRepr = <ReadOnly<u8> as SizeEq<ReadOnly<core::sync::atomic::AtomicU8>>>::CastFrom;
 }
 
 // SAFETY: `AtomicI16` and `i16` are both `Sized`, so they have no nontrivial
@@ -488,7 +492,7 @@ unsafe impl ByteReprEq<u8> for core::sync::atomic::AtomicU8 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI16.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 unsafe impl ByteReprEq<i16> for core::sync::atomic::AtomicI16 {
-    type Cast = <ReadOnly<i16> as SizeEq<ReadOnly<core::sync::atomic::AtomicI16>>>::CastFrom;
+    type ToRepr = <ReadOnly<i16> as SizeEq<ReadOnly<core::sync::atomic::AtomicI16>>>::CastFrom;
 }
 
 // SAFETY: `AtomicU16` and `u16` are both `Sized`, so they have no nontrivial
@@ -500,7 +504,7 @@ unsafe impl ByteReprEq<i16> for core::sync::atomic::AtomicI16 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU16.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "16"))]
 unsafe impl ByteReprEq<u16> for core::sync::atomic::AtomicU16 {
-    type Cast = <ReadOnly<u16> as SizeEq<ReadOnly<core::sync::atomic::AtomicU16>>>::CastFrom;
+    type ToRepr = <ReadOnly<u16> as SizeEq<ReadOnly<core::sync::atomic::AtomicU16>>>::CastFrom;
 }
 
 // SAFETY: `AtomicI32` and `i32` are both `Sized`, so they have no nontrivial
@@ -512,7 +516,7 @@ unsafe impl ByteReprEq<u16> for core::sync::atomic::AtomicU16 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI32.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 unsafe impl ByteReprEq<i32> for core::sync::atomic::AtomicI32 {
-    type Cast = <ReadOnly<i32> as SizeEq<ReadOnly<core::sync::atomic::AtomicI32>>>::CastFrom;
+    type ToRepr = <ReadOnly<i32> as SizeEq<ReadOnly<core::sync::atomic::AtomicI32>>>::CastFrom;
 }
 
 // SAFETY: `AtomicU32` and `u32` are both `Sized`, so they have no nontrivial
@@ -524,7 +528,7 @@ unsafe impl ByteReprEq<i32> for core::sync::atomic::AtomicI32 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU32.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "32"))]
 unsafe impl ByteReprEq<u32> for core::sync::atomic::AtomicU32 {
-    type Cast = <ReadOnly<u32> as SizeEq<ReadOnly<core::sync::atomic::AtomicU32>>>::CastFrom;
+    type ToRepr = <ReadOnly<u32> as SizeEq<ReadOnly<core::sync::atomic::AtomicU32>>>::CastFrom;
 }
 
 // SAFETY: `AtomicI64` and `i64` are both `Sized`, so they have no nontrivial
@@ -536,7 +540,7 @@ unsafe impl ByteReprEq<u32> for core::sync::atomic::AtomicU32 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicI64.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 unsafe impl ByteReprEq<i64> for core::sync::atomic::AtomicI64 {
-    type Cast = <ReadOnly<i64> as SizeEq<ReadOnly<core::sync::atomic::AtomicI64>>>::CastFrom;
+    type ToRepr = <ReadOnly<i64> as SizeEq<ReadOnly<core::sync::atomic::AtomicI64>>>::CastFrom;
 }
 
 // SAFETY: `AtomicU64` and `u64` are both `Sized`, so they have no nontrivial
@@ -548,7 +552,7 @@ unsafe impl ByteReprEq<i64> for core::sync::atomic::AtomicI64 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicU64.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "64"))]
 unsafe impl ByteReprEq<u64> for core::sync::atomic::AtomicU64 {
-    type Cast = <ReadOnly<u64> as SizeEq<ReadOnly<core::sync::atomic::AtomicU64>>>::CastFrom;
+    type ToRepr = <ReadOnly<u64> as SizeEq<ReadOnly<core::sync::atomic::AtomicU64>>>::CastFrom;
 }
 
 // SAFETY: `AtomicIsize` and `isize` are both `Sized`, so they have no
@@ -560,7 +564,7 @@ unsafe impl ByteReprEq<u64> for core::sync::atomic::AtomicU64 {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicIsize.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl ByteReprEq<isize> for core::sync::atomic::AtomicIsize {
-    type Cast = <ReadOnly<isize> as SizeEq<ReadOnly<core::sync::atomic::AtomicIsize>>>::CastFrom;
+    type ToRepr = <ReadOnly<isize> as SizeEq<ReadOnly<core::sync::atomic::AtomicIsize>>>::CastFrom;
 }
 
 // SAFETY: `AtomicUsize` and `usize` are both `Sized`, so they have no
@@ -572,7 +576,7 @@ unsafe impl ByteReprEq<isize> for core::sync::atomic::AtomicIsize {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicUsize.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
-    type Cast = <ReadOnly<usize> as SizeEq<ReadOnly<core::sync::atomic::AtomicUsize>>>::CastFrom;
+    type ToRepr = <ReadOnly<usize> as SizeEq<ReadOnly<core::sync::atomic::AtomicUsize>>>::CastFrom;
 }
 
 // SAFETY: `AtomicPtr<T>` and `*mut T` are both `Sized`, so they have no
@@ -584,7 +588,7 @@ unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl<T> ByteReprEq<*mut T> for core::sync::atomic::AtomicPtr<T> {
-    type Cast = <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
+    type ToRepr = <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
 }
 
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of

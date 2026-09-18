@@ -178,14 +178,17 @@ macro_rules! impl_for_transmute_from {
         => $trait:ident for $ty:ty [$repr:ty]
     ) => {
         const _: () = {
-            // SAFETY: Fix an arbitrary concrete referent shape of `$ty`.
-            // `$ty: ByteReprEq<$repr>` supplies an exact cast to one particular
-            // `$repr` referent shape over exactly the same bytes and guarantees
-            // that `Safe` validity is equivalent on those two corresponding
-            // referents. For DSTs, this cast may transform pointer metadata. Its
-            // existence is load-bearing even for the marker traits below which
-            // do not execute it: it fixes which `$repr` referent corresponds to
-            // each `$ty` referent. `$repr: $trait` supplies the property being
+            // SAFETY: Fix an arbitrary `$ty` referent. The generated impl
+            // must establish the trait property for every such referent.
+            // `$ty: ByteReprEq<$repr>` supplies `ToRepr`, a total exact
+            // mapping from this arbitrary `$ty` referent to one particular
+            // `$repr` referent over exactly the same bytes, and guarantees
+            // equivalent `Safe` validity for that pair. For DSTs, `ToRepr`
+            // may transform pointer metadata. Its direction is load-bearing:
+            // because the property is transferred from `$repr` to `$ty`, we
+            // need an `$repr` witness for every `$ty` referent; a reverse-only
+            // mapping would not provide that without an additional surjectivity
+            // guarantee. `$repr: $trait` supplies the property being
             // transferred. `@assert_is_supported_trait` rejects every trait
             // except the four cases below:
             //
@@ -197,7 +200,7 @@ macro_rules! impl_for_transmute_from {
             //   every such representation `Safe` for `$ty`.
             // - `IntoBytes`: every `Safe` `$ty` representation is also `Safe`
             //   for its corresponding `$repr`. `$repr: IntoBytes` therefore
-            //   guarantees that every byte in the common exact referent range
+            //   guarantees that every byte in that exact referent range
             //   is initialized.
             // - `TryFromBytes`: the generated `is_safe` implementation below
             //   uses the witness's exact cast to validate the corresponding
@@ -255,7 +258,7 @@ macro_rules! impl_for_transmute_from {
             let candidate = candidate.transmute_with::<
                 $crate::wrappers::ReadOnly<$repr>,
                 $crate::pointer::invariant::Initialized,
-                <Self as $crate::pointer::transmute::ByteReprEq<$repr>>::Cast,
+                <Self as $crate::pointer::transmute::ByteReprEq<$repr>>::ToRepr,
                 $crate::pointer::BecauseImmutable,
             >();
 
