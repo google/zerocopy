@@ -808,6 +808,30 @@ mod tests {
             <Dst as SizeEq<Src>>::CastFrom::project(crate::pointer::PtrInner::from_mut(&mut src));
     }
 
+    // SAFETY: Every valid `[u8; 2]` projects through `CastSized` to a valid
+    // `u8`; all bit patterns are valid for both types.
+    unsafe impl TransmuteFrom<[u8; 2], Safe, Safe, cast::CastSized> for u8 {}
+
+    // SAFETY: Starting from any valid `[u8; 2]`, replacing the leading byte
+    // selected by `CastSized` with any valid `u8` leaves a valid
+    // `[u8; 2]`.
+    unsafe impl SpliceFrom<u8, Safe, Safe, cast::CastSized> for [u8; 2] {}
+
+    #[test]
+    fn test_shrinking_mut_transmute() {
+        let mut src = [1u8, 2u8];
+        let ptr = crate::Ptr::from_mut(&mut src).transmute_with::<
+            u8,
+            Safe,
+            cast::CastSized,
+            (BecauseMutationCompatible, (BecauseRead, BecauseExclusive)),
+        >();
+        // SAFETY: `u8` has alignment 1.
+        let mut ptr = unsafe { ptr.assume_alignment::<Aligned>() };
+        *ptr.as_mut() = 9;
+        assert_eq!(src, [9, 2]);
+    }
+
     #[test]
     fn test_transmute_coverage() {
         // SizeEq<T> for MaybeUninit<T>

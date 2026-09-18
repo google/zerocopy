@@ -446,24 +446,23 @@ mod _conversions {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
 
-        /// Reinterprets the same byte region as `U` with validity `V` using
-        /// `C`.
+        /// Reinterprets the same address as `U` with validity `V` using `C`.
         ///
-        /// `C: CastExact` preserves the byte region. The aliasing invariant is
-        /// preserved, while alignment is conservatively forgotten because the
-        /// destination type may have a different alignment requirement.
+        /// `C: Cast` preserves the address and may preserve or shrink the byte
+        /// region. The aliasing invariant is preserved, while alignment is
+        /// conservatively forgotten because the destination type may have a
+        /// different alignment requirement.
         #[inline]
         #[must_use]
         pub fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
-            C: CastExact<T, U>,
+            C: Cast<T, U>,
         {
             // SAFETY:
-            // - By `C: CastExact`, `C` preserves referent address, and so we
-            //   don't need to consider projections in the following safety
-            //   arguments.
+            // - By `C: Cast`, `C` preserves referent address and only
+            //   preserves or shrinks the referent byte range.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
