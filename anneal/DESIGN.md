@@ -76,6 +76,9 @@ This document does not choose the proof of correspondence, the extraction point,
 the unit of coverage, or which parts of that connection are initially proved
 rather than trusted.
 
+The semantic requirement connecting Rust-level claims to derived proof
+obligations is defined in [Rust-level verification](docs/rust-verification.md).
+
 ## Verification composes through abstraction boundaries
 
 Anneal should let an implementation establish a promise once at an abstraction
