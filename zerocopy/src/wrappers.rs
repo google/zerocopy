@@ -11,7 +11,7 @@
 use core::{fmt, hash::Hash};
 
 use super::*;
-use crate::pointer::{invariant::Safe, SizeEq, TransmuteFrom};
+use crate::pointer::{invariant::Safe, Forward, Reverse, SizeEq, TransmuteFrom};
 
 /// A type with no alignment requirement.
 ///
@@ -707,13 +707,28 @@ const _: () = {
     }
 };
 
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<T, Safe, Safe> for ReadOnly<T> {}
-
-// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, and so
-// it has the same bit validity as `T`.
-unsafe impl<T: ?Sized> TransmuteFrom<ReadOnly<T>, Safe, Safe> for T {}
+// SAFETY: `ReadOnly<T>` is a `#[repr(transparent)]` wrapper around `T`, so the
+// paired referents have the same admissible `Safe` states in either logical
+// direction along either exact executable cast.
+unsafe impl<T: ?Sized>
+    TransmuteFrom<T, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Forward> for ReadOnly<T>
+{
+}
+// SAFETY: Same paired referents as above, with the implication reversed.
+unsafe impl<T: ?Sized>
+    TransmuteFrom<ReadOnly<T>, Safe, Safe, <ReadOnly<T> as SizeEq<T>>::CastFrom, Reverse> for T
+{
+}
+// SAFETY: Same representation equivalence for the reverse executable cast.
+unsafe impl<T: ?Sized>
+    TransmuteFrom<ReadOnly<T>, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Forward> for T
+{
+}
+// SAFETY: Same paired referents as above, with the implication reversed.
+unsafe impl<T: ?Sized>
+    TransmuteFrom<T, Safe, Safe, <T as SizeEq<ReadOnly<T>>>::CastFrom, Reverse> for ReadOnly<T>
+{
+}
 
 impl<'a, T: ?Sized + Immutable> From<&'a T> for &'a ReadOnly<T> {
     #[inline(always)]

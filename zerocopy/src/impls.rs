@@ -421,37 +421,64 @@ mod atomics {
         ($($($tyvar:ident)? => $atomic:ty [$prim:ty]),*) => {{
             crate::util::macros::__unsafe();
 
-            use crate::pointer::{SizeEq, TransmuteFrom, invariant::Safe};
+            use crate::pointer::{SizeEq, TransmuteDirection, TransmuteFrom, invariant::Safe};
 
             $(
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for $prim {}
-                // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same size and bit validity.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$prim, Safe, Safe> for $atomic {}
+                // SAFETY: The caller promises that `$atomic` and `$prim` have
+                // the same size and admissible `Safe` states. Since both are
+                // sized, any exact correspondence pairs their unique referent
+                // shapes over the same bytes.
+                unsafe impl<$($tyvar,)? C, Direction>
+                    TransmuteFrom<$atomic, Safe, Safe, C, Direction> for $prim
+                where
+                    Direction: TransmuteDirection<$atomic, $prim, C>,
+                {}
+                // SAFETY: Same argument in the opposite logical direction.
+                unsafe impl<$($tyvar,)? C, Direction>
+                    TransmuteFrom<$prim, Safe, Safe, C, Direction> for $atomic
+                where
+                    Direction: TransmuteDirection<$prim, $atomic, C>,
+                {}
 
+                impl<$($tyvar)?> SizeEq<$atomic> for $prim {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
+                impl<$($tyvar)?> SizeEq<$prim> for $atomic {
+                    type CastFrom = $crate::pointer::cast::CastSizedExact;
+                }
                 impl<$($tyvar)?> SizeEq<ReadOnly<$atomic>> for ReadOnly<$prim> {
                     type CastFrom = $crate::pointer::cast::CastSizedExact;
                 }
 
                 // SAFETY: The caller promised that `$atomic` and `$prim` have
-                // the same bit validity. `UnsafeCell<T>` has the same bit
-                // validity as `T` [1].
+                // the same admissible `Safe` states. `UnsafeCell<T>` has the
+                // same in-memory representation as `T` [1], so the same holds
+                // for `$atomic` and `UnsafeCell<$prim>`. All involved types are
+                // sized, so any exact correspondence pairs their unique shapes.
                 //
                 // [1] Per https://doc.rust-lang.org/1.85.0/std/cell/struct.UnsafeCell.html#memory-layout:
                 //
                 //   `UnsafeCell<T>` has the same in-memory representation as
                 //   its inner type `T`. A consequence of this guarantee is that
                 //   it is possible to convert between `T` and `UnsafeCell<T>`.
-                unsafe impl<$($tyvar)?> TransmuteFrom<$atomic, Safe, Safe> for core::cell::UnsafeCell<$prim> {}
-                // SAFETY: See previous safety comment.
-                unsafe impl<$($tyvar)?> TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe> for $atomic {}
+                unsafe impl<$($tyvar,)? C, Direction>
+                    TransmuteFrom<$atomic, Safe, Safe, C, Direction>
+                    for core::cell::UnsafeCell<$prim>
+                where
+                    Direction: TransmuteDirection<$atomic, core::cell::UnsafeCell<$prim>, C>,
+                {}
+                // SAFETY: Same argument in the opposite logical direction.
+                unsafe impl<$($tyvar,)? C, Direction>
+                    TransmuteFrom<core::cell::UnsafeCell<$prim>, Safe, Safe, C, Direction>
+                    for $atomic
+                where
+                    Direction: TransmuteDirection<core::cell::UnsafeCell<$prim>, $atomic, C>,
+                {}
             )*
         }};
     }
 
-    #[cfg(target_has_atomic = "8")]
+        #[cfg(target_has_atomic = "8")]
     #[cfg_attr(doc_cfg, doc(cfg(target_has_atomic = "8")))]
     mod atomic_8 {
         use core::sync::atomic::{AtomicBool, AtomicI8, AtomicU8};
