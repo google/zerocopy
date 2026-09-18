@@ -1,0 +1,84 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Store validated reverse-before blobs
+
+'on':
+  push:
+    branches: [fix-transmute-reverse-before]
+    paths: [.github/workflows/reverse-before-publish.yml]
+
+permissions: {}
+
+jobs:
+  publish-blobs:
+    if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-transmute-reverse-before'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read
+      contents: write
+    steps:
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: reverse-before-validation
+          run-id: 35404943322
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/validated
+      - name: Store hash-verified source as Git blobs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: python
+        run: |
+          import base64, hashlib, json, os, tarfile, urllib.request
+          from pathlib import Path
+          assert os.environ['GITHUB_REPOSITORY'] == 'google/zerocopy'
+          assert os.environ['GITHUB_REF'] == 'refs/heads/fix-transmute-reverse-before'
+          expected = {
+              "zerocopy/src/impls.rs": "b1d513e772673b6687b22b1cbd2be0a7ee18fc6d",
+              "zerocopy/src/layout.rs": "20f4a6ab21a4ca8d4e794df5eb92255ba1e86b57",
+              "zerocopy/src/lib.rs": "41f66e569fe3f8b88ed1a96c0da5998f64aa040d",
+              "zerocopy/src/pointer/invariant.rs": "3de2b6fac594ef714493289e205df60b02777e12",
+              "zerocopy/src/pointer/mod.rs": "e25c52fb8a3e22353149dbb883114fa221871edf",
+              "zerocopy/src/pointer/ptr.rs": "f9f681c73046a942c9f142cb7f4f1289a8aba32b",
+              "zerocopy/src/pointer/transmute.rs": "1539581380a1d8da095b8e8e273645134d306867",
+              "zerocopy/src/pointer/transmute/reverse_tests.rs": "b10db1d9e93fe619d3867f33b5c7a36335f37357",
+              "zerocopy/src/ref.rs": "8500f72b0f0be9d52caed2a9034ea73560536dfa",
+              "zerocopy/src/util/macros.rs": "b547b2c1cc09e42d7d7f109dc347cb1dfe246d60",
+              "zerocopy/src/wrappers.rs": "4b4943f917b7f7f90b486423595b4de24d251018",
+              "zerocopy/zerocopy-derive/src/derive/project.rs": "a219489d87e5098fcc0c156212fd8994e4b9b860"
+          }
+          root = Path(os.environ['RUNNER_TEMP']) / 'validated'
+          assert (root/'development-head.txt').read_text().strip() == 'df85e4328816073118ae226f6e16807ff553995e'
+          statuses = dict(line.split() for line in (root/'status.txt').read_text().splitlines())
+          assert statuses and all(value == '0' for value in statuses.values()), statuses
+          with tarfile.open(root/'source.tar') as archive:
+              members = archive.getmembers()
+              assert len(members) == len(expected)
+              assert {m.name for m in members} == set(expected)
+              assert all(m.isfile() and m.size < 2_000_000 for m in members)
+              data = {m.name: archive.extractfile(m).read() for m in members}
+          # Verify every input before making the first write; never execute artifact code.
+          for path, content in data.items():
+              content.decode('utf-8')
+              sha = hashlib.sha1(f'blob {len(content)}\0'.encode() + content).hexdigest()
+              assert sha == expected[path], path
+          for path, content in sorted(data.items()):
+              request = urllib.request.Request(
+                  'https://api.github.com/repos/google/zerocopy/git/blobs',
+                  data=json.dumps({'encoding': 'base64', 'content': base64.b64encode(content).decode()}).encode(),
+                  headers={'Authorization': 'Bearer ' + os.environ['GH_TOKEN'],
+                           'Accept': 'application/vnd.github+json',
+                           'X-GitHub-Api-Version': '2022-11-28',
+                           'Content-Type': 'application/json'},
+                  method='POST')
+              with urllib.request.urlopen(request, timeout=60) as response:
+                  stored = json.load(response)
+              assert stored['sha'] == expected[path], path
+              print(json.dumps({'path': path, 'sha': stored['sha']}), flush=True)
+          print('Stored exactly the 12 validated source blobs; no ref or branch was changed.')
