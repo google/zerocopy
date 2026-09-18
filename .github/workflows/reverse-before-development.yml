@@ -22,27 +22,57 @@ concurrency:
   group: reverse-before-development
   cancel-in-progress: true
 
+env:
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+  CARGO_NET_RETRY: '10'
+  RUSTUP_MAX_RETRIES: '10'
+  RUSTFLAGS: -Dwarnings
+  RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+
 jobs:
   prepare:
     if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-transmute-reverse-before'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.sha }}
           persist-credentials: false
           fetch-depth: 1
-      - name: Archive the exact development source
+      - name: Apply the exact reviewed patch
+        run: python3 tools/reverse-before-development.py
+      - name: Format and validate
+        shell: bash
         run: |
-          set -euo pipefail
-          git archive --format=tar HEAD > "$RUNNER_TEMP/reverse-before-source.tar"
-          git rev-parse HEAD > "$RUNNER_TEMP/reverse-before-source.sha"
+          set -uo pipefail
+          mkdir -p "$RUNNER_TEMP/reverse-before-results"
+          out="$RUNNER_TEMP/reverse-before-results"
+          run_check() {
+            label="$1"
+            shift
+            "$@" > "$out/$label.log" 2>&1
+            status=$?
+            printf '%s %s\n' "$label" "$status" | tee -a "$out/status.txt"
+            tail -n 100 "$out/$label.log"
+          }
+          cd zerocopy
+          run_check format ./ci/check_fmt.sh --fix
+          run_check msrv ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+          run_check stable ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
+          run_check nightly ./cargo.sh +nightly test --lib --features __internal_use_only_features_that_work_on_stable
+          run_check clippy ./cargo.sh +nightly clippy --tests --features __internal_use_only_features_that_work_on_stable
+          cd ..
+          git diff --check > "$out/diff-check.log" 2>&1
+          git diff --binary > "$out/implementation.patch"
+          git status --short > "$out/worktree.txt"
+          tar -cf "$out/source.tar" -T "$RUNNER_TEMP/reverse-before-paths.txt"
+          git rev-parse HEAD > "$out/development-head.txt"
+          if grep -Ev ' 0$' "$out/status.txt"; then exit 1; fi
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
         with:
-          name: reverse-before-source
-          path: |
-            ${{ runner.temp }}/reverse-before-source.tar
-            ${{ runner.temp }}/reverse-before-source.sha
-          retention-days: 1
-          if-no-files-found: error
+          name: reverse-before-validation
+          path: ${{ runner.temp }}/reverse-before-results/
+          retention-days: 2
+          if-no-files-found: warn
