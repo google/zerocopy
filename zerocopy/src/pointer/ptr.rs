@@ -887,11 +887,11 @@ mod _casts {
         #[must_use]
         pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
+            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, C, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
             C: Cast<T, U>,
         {
-            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
+            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, _, _, C, R>`, one
             // of the following holds:
             // - `T: Read<I::Aliasing>` and `U: Read<I::Aliasing>`, in which
             //   case one of the following holds:

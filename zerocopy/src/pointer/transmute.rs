@@ -126,7 +126,7 @@ pub unsafe trait TryTransmuteFromPtr<
 pub enum BecauseMutationCompatible {}
 
 // SAFETY:
-// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, we
+// - Preserve destination validity: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, we
 //   know that at least one of the following holds:
 //   - So long as `dst: Ptr<Dst>` is active, no mutation of its referent is
 //     allowed except via `dst` itself if either of the following hold:
@@ -134,16 +134,15 @@ pub enum BecauseMutationCompatible {}
 //       exists, no mutation is permitted except via that `Ptr`
 //     - Aliasing is `Shared`, `Src: Immutable`, and `Dst: Immutable`, in which
 //       case no mutation is possible via either `Ptr`
-//   - Since the underlying cast is size-preserving, `dst` addresses the same
-//     referent as `src`. By `Dst: TransmuteFrom<Src, SV, DV>`, the set of
-//     `DV`-valid referents of `dst` is a superset of the set of `SV`-valid
-//     referents of `src`.
-// - Preserve source validity: Since the underlying cast is size-preserving,
-//   `dst` addresses the same referent as `src`. By
-//   `Src: TransmuteFrom<Dst, DV, SV>`, the set of `DV`-valid referents of `dst`
-//   is a subset of the set of `SV`-valid referents of `src`.
+//   - By `Dst: TransmuteFrom<Src, SV, DV, C, Forward>`, every `SV`-valid
+//     source state is `DV`-valid for the corresponding destination referent
+//     selected by `C`.
+// - Preserve source validity: By
+//   `Src: TransmuteFrom<Dst, DV, SV, C, Reverse>`, every `DV`-valid destination
+//   state is `SV`-valid for the source referent paired with it by that same
+//   `C`.
 // - No safe code, given access to `src` and `dst`, can cause undefined
-//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, _>`, at least one of
+//   behavior: By `Dst: MutationCompatible<Src, A, SV, DV, C, _>`, at least one of
 //   the following holds:
 //   - `A` is `Exclusive`
 //   - `Src: Immutable` and `Dst: Immutable`
