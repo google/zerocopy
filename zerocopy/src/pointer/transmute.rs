@@ -298,6 +298,37 @@ where
 {
 }
 
+/// The exact correspondence is oriented from the trait source to destination.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+#[doc(hidden)]
+pub enum Forward {}
+
+/// The exact correspondence is oriented from the trait destination to source.
+#[allow(missing_copy_implementations, missing_debug_implementations)]
+#[doc(hidden)]
+pub enum Reverse {}
+
+mod transmute_direction {
+    pub trait Sealed {}
+
+    impl Sealed for super::Forward {}
+    impl Sealed for super::Reverse {}
+}
+
+/// The orientation of the exact correspondence used by [`TransmuteFrom`].
+#[doc(hidden)]
+pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>: transmute_direction::Sealed {}
+
+impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward where
+    C: CastExact<Src, Dst>
+{
+}
+
+impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Reverse where
+    C: CastExact<Dst, Src>
+{
+}
+
 /// A directional admissible-state implication along one exact referent
 /// correspondence.
 ///
@@ -327,48 +358,11 @@ where
 ///
 /// The implication described above must hold for every referent pair selected
 /// by `C`.
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-#[doc(hidden)]
-pub enum Forward {}
-
-#[allow(missing_copy_implementations, missing_debug_implementations)]
-#[doc(hidden)]
-pub enum Reverse {}
-
-mod transmute_direction {
-    pub trait Sealed {}
-
-    impl Sealed for super::Forward {}
-    impl Sealed for super::Reverse {}
-}
-
-/// The orientation of the exact correspondence used by [`TransmuteFrom`].
-#[doc(hidden)]
-pub trait TransmuteDirection<Src: ?Sized, Dst: ?Sized, C>: transmute_direction::Sealed {}
-
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Forward where
-    C: CastExact<Src, Dst>
-{
-}
-
-impl<Src: ?Sized, Dst: ?Sized, C> TransmuteDirection<Src, Dst, C> for Reverse where
-    C: CastExact<Dst, Src>
-{
-}
-
-/// Relates the admissible states of referents paired by one exact
-/// correspondence.
-///
-/// # Safety
-///
-/// The directional implication documented above must hold for every referent
-/// pair selected by `C`.
 pub unsafe trait TransmuteFrom<Src: ?Sized, SV, DV, C, Direction>
 where
     Direction: TransmuteDirection<Src, Self, C>,
 {
 }
-
 /// Carries the ability to perform a size-preserving cast or conversion from a
 /// raw pointer to `Src` to a raw pointer to `Self`.
 ///
