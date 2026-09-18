@@ -5696,6 +5696,10 @@ fn mut_from_prefix_suffix<T: FromBytes + IntoBytes + KnownLayout + ?Sized>(
 ///       if its field is [`IntoBytes`]; else,
 ///     - if the type has no generic parameters, it is [`IntoBytes`] if the type
 ///       is sized and has no padding bytes; else,
+///     - if the type is `repr(C)` and its only generic parameters are `const`
+///       parameters which do not appear in any field's type (and no field's
+///       type mentions `Self` or contains a macro invocation), it is
+///       [`IntoBytes`] if the type has no padding bytes; else,
 ///     - if the type is `repr(C)` without an `align(N)` modifier for `N > 1`
 ///       (it may have `align(1)` or `packed(N)`), and every field is `T`,
 ///       `[T; N]`, or a final `[T]` for the same type parameter `T`, it is
@@ -6681,6 +6685,20 @@ mod tests {
             let ptr = ptr as *mut Dst;
             assert_eq!(Dst::pointer_to_metadata(ptr), elems);
         }
+    }
+
+    #[cfg(feature = "derive")]
+    #[test]
+    fn test_into_bytes_unused_const_generic_derive() {
+        // Regression test for #2723: an unused `const` generic parameter
+        // must not force fields to be `Unaligned`, since it can't affect the
+        // type's layout.
+        #[derive(IntoBytes, Immutable)]
+        #[repr(C)]
+        struct Foo<const N: usize>(u32, u32);
+
+        let foo = Foo::<42>(1, 2);
+        assert_eq!(foo.as_bytes().len(), 8);
     }
 
     #[cfg(feature = "derive")]
