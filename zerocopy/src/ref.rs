@@ -963,7 +963,7 @@ unsafe fn cast_for_sized<'a, T, A, R, S>(
 where
     T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
-    [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
+    [u8]: MutationCompatible<T, A, R>,
     T: TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
 {
     use crate::pointer::cast::{Cast, Project};

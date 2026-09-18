@@ -911,7 +911,12 @@ where
     fn transmute_ref(self) -> &'a Dst {
         let ptr = Ptr::from_ref(self.0)
             .recall_validity::<Initialized, _>()
-            .transmute_with::<Dst, Initialized, crate::layout::CastFrom<Dst>, (crate::pointer::BecauseMutationCompatible, _)>()
+            .transmute_with::<
+                Dst,
+                Initialized,
+                crate::layout::CastFrom<Dst>,
+                crate::pointer::BecauseImmutable,
+            >()
             .recall_validity::<Safe, _>();
 
         static_assert!(Src: ?Sized + KnownLayout, Dst: ?Sized + KnownLayout => {
