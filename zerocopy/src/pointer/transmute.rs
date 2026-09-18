@@ -588,7 +588,8 @@ unsafe impl ByteReprEq<usize> for core::sync::atomic::AtomicUsize {
 // [1] https://doc.rust-lang.org/1.85.0/std/sync/atomic/struct.AtomicPtr.html
 #[cfg(all(not(no_zerocopy_target_has_atomics_1_60_0), target_has_atomic = "ptr"))]
 unsafe impl<T> ByteReprEq<*mut T> for core::sync::atomic::AtomicPtr<T> {
-    type ToRepr = <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
+    type ToRepr =
+        <ReadOnly<*mut T> as SizeEq<ReadOnly<core::sync::atomic::AtomicPtr<T>>>>::CastFrom;
 }
 
 // SAFETY: Since `Src: IntoBytes`, the set of valid `Src`'s is the set of

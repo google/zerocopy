@@ -207,7 +207,7 @@ macro_rules! impl_for_transmute_from {
             //   `$repr` referent. On success, representation equivalence makes
             //   the original `$ty` referent `Safe`.
             $(#[$attr])*
-            #[allow(non_local_definitions)]
+            #[allow(non_local_definitions, clippy::undocumented_unsafe_blocks)]
             unsafe impl<$($tyvar $(: $(? $optbound +)* $($bound +)*)?)?> $trait for $ty {
                 #[allow(dead_code, clippy::missing_inline_in_public_items)]
                 #[cfg_attr(all(coverage_nightly, __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS), coverage(off))]
