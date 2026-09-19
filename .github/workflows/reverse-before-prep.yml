@@ -1,53 +1,131 @@
 # Copyright 2026 The Fuchsia Authors
 # SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
-name: Reverse-before preparation
+name: Reverse-before implementation build
 'on':
   push:
     branches: [fix-reverse-before-transmute]
+    paths:
+      - .github/workflows/reverse-before-prep.yml
+      - .agent/reverse-before/**
 permissions:
-  contents: read
-  actions: read
+  contents: write
+concurrency:
+  group: reverse-before-implementation-build
+  cancel-in-progress: false
 jobs:
-  split-tools:
+  build:
     if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-reverse-before-transmute'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 30
+    env:
+      CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: '1'
+      CARGO_NET_RETRY: '10'
+      RUSTUP_MAX_RETRIES: '10'
+      RUSTFLAGS: -Dwarnings
+      RUSTDOCFLAGS: -Dwarnings --cfg=zerocopy_unstable_ptr
+      BASE: d09af696ccf4b7dc5322998a34be5ee439877105
+      TARGET_BRANCH: fix-reverse-before-implementation
     steps:
-      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803
         with:
-          artifact-ids: 10578315877
-          run-id: 35423406852
-          github-token: ${{ github.token }}
-          path: ${{ runner.temp }}/tools
-      - name: Split public toolchain archive
+          fetch-depth: 0
+      - name: Verify and unpack the saved migration
+        shell: bash
         run: |
           set -euo pipefail
-          cd "$RUNNER_TEMP/tools"
-          test -s reverse-before-toolchains.tar.gz
-          sha256sum reverse-before-toolchains.tar.gz
-          split -b 350M reverse-before-toolchains.tar.gz tools-part-
-          sha256sum tools-part-*
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: reverse-tools-aa
-          path: ${{ runner.temp }}/tools/tools-part-aa
-          archive: true
-          compression-level: 0
-          retention-days: 1
-          if-no-files-found: error
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: reverse-tools-ab
-          path: ${{ runner.temp }}/tools/tools-part-ab
-          archive: true
-          compression-level: 0
-          retention-days: 1
-          if-no-files-found: error
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
-        with:
-          name: reverse-tools-ac
-          path: ${{ runner.temp }}/tools/tools-part-ac
-          archive: true
-          compression-level: 0
-          retention-days: 1
-          if-no-files-found: error
+          python3 - <<'PY'
+          import base64, hashlib, io, os, pathlib, zipfile
+          root = pathlib.Path('.agent/reverse-before')
+          parts = ['00', '10', '11', '12', '20']
+          data = base64.b64decode(''.join((root / (p + '.b64')).read_text() for p in parts), validate=True)
+          assert hashlib.sha256(data).hexdigest() == '50841b6901893fe5f5902c44710147a73d0660ba22be5dc827cf02d854eab62a'
+          dst = pathlib.Path(os.environ['RUNNER_TEMP']) / 'reverse-migration'
+          with zipfile.ZipFile(io.BytesIO(data)) as z:
+              for name in z.namelist():
+                  p = pathlib.PurePosixPath(name)
+                  assert not p.is_absolute() and '..' not in p.parts
+              z.extractall(dst)
+          print('Verified migration archive and extracted', len(z.namelist()), 'files')
+          PY
+          git worktree add --detach "$RUNNER_TEMP/reverse-candidate" "$BASE"
+          python3 "$RUNNER_TEMP/reverse-migration/apply.py" "$RUNNER_TEMP/reverse-candidate" --patch "$RUNNER_TEMP/reverse-before.patch" --write
+      - name: Apply repository formatting
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./ci/check_fmt.sh --fix
+      - name: Verify changed-file scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/reverse-candidate"
+          git diff --check
+          git diff --stat
+          python3 - <<'PY'
+          import subprocess
+          allowed = {'zerocopy/src/pointer/transmute.rs', 'zerocopy/src/pointer/mod.rs', 'zerocopy/src/pointer/ptr.rs', 'zerocopy/src/util/macros.rs', 'zerocopy/src/impls.rs', 'zerocopy/src/wrappers.rs', 'zerocopy/src/lib.rs'}
+          changed = set(subprocess.check_output(['git', 'diff', '--name-only'], text=True).splitlines())
+          assert changed and changed <= allowed, changed - allowed
+          PY
+      - name: Stable compilation
+        id: stable
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./cargo.sh +stable check --tests --features __internal_use_only_features_that_work_on_stable
+      - name: MSRV compilation
+        id: msrv
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./cargo.sh +msrv check --tests --features __internal_use_only_features_that_work_on_stable
+      - name: Nightly compilation
+        id: nightly
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./cargo.sh +nightly check --tests --all-features
+      - name: Nightly Clippy
+        id: clippy
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./cargo.sh +nightly clippy --tests --all-features --workspace
+      - name: Focused Rust tests
+        id: tests
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ./cargo.sh +nightly test --lib pointer::transmute::tests --all-features
+      - name: Repository pre-push checks
+        id: hooks
+        continue-on-error: true
+        working-directory: ${{ runner.temp }}/reverse-candidate/zerocopy
+        shell: bash
+        run: ../githooks/pre-push
+      - name: Publish only the implementation tree
+        if: steps.stable.outcome == 'success' && steps.msrv.outcome == 'success' && steps.nightly.outcome == 'success' && steps.clippy.outcome == 'success' && steps.tests.outcome == 'success'
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "$RUNNER_TEMP/reverse-candidate"
+          test -z "$(git ls-remote --heads origin "refs/heads/$TARGET_BRANCH")"
+          git config user.name 'Josh Liebow-Feeser'
+          git config user.email 'joshlf@users.noreply.github.com'
+          git add zerocopy/src/pointer/transmute.rs zerocopy/src/pointer/mod.rs zerocopy/src/pointer/ptr.rs zerocopy/src/util/macros.rs zerocopy/src/impls.rs zerocopy/src/wrappers.rs zerocopy/src/lib.rs
+          git commit -m '[pointer] Unify reverse validity transport with explicit pre-state' -m 'Makes progress on #3706. Generalize projection and splice preservation through Forward and Reverse<Before>, retain exact shape coverage for construction, and update the local unsafe proofs and regression tests.' -m "Agent-authored-by: AI agent acting on Josh Liebow-Feeser's behalf"
+          git push origin "HEAD:refs/heads/$TARGET_BRANCH"
+          printf 'IMPLEMENTATION_COMMIT='
+          git rev-parse HEAD
+      - name: Report validation status
+        if: always()
+        env:
+          STABLE: ${{ steps.stable.outcome }}
+          MSRV: ${{ steps.msrv.outcome }}
+          NIGHTLY: ${{ steps.nightly.outcome }}
+          CLIPPY: ${{ steps.clippy.outcome }}
+          TESTS: ${{ steps.tests.outcome }}
+          HOOKS: ${{ steps.hooks.outcome }}
+        shell: bash
+        run: |
+          printf 'Stable=%s MSRV=%s Nightly=%s Clippy=%s Tests=%s Hooks=%s\n' "$STABLE" "$MSRV" "$NIGHTLY" "$CLIPPY" "$TESTS" "$HOOKS"
+          test "$STABLE:$MSRV:$NIGHTLY:$CLIPPY:$TESTS:$HOOKS" = success:success:success:success:success:success
