@@ -7,25 +7,40 @@ name: Reverse-before preparation
 permissions:
   contents: read
 jobs:
-  snapshot:
+  tools:
     if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-reverse-before-transmute'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           ref: d09af696ccf4b7dc5322998a34be5ee439877105
           persist-credentials: false
-      - name: Export exact base without credentials or Git configuration
+      - name: Install project toolchains in isolated directories
         run: |
           set -euo pipefail
-          test "$(git rev-parse HEAD)" = d09af696ccf4b7dc5322998a34be5ee439877105
-          git archive --format=tar HEAD | gzip -n > "$RUNNER_TEMP/zerocopy-base.tar.gz"
-          sha256sum "$RUNNER_TEMP/zerocopy-base.tar.gz"
+          export RUSTUP_HOME="$RUNNER_TEMP/export-rustup"
+          export CARGO_HOME="$RUNNER_TEMP/export-cargo"
+          export CARGO_NET_RETRY=10
+          export RUSTUP_MAX_RETRIES=10
+          rustup toolchain install stable 1.56.0 1.93.1 nightly-2026-01-25 --profile minimal
+          rustup component add rustfmt clippy miri rust-src --toolchain nightly-2026-01-25
+          rustup default stable
+          ./zerocopy/cargo.sh --version nightly
+          mkdir -p "$CARGO_HOME/bin"
+          cp "$(command -v rustup)" "$CARGO_HOME/bin/rustup"
+          for tool in cargo rustc rustdoc rustfmt cargo-fmt cargo-clippy clippy-driver cargo-miri; do
+            ln -s rustup "$CARGO_HOME/bin/$tool"
+          done
+          # Explicit paths exclude credentials, Git configuration, and other homes.
+          tar -C "$RUNNER_TEMP" -czf "$RUNNER_TEMP/reverse-before-toolchains.tar.gz" \
+            export-rustup/toolchains export-rustup/settings.toml \
+            export-cargo/bin export-cargo/registry
+          sha256sum "$RUNNER_TEMP/reverse-before-toolchains.tar.gz"
       - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         with:
-          name: reverse-before-base
-          path: ${{ runner.temp }}/zerocopy-base.tar.gz
+          name: reverse-before-toolchains
+          path: ${{ runner.temp }}/reverse-before-toolchains.tar.gz
           archive: true
           compression-level: 0
           retention-days: 1
