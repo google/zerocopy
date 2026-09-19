@@ -1,0 +1,32 @@
+# Copyright 2026 The Fuchsia Authors
+# SPDX-License-Identifier: BSD-2-Clause OR Apache-2.0 OR MIT
+name: Reverse-before preparation
+'on':
+  push:
+    branches: [fix-reverse-before-transmute]
+permissions:
+  contents: read
+jobs:
+  snapshot:
+    if: github.repository == 'google/zerocopy' && github.ref == 'refs/heads/fix-reverse-before-transmute'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: d09af696ccf4b7dc5322998a34be5ee439877105
+          persist-credentials: false
+      - name: Export exact base without credentials or Git configuration
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = d09af696ccf4b7dc5322998a34be5ee439877105
+          git archive --format=tar HEAD | gzip -n > "$RUNNER_TEMP/zerocopy-base.tar.gz"
+          sha256sum "$RUNNER_TEMP/zerocopy-base.tar.gz"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
+        with:
+          name: reverse-before-base
+          path: ${{ runner.temp }}/zerocopy-base.tar.gz
+          archive: true
+          compression-level: 0
+          retention-days: 1
+          if-no-files-found: error
