@@ -716,7 +716,7 @@ jobs:
             --output-path lcov.info \
             --verbose
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7.0.0
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }} # zizmor: ignore[secrets-outside-env]
           files: zerocopy/lcov.info
@@ -1015,7 +1015,7 @@ jobs:
           echo "tag=${REF_NAME//\//-}" >> "$GITHUB_OUTPUT"
 
       - name: Build, cache, and export image
-        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
         with:
           context: .
           file: .github/workflows/Dockerfile
