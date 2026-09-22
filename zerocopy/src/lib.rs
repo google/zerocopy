@@ -3283,17 +3283,7 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
-
-        let candidate = match CoreMaybeUninit::<Self>::read_from_bytes(source) {
-            Ok(candidate) => candidate,
-            Err(e) => {
-                return Err(TryReadError::Size(e.with_dst()));
-            }
-        };
-        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
-        // its bytes are initialized.
-        unsafe { try_read_from(source, candidate) }
+        try_read_from(source)
     }
 
     /// Attempts to read a `Self` from the prefix of the given `source`.
@@ -3361,17 +3351,17 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
-
-        let (candidate, suffix) = match CoreMaybeUninit::<Self>::read_from_prefix(source) {
-            Ok(candidate) => candidate,
-            Err(e) => {
-                return Err(TryReadError::Size(e.with_dst()));
-            }
+        let (prefix, suffix) = match SplitAt::split_at(source, mem::size_of::<Self>()) {
+            Some(split) => split.via_immutable(),
+            None => return Err(SizeError::new(source).into()),
         };
-        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
-        // its bytes are initialized.
-        unsafe { try_read_from(source, candidate).map(|slf| (slf, suffix)) }
+        match try_read_from(prefix) {
+            Ok(slf) => Ok((slf, suffix)),
+            Err(e) => Err(e.map_src(
+                #[inline(always)]
+                |_| source,
+            )),
+        }
     }
 
     /// Attempts to read a `Self` from the suffix of the given `source`.
@@ -3440,17 +3430,27 @@ pub unsafe trait TryFromBytes {
     where
         Self: Sized,
     {
-        // FIXME(#2981): If `align_of::<Self>() == 1`, validate `source` in-place.
-
-        let (prefix, candidate) = match CoreMaybeUninit::<Self>::read_from_suffix(source) {
-            Ok(candidate) => candidate,
-            Err(e) => {
-                return Err(TryReadError::Size(e.with_dst()));
-            }
+        let split_at = match source.len().checked_sub(mem::size_of::<Self>()) {
+            Some(split_at) => split_at,
+            None => return Err(SizeError::new(source).into()),
         };
-        // SAFETY: `candidate` was copied from from `source: &[u8]`, so all of
-        // its bytes are initialized.
-        unsafe { try_read_from(source, candidate).map(|slf| (prefix, slf)) }
+        // SAFETY: `checked_sub` returned the difference without overflow [1],
+        // so `split_at = source.len() - size_of::<Self>() <= source.len()`.
+        // This satisfies `SplitAt::split_at_unchecked`'s precondition.
+        //
+        // [1] Per https://doc.rust-lang.org/1.56.0/std/primitive.usize.html#method.checked_sub:
+        //
+        //   Checked integer subtraction. Computes `self - rhs`, returning
+        //   `None` if overflow occurred.
+        let (prefix, suffix) =
+            unsafe { SplitAt::split_at_unchecked(source, split_at) }.via_immutable();
+        match try_read_from(suffix) {
+            Ok(slf) => Ok((prefix, slf)),
+            Err(e) => Err(e.map_src(
+                #[inline(always)]
+                |_| source,
+            )),
+        }
     }
 }
 
@@ -3517,21 +3517,57 @@ fn swap<T, U>((t, u): (T, U)) -> (U, T) {
     (u, t)
 }
 
-/// # Safety
-///
-/// All bytes of `candidate` must be initialized.
 #[inline(always)]
-unsafe fn try_read_from<S, T: TryFromBytes>(
-    source: S,
-    mut candidate: CoreMaybeUninit<T>,
-) -> Result<T, TryReadError<S, T>> {
+fn try_read_from<S, T>(source: &S) -> Result<T, TryReadError<&S, T>>
+where
+    S: IntoBytes + Immutable + ?Sized,
+    T: TryFromBytes,
+{
+    let bytes = source.as_bytes();
+    if bytes.len() != mem::size_of::<T>() {
+        return Err(SizeError::new(source).into());
+    }
+
+    // FIXME(#2981): Avoid the validation copy when validation can safely use
+    // a pointer derived from `source`'s shared borrow.
+
+    // Initialize the candidate in its final location. A typed move of a
+    // `MaybeUninit<T>` may discard initialized bytes at `T`'s padding offsets
+    // [1], but validation requires every byte to be initialized. Do not move
+    // `candidate` between this copy and validation.
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.1/std/mem/union.MaybeUninit.html#validity:
+    //
+    //   Moving or copying a value of type `MaybeUninit<T>` (i.e., performing a
+    //   "typed copy") will exactly preserve the contents, including the
+    //   provenance, of all non-padding bytes of type `T` in the value's
+    //   representation.
+    let mut candidate = CoreMaybeUninit::<T>::uninit();
+    // SAFETY: The size check ensures that `bytes` is readable for
+    // `size_of::<T>()` bytes. `candidate.as_mut_ptr()` is writable for the
+    // same number of bytes because `MaybeUninit<T>` has `T`'s size. Both
+    // pointers are non-null and aligned for `u8`, including when `T` is
+    // zero-sized. The fresh local allocation cannot overlap `source`.
+    // Thus the read, write, alignment, and non-overlap requirements of [2]
+    // hold. Copying `u8`s initializes every destination byte, including those
+    // at `T`'s padding offsets.
+    //
+    // [2] Per https://doc.rust-lang.org/1.56.0/std/ptr/fn.copy_nonoverlapping.html:
+    //
+    //   Copies `count * size_of::<T>()` bytes from `src` to `dst`. The source
+    //   and destination must *not* overlap.
+    unsafe {
+        ptr::copy_nonoverlapping(bytes.as_ptr(), candidate.as_mut_ptr().cast::<u8>(), bytes.len());
+    }
+
     // We use `from_mut` despite not mutating via `c_ptr` so that we don't need
     // to add a `T: Immutable` bound.
     let c_ptr = Ptr::from_mut(&mut candidate);
     // SAFETY: `c_ptr` has no uninitialized sub-ranges because it derived from
-    // `candidate`, which the caller promises is entirely initialized. Since
-    // `candidate` is a `MaybeUninit`, it has no validity requirements, and so
-    // no values written to an `Initialized` `c_ptr` can violate its validity.
+    // `candidate`, whose bytes were all initialized by the copy above and
+    // which has not been moved since. Since `candidate` is a `MaybeUninit`,
+    // it has no validity requirements, and so no values written to an
+    // `Initialized` `c_ptr` can violate its validity.
     // Since `c_ptr` has `Exclusive` aliasing, no mutations may happen except
     // via `c_ptr` so long as it is live, so we don't need to worry about the
     // fact that `c_ptr` may have more restricted validity than `candidate`.
@@ -3548,18 +3584,13 @@ unsafe fn try_read_from<S, T: TryFromBytes>(
         return Err(ValidityError::new(source).into());
     }
 
-    fn _assert_same_size_and_validity<T>()
-    where
-        Wrapping<T>: pointer::TransmuteFrom<T, invariant::Safe, invariant::Safe>,
-        T: pointer::TransmuteFrom<Wrapping<T>, invariant::Safe, invariant::Safe>,
-    {
-    }
-
-    _assert_same_size_and_validity::<T>();
-
-    // SAFETY: We just validated that `candidate` contains a valid
-    // `Wrapping<T>`, which has the same size and bit validity as `T`, as
-    // guaranteed by the preceding type assertion.
+    // SAFETY: `Wrapping<T>::is_safe` delegates to `T::is_safe`, so success
+    // validates the `T` in `candidate`. The wrapper and `T` occupy the same
+    // bytes because `Wrapping<T>` has the same layout as `T` [1].
+    //
+    // [1] Per https://doc.rust-lang.org/1.93.1/std/num/struct.Wrapping.html#layout:
+    //
+    //   `Wrapping<T>` is guaranteed to have the same layout and ABI as `T`.
     Ok(unsafe { candidate.assume_init() })
 }
 
@@ -7394,6 +7425,112 @@ mod tests {
             <AU64 as TryFromBytes>::try_read_from_suffix(&bytes[1..9]),
             Ok((&[][..], AU64(0)))
         );
+    }
+
+    #[test]
+    fn test_try_read_from_typed_source() {
+        #[derive(IntoBytes, Immutable)]
+        #[repr(transparent)]
+        struct Source<T: ?Sized>(T);
+
+        fn check<S: IntoBytes + Immutable + ?Sized>(source: &S, valid: bool) {
+            match try_read_from::<_, [bool; 4]>(source) {
+                Ok(value) => {
+                    assert!(valid);
+                    assert_eq!(value, [false, true, false, true]);
+                }
+                Err(error) => {
+                    assert!(!valid);
+                    assert!(matches!(error, TryReadError::Validity(_)));
+                    assert!(ptr::eq(error.into_src(), source));
+                }
+            }
+
+            let error = try_read_from::<_, [bool; 5]>(source).unwrap_err();
+            assert!(matches!(error, TryReadError::Size(_)));
+            assert!(ptr::eq(error.into_src(), source));
+        }
+
+        for (value, valid) in [(u16::from_ne_bytes([0, 1]), true), (0x0202, false)] {
+            let source = Source([value; 2]);
+            check(&source, valid);
+            let source: &Source<[u16]> = &source;
+            check(source, valid);
+        }
+
+        let source = Source([(); 2]);
+        assert!(try_read_from::<_, ()>(&source).is_ok());
+        let source: &Source<[()]> = &source;
+        assert!(try_read_from::<_, ()>(source).is_ok());
+    }
+
+    #[test]
+    fn test_try_read_initialized_padding() {
+        #[derive(KnownLayout, Immutable, Debug, PartialEq, Eq)]
+        #[repr(C, align(8))]
+        struct Padded(u8);
+
+        // SAFETY: `Padded` has only a `u8` field and padding, so all
+        // initialized byte sequences are valid. Per
+        // https://doc.rust-lang.org/1.93.1/reference/behavior-considered-undefined.html#invalid-values:
+        //
+        //   An integer (`i*`/`u*`), floating point value (`f*`), or raw pointer
+        //   must be initialized, i.e., must not be obtained from uninitialized
+        //   memory.
+        //
+        //   A `struct`, tuple, and array requires all fields/elements to be
+        //   valid at their respective type.
+        const _: () = unsafe {
+            unsafe_impl!(=> TryFromBytes for Padded; |candidate| {
+                // Observe every byte while validation is running, including
+                // padding that a typed move of `MaybeUninit<Padded>` could
+                // discard. The returned `Padded` need not retain its padding.
+                assert_eq!(candidate.as_bytes::<BecauseImmutable>().as_ref(), &[0xA5; 8]);
+                true
+            })
+        };
+
+        let source = [0xA5; 8];
+        assert_eq!(Padded::try_read_from_bytes(&source), Ok(Padded(0xA5)));
+
+        let prefix_source = [0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0];
+        let (value, suffix) = Padded::try_read_from_prefix(&prefix_source).unwrap();
+        assert_eq!(value, Padded(0xA5));
+        assert!(ptr::eq(suffix, &prefix_source[8..]));
+
+        let suffix_source = [0, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5, 0xA5];
+        let (prefix, value) = Padded::try_read_from_suffix(&suffix_source).unwrap();
+        assert_eq!(value, Padded(0xA5));
+        assert!(ptr::eq(prefix, &suffix_source[..1]));
+    }
+
+    #[test]
+    fn test_try_read_error_sources_and_zero_sized() {
+        let invalid = [2, 3];
+        for (error, source) in [
+            (bool::try_read_from_bytes(&invalid[..1]).unwrap_err(), &invalid[..1]),
+            (bool::try_read_from_prefix(&invalid).unwrap_err(), &invalid[..]),
+            (bool::try_read_from_suffix(&invalid).unwrap_err(), &invalid[..]),
+        ] {
+            assert!(matches!(error, TryReadError::Validity(_)));
+            assert!(ptr::eq(error.into_src(), source));
+        }
+        for source in [&[][..], &invalid[..]] {
+            let error = bool::try_read_from_bytes(source).unwrap_err();
+            assert!(matches!(error, TryReadError::Size(_)));
+            assert!(ptr::eq(error.into_src(), source));
+        }
+        for error in [
+            bool::try_read_from_prefix(&invalid[..0]).unwrap_err(),
+            bool::try_read_from_suffix(&invalid[..0]).unwrap_err(),
+        ] {
+            assert!(matches!(error, TryReadError::Size(_)));
+            assert!(ptr::eq(error.into_src(), &invalid[..0]));
+        }
+
+        assert_eq!(<()>::try_read_from_bytes(&[]), Ok(()));
+        assert_eq!(<()>::try_read_from_prefix(&invalid), Ok(((), &invalid[..])));
+        assert_eq!(<()>::try_read_from_suffix(&invalid), Ok((&invalid[..], ())));
     }
 
     #[test]
