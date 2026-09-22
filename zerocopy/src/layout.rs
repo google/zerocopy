@@ -1743,39 +1743,38 @@ impl DstLayout {
                 // operation consumes them as padding.
                 //
                 // Guaranteed not to divide by zero: `elem_size` is non-zero.
-                let (elems, _) = max_elems_for_bytes(max_slice_bytes, trailing.elem_size);
-                // The remainder is `max_slice_bytes - elems * elem_size`.
-                // Writing it as a remainder exposes its bound to the
-                // optimizer: when `elem_size <= size_align`, rounding the
-                // remainder down to `size_align` always gives zero.
-                let size_align = trailing.size_rounding_align_and_phase.align();
-                // `size_phase + max_slice_bytes == max_rounded_bytes`, an
-                // alignment multiple. The selected tail removes `unused_bytes`
-                // from this boundary; rounding back up removes only whole
-                // alignment units. Thus its normalized rounded size is:
+                let (elems, trailing_bytes) =
+                    max_elems_for_bytes(max_slice_bytes, trailing.elem_size);
+                let (size_align, size_phase) = trailing.size_rounding_align_and_phase.components();
+                // Let M = round_down(bytes_len - size_base, size_align),
+                // A = size_align, E = elem_size, and r = max_slice_bytes % E.
+                // The capacity helper gives size_phase + max_slice_bytes = M.
+                // Division gives max_slice_bytes = elems * E + r, so the
+                // unrounded size contribution is size_phase + elems * E = M - r.
+                // When E <= A, r < E <= A, so rounding M - r up to A gives M.
                 //
-                //   round_up(size_phase + elems * elem_size, size_align)
-                //       = max_rounded_bytes - round_down(unused_bytes, size_align)
-                //
-                // `prove_slice_dst_validator_selected_size_fits` checks this
-                // identity and its intermediate bounds, using the relations
-                // in `prove_max_trailing_bytes_components`. The capacity is
-                // exact by `prove_max_trailing_bytes`; the element helper's
-                // contract establishes the largest whole-element count.
+                // For E > A, use the helper's product: computing the size from
+                // the remainder can cause LLVM to duplicate division work.
                 #[allow(clippy::arithmetic_side_effects)]
-                let unused_bytes = max_slice_bytes % trailing.elem_size.get();
-                let unused_aligned_bytes =
-                    util::round_down_to_next_multiple_of_alignment(unused_bytes, size_align);
-                #[allow(clippy::arithmetic_side_effects)]
-                let max_rounded_bytes = util::round_down_to_next_multiple_of_alignment(
-                    bytes_len - trailing.size_base,
-                    size_align,
-                );
-                // `unused_aligned_bytes <= unused_bytes <= max_slice_bytes
-                // <= max_rounded_bytes`, and `size_base + max_rounded_bytes
-                // <= bytes_len`, so neither operation can overflow.
-                #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes = trailing.size_base + (max_rounded_bytes - unused_aligned_bytes);
+                let self_bytes = if trailing.elem_size.get() <= size_align.get() {
+                    // A successful capacity query ensures size_base <= bytes_len
+                    // and size_base + M <= bytes_len, so neither operation can
+                    // overflow.
+                    trailing.size_base
+                        + util::round_down_to_next_multiple_of_alignment(
+                            bytes_len - trailing.size_base,
+                            size_align,
+                        )
+                } else {
+                    // The helper gives trailing_bytes <= max_slice_bytes, so
+                    // size_phase + trailing_bytes <= M. Rounding up cannot
+                    // exceed M because M is a multiple of A. Adding size_base
+                    // then gives a value <= bytes_len; no operation overflows.
+                    let without_padding = size_phase + trailing_bytes;
+                    trailing.size_base
+                        + without_padding
+                        + util::padding_needed_for(without_padding, size_align)
+                };
                 (elems, self_bytes)
             }
         };
@@ -3453,6 +3452,9 @@ mod tests {
         fn validate_behavior(
             (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, CastType),
         ) {
+            use core::convert::TryFrom as _;
+
+            let wide = |n: usize| u128::try_from(n).unwrap();
             if let Ok((elems, split_at)) =
                 layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
@@ -3470,7 +3472,7 @@ mod tests {
                 assert!(!(sized && elems != 0), "{}", debug_str);
 
                 let resulting_size = match layout.size_info {
-                    SizeInfo::Sized { size } => size,
+                    SizeInfo::Sized { size } => wide(size),
                     SizeInfo::SliceDst(TrailingSliceLayout {
                         elem_size,
                         size_base,
@@ -3478,32 +3480,38 @@ mod tests {
                         ..
                     }) => {
                         let (size_align, size_phase) = size_rounding_align_and_phase.components();
-                        let padded_size = |elems| {
-                            let without_padding = size_phase + elems * elem_size;
-                            size_base
-                                + without_padding
-                                + util::padding_needed_for(without_padding, size_align)
+                        // Use wider arithmetic so even the next element's
+                        // padded size can exceed `usize::MAX` without wrapping.
+                        let padded_size = |elems: u128| {
+                            let without_padding = wide(size_phase) + elems * wide(elem_size);
+                            let align = wide(size_align.get());
+                            wide(size_base) + ((without_padding + align - 1) / align) * align
                         };
 
-                        let resulting_size = padded_size(elems);
+                        let resulting_size = padded_size(wide(elems));
                         // Test that `validate_cast_and_convert_metadata`
                         // computed the largest possible value that fits in the
                         // given range.
-                        assert!(padded_size(elems + 1) > bytes_len, "{}", debug_str);
+                        assert!(padded_size(wide(elems) + 1) > wide(bytes_len), "{}", debug_str);
                         resulting_size
                     }
                 };
 
                 // Test safety postconditions guaranteed by
                 // `validate_cast_and_convert_metadata`.
-                assert!(resulting_size <= bytes_len, "{}", debug_str);
+                assert!(resulting_size <= wide(bytes_len), "{}", debug_str);
                 match cast_type {
                     CastType::Prefix => {
                         assert_eq!(addr % align, 0, "{}", debug_str);
-                        assert_eq!(resulting_size, split_at, "{}", debug_str);
+                        assert_eq!(resulting_size, wide(split_at), "{}", debug_str);
                     }
                     CastType::Suffix => {
-                        assert_eq!(split_at, bytes_len - resulting_size, "{}", debug_str);
+                        assert_eq!(
+                            wide(split_at),
+                            wide(bytes_len) - resulting_size,
+                            "{}",
+                            debug_str
+                        );
                         assert_eq!((addr + split_at) % align, 0, "{}", debug_str);
                     }
                 }
@@ -3574,6 +3582,49 @@ mod tests {
             nested_packed.validate_cast_and_convert_metadata(0, 10, CastType::Prefix),
             Ok((3, 10))
         ));
+
+        // Exercise remainders below, at, and above the alignment, as well as
+        // sizes near integer limits. No allocation is needed: this method
+        // checks layout arithmetic independently of pointer validity.
+        let large = DstLayout::MAX_SIZE - 32;
+        let layouts = itertools::iproduct!(
+            [0, 1, 3, 8, large],
+            [1, 3, 4, 12, 17, large],
+            [1, 2, 4, 8, 16, DstLayout::CURRENT_MAX_ALIGN.get()]
+        )
+        .map(|(offset, elem_size, align)| layout((offset, elem_size), align))
+        .chain([1, 3, 4, 5, 12, 17, large].into_iter().map(|elem_size| {
+            let mut layout = nested_packed;
+            if let SizeInfo::SliceDst(ref mut trailing) = layout.size_info {
+                trailing.elem_size = elem_size;
+            }
+            layout
+        }));
+        let lengths = [
+            0,
+            3,
+            4,
+            7,
+            8,
+            15,
+            16,
+            17,
+            31,
+            32,
+            33,
+            large,
+            usize::MAX - 31,
+            usize::MAX - 1,
+            usize::MAX,
+        ];
+        itertools::iproduct!(
+            layouts,
+            [0usize, 1, 31],
+            lengths,
+            [CastType::Prefix, CastType::Suffix]
+        )
+        .filter(|(_, addr, len, _)| addr.checked_add(*len).is_some())
+        .for_each(validate_behavior);
     }
 
     #[test]
