@@ -7,17 +7,15 @@ bench_ref_from_suffix_dynamic_padding:
 	cmp rax, 9
 	jae .LBB5_3
 .LBB5_1:
-	xor eax, eax
+	xor edi, edi
+	mov rax, rdi
 	ret
 .LBB5_3:
 	add rax, -9
 	movabs rcx, -6148914691236517205
 	mul rcx
 	shr rdx
-	lea rax, [rdx + 2*rdx]
-	sub rsi, rax
-	or rax, -4
-	add rsi, rdi
-	add rax, rsi
-	add rax, -8
+	and esi, 3
+	add rdi, rsi
+	mov rax, rdi
 	ret
