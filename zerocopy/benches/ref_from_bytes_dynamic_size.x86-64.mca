@@ -24,13 +24,13 @@ Instruction Info:
  1      1     0.33                        mov	rdx, rsi
  1      1     0.33                        cmp	rsi, 4
  1      1     0.50                        setb	cl
- 1      1     0.33                        or	sil, cl
- 1      1     0.33                        test	sil, 1
- 1      1     1.00                        jne	.LBB5_1
+ 1      1     0.33                        or	cl, dl
+ 1      1     0.33                        test	cl, 1
+ 1      1     1.00                        je	.LBB5_3
+ 1      0     0.25                        xor	eax, eax
+ 1      1     1.00                  U     ret
  1      1     0.33                        add	rdx, -4
  1      1     0.50                        shr	rdx
- 1      1     1.00                  U     ret
- 1      0     0.25                        xor	eax, eax
  1      1     1.00                  U     ret
 
 
@@ -54,14 +54,14 @@ Resource pressure by instruction:
  -      -     0.33   0.66    -     0.01    -      -     mov	rax, rdi
  -      -     0.67   0.33    -      -      -      -     test	al, 1
  -      -      -      -      -     1.00    -      -     jne	.LBB5_1
- -      -     0.66   0.34    -      -      -      -     mov	rdx, rsi
+ -      -     0.33   0.34    -     0.33    -      -     mov	rdx, rsi
  -      -     0.33   0.66    -     0.01    -      -     cmp	rsi, 4
  -      -     1.00    -      -      -      -      -     setb	cl
- -      -      -     1.00    -      -      -      -     or	sil, cl
- -      -      -     1.00    -      -      -      -     test	sil, 1
- -      -      -      -      -     1.00    -      -     jne	.LBB5_1
- -      -     0.66   0.34    -      -      -      -     add	rdx, -4
- -      -     0.67    -      -     0.33    -      -     shr	rdx
- -      -      -      -      -     1.00    -      -     ret
+ -      -      -     1.00    -      -      -      -     or	cl, dl
+ -      -      -     1.00    -      -      -      -     test	cl, 1
+ -      -      -      -      -     1.00    -      -     je	.LBB5_3
  -      -      -      -      -      -      -      -     xor	eax, eax
+ -      -      -      -      -     1.00    -      -     ret
+ -      -     0.66   0.34    -      -      -      -     add	rdx, -4
+ -      -     1.00    -      -      -      -      -     shr	rdx
  -      -      -      -      -     1.00    -      -     ret

@@ -92,11 +92,13 @@ impl SizeInfo {
 #[cfg_attr(test, derive(Debug))]
 #[allow(missing_debug_implementations)]
 pub enum CastType {
+    /// Cast the entire byte range, rejecting leftover bytes.
+    Exact,
     Prefix,
     Suffix,
 }
 
-#[cfg_attr(test, derive(Debug))]
+#[cfg_attr(test, derive(Debug, PartialEq, Eq))]
 pub(crate) enum MetadataCastError {
     Alignment,
     Size,
@@ -554,30 +556,34 @@ impl DstLayout {
     /// be ignored). `split_at` is the index at which to split the memory region
     /// in order for the prefix (suffix) to contain the result of the cast, and
     /// in order for the remaining suffix (prefix) to contain the leftover
-    /// bytes.
+    /// bytes. An exact cast consumes the entire region and returns
+    /// `split_at == bytes_len`.
     ///
-    /// There are three conditions under which a cast can fail:
+    /// A cast can fail if:
     /// - The smallest possible value for the type is larger than the provided
     ///   memory region
-    /// - A prefix cast is requested, and `addr` does not satisfy `self`'s
-    ///   alignment requirement
+    /// - A prefix or exact cast is requested, and `addr` does not satisfy
+    ///   `self`'s alignment requirement
     /// - A suffix cast is requested, and `addr + bytes_len` does not satisfy
     ///   `self`'s alignment requirement (as a consequence, since all instances
     ///   of the type are a multiple of its alignment, no size for the type will
     ///   result in a starting address which is properly aligned)
+    /// - An exact cast is requested, and `bytes_len` is not a valid size for
+    ///   the type
     ///
     /// # Safety
     ///
     /// The caller may assume that this implementation is correct, and may rely
     /// on that assumption for the soundness of their code. In particular, the
     /// caller may assume that, if `validate_cast_and_convert_metadata` returns
-    /// `Some((elems, split_at))`, then:
+    /// `Ok((elems, split_at))`, then:
     /// - A pointer to the type (for dynamically sized types, this includes
     ///   `elems` as its pointer metadata) describes an object of size `size <=
     ///   bytes_len`
-    /// - If this is a prefix cast:
+    /// - If this is a prefix or exact cast:
     ///   - `addr` satisfies `self`'s alignment
     ///   - `size == split_at`
+    /// - If this is an exact cast, `size == bytes_len`
     /// - If this is a suffix cast:
     ///   - `split_at == bytes_len - size`
     ///   - `addr + split_at` satisfies `self`'s alignment
@@ -646,10 +652,8 @@ impl DstLayout {
         // Alignment checks go in their own block to avoid introducing variables
         // into the top-level scope.
         {
-            // We check alignment for `addr` (for prefix casts) or `addr +
-            // bytes_len` (for suffix casts). For a prefix cast, the correctness
-            // of this check is trivial - `addr` is the address the object will
-            // live at.
+            // Prefix and exact casts place the object at `addr`. Suffix casts
+            // instead check alignment of `addr + bytes_len`.
             //
             // For a suffix cast, we know that all valid sizes for the type are
             // a multiple of the alignment (and by safety precondition, we know
@@ -659,7 +663,7 @@ impl DstLayout {
             // address for a suffix cast (`addr + bytes_len`) is not aligned,
             // then no valid start address will be aligned either.
             let offset = match cast_type {
-                CastType::Prefix => 0,
+                CastType::Prefix | CastType::Exact => 0,
                 CastType::Suffix => bytes_len,
             };
 
@@ -670,6 +674,51 @@ impl DstLayout {
             #[allow(clippy::arithmetic_side_effects)]
             if (addr + offset) % self.align.get() != 0 {
                 return Err(MetadataCastError::Alignment);
+            }
+        }
+
+        if let CastType::Exact = cast_type {
+            match size_info {
+                SizeInfo::Sized { size } => {
+                    return if bytes_len == size {
+                        Ok((0, size))
+                    } else {
+                        Err(MetadataCastError::Size)
+                    };
+                }
+                SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
+                    // An exact cast must consume an aligned number of bytes;
+                    // there is no need to round down to find a fitting prefix.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    if bytes_len % self.align.get() != 0 {
+                        return Err(MetadataCastError::Size);
+                    }
+                    let available = match bytes_len.checked_sub(offset) {
+                        Some(available) => available,
+                        None => return Err(MetadataCastError::Size),
+                    };
+
+                    // Let N = bytes_len, O = offset, E = elem_size, and
+                    // A = align. Division gives N - O = elems * E + r, so
+                    // the unpadded size is N - r. Since N is a multiple of A,
+                    // rounding N - r up to A gives N exactly when r < A.
+                    // Otherwise, at least A bytes remain, so the cast fails.
+                    // A larger element count exceeds N before padding; a
+                    // smaller count cannot produce a larger padded size.
+                    // Thus, this count is maximal, and no other count can
+                    // make an exact cast succeed when this one fails.
+                    //
+                    // The checked subtraction ensures N >= O, and E is
+                    // non-zero, so none of these operations can overflow or
+                    // divide by zero. The returned size is N itself.
+                    #[allow(clippy::arithmetic_side_effects)]
+                    let elems = available / elem_size.get();
+                    #[allow(clippy::arithmetic_side_effects)]
+                    if available % elem_size.get() >= self.align.get() {
+                        return Err(MetadataCastError::Size);
+                    }
+                    return Ok((elems, bytes_len));
+                }
             }
         }
 
@@ -730,7 +779,7 @@ impl DstLayout {
         __const_debug_assert!(self_bytes <= bytes_len);
 
         let split_at = match cast_type {
-            CastType::Prefix => self_bytes,
+            CastType::Prefix | CastType::Exact => self_bytes,
             // Guaranteed not to underflow:
             // - In the `Sized` branch, only returns `size` if `size <=
             //   bytes_len`.
@@ -1432,7 +1481,7 @@ mod tests {
                 (@generate_elem_size _) => { 1..8 };
                 (@generate_align _) => { [1, 2, 4, 8, 16] };
                 (@generate_opt_usize _) => { [None].into_iter().chain((0..8).map(Some).into_iter()) };
-                (@generate_cast_type _) => { [CastType::Prefix, CastType::Suffix] };
+                (@generate_cast_type _) => { [CastType::Exact, CastType::Prefix, CastType::Suffix] };
                 (@generate_cast_type $variant:ident) => { [CastType::$variant] };
                 // Some expressions need to be wrapped in parentheses in order to be
                 // valid `tt`s (required by the top match pattern). See the comment
@@ -1459,9 +1508,25 @@ mod tests {
             Ok(Err(MetadataCastError::Size))
         );
 
-        // addr is unaligned for prefix cast
+        // The start address must be aligned for prefix and exact casts.
         test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(Err(MetadataCastError::Alignment)));
-        test!(layout(_, [2]).validate(ODDS, _, Prefix), Ok(Err(MetadataCastError::Alignment)));
+        test!(layout(_, [2]).validate(ODDS, _, Exact), Ok(Err(MetadataCastError::Alignment)));
+
+        // Exact casts reject both undersized and oversized buffers.
+        test!(layout([4], [2]).validate([0], [3, 5], Exact), Ok(Err(MetadataCastError::Size)));
+        test!(layout([4], [2]).validate([0], [4], Exact), Ok(Ok((0, 4))));
+        test!(layout([0], [4]).validate([0], [0], Exact), Ok(Ok((0, 0))));
+        test!(layout([0], [4]).validate([0], [4], Exact), Ok(Err(MetadataCastError::Size)));
+
+        // A remainder smaller than the alignment is trailing padding. A whole
+        // alignment unit of unused space cannot be consumed as padding.
+        test!(layout(([5], [12]), [4]).validate([0], [20], Exact), Ok(Ok((1, 20))));
+        test!(
+            layout(([4], [12]), [4]).validate([0], [20], Exact),
+            Ok(Err(MetadataCastError::Size))
+        );
+        // Small elements may also fit in the space otherwise used as padding.
+        test!(layout(([5], [1]), [4]).validate([0], [8], Exact), Ok(Ok((3, 8))));
 
         // addr is aligned, but end of buffer is unaligned for suffix cast
         test!(layout(_, [2]).validate(EVENS, ODDS, Suffix), Ok(Err(MetadataCastError::Alignment)));
@@ -1506,9 +1571,28 @@ mod tests {
             use core::convert::TryFrom as _;
 
             let wide = |n: usize| u128::try_from(n).unwrap();
-            if let Ok((elems, split_at)) =
-                layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
-            {
+            let result = layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type);
+            if let CastType::Exact = cast_type {
+                // Check completeness and error precedence against a prefix
+                // cast followed by a leftover check. The exact path uses a
+                // remainder test instead of reconstructing the padded size.
+                let expected = match layout.validate_cast_and_convert_metadata(
+                    addr,
+                    bytes_len,
+                    CastType::Prefix,
+                ) {
+                    Ok((elems, split_at)) => {
+                        if split_at == bytes_len {
+                            Ok((elems, split_at))
+                        } else {
+                            Err(MetadataCastError::Size)
+                        }
+                    }
+                    Err(err) => Err(err),
+                };
+                assert_eq!(result, expected, "{:?}, {}, {}", layout, addr, bytes_len);
+            }
+            if let Ok((elems, split_at)) = result {
                 let (size_info, align) = (layout.size_info, layout.align);
                 let debug_str = format!(
                     "layout({:?}, {}).validate_cast_and_convert_metadata({}, {}, {:?}) => ({}, {})",
@@ -1546,9 +1630,12 @@ mod tests {
                 // `validate_cast_and_convert_metadata`.
                 assert!(resulting_size <= wide(bytes_len), "{}", debug_str);
                 match cast_type {
-                    CastType::Prefix => {
+                    CastType::Prefix | CastType::Exact => {
                         assert_eq!(addr % align, 0, "{}", debug_str);
                         assert_eq!(resulting_size, wide(split_at), "{}", debug_str);
+                        if let CastType::Exact = cast_type {
+                            assert_eq!(split_at, bytes_len, "{}", debug_str);
+                        }
                     }
                     CastType::Suffix => {
                         assert_eq!(
@@ -1561,6 +1648,11 @@ mod tests {
                     }
                 }
             } else {
+                if let CastType::Exact = cast_type {
+                    // Failure, including a size mismatch, was checked against
+                    // the prefix cast above.
+                    return;
+                }
                 let min_size = match layout.size_info {
                     SizeInfo::Sized { size } => size,
                     SizeInfo::SliceDst(TrailingSliceLayout { offset, .. }) => {
@@ -1573,7 +1665,7 @@ mod tests {
                 let insufficient_bytes = bytes_len < min_size;
                 // 2. performing the cast would misalign type:
                 let base = match cast_type {
-                    CastType::Prefix => 0,
+                    CastType::Prefix | CastType::Exact => 0,
                     CastType::Suffix => bytes_len,
                 };
                 let misaligned = (base + addr) % layout.align != 0;
@@ -1591,8 +1683,13 @@ mod tests {
         let layouts = itertools::iproduct!(size_infos, [1, 2, 4, 8, 16, 32])
                 .filter(|(size_info, align)| !matches!(size_info, SizeInfo::Sized { size } if size % align != 0))
                 .map(|(size_info, align)| layout(size_info, align));
-        itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
-            .for_each(validate_behavior);
+        itertools::iproduct!(
+            layouts,
+            0..8,
+            0..8,
+            [CastType::Exact, CastType::Prefix, CastType::Suffix]
+        )
+        .for_each(validate_behavior);
 
         // Exercise remainders below, at, and above the alignment, as well as
         // sizes near integer limits. No allocation is needed: this method
@@ -1625,7 +1722,7 @@ mod tests {
             layouts,
             [0usize, 1, 31],
             lengths,
-            [CastType::Prefix, CastType::Suffix]
+            [CastType::Exact, CastType::Prefix, CastType::Suffix]
         )
         .filter(|(_, addr, len, _)| addr.checked_add(*len).is_some())
         .for_each(validate_behavior);

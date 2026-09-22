@@ -7996,6 +7996,7 @@ mod tests {
 
             for cast_type in [CastType::Prefix, CastType::Suffix] {
                 let (expected, expected_rest) = match cast_type {
+                    CastType::Exact => unreachable!(),
                     CastType::Prefix => (&bytes[..3], &bytes[3..]),
                     CastType::Suffix => (&bytes[1..], &bytes[..1]),
                 };
@@ -8030,6 +8031,7 @@ mod tests {
         let storage = Align::<[bool; 9], AU64>::new([false; 9]);
         for cast_type in [CastType::Prefix, CastType::Suffix] {
             let source = match cast_type {
+                CastType::Exact => unreachable!(),
                 CastType::Prefix => &storage.t[1..],
                 CastType::Suffix => &storage.t[..],
             };
@@ -8057,6 +8059,7 @@ mod tests {
 
             for cast_type in [CastType::Prefix, CastType::Suffix] {
                 let (expected, expected_rest) = match cast_type {
+                    CastType::Exact => unreachable!(),
                     CastType::Prefix => (&bytes[..3], &bytes[3..]),
                     CastType::Suffix => (&bytes[1..], &bytes[..1]),
                 };

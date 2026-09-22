@@ -544,21 +544,27 @@ impl<'a> PtrInner<'a, [u8]> {
     /// the cast will only succeed if it would produce an object with the given
     /// metadata.
     ///
-    /// Returns `None` if the resulting `U` would be invalidly-aligned, if no
+    /// Returns `Err` if the resulting `U` would be invalidly-aligned, if no
     /// `U` can fit in `self`, or if the provided pointer metadata describes an
-    /// invalid instance of `U`. On success, returns a pointer to the
-    /// largest-possible `U` which fits in `self`.
+    /// invalid instance of `U`. If metadata is not provided, returns a pointer
+    /// to the largest-possible `U` which fits in `self`. An exact cast also
+    /// fails if the resulting `U` would not consume all of `self`.
     ///
     /// # Safety
     ///
     /// The caller may assume that this implementation is correct, and may rely
     /// on that assumption for the soundness of their code. In particular, the
-    /// caller may assume that, if `try_cast_into` returns `Some((ptr,
+    /// caller may assume that, if `try_cast_into` returns `Ok((ptr,
     /// remainder))`, then `ptr` and `remainder` refer to non-overlapping byte
     /// ranges within `self`, and that `ptr` and `remainder` entirely cover
     /// `self`. Finally:
-    /// - If this is a prefix cast, `ptr` has the same address as `self`.
+    /// - If this is a prefix or exact cast, `ptr` has the same address as
+    ///   `self`.
     /// - If this is a suffix cast, `remainder` has the same address as `self`.
+    /// - If this is an exact cast, `ptr` covers all of `self` and `remainder`
+    ///   is empty.
+    ///
+    /// On error, the returned error contains `self`.
     #[inline]
     pub fn try_cast_into<U>(
         self,
@@ -603,7 +609,7 @@ impl<'a> PtrInner<'a, [u8]> {
         let (l_slice, r_slice) = unsafe { self.split_at_unchecked(split_at) };
 
         let (target, remainder) = match cast_type {
-            CastType::Prefix => (l_slice, r_slice),
+            CastType::Prefix | CastType::Exact => (l_slice, r_slice),
             CastType::Suffix => (r_slice, l_slice),
         };
 

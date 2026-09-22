@@ -21,7 +21,7 @@ use crate::{
         invariant::*,
         transmute::{MutationCompatible, SizeEq, TransmuteFromPtr},
     },
-    AlignmentError, CastError, CastType, KnownLayout, SizeError, TryFromBytes, ValidityError,
+    AlignmentError, CastError, CastType, KnownLayout, TryFromBytes, ValidityError,
 };
 
 /// Module used to gate access to [`Ptr`]'s fields.
@@ -1115,22 +1115,29 @@ mod _casts {
         /// then the cast will only succeed if it would produce an object with
         /// the given metadata.
         ///
-        /// Returns `None` if the resulting `U` would be invalidly-aligned, if
+        /// Returns `Err` if the resulting `U` would be invalidly-aligned, if
         /// no `U` can fit in `self`, or if the provided pointer metadata
-        /// describes an invalid instance of `U`. On success, returns a pointer
-        /// to the largest-possible `U` which fits in `self`.
+        /// describes an invalid instance of `U`. If metadata is not provided,
+        /// returns a pointer to the largest-possible `U` which fits in `self`.
+        /// An exact cast also fails if the resulting `U` would not consume all
+        /// of `self`.
         ///
         /// # Safety
         ///
         /// The caller may assume that this implementation is correct, and may
         /// rely on that assumption for the soundness of their code. In
         /// particular, the caller may assume that, if `try_cast_into` returns
-        /// `Some((ptr, remainder))`, then `ptr` and `remainder` refer to
+        /// `Ok((ptr, remainder))`, then `ptr` and `remainder` refer to
         /// non-overlapping byte ranges within `self`, and that `ptr` and
         /// `remainder` entirely cover `self`. Finally:
-        /// - If this is a prefix cast, `ptr` has the same address as `self`.
+        /// - If this is a prefix or exact cast, `ptr` has the same address as
+        ///   `self`.
         /// - If this is a suffix cast, `remainder` has the same address as
         ///   `self`.
+        /// - If this is an exact cast, `ptr` covers all of `self` and
+        ///   `remainder` is empty.
+        ///
+        /// On error, the returned error contains `self`.
         #[inline(always)]
         pub fn try_cast_into<U, R>(
             self,
@@ -1213,24 +1220,9 @@ mod _casts {
             U: 'a + ?Sized + KnownLayout + Read<I::Aliasing, R>,
             [u8]: Read<I::Aliasing, R>,
         {
-            // SAFETY: The provided closure returns the only copy of `slf`.
-            unsafe {
-                self.try_with_unchecked(
-                    #[inline(always)]
-                    |slf| match slf.try_cast_into(CastType::Prefix, meta) {
-                        Ok((slf, remainder)) => {
-                            if remainder.is_empty() {
-                                Ok(slf)
-                            } else {
-                                Err(CastError::Size(SizeError::<_, U>::new(())))
-                            }
-                        }
-                        Err(err) => Err(err.map_src(
-                            #[inline(always)]
-                            |_slf| (),
-                        )),
-                    },
-                )
+            match self.try_cast_into(CastType::Exact, meta) {
+                Ok((ptr, _)) => Ok(ptr),
+                Err(err) => Err(err),
             }
         }
     }
@@ -1462,7 +1454,7 @@ mod tests {
                     }
 
                     for meta in metas.clone().into_iter() {
-                        for cast_type in [CastType::Prefix, CastType::Suffix] {
+                        for cast_type in [CastType::Exact, CastType::Prefix, CastType::Suffix] {
                             if let Ok((slf, remaining)) = Ptr::from_ref(bytes)
                                 .try_cast_into::<T, BecauseImmutable>(cast_type, meta)
                             {
@@ -1475,10 +1467,15 @@ mod tests {
                                 #[allow(unstable_name_collisions)]
                                 let remaining_addr = remaining.as_inner().as_ptr().addr();
                                 match cast_type {
-                                    CastType::Prefix => {
+                                    CastType::Prefix | CastType::Exact => {
                                         assert_eq!(remaining_addr, bytes_addr + len)
                                     }
                                     CastType::Suffix => assert_eq!(remaining_addr, bytes_addr),
+                                }
+
+                                if let CastType::Exact = cast_type {
+                                    assert_eq!(len, bytes.len());
+                                    assert!(remaining.is_empty());
                                 }
 
                                 if let Some(want) = meta {
@@ -1565,7 +1562,8 @@ mod tests {
                 let ptr = Ptr::from_ref(&bytes[..]);
                 let res =
                     ptr.try_cast_into::<$ty, BecauseImmutable>(CastType::Prefix, Some($elems));
-                if let Some(expect) = $expect {
+                let expect: Option<<$ty as KnownLayout>::PointerMetadata> = $expect;
+                if let Some(expect) = expect {
                     let (ptr, _) = res.unwrap();
                     assert_eq!(KnownLayout::pointer_to_metadata(ptr.as_inner().as_ptr()), expect);
                 } else {
@@ -1604,6 +1602,57 @@ mod tests {
         // metadata to overflow to 0, and thus the cast would spuriously
         // succeed.
         test!(Dst, 8, usize::MAX - 8 + 1, None);
+    }
+
+    #[test]
+    fn test_try_cast_into_no_leftover_explicit_count() {
+        #[derive(KnownLayout, Immutable)]
+        #[repr(C, align(4))]
+        struct PaddedDst {
+            header: [u8; 9],
+            tail: [[u8; 3]],
+        }
+
+        #[derive(KnownLayout, Immutable)]
+        #[repr(C, align(4))]
+        struct ZstDst {
+            header: [u8; 9],
+            tail: [()],
+        }
+
+        let storage = crate::util::testutil::Align::<_, AU64>::new([0u8; 16]);
+        let bytes = &storage.t[..12];
+        // Both counts have size 12 after padding. Preserve the requested
+        // count even when a larger count would also fit.
+        for count in [0, 1] {
+            let ptr = Ptr::from_ref(bytes)
+                .try_cast_into_no_leftover::<PaddedDst, BecauseImmutable>(Some(count))
+                .unwrap();
+            assert_eq!(ptr.len(), count);
+        }
+        // Explicit metadata permits ZST elements and must not enter the
+        // inferred-count calculation, which rejects such elements.
+        for count in [0, usize::MAX] {
+            let ptr = Ptr::from_ref(bytes)
+                .try_cast_into_no_leftover::<ZstDst, BecauseImmutable>(Some(count))
+                .unwrap();
+            assert_eq!(ptr.len(), count);
+        }
+
+        // Wrong sizes and overflowing counts must return the original slice.
+        for (bytes, count) in [
+            (&storage.t[..8], 0),
+            (&storage.t[..16], 1),
+            (&storage.t[..12], 2),
+            (&storage.t[..12], usize::MAX),
+        ] {
+            let err = Ptr::from_ref(bytes)
+                .try_cast_into_no_leftover::<PaddedDst, BecauseImmutable>(Some(count))
+                .unwrap_err();
+            assert!(matches!(err, CastError::Size(_)));
+            let recovered = err.into_src().as_ref();
+            assert!(core::ptr::eq(recovered, bytes));
+        }
     }
 
     #[test]

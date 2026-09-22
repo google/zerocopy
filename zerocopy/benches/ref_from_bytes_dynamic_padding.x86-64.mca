@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      2000
-Total Cycles:      673
-Total uOps:        2100
+Instructions:      1800
+Total Cycles:      607
+Total uOps:        1900
 
 Dispatch Width:    4
-uOps Per Cycle:    3.12
+uOps Per Cycle:    3.13
 IPC:               2.97
-Block RThroughput: 5.3
+Block RThroughput: 4.8
 
 
 Instruction Info:
@@ -20,22 +20,20 @@ Instruction Info:
 [1]    [2]    [3]    [4]    [5]    [6]    Instructions:
  1      1     0.33                        test	dil, 3
  1      1     1.00                        jne	.LBB5_1
- 1      1     0.33                        movabs	rax, 9223372036854775804
- 1      1     0.33                        and	rax, rsi
- 1      1     0.33                        cmp	rax, 9
- 1      1     0.50                        setb	al
  1      1     0.33                        test	sil, 3
- 1      1     0.50                        setne	cl
+ 1      1     0.50                        setne	al
+ 1      1     0.33                        cmp	rsi, 9
+ 1      1     0.50                        setb	cl
  1      1     0.33                        or	cl, al
- 1      1     1.00                        jne	.LBB5_1
+ 1      1     1.00                        je	.LBB5_3
+ 1      0     0.25                        xor	edi, edi
+ 1      1     0.33                        mov	rax, rdi
+ 1      1     1.00                  U     ret
  1      1     0.33                        add	rsi, -9
  1      1     0.33                        movabs	rcx, -6148914691236517205
  1      1     0.33                        mov	rax, rsi
  2      4     1.00                        mul	rcx
  1      1     0.50                        shr	rdx
- 1      1     0.33                        mov	rax, rdi
- 1      1     1.00                  U     ret
- 1      0     0.25                        xor	edi, edi
  1      1     0.33                        mov	rax, rdi
  1      1     1.00                  U     ret
 
@@ -53,27 +51,25 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     6.66   6.66    -     6.68    -      -     
+ -      -     6.00   6.00    -     6.00    -      -     
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.66   0.33    -     0.01    -      -     test	dil, 3
+ -      -     0.50   0.49    -     0.01    -      -     test	dil, 3
  -      -      -      -      -     1.00    -      -     jne	.LBB5_1
- -      -     0.33   0.67    -      -      -      -     movabs	rax, 9223372036854775804
- -      -     1.00    -      -      -      -      -     and	rax, rsi
- -      -     0.67    -      -     0.33    -      -     cmp	rax, 9
- -      -     0.34    -      -     0.66    -      -     setb	al
- -      -      -     1.00    -      -      -      -     test	sil, 3
- -      -     0.33    -      -     0.67    -      -     setne	cl
- -      -     1.00    -      -      -      -      -     or	cl, al
- -      -      -      -      -     1.00    -      -     jne	.LBB5_1
- -      -      -     1.00    -      -      -      -     add	rsi, -9
- -      -      -     0.99    -     0.01    -      -     movabs	rcx, -6148914691236517205
- -      -      -     0.34    -     0.66    -      -     mov	rax, rsi
+ -      -     0.49   0.01    -     0.50    -      -     test	sil, 3
+ -      -     1.00    -      -      -      -      -     setne	al
+ -      -      -     1.00    -      -      -      -     cmp	rsi, 9
+ -      -     0.51    -      -     0.49    -      -     setb	cl
+ -      -     0.50    -      -     0.50    -      -     or	cl, al
+ -      -      -      -      -     1.00    -      -     je	.LBB5_3
+ -      -      -      -      -      -      -      -     xor	edi, edi
+ -      -      -     0.51    -     0.49    -      -     mov	rax, rdi
+ -      -      -      -      -     1.00    -      -     ret
+ -      -      -     0.99    -     0.01    -      -     add	rsi, -9
+ -      -      -     1.00    -      -      -      -     movabs	rcx, -6148914691236517205
+ -      -     0.51   0.49    -      -      -      -     mov	rax, rsi
  -      -     1.00   1.00    -      -      -      -     mul	rcx
  -      -     1.00    -      -      -      -      -     shr	rdx
- -      -      -     0.66    -     0.34    -      -     mov	rax, rdi
- -      -      -      -      -     1.00    -      -     ret
- -      -      -      -      -      -      -      -     xor	edi, edi
- -      -     0.33   0.67    -      -      -      -     mov	rax, rdi
+ -      -     0.49   0.51    -      -      -      -     mov	rax, rdi
  -      -      -      -      -     1.00    -      -     ret

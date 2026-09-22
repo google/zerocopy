@@ -1,22 +1,21 @@
 bench_ref_from_bytes_dynamic_padding:
 	test dil, 3
 	jne .LBB5_1
-	movabs rax, 9223372036854775804
-	and rax, rsi
-	cmp rax, 9
-	setb al
 	test sil, 3
-	setne cl
+	setne al
+	cmp rsi, 9
+	setb cl
 	or cl, al
-	jne .LBB5_1
+	je .LBB5_3
+.LBB5_1:
+	xor edi, edi
+	mov rax, rdi
+	ret
+.LBB5_3:
 	add rsi, -9
 	movabs rcx, -6148914691236517205
 	mov rax, rsi
 	mul rcx
 	shr rdx
-	mov rax, rdi
-	ret
-.LBB5_1:
-	xor edi, edi
 	mov rax, rdi
 	ret
