@@ -3454,23 +3454,31 @@ pub unsafe trait TryFromBytes {
     }
 }
 
+/// Validates and interprets the given affix of `source`'s bytes as a `&T`.
+///
+/// Returns the destination reference and excess bytes on success. All errors,
+/// including validity errors, contain the original `&S`.
 #[inline(always)]
-fn try_ref_from_prefix_suffix<T: TryFromBytes + KnownLayout + Immutable + ?Sized>(
-    source: &[u8],
+fn try_ref_from_prefix_suffix<S, T>(
+    source: &S,
     cast_type: CastType,
     meta: Option<T::PointerMetadata>,
-) -> Result<(&T, &[u8]), TryCastError<&[u8], T>> {
-    match Ptr::from_ref(source).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
-        Ok((source, prefix_suffix)) => {
+) -> Result<(&T, &[u8]), TryCastError<&S, T>>
+where
+    S: IntoBytes + Immutable + ?Sized,
+    T: TryFromBytes + KnownLayout + Immutable + ?Sized,
+{
+    match Ptr::from_ref(source.as_bytes()).try_cast_into::<T, BecauseImmutable>(cast_type, meta) {
+        Ok((candidate, prefix_suffix)) => {
             // This call may panic. If that happens, it doesn't cause any soundness
             // issues, as we have not generated any invalid state which we need to
             // fix before returning.
-            match source.try_into_safe() {
+            match candidate.try_into_safe() {
                 Ok(valid) => Ok((valid.as_ref(), prefix_suffix.as_ref())),
-                Err(e) => Err(e.map_src(|src| src.as_bytes::<BecauseImmutable>().as_ref()).into()),
+                Err(e) => Err(e.map_src(|_| source).into()),
             }
         }
-        Err(e) => Err(e.map_src(Ptr::as_ref).into()),
+        Err(e) => Err(e.map_src(|_| source).into()),
     }
 }
 
@@ -5624,22 +5632,27 @@ pub unsafe trait FromBytes: FromZeros {
     }
 }
 
-/// Interprets the given affix of the given bytes as a `&Self`.
+/// Interprets the given affix of `source`'s bytes as a `&T`.
 ///
-/// This method computes the largest possible size of `Self` that can fit in the
-/// prefix or suffix bytes of `source`, then attempts to return both a reference
-/// to those bytes interpreted as a `Self`, and a reference to the excess bytes.
-/// If there are insufficient bytes, or if that affix of `source` is not
-/// appropriately aligned, this returns `Err`.
+/// This method uses `meta` if provided; otherwise, it computes the largest
+/// possible size of `T` that can fit in the prefix or suffix bytes of `source`.
+/// It returns both a reference to those bytes interpreted as a `T`, and a
+/// reference to the excess bytes. If there are insufficient bytes, or if that
+/// affix of `source` is not appropriately aligned, this returns `Err` containing
+/// the original `&S`.
 #[inline(always)]
-fn ref_from_prefix_suffix<T: FromBytes + KnownLayout + Immutable + ?Sized>(
-    source: &[u8],
+fn ref_from_prefix_suffix<S, T>(
+    source: &S,
     meta: Option<T::PointerMetadata>,
     cast_type: CastType,
-) -> Result<(&T, &[u8]), CastError<&[u8], T>> {
-    let (slf, prefix_suffix) = Ptr::from_ref(source)
+) -> Result<(&T, &[u8]), CastError<&S, T>>
+where
+    S: IntoBytes + Immutable + ?Sized,
+    T: FromBytes + KnownLayout + Immutable + ?Sized,
+{
+    let (slf, prefix_suffix) = Ptr::from_ref(source.as_bytes())
         .try_cast_into::<_, BecauseImmutable>(cast_type, meta)
-        .map_err(|err| err.map_src(|s| s.as_ref()))?;
+        .map_err(|err| err.map_src(|_| source))?;
     Ok((slf.recall_validity().as_ref(), prefix_suffix.as_ref()))
 }
 
@@ -7785,6 +7798,133 @@ mod tests {
         let (rest, slc) = <u32>::mut_slice_from_suffix(mut_bytes, 0).unwrap();
         assert!(slc.is_empty());
         assert_eq!(rest.len(), 4);
+    }
+
+    #[test]
+    fn test_ref_from_prefix_suffix_typed_source() {
+        #[derive(IntoBytes, Immutable)]
+        #[repr(transparent)]
+        struct Source<T: ?Sized>(T);
+
+        fn check<S: IntoBytes + Immutable + ?Sized>(source: &S) {
+            let bytes = source.as_bytes();
+            assert_eq!(bytes.len(), 4);
+
+            for cast_type in [CastType::Prefix, CastType::Suffix] {
+                let (expected, expected_rest) = match cast_type {
+                    CastType::Prefix => (&bytes[..3], &bytes[3..]),
+                    CastType::Suffix => (&bytes[1..], &bytes[..1]),
+                };
+                for meta in [None, Some(1)] {
+                    let (value, rest) =
+                        ref_from_prefix_suffix::<_, [[u8; 3]]>(source, meta, cast_type).unwrap();
+                    assert_eq!(value, &[expected]);
+                    assert!(ptr::eq(value.as_bytes(), expected));
+                    assert!(ptr::eq(rest, expected_rest));
+                }
+
+                let err =
+                    ref_from_prefix_suffix::<_, [u8; 5]>(source, None, cast_type).unwrap_err();
+                assert!(matches!(err, CastError::Size(_)));
+                assert!(ptr::eq(err.into_src(), source));
+
+                let err =
+                    ref_from_prefix_suffix::<_, [u8]>(source, Some(5), cast_type).unwrap_err();
+                assert!(matches!(err, CastError::Size(_)));
+                assert!(ptr::eq(err.into_src(), source));
+            }
+        }
+
+        check(&Source([0x0102u16, 0x0304]));
+        let source = Source([false, true, false, true]);
+        let source: &Source<[bool]> = &source;
+        check(source);
+    }
+
+    #[test]
+    fn test_ref_from_prefix_suffix_typed_source_alignment_error() {
+        let storage = Align::<[bool; 9], AU64>::new([false; 9]);
+        for cast_type in [CastType::Prefix, CastType::Suffix] {
+            let source = match cast_type {
+                CastType::Prefix => &storage.t[1..],
+                CastType::Suffix => &storage.t[..],
+            };
+            let err = ref_from_prefix_suffix::<_, AU64>(source, None, cast_type).unwrap_err();
+            assert!(matches!(err, CastError::Alignment(_)));
+            let recovered: &[bool] = err.into_src();
+            assert!(ptr::eq(recovered, source));
+
+            let err = try_ref_from_prefix_suffix::<_, AU64>(source, cast_type, None).unwrap_err();
+            assert!(matches!(err, TryCastError::Alignment(_)));
+            let recovered: &[bool] = err.into_src();
+            assert!(ptr::eq(recovered, source));
+        }
+    }
+
+    #[test]
+    fn test_try_ref_from_prefix_suffix_typed_source() {
+        #[derive(IntoBytes, Immutable)]
+        #[repr(transparent)]
+        struct Source<T: ?Sized>(T);
+
+        fn check<S: IntoBytes + Immutable + ?Sized>(source: &S) {
+            let bytes = source.as_bytes();
+            assert_eq!(bytes, [0, 1, 0, 1]);
+
+            for cast_type in [CastType::Prefix, CastType::Suffix] {
+                let (expected, expected_rest) = match cast_type {
+                    CastType::Prefix => (&bytes[..3], &bytes[3..]),
+                    CastType::Suffix => (&bytes[1..], &bytes[..1]),
+                };
+                for meta in [None, Some(1)] {
+                    let (value, rest) =
+                        try_ref_from_prefix_suffix::<_, [[bool; 3]]>(source, cast_type, meta)
+                            .unwrap();
+                    assert_eq!(value.as_bytes(), expected);
+                    assert!(ptr::eq(value.as_bytes(), expected));
+                    assert!(ptr::eq(rest, expected_rest));
+                }
+
+                let err = try_ref_from_prefix_suffix::<_, [bool; 5]>(source, cast_type, None)
+                    .unwrap_err();
+                assert!(matches!(err, TryCastError::Size(_)));
+                assert!(ptr::eq(err.into_src(), source));
+
+                let err = try_ref_from_prefix_suffix::<_, [bool]>(source, cast_type, Some(5))
+                    .unwrap_err();
+                assert!(matches!(err, TryCastError::Size(_)));
+                assert!(ptr::eq(err.into_src(), source));
+            }
+        }
+
+        check(&Source([u16::from_ne_bytes([0, 1]); 2]));
+        let source = Source([false, true, false, true]);
+        let source: &Source<[bool]> = &source;
+        check(source);
+    }
+
+    #[test]
+    fn test_try_ref_from_prefix_suffix_typed_source_validity_error() {
+        fn check<S: IntoBytes + Immutable + ?Sized>(source: &S) {
+            for cast_type in [CastType::Prefix, CastType::Suffix] {
+                let err =
+                    try_ref_from_prefix_suffix::<_, bool>(source, cast_type, None).unwrap_err();
+                assert!(matches!(err, TryCastError::Validity(_)));
+                assert!(ptr::eq(err.into_src(), source));
+
+                for meta in [None, Some(1)] {
+                    let err = try_ref_from_prefix_suffix::<_, [bool]>(source, cast_type, meta)
+                        .unwrap_err();
+                    assert!(matches!(err, TryCastError::Validity(_)));
+                    assert!(ptr::eq(err.into_src(), source));
+                }
+            }
+        }
+
+        let source = [u16::from_ne_bytes([2, 2]); 2];
+        check(&source);
+        check(&source[..]);
+        check(source.as_bytes());
     }
 
     #[test]
