@@ -887,7 +887,7 @@ mod _casts {
         #[must_use]
         pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
+            T: MutationCompatible<U, I::Aliasing, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
             C: Cast<T, U>,
         {

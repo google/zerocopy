@@ -55,48 +55,40 @@ pub trait Alignment: Sealed {
 ///
 /// # Safety
 ///
-/// In this section, we will use `Ptr<T, V>` as a shorthand for `Ptr<T, I:
-/// Invariants<Validity = V>>` for brevity.
+/// In this section, we use `Ptr<T, V>` as shorthand for `Ptr<T, I:
+/// Invariants<Validity = V>>`.
 ///
-/// Each `V: Validity` defines a set of bit values which may appear in the
-/// referent of a `Ptr<T, V>`, denoted `S(T, V)`. Each `V: Validity`, in its
-/// documentation, provides a definition of `S(T, V)` which must be valid for
-/// all `T: ?Sized`. Any `V: Validity` must guarantee that this set is only a
-/// function of the *bit validity* of the referent type, `T`, and not of any
-/// other property of `T`. As a consequence, given `V: Validity`, `T`, and `U`
-/// where `T` and `U` have the same bit validity, `S(T, V) = S(U, V)`.
+/// Each `V: Validity` defines a set of admissible **referent states** for
+/// `Ptr<T, V>`, denoted `S(T, V)`. A referent state records the contents of
+/// initialized bytes and which bytes, if any, are uninitialized. Each validity
+/// type documents `S(T, V)` for every `T: ?Sized`.
+///
+/// `Validity` describes only the state of the referent bytes under the typed
+/// interpretation `T`. Alignment, aliasing, simultaneous typed access, and
+/// other capability/protocol obligations are modeled separately.
 ///
 /// It is guaranteed that the referent of any `ptr: Ptr<T, V>` is a member of
-/// `S(T, V)`. Unsafe code must ensure that this guarantee will be upheld for
-/// any existing `Ptr`s or any `Ptr`s that that code creates.
+/// `S(T, V)`. Unsafe code must ensure that this guarantee remains true for
+/// every existing `Ptr` and every `Ptr` it creates.
 ///
-/// An important implication of this guarantee is that it restricts which exact
-/// reinterpretations are sound. Here, an exact reinterpretation changes the
-/// referent type or validity invariant of a `Ptr` while preserving the exact
-/// byte range. In particular, given `src: Ptr<T, V>` and `dst: Ptr<U, W>` which
-/// refer to the same byte range, the following are necessary (but not
-/// sufficient) conditions:
-/// - If `S(T, V) = S(U, W)`, then no additional validity-preservation
-///   restrictions apply; otherwise,
-/// - If `dst` permits mutation of its referent (e.g. via `Exclusive` aliasing
-///   or interior mutation under `Shared` aliasing), then it must hold that
-///   `S(T, V) ⊇ S(U, W)` - in other words, the reinterpretation must not expand
-///   the set of allowed referent bit patterns. A violation of this requirement
-///   would permit using `dst` to write `x` where `x ∈ S(U, W)` but `x ∉ S(T,
-///   V)`, which would violate the guarantee that `src`'s referent may only
-///   contain values in `S(T, V)`.
-/// - If the referent may be mutated without going through `dst` while `dst` is
-///   live (e.g. via interior mutation on a `Shared`-aliased `Ptr` or `&`
-///   reference), then it must hold that `S(T, V) ⊆ S(U, W)` - in other words,
-///   the reinterpretation must not shrink the set of allowed referent bit
-///   patterns. A violation of this requirement would permit using `src` or
-///   another mechanism (e.g. a `&` reference used to derive `src`) to write `x`
-///   where `x ∈ S(T, V)` but `x ∉ S(U, W)`, which would violate the guarantee
-///   that `dst`'s referent may only contain values in `S(U, W)`.
+/// This restricts exact reinterpretations. Given `src: Ptr<T, V>` and
+/// `dst: Ptr<U, W>` which refer to exactly the same bytes:
+///
+/// - If source-side mutation can occur while `dst` is live, every state such a
+///   mutation may produce must be in `S(U, W)`.
+/// - If `dst` permits mutation while a source interpretation may later become
+///   observable again, every state writable through `dst` must be in
+///   `S(T, V)`.
+///
+/// For an exact correspondence these obligations are often discharged by
+/// directional subset relations between `S(T, V)` and `S(U, W)`. For DSTs,
+/// those relations must be understood over the particular corresponding
+/// referents selected by the exact cast; equal byte length alone need not
+/// identify equivalent metadata or validity requirements.
 ///
 /// These conditions describe only exact reinterpretations. Shrinking
-/// projections may have validity that depends on the relationship between the
-/// projected region and bytes outside it, and require additional reasoning.
+/// projections may have validity that depends on bytes outside the projected
+/// region and require additional reasoning.
 pub unsafe trait Validity: Sealed {
     const KIND: ValidityKind;
 }
@@ -176,10 +168,7 @@ impl Alignment for Aligned {
 /// Any bit pattern is allowed in the `Ptr`'s referent, including uninitialized
 /// bytes.
 pub enum Uninit {}
-// SAFETY: `Uninit`'s validity is well-defined for all `T: ?Sized`, and is not a
-// function of any property of `T` other than its bit validity (in fact, it's
-// not even a property of `T`'s bit validity, but this is more than we are
-// required to uphold).
+// SAFETY: `Uninit`'s admissible-state set is well-defined for all `T: ?Sized`.
 unsafe impl Validity for Uninit {
     const KIND: ValidityKind = ValidityKind::Uninit;
 }
@@ -212,8 +201,8 @@ unsafe impl Validity for Uninit {
 ///   enum type, in which case the same rules apply depending on the state of
 ///   its discriminant, and so on recursively).
 pub enum AsInitialized {}
-// SAFETY: `AsInitialized`'s validity is well-defined for all `T: ?Sized`, and
-// is not a function of any property of `T` other than its bit validity.
+// SAFETY: `AsInitialized`'s admissible-state set is well-defined for all
+// `T: ?Sized`.
 unsafe impl Validity for AsInitialized {
     const KIND: ValidityKind = ValidityKind::AsInitialized;
 }
@@ -229,11 +218,12 @@ unsafe impl Validity for Initialized {
     const KIND: ValidityKind = ValidityKind::Initialized;
 }
 
-/// The referent of a `Ptr<T>` is valid for `T`, upholding bit validity and any
-/// library safety invariants.
+/// The referent state is valid for the typed interpretation `T`, including
+/// Rust validity and any referent-local library invariant required before the
+/// bytes may be exposed as a `T`. Alignment, aliasing, and simultaneous-access
+/// compatibility are modeled separately.
 pub enum Safe {}
-// SAFETY: `Safe`'s validity is well-defined for all `T: ?Sized`, and is not a
-// function of any property of `T` other than its bit validity.
+// SAFETY: `Safe`'s admissible-state set is well-defined for all `T: ?Sized`.
 unsafe impl Validity for Safe {
     const KIND: ValidityKind = ValidityKind::Safe;
 }
