@@ -8,6 +8,7 @@ those terms. -->
 
 # Coding Guidelines
 
-Please follow the development instructions and coding guidelines defined in
-`zerocopy/agent_docs/reviewing.md`, `zerocopy/AGENTS.md`, and the `AGENTS.md`
-file nearest the code you are changing.
+Follow the `AGENTS.md` file nearest the code under review. For changes in
+`zerocopy/`, also follow `zerocopy/AGENTS.md` and the
+`skills/zerocopy-review/SKILL.md` skill. If the review involves unsafe Rust or
+soundness-sensitive code, also follow `skills/unsafe-rust/SKILL.md`.
