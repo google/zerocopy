@@ -1,0 +1,59 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:mode-consistency:3",
+  "$comment": "DRAFT / UNSEALED one of two independent mode-level consistency reviews with complete A-O family attestations and six-way novel classifications.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "reviewer_id", "claim", "input_packet_sha256", "labels_reviewed", "atom_family_attestations", "defect_family_attestations", "challenges", "novel_classifications"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "CONSISTENCY-REVIEW"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "reviewer_id": {"enum": ["c1", "c2"]},
+    "claim": {"type": "string", "pattern": "^[EVFPBLRQ]-c[12]$"},
+    "input_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "labels_reviewed": {"$ref": "#/$defs/labels"},
+    "atom_family_attestations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/attestation"}},
+    "defect_family_attestations": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/attestation"}},
+    "challenges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "field", "proposed_decision", "evidence"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "field": {"type": "string", "pattern": "^(atom:[EVFPBLRQ][1-9][0-9]*|hard_error:(GH[1-9][0-9]*|[EVFPBLRQ]H[1-9][0-9]*)|global_defect:GD[1-9][0-9]*)$"},
+          "proposed_decision": {"enum": ["PASS", "FAIL", "PRESENT", "ABSENT"]},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "novel_classifications": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["normalized_id", "category", "evidence"],
+        "properties": {
+          "normalized_id": {"type": "string", "pattern": "^N-[0-9a-f]{24}$"},
+          "category": {"enum": ["VALID_NEW_FINDING", "VALID_PROOF_DOCUMENTATION_GAP", "DUPLICATE_OR_BROADER_ORACLE_ATOM", "UNSUPPORTED_REASONABLE_QUESTION", "INVALID_ASSERTION", "REQUIRES_UPSTREAM_OR_RUST_DOC_CLARIFICATION"]},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "labels": {"type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-O]$"}},
+    "attestation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "labels_reviewed", "evidence"],
+      "properties": {
+        "field": {"type": "string", "minLength": 1},
+        "labels_reviewed": {"$ref": "#/$defs/labels"},
+        "evidence": {"type": "string", "minLength": 1}
+      }
+    }
+  }
+}

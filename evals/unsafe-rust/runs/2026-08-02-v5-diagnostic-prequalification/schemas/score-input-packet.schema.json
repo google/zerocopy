@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:score-input-packet:1",
+  "$comment": "DRAFT / UNSEALED content-bound scorer packet over projected A-O reports and value-free leakage receipts.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "scorer_id", "input_digests", "resource_paths", "labels_in_order", "reports", "packet_tree"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "SCORER-INPUT-PACKET"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "scorer_id": {"enum": ["s1", "s2"]},
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection_bundle_sha256", "atom_manifest_sha256", "defect_rules_sha256", "oracle_sha256", "allowlist_sha256", "evaluator_authority_sha256", "presentation_order_sha256"],
+      "properties": {
+        "projection_bundle_sha256": {"$ref": "#/$defs/digest"},
+        "atom_manifest_sha256": {"$ref": "#/$defs/digest"},
+        "defect_rules_sha256": {"$ref": "#/$defs/digest"},
+        "oracle_sha256": {"$ref": "#/$defs/digest"},
+        "allowlist_sha256": {"$ref": "#/$defs/digest"},
+        "evaluator_authority_sha256": {"$ref": "#/$defs/digest"},
+        "presentation_order_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "resource_paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["projection_bundle", "atom_manifest", "defect_rules", "oracle", "allowlist", "evaluator_authority", "presentation_order"],
+      "properties": {
+        "projection_bundle": {"type": "string", "minLength": 1},
+        "atom_manifest": {"type": "string", "minLength": 1},
+        "defect_rules": {"type": "string", "minLength": 1},
+        "oracle": {"type": "string", "minLength": 1},
+        "allowlist": {"type": "string", "minLength": 1},
+        "evaluator_authority": {"type": "string", "minLength": 1},
+        "presentation_order": {"type": "string", "minLength": 1}
+      }
+    },
+    "labels_in_order": {"type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-O]$"}},
+    "reports": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "projected_report_path", "projected_report_sha256", "leakage_receipt_path", "leakage_receipt_sha256", "gh12_forced_present"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "projected_report_path": {"type": "string", "minLength": 1},
+          "projected_report_sha256": {"$ref": "#/$defs/digest"},
+          "leakage_receipt_path": {"type": "string", "minLength": 1},
+          "leakage_receipt_sha256": {"$ref": "#/$defs/digest"},
+          "gh12_forced_present": {"type": "boolean"}
+        }
+      }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

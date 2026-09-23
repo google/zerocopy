@@ -1,0 +1,603 @@
+{
+  "schema_version": 1,
+  "mode": "K",
+  "scorer_id": "s1",
+  "reports": [
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "H says Position is safe and caller-implementable, then gives read(&[], &P) with position 0 reaching out-of-bounds get_unchecked and A2 UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "H separately uses a safe implementation returning 1 with write on a one-byte slice and states get_unchecked_mut reaches A2 UB."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "H derives false is_empty -> len != 0 -> len >= 1 -> representable len - 1 < len, then applies the cited get_unchecked bound."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "H calls the fast-path comment materially inadequate and supplies replacement text naming get_unchecked's in-bounds obligation and the nonempty arithmetic proof."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "H identifies (INDEX, NAME) = (1, \"high\") and says this satisfies every literal contract conjunct, including INDEX < 2."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "H proves arbitrary valid Lane implementations supply INDEX < 2 and Word's array has length two, satisfying get_unchecked."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "H retains NAME because unknown consumers may rely on the published 1.x relation and rejects weakening from the visible consumer alone."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "H proposes callable read/write functions taking caller-chosen usize positions and using checked indexing on each particular slice; it leaves the proposal uncertified."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "H expressly says the repair is not implemented and not certified and does not use it for any current-artifact verdict."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "H's A1-A4 log states the material propositions and cites the applicable exact Rust 1.82 allowlisted pages, with no extra assumption."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "H confines the review to the supplied lib.rs and versioned Rust authorities and disclaims execution, expansion, dependencies, and generated artifacts."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "D defines a safe Bad Position returning 1, calls read on a one-byte slice, and explicitly closes valid use, reachability, false bound, and cited UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "D independently calls write with the same safe Bad on a one-byte slice and traces get_unchecked_mut(1) to the cited UB rule."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "D proves the nonempty branch has n != 0, hence n >= 1 and non-underflowing n - 1 < n, which satisfies AX-SLICE."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "D separately labels the fast-path comment deficient and provides replacement proof text naming slice::get_unchecked and its in-bounds derivation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "D explicitly proves High has INDEX = 1 < 2 and NAME = \"high\" as required at index 1."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "D proves every valid L supplies INDEX < 2 and Word.0 is [u32; 2], so the unchecked read is in bounds."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "D explains unknown implementations and consumers constrain evolution and that removing NAME may invalidate downstream unsafe consumers."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "D proposes callable read/write APIs with caller-chosen usize values and checked indexing against their supplied slices, while noting the API break."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "D labels the repair a proposal only and explicitly says the candidate is not certified pending implementation and fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "D's AX-SLICE, AX-LEN, AX-INT, and AX-TRAIT propositions are tied to applicable exact Rust 1.82 authorities."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "D limits its snapshot to the supplied lib.rs and states that nothing was built, tested, executed, or expanded."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "J gives a wholly safe Position returning 0 and read on an empty slice, then explicitly establishes reachability, the false bound, and AX-SLICE-INDEX UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "J separately uses write on an empty mutable slice and traces get_unchecked_mut(0) to an independent cited UB certificate."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "J derives n != 0 on the else branch, then representable n - 1 < n and the exact get_unchecked bounds condition across Required."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "J calls the existing comment deficient and supplies replacement text stating the nonempty fact, representability, strict bound, and get_unchecked obligation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "J states that High establishes both literal clauses with (1, \"high\")."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "J proves any contract-valid downstream L has INDEX < 2 and Word::0 has two elements, permitting get_unchecked."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "J says visible users are not exhaustive and forbids weakening/removing NAME because unknown consumers may rely on it."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "J retains both callable APIs and caller-selected Position values but replaces each body with slice-local checked indexing; the proposal is uncertified."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "J explicitly calls the checked-indexing repair a proposal only and uncertified until implementation and fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "J verifies each consumed slice, length, integer, and unsafe-trait proposition against exact Rust 1.82 allowlisted authority."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "J says no source outside the supplied target was audited and relies only on the cited Rust 1.82 authorities for semantics."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "I supplies a safe Position returning 0 and read(&[], &P), then lists valid use, reachability, false bounds, and authoritative UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "I independently calls write(&mut [], &P, 1) and establishes out-of-bounds get_unchecked_mut UB before assignment."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "I reconstructs else -> len != 0 -> len > 0 -> representable len - 1 < len and connects it to AX-SLICE."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "I separately rejects the fast-path comment and proposes a replacement stating the nonempty-derived representability and in-bounds obligation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "I treats the contract as a conjunction and proves High's index 1 is below 2 with NAME exactly \"high\"."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "I proves for any valid downstream Lane that INDEX < 2 and [u32; 2] imply the unchecked index is in bounds."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "I keeps the NAME clauses binding because unknown published 1.x consumers may rely on them and warns against visible-use weakening."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "I proposes preserving both signatures and safe caller-selected callbacks while checked indexing locally validates each returned position against its slice."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "I says the repair is not certified and requires implementation followed by a fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "I's AX-SLICE, AX-LENGTH, AX-INTEGER, and AX-TRAIT premises are stated and linked to exact applicable Rust 1.82 pages."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "I states it used the supplied artifact with no generated code, dependencies, prior result, execution, or tool-derived evidence."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "F gives a valid safe Position returning 0 and read on an empty slice, whose out-of-bounds get_unchecked call is UB under A-SLICE."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "F independently gives write on an empty mutable slice and states the mutable unchecked call reaches the same cited UB."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "F derives n > 0 on the else branch, representable n - 1 < n, and satisfaction of A-SLICE for every target/profile."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "F classifies the fast-path comment deficient and gives replacement content naming get_unchecked's in-bounds requirement and the full branch derivation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "F explicitly proves High's INDEX is 1 < 2 and its NAME is exactly \"high\" for index 1."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "F proves every valid L supplies INDEX < 2 and the Word field's type supplies length 2, closing the unchecked read."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "F preserves NAME as a live published 1.x guarantee because unknown generic consumers may use it and rejects repository-visible weakening."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "F proposes callable read/write functions taking safe caller-chosen usize positions and locally using checked indexing on the supplied slices."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "F labels all proposed repairs uncertified until implemented as a new snapshot and freshly audited."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "F records each material Rust premise with its exact applicable Rust 1.82 allowlisted authority and adds no other TCB entry."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "F reviews the exact supplied lib.rs and disclaims dependencies, generated artifacts, builds, runs, expansion, and tests."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "G notes Position has no range contract, then gives safe read on an empty slice with index 0 and applies the cited shared-access UB rule."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "G separately gives safe write on an empty mutable slice and applies the versioned get_unchecked_mut UB rule."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "G reconstructs false is_empty -> len != 0 -> len >= 1 -> representable len - 1 < len and discharges A-SHARED."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "G separately calls the existing comment deficient and proposes text stating the branch fact, 0..len bound, and get_unchecked obligation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "G checks all literal clauses: 1 < 2, NAME is \"high\" at index 1, and the index-0 implication is inapplicable."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "G proves every valid Lane gives INDEX < 2 and Word.0 has exactly two elements, satisfying A-SHARED."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "G says NAME remains a published guarantee for unknown consumers and that repository-visible uses cannot justify weakening it."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "G preserves both callable Position-based APIs and uses checked indexing so each caller-selected result is checked against the particular slice."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "G explicitly says the proposal is not implemented or certified and requires a fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "G states and maps all material slice, length, integer, and unsafe-trait premises to exact Rust 1.82 allowlisted pages."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "G confines the snapshot to the supplied lib.rs and says no tools, tests, executions, or sampled evidence were used."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "A defines a safe Position returning 0, calls read on an empty slice, and explicitly establishes safe use, reachability, falsity, and cited UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "A separately passes the safe Position to write on an empty mutable slice and traces get_unchecked_mut(0) to documented UB."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "A derives len != 0, len >= 1, representable len - 1 < len, then applies the exact immutable unchecked-index precondition."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "A calls the fast-path comment deficient and supplies replacement proof content identifying get_unchecked's in-bounds obligation and the derivation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "A proves High's INDEX = 1 is less than 2 and NAME = \"high\" is exactly the applicable relation."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "A proves any valid, including downstream, Lane gives INDEX < 2 and the array type gives length 2, making the access in bounds."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "A retains NAME because unknown downstream unsafe consumers may rely on it and warns that local read is not an exhaustive inventory."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "A keeps both safe caller-callable signatures and uses checked indexing for each callback result on its actual slice; it leaves the repair uncertified."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "A states every proposal remains uncertified until implementation as a new snapshot and fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "A's material slice, length, numeric, operator, and unsafe-trait propositions use the exact applicable Rust 1.82 authorities."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "A says it reviewed the supplied lib.rs without expansion, execution, tests, or repository context."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "C uses a safe Position returning 0 with read on an empty slice and explicitly closes all four links to AX-SHARED UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "C separately uses write on an empty mutable slice and closes the false-bound and AX-MUT UB consequence."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "C derives n != 0 -> n >= 1 -> non-overflowing n - 1 < n and connects that exact bound to get_unchecked."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "C separately rejects the fast-path comment and gives replacement text naming get_unchecked's required bound and the nonempty arithmetic chain."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "C proves High's 1 is below 2, its name is \"high\" as required, and the index-0 implication is vacuous."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "C proves every valid Lane supplies INDEX < 2 and Word.0 has two elements, so AX-SHARED permits read."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "C says unknown consumers may rely on both INDEX and NAME and rejects weakening from absence of a visible NAME consumer."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "C retains callable read/write APIs and safe caller-selected callback positions while checked indexing locally validates each result against its slice."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "C says the checked-indexing proposal is neither implemented nor certified and requires a fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "C's TCB-1 states each consumed proposition and uses the exact corresponding Rust 1.82 allowlisted source."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "C limits the audit to the complete supplied lib.rs and disclaims generated code, dependencies, prior audits, builds, and execution."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "B gives a safe End implementation returning 0 and read on an empty slice, explicitly establishing valid use, reachability, false bounds, and cited UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "B independently calls write on an empty mutable slice and traces get_unchecked_mut(0) to the cited Rust 1.82 UB rule."
+        },
+        {
+          "id": "K3",
+          "decision": "FAIL",
+          "evidence": "B asserts that usize is unsigned and uses that to prove n - 1 representable, but cites only the operator rules; no version-matched numeric-domain authority verifies this material premise."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "B separately calls the fast-path comment inadequate and supplies replacement content stating nonemptiness, representability, strict bounds, and get_unchecked's precondition."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "B explicitly proves High has INDEX = 1 < 2 and NAME = \"high\" exactly as the index-1 clause requires."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "B proves every valid Lane, including unknown downstream implementations, supplies INDEX < 2 for a two-element Word array."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "B keeps NAME because visible consumers are not exhaustive and weakening it could invalidate downstream unsafe reasoning."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "B preserves both callable Position-based APIs and uses checked indexing so each caller-returned position is checked against the supplied slice."
+        }
+      ],
+      "hard_errors": [
+        {
+          "id": "G11",
+          "evidence": "B's PROVED verdict for last necessarily relies on the unchecked Rust-semantic premise that usize is unsigned/nonnegative; its only arithmetic authority is the operator page."
+        }
+      ],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "B explicitly says its proposal is not certified and must be implemented and freshly audited."
+      },
+      "tcb_authority_defect": {
+        "present": true,
+        "evidence": "B omits the versioned unsigned-integer-domain authority while consuming that premise in LP, despite claiming its TCB contains all governing cited contracts."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "B confines the work to target/lib.rs and says no expansion, execution, build, or repository history was used."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "K1",
+          "decision": "PASS",
+          "evidence": "E gives a safe Position returning 0 and read on an empty slice, then states that the complete execution reaches documented get_unchecked UB."
+        },
+        {
+          "id": "K2",
+          "decision": "PASS",
+          "evidence": "E independently sends the same safe position to write on an empty mutable slice and reaches documented get_unchecked_mut UB."
+        },
+        {
+          "id": "K3",
+          "decision": "PASS",
+          "evidence": "E derives nonempty -> len > 0 -> representable len - 1 < len and applies the cited exact get_unchecked bound."
+        },
+        {
+          "id": "K4",
+          "decision": "PASS",
+          "evidence": "E separately labels the fast-path comment materially inadequate and provides replacement proof content naming the exact unchecked bound and derivation."
+        },
+        {
+          "id": "K5",
+          "decision": "PASS",
+          "evidence": "E records and proves both High obligations: 1 < 2 and NAME = \"high\" for index 1."
+        },
+        {
+          "id": "K6",
+          "decision": "PASS",
+          "evidence": "E proves a contract-valid L supplies INDEX < 2 and Word.0 has exactly two elements, making get_unchecked in bounds."
+        },
+        {
+          "id": "K7",
+          "decision": "PASS",
+          "evidence": "E says unknown implementers and consumers preclude weakening/removing NAME merely because visible read uses only INDEX."
+        },
+        {
+          "id": "K8",
+          "decision": "PASS",
+          "evidence": "E retains both safe callable signatures and caller-selected Position results while replacing each unchecked operation with slice-local checked indexing."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "E says neither repair proposal is certified and requires implementation followed by fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "E states the exact target Lane contract and consumes it only for contract-valid implementations; its cited Rust 1.82 unsafe-traits page supports safe use of correctly implemented unsafe traits."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "E confines the review to the supplied 53-line target/lib.rs and disclaims prior audits, builds, execution, expansion, and other artifacts."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": []
+}

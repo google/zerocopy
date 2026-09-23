@@ -1,0 +1,462 @@
+{
+  "cells": [
+    {
+      "field": "atom:L2",
+      "label": "B",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "AX-IF supplies false => else, not the claimed else => false needed on the unsafe path."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "Steps 1-2 place execution in the false else arm and contrapose AX-EMPTY to n != 0."
+      }
+    },
+    {
+      "field": "atom:L6",
+      "label": "B",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "Its closure relies on the unsupported AX-IF converse and defines Required without the valid-call/input dimension."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The report closes both obligations and the empty path over the full domain, with PROVED and Required subset-of Covered."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "PRESENT",
+        "evidence": "B says the request 'directly defines' Required as only exact source x Rust/std x targets x profiles, omitting valid calls/inputs and executions, then uses Covered = Required for its full PROVED certificate. That is the exact contracted-Required trigger; s2 records it absent."
+      },
+      "field": "hard_error:G1",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The formal Required product omits valid calls/inputs even though the full PROVED verdict quantifies over them."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The positive proof necessarily relies on an inapplicable direction of its cited if authority."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Claims every nonlocal premise is checked and reconciled while AX-IF does not support the consumed converse."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "B",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The asserted Rust-only authority set contains an unsupported AX-IF proposition."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The AX-IF evidence is directionally insufficient for the proposition the proof consumes."
+      }
+    },
+    {
+      "field": "atom:L2",
+      "label": "D",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "A4's exact quote establishes false => else, not execution of else => false as consumed in O2."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O2 states that reaching else makes is_empty false and uses A3 to derive n != 0."
+      }
+    },
+    {
+      "field": "atom:L6",
+      "label": "D",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "The advertised Required subset-of Covered certificate materially relies on A4's unsupported converse."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O1-O3 are connected to a full-scope PROVED verdict and an explicit Required subset-of Covered certificate."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The positive proof necessarily relies on an inapplicable direction of its if authority."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Claims only checked version-matched premises and complete reconciliation while A4 does not support the consumed converse."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "D",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "TCB-LAST-R1 overstates the branch proposition established by A4."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The checked A4 excerpt does not establish the direction of if semantics consumed by O2."
+      }
+    },
+    {
+      "field": "atom:L2",
+      "label": "E",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "A3 quotes only false => consequent skipped and vaguely invokes other branch rules; it does not extract authority proving else-path false."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O2 places the call on false is_empty and contraposes A1 to n != 0."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "E's proposed comment asserts representability of len - 1, but E has no checked entry for len's usize type/domain, built-in subtraction, or overflow. It therefore cannot give the required unambiguous references to checked authority propositions for the L2-L5 chain; s1 passes it."
+      },
+      "field": "atom:L8",
+      "label": "E",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Replacement text states false is_empty, nonzero len, representable predecessor, index < len, and get_unchecked's bounds need."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The replacement states the desired chain but refers to no checked authority for its material usize and subtraction/overflow steps."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "E",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The positive result necessarily relies on unchecked Rust numeric and control-flow authority."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The PROVED conclusion necessarily relies on unchecked Rust type/domain, subtraction, and overflow propositions."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "E",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Calls the authority list complete while silently consuming usize, subtraction, overflow, and inadequately checked branch semantics."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It affirmatively calls the authority list complete while silently consuming the omitted integer premises."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "E",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The purported authoritative inventory omits multiple consumed Rust premises."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "Several material Rust/std premises have no checked version-matched authority entry."
+      }
+    },
+    {
+      "field": "atom:L2",
+      "label": "F",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "AX-IF quotes false => else but the proof uses the unsupported converse else => false."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "Step 2 identifies the false else path and contraposes the zero-length is_empty contract to L != 0."
+      }
+    },
+    {
+      "field": "atom:L3",
+      "label": "F",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "AX-LEN explicitly identifies L as an element count represented as usize; as a natural count, L != 0 yields L >= 1."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "Although AX-LEN notes a usize return, the report substitutes 'natural count' and never checks the required nonnegative usize value-domain premise."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "F's replacement asserts representable subtraction while its report has no checked usize/subtraction/overflow entries, so it cannot reference checked propositions for the full chain. The text also says only 'in bounds for this same slice' without identifying get_unchecked; s1 passes L8."
+      },
+      "field": "atom:L8",
+      "label": "F",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Supplies adjacent text from false is_empty through nonzero length, defined predecessor, and the in-bounds conclusion."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The proposed comment gives a bounds chain but neither identifies get_unchecked in the text nor refers to checked usize/subtraction/overflow propositions, which the report lacks."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The positive verdict necessarily relies on unchecked subtraction/overflow semantics and an inapplicable implication direction for AX-IF."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The PROVED result necessarily relies on unchecked Rust usize-domain, integer-subtraction, and overflow premises."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Claims a complete authoritative reconciliation while silently consuming subtraction/overflow semantics and reversing AX-IF."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "It claims the authority inventory is complete while silently consuming Rust integer-domain, subtraction, and overflow semantics."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "F",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The asserted Rust-only TCB omits consumed subtraction/overflow authority and overclaims the cited if proposition."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "Material Rust integer premises are asserted without applicable checked Rust 1.82.0 authority."
+      }
+    },
+    {
+      "field": "atom:L2",
+      "label": "G",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "A4 quotes false => else but uses it as else => false on the unsafe path."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "OBL-1 identifies the false else path and contraposes A3 to n != 0."
+      }
+    },
+    {
+      "field": "atom:L3",
+      "label": "G",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "A2 verifies only element count; the proof's n: usize premise is neither inventoried nor checked as len's return type."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The proof explicitly takes n: usize, applies A7's unsigned domain, and derives n >= 1."
+      }
+    },
+    {
+      "field": "atom:L6",
+      "label": "G",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "Full Required closure depends on the unsupported branch converse and unverified len-to-usize link."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The report connects the exhaustive branch proof to A1, reports full-scope PROVED, and states Covered = Required."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The implementation verdict necessarily relies on unchecked/inapplicable Rust authority at two material links."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Certifies A1-A7 as complete while silently consuming len's return type and reversing the checked A4 implication."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "G",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "TCB-LAST-1 omits the consumed len return-type proposition and overclaims A4."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "A consumed standard-library return-type premise is not inventoried and quoted as authority, and AX-IF's excerpt is directionally incomplete."
+      }
+    },
+    {
+      "field": "atom:L2",
+      "label": "I",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "A2 quotes false => else but claims that execution of else entails false, reversing the cited implication."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "Steps 1-2 identify false is_empty on else and contrapose A1 to L != 0."
+      }
+    },
+    {
+      "field": "atom:L6",
+      "label": "I",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "The claimed exhaustive full-scope closure depends materially on A2's unsupported converse."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The exhaustive branch proof closes A7 for the entire exact domain, reports PROVED, and states Required subset-of Covered."
+      }
+    },
+    {
+      "field": "hard_error:G11",
+      "label": "I",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "The PROVED result necessarily relies on an invalid converse of the quoted if rule."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "hard_error:LH4",
+      "label": "I",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "Attests complete premise reconciliation although A2's quoted authority does not establish the branch proposition consumed."
+      },
+      "s2": {
+        "decision": "ABSENT",
+        "evidence": "No applicable hard error recorded."
+      }
+    },
+    {
+      "field": "tcb_authority_defect",
+      "label": "I",
+      "s1": {
+        "decision": "PRESENT",
+        "evidence": "TCB-LAST-1 overstates what its A2 authority excerpt verifies."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The quoted A2 text is insufficient for the branch direction used in the proof."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "J consumes true-condition exclusion of the else arm, but AX-IF quotes only true=>consequent-executes and false=>else-executes; it omits the exact prose that true skips else. The extracted prose therefore does not supply the consumed proposition. s1 passes L10 while materially equivalent incomplete extractions fail elsewhere."
+      },
+      "field": "atom:L10",
+      "label": "J",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Each consumed Rust/std premise has a narrow 1.82.0 URL, exact excerpt, proposition, consumer, and applicability statement."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "AX-IF quotes true=>consequent and false=>else but omits the text that a true condition skips else, so the quotation does not supply the consumed else-reached=>false direction."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "FAIL",
+        "evidence": "J attests that its inventory exactly matches every semantic leaf, but O1's true-arm exclusion is not established by its quoted AX-IF fragments. This is the same reconciliation gap both scorers recognize in B/D/I; s1 passes J."
+      },
+      "field": "atom:L11",
+      "label": "J",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Explicitly maps every AX entry to O1-O3 and states no unlisted Rust/std or tool premise supplies an inference."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The claimed exact reconciliation depends on the inadequately extracted AX-IF branch-selection proposition."
+      }
+    },
+    {
+      "consistency_review": {
+        "decision": "PRESENT",
+        "evidence": "TCB-R1 claims proposition-matched checked authority, yet its AX-IF extraction omits true=>skip-else while O1 consumes that exclusivity. s1 marks no authority defect although it marks the equivalent incomplete AX-IF authority in B/D/I; s2 correctly marks it present."
+      },
+      "field": "tcb_authority_defect",
+      "label": "J",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "The Rust 1.82 authority inventory is complete, applicable, checked, and reconciled."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "The AX-IF quotation does not establish the converse branch fact the proof consumes."
+      }
+    }
+  ],
+  "mode": "L",
+  "schema_version": 1
+}

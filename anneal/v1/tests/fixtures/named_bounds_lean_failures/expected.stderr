@@ -1,0 +1,41 @@
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:14:7]
+ 13 │ /// proof:
+ 14 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 15 │ /// ```
+    ╰────
+
+  ⚠ declaration uses `sorry`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:37:4]
+ 36 │ /// ```
+ 37 │ fn fail_is_valid_verification(x: Positive) -> Positive {
+    ·    ──┬─
+    ·      ╰── here
+ 38 │     Positive { val: 0 }
+    ╰────
+
+  × unsolved goals
+  │ x ret : U32
+  │ h_returns : fail_proof_context_tactic_failure x = ok ret
+  │ h_x_is_valid : Anneal.IsValid.isValid x
+  │ ⊢ False
+    ╭─[[PROJECT_ROOT]/src/lib.rs:48:24]
+ 47 │ /// proof context:
+ 48 │ ///   have h: false := by simp
+    ·                        ───┬───
+    ·                           ╰── here
+ 49 │ /// proof context:
+    ╰────
+
+  × simp_all made no progress
+    ╭─[[PROJECT_ROOT]/src/lib.rs:90:7]
+ 89 │ /// proof (ens):
+ 90 │ ///   simp_all
+    ·       ────┬───
+    ·           ╰── here
+ 91 │ /// ```
+    ╰────
+
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

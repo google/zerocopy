@@ -1,0 +1,12 @@
+description = """
+Purpose: The foundational multi-line error span projection test.
+Behavior: Generates a mock `compiler-message` pointing towards a multiline `/// context` model definition. Assures the Anneal UI accurately renders multi-line contextual error blocks visually.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

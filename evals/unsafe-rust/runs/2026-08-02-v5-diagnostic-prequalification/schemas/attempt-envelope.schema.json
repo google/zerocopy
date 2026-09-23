@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:attempt-envelope:1",
+  "$comment": "DRAFT / UNSEALED whole-envelope metadata schema; payload bytes are sibling files in the content-addressed object.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "identity", "envelope_spec_sha256", "output_entries", "total_output_bytes", "final_response", "process", "coordinator_metadata", "violations", "format_valid", "semantic_errors", "semantic_valid"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slot_id", "attempt_id", "agent_id", "lease_sha256"],
+      "properties": {
+        "slot_id": {"$ref": "#/$defs/safe_id"},
+        "attempt_id": {"$ref": "#/$defs/safe_id"},
+        "agent_id": {"$ref": "#/$defs/safe_id"},
+        "lease_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "envelope_spec_sha256": {"$ref": "#/$defs/digest"},
+    "output_entries": {
+      "type": "array",
+      "maxItems": 4096,
+      "$comment": "The protocol additionally enforces a 262144-byte cumulative UTF-8 path-token budget and exact sorted uniqueness.",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared", "size", "sha256", "captured"],
+            "properties": {
+              "path": {"$ref": "#/$defs/output_path_token"},
+              "kind": {"const": "file"},
+              "declared": {"type": "boolean"},
+              "size": {"type": "integer", "minimum": 0},
+              "sha256": {"oneOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]},
+              "captured": {"type": "boolean"}
+            },
+            "allOf": [
+              {"if": {"properties": {"captured": {"const": true}}}, "then": {"properties": {"sha256": {"$ref": "#/$defs/digest"}}}},
+              {"if": {"properties": {"captured": {"const": false}}}, "then": {"properties": {"sha256": {"type": "null"}}}}
+            ]
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared"],
+            "properties": {
+              "path": {"$ref": "#/$defs/output_path_token"},
+              "kind": {"enum": ["directory", "symlink", "special", "not-directory"]},
+              "declared": {"type": "boolean"}
+            }
+          },
+          {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["path", "kind", "declared"],
+            "properties": {
+              "path": {"enum": ["_encoded-posix-path/X2VuY29kZWQtcG9zaXgtcGF0aC9jYXB0dXJlLWVudHJ5LWxpbWl0", "_encoded-posix-path/X2VuY29kZWQtcG9zaXgtcGF0aC9jYXB0dXJlLXBhdGgtYnl0ZS1saW1pdA"]},
+              "kind": {"const": "capture-limit"},
+              "declared": {"const": false}
+            }
+          }
+        ]
+      }
+    },
+    "total_output_bytes": {"type": "integer", "minimum": 0},
+    "final_response": {
+      "oneOf": [
+        {"type": "object", "additionalProperties": false, "required": ["present"], "properties": {"present": {"const": false}}},
+        {"type": "object", "additionalProperties": false, "required": ["present", "captured", "size", "sha256", "prefix_sha256"], "properties": {"present": {"const": true}, "captured": {"type": "boolean"}, "size": {"type": "integer", "minimum": 0, "maximum": 4194304}, "sha256": {"$ref": "#/$defs/digest"}, "prefix_sha256": {"type": "null"}}},
+        {"type": "object", "additionalProperties": false, "required": ["present", "captured", "size", "sha256", "prefix_sha256"], "properties": {"present": {"const": true}, "captured": {"const": false}, "size": {"type": "integer", "minimum": 4194305}, "sha256": {"type": "null"}, "prefix_sha256": {"$ref": "#/$defs/digest"}}}
+      ]
+    },
+    "process": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["disposition", "exit_code"],
+      "properties": {
+        "disposition": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+        "exit_code": {"type": ["integer", "null"]}
+      }
+    },
+    "coordinator_metadata": {"type": "object"},
+    "violations": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "format_valid": {"type": "boolean"},
+    "semantic_errors": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "semantic_valid": {"type": "boolean"}
+  },
+  "$defs": {
+    "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "output_path_token": {
+      "$comment": "The first branch is the exact portable path grammar. The second admits only syntactically canonical unpadded base64url tokens; protocol.decode_output_path_token additionally verifies decoded nonempty relative POSIX bytes and rejects unnecessary encoding, properties JSON Schema cannot express.",
+      "type": "string",
+      "oneOf": [
+        {"pattern": "^(?!_encoded-posix-path/)(?!/)(?!.*\\\\)(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*[\\u0000-\\u001f])(?!\\s)(?!.*\\s$)[^/]+(?:/[^/]+)*$"},
+        {"pattern": "^_encoded-posix-path/(?=[A-Za-z0-9_-]{2,}$)(?:[A-Za-z0-9_-]{4})*(?:[A-Za-z0-9_-][AQgw]|[A-Za-z0-9_-]{2}[AEIMQUYcgkosw048])?$"}
+      ]
+    }
+  }
+}

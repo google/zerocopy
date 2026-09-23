@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "unsafe-rust-v4-focused-blind-adjudication-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode", "decisions", "ambiguities"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "mode": {"enum": ["P", "B", "L", "Q", "R"]},
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "field", "decision", "evidence"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-J]$"},
+          "field": {
+            "type": "string",
+            "pattern": "^(atom:[PBLQR][1-9][0-9]*|hard_error:(G[1-9][0-9]*|[PBLQR]H[1-9][0-9]*)|proposal_laundering|tcb_authority_defect|visible_scope_defect|novel:s[12]:N[1-9][0-9]*)$"
+          },
+          "decision": {
+            "enum": ["PASS", "FAIL", "PRESENT", "ABSENT"]
+          },
+          "evidence": {"type": "string", "pattern": "\\S"}
+        }
+      }
+    },
+    "ambiguities": {
+      "type": "array",
+      "items": {"type": "string", "pattern": "\\S"}
+    }
+  }
+}

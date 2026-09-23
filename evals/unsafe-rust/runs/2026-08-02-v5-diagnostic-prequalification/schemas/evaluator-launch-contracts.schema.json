@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:evaluator-launch-contracts:2",
+  "$comment": "DRAFT / UNSEALED frozen deterministic runtime-instantiation contract for every possible evaluator assignment.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "contract_id", "packet_authority", "production_lease_route", "input_alias", "output_alias", "input_packet_path", "assignments"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "contract_id": {"const": "v5-evaluator-runtime-instantiation-v2"},
+    "packet_authority": {"const": "PROTOCOL_DERIVED_IMMUTABLE_AGGREGATION_STAGE"},
+    "production_lease_route": {"const": "ASSIGNMENT_ID_ONLY"},
+    "input_alias": {"const": "input"},
+    "output_alias": {"const": "output"},
+    "input_packet_path": {"const": "packet.json"},
+    "assignments": {
+      "type": "array",
+      "minItems": 43,
+      "maxItems": 43,
+      "uniqueItems": true,
+      "items": {"$ref": "#/$defs/assignment"}
+    }
+  },
+  "$defs": {
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "relative_path": {"type": "string", "pattern": "^(?!/)(?![.][.]?(?:/|$))(?!.*(?:/[.][.]?)(?:/|$))(?!.*[\\u0000-\\u001f])(?!.*//)(?!.*[/]$).+$"},
+    "assignment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["assignment_id", "role", "mode", "reviewer_id", "launch_condition", "prompt_path", "prompt_sha256", "template_path", "template_sha256", "input_packet_path", "input_packet_schema_path", "output_path", "output_schema_path", "schema_paths", "execution_manifest_path", "execution_manifest_sha256", "envelope_spec_path", "envelope_spec_sha256"],
+      "properties": {
+        "assignment_id": {"type": "string", "pattern": "^(?:[EVFPBLRQ]-(?:s[12]|c[12]|a1)|m[12]|ma1)$"},
+        "role": {"enum": ["scorer", "consistency", "adjudicator", "materiality-reviewer", "materiality-adjudicator"]},
+        "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q", null]},
+        "reviewer_id": {"enum": ["s1", "s2", "c1", "c2", "a1", "m1", "m2", "ma1"]},
+        "launch_condition": {"enum": ["ALWAYS", "IF_INPUT_PACKET_NONEMPTY"]},
+        "prompt_path": {"type": "string", "pattern": "^static/generated/evaluator-prompts/(?:[EVFPBLRQ]-(?:s[12]|c[12]|a1)|m[12]|ma1)\\.md$"},
+        "prompt_sha256": {"$ref": "#/$defs/digest"},
+        "template_path": {"type": "string", "pattern": "^prompts/(?:scorer|consistency|adjudicator|materiality-reviewer|materiality-adjudicator)\\.md$"},
+        "template_sha256": {"$ref": "#/$defs/digest"},
+        "input_packet_path": {"const": "packet.json"},
+        "input_packet_schema_path": {"type": "string", "pattern": "^schemas/(?:score-input-packet|consistency-input-packet|adjudication-packet|materiality-review-packet|materiality-adjudication-packet)\\.schema\\.json$"},
+        "output_path": {"type": "string", "pattern": "^(?:score|consistency|adjudication|materiality-review|materiality-adjudication)\\.json$"},
+        "output_schema_path": {"type": "string", "pattern": "^schemas/(?:score|consistency|adjudication|materiality-review|materiality-adjudication)\\.schema\\.json$"},
+        "schema_paths": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "uniqueItems": true,
+          "items": {"type": "string", "pattern": "^schemas/(?:score|consistency|adjudication|materiality-review|materiality-adjudication)\\.schema\\.json$"}
+        },
+        "execution_manifest_path": {"type": "string", "pattern": "^static/execution-manifests/(?:scorer|consistency|adjudicator|materiality-reviewer|materiality-adjudicator)\\.json$"},
+        "execution_manifest_sha256": {"$ref": "#/$defs/digest"},
+        "envelope_spec_path": {"type": "string", "pattern": "^static/envelope-specs/(?:scorer|consistency|adjudicator|materiality-reviewer|materiality-adjudicator)\\.json$"},
+        "envelope_spec_sha256": {"$ref": "#/$defs/digest"}
+      }
+    }
+  }
+}

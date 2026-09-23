@@ -1,1 +1,0 @@
-../ui-nightly/diagnostic-not-implemented-issue-1296.rs

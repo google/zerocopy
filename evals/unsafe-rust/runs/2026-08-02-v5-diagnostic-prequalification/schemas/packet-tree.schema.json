@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1",
+  "$comment": "DRAFT / UNSEALED self-contained readable content-addressed packet tree.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "packet_kind", "packet_id", "files", "binding_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "CONTENT-ADDRESSED"},
+    "packet_kind": {"enum": ["SCORER-INPUT", "CONSISTENCY-INPUT", "ADJUDICATION-INPUT", "MATERIALITY-REVIEW-INPUT", "MATERIALITY-ADJUDICATION-INPUT"]},
+    "packet_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "size", "sha256", "encoding", "content"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(?!/)(?![.][.]?(?:/|$))(?!.*(?:/[.][.]?)(?:/|$))(?!.*[\\u0000-\\u001f])(?!.*//)(?!.*[/]$).+$"},
+          "size": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "encoding": {"enum": ["UTF8", "BASE64"]},
+          "content": {"type": "string"}
+        }
+      }
+    },
+    "binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

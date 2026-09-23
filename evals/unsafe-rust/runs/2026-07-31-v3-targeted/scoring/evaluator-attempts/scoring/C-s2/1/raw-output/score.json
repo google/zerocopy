@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "mode": "C",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "The report says Scarlet and Indigo conflict and both exclude turbo-W, but it neither reproduces both predicates nor identifies one exclusive region for each."},
+        {"id": "C2", "decision": "PASS", "evidence": "It transparently defines E as all stated axes except turbo-W, calls E only an audit envelope, and derives each policy is a subset because both exclude turbo-W."},
+        {"id": "C3", "decision": "PASS", "evidence": "CFG-1 combines exact BUILD-MAP-C mappings with version-matched cfg/all and compile_error! text to prove every turbo-W compilation fails."},
+        {"id": "C4", "decision": "PASS", "evidence": "SAFE-1, UNSAFE-1, and API-1 prove both bodies for all Option inputs and all remaining axes, then report soundness PROVED over E relative to BUILD-MAP-C."},
+        {"id": "C5", "decision": "PASS", "evidence": "The branch ledger proves None returns zero and Some returns its byte in both bodies, exhausts inputs/configurations, and reports the postcondition PROVED over E."},
+        {"id": "C6", "decision": "PASS", "evidence": "It explicitly reports the exact project support predicate UNPROVED and labels E an audit domain rather than a support policy."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The optional comment rewrite is not used to establish current soundness and changes no design obligation."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-C is conspicuous and restricted to its exact identity, mappings, consumers, and versions; Rust semantics use version-matched authoritative pages."},
+      "visible_scope_defect": {"present": false, "evidence": "The report confines its theorem to the supplied snapshot and source semantics and shows no visible use of prohibited material."},
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It reproduces S and I without precedence, but never identifies a concrete Scarlet-only region and a concrete Indigo-only region."},
+        {"id": "C2", "decision": "PASS", "evidence": "It defines Required=S union I from the exact predicates, uses a transparent no-turbo-W Covered superset, proves Required is a subset, and disclaims policy resolution."},
+        {"id": "C3", "decision": "PASS", "evidence": "Version-matched cfg/all and compile_error! propositions plus exact BUILD-MAP-C are used to show turbo-W cannot produce a library artifact."},
+        {"id": "C4", "decision": "PASS", "evidence": "OBL-NORMAL and OBL-UNSAFE prove the safe and guarded unsafe bodies for all inputs; OBL-API gives Covered and Required subset Covered, relative to BUILD-MAP-C."},
+        {"id": "C5", "decision": "PASS", "evidence": "The same exhaustive branch proof establishes Some(b) maps to b and None to zero and explicitly closes the postcondition over Required."},
+        {"id": "C6", "decision": "PASS", "evidence": "It states both policies are current with no precedence and that the conservative union does not resolve or restate the project promise."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The suggested safety-comment wording is explicitly only a proof-documentation repair and is not proof of current behavior."},
+      "tcb_authority_defect": {"present": false, "evidence": "The accepted build mapping is conspicuous, exact, and limited to OBL-CFG; all material Rust claims are tied to matching Reference/std releases."},
+      "visible_scope_defect": {"present": false, "evidence": "The report limits itself to the supplied snapshot and source-level theorem and reveals no prohibited source use."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "Although both policy formulas are reproduced, the report only normalizes their union and never identifies a region as Scarlet-only and another as Indigo-only."},
+        {"id": "C2", "decision": "PASS", "evidence": "It derives the exact union formula, including aarch64 turbo iff hardened or v>=1.85, and explicitly keeps that union a conservative audit domain."},
+        {"id": "C3", "decision": "FAIL", "evidence": "The rejection argument verifies cfg-attribute inclusion and compile_error!, but never verifies the version-matched Rust semantics of all needed to select the macro."},
+        {"id": "C4", "decision": "FAIL", "evidence": "The body proofs are correct locally, but the claimed configuration partition and Covered closure rely on unverified version-matched not/all cfg-predicate semantics."},
+        {"id": "C5", "decision": "FAIL", "evidence": "The local return-value cases are correct, but the aggregate behavioral closure uses the same incomplete cfg-selection premise."},
+        {"id": "C6", "decision": "PASS", "evidence": "POLICY-IDENTITY is reported UNPROVED and the union is expressly not used to resolve or replace either published policy."}
+      ],
+      "hard_errors": [
+        {"id": "CH2", "evidence": "It claims Covered closure although the stated cfg-selection derivation omits the material version-matched all/not predicate semantics."},
+        {"id": "CH6", "evidence": "It claims full PROVED verdicts over the audit domain while the cfg-selection obligation used across that domain is incomplete."},
+        {"id": "G11", "evidence": "The positive selection and rejection claims necessarily rely on unchecked Rust all/not semantics that BUILD-MAP-C does not authorize."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The proposed comment replacement is documentation debt only and is not used to narrow or certify current implementation obligations."},
+      "tcb_authority_defect": {"present": true, "evidence": "The report cites cfg-attribute inclusion but omits authoritative version-matched all/not predicate propositions while relying on them for selection and rejection."},
+      "visible_scope_defect": {"present": false, "evidence": "Its stated scope is the supplied snapshot and source-only audit, with no visible prohibited material."},
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It states the policies conflict but does not reproduce either nonlinear predicate or identify one exclusive region for each policy."},
+        {"id": "C2", "decision": "PASS", "evidence": "It transparently audits D, all stated cases except turbo-W, proves each policy is a subset because turbo is limited to X/A, and does not call D the promise."},
+        {"id": "C3", "decision": "PASS", "evidence": "OBL-C uses exact BUILD-MAP-C plus versioned configuration-option, all/not, cfg, and compile_error! semantics to prove turbo-W compilation fails."},
+        {"id": "C4", "decision": "PASS", "evidence": "OBL-N, OBL-T, and OBL-API cover both bodies, every safe input, and all axes over D, with soundness PROVED relative to the logged TCB."},
+        {"id": "C5", "decision": "PASS", "evidence": "The obligations derive zero for None and the contained byte for Some in both bodies and exhaustively close over D."},
+        {"id": "C6", "decision": "PASS", "evidence": "It explicitly reports the exact project support predicate UNPROVED and keeps D only a conservative audit domain."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The comment-only suggestion is not used to establish or narrow the current theorem."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-C is conspicuous and exact, and every Rust-semantic premise is stated against matching versioned authority."},
+      "visible_scope_defect": {"present": false, "evidence": "The audit is visibly confined to the supplied snapshot and source theorem, without prohibited evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It reproduces both predicates and proves their union formula, but does not identify any specific Scarlet-only and Indigo-only regions."},
+        {"id": "C2", "decision": "PASS", "evidence": "It algebraically derives the exact conservative union, including the conditional aarch64 clause, and expressly denies that this resolves policy."},
+        {"id": "C3", "decision": "PASS", "evidence": "It verifies matching cfg/all and compile_error! rules and combines them with exact BUILD-MAP-C to prove turbo-W yields no library."},
+        {"id": "C4", "decision": "PASS", "evidence": "O-SAFE, O-GUARD, and O-UNSAFE prove both paths over every input and axis; it states Covered=Required and the required subset closure relative to BUILD-MAP-C."},
+        {"id": "C5", "decision": "PASS", "evidence": "O-POST combines the documented unwrap_or result with the guarded unchecked result and closes parametrically over Required."},
+        {"id": "C6", "decision": "PASS", "evidence": "It says neither policy has precedence, the union is not a new promise, and the policy conflict remains unresolved."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No unimplemented design is used as current evidence or to narrow the audited obligation."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report restricts BUILD-MAP-C to its accepted mappings and consumers and verifies version-matched Rust propositions separately."},
+      "visible_scope_defect": {"present": false, "evidence": "The report confines itself to all supplied target material and a source-only result, with no visible forbidden inspection."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "The report gives only the normalized union and a conflict statement; it neither reproduces both original predicates nor names policy-exclusive regions."},
+        {"id": "C2", "decision": "PASS", "evidence": "It explicitly gives the exact minimal union formula with the conditional aarch64 turbo clause and states the union is conservative rather than project policy."},
+        {"id": "C3", "decision": "PASS", "evidence": "Versioned all/cfg and compile_error! text plus exact BUILD-MAP-C establish that turbo-W includes the macro and produces no artifact."},
+        {"id": "C4", "decision": "PASS", "evidence": "O-NORMAL and both turbo input cases prove soundness; O-COVERAGE exhausts f, Option, and all other axes over U, relative to the sole TCB."},
+        {"id": "C5", "decision": "PASS", "evidence": "The same exhaustive obligations prove Some(byte) returns byte and None returns zero throughout U and report behavior PROVED."},
+        {"id": "C6", "decision": "PASS", "evidence": "It says no unique exact project support predicate exists until authorized policy resolution and never promotes U to that promise."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No proposal is used to certify the current artifact or narrow current obligations."},
+      "tcb_authority_defect": {"present": false, "evidence": "The sole build premise is conspicuous and exactly scoped, while material Rust propositions are separately version-matched."},
+      "visible_scope_defect": {"present": false, "evidence": "The report remains within the supplied source snapshot and disclaims build/test evidence and broader artifacts."},
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It presents only the union case table; the two original policy predicates and one exclusive region for each are absent."},
+        {"id": "C2", "decision": "PASS", "evidence": "Its exhaustive U table is the exact union, including aarch64 turbo hardened at all versions and non-hardened only from 1.85, and U is not called policy."},
+        {"id": "C3", "decision": "PASS", "evidence": "Exact BUILD-MAP-C, versioned all/cfg rules, and compile_error! behavior prove turbo-W is rejected for every remaining axis."},
+        {"id": "C4", "decision": "PASS", "evidence": "O1/O2 prove both implementations for every safe Option input over U and all profiles/debug states, with soundness PROVED relative to BUILD-MAP-C."},
+        {"id": "C5", "decision": "PASS", "evidence": "O3 derives the exact return contract in each feature branch and the ledger closes it over U."},
+        {"id": "C6", "decision": "PASS", "evidence": "It explicitly labels exact support-policy identity UNPROVED and describes U only as a conservative union audit domain."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The optional comment hardening is not used as evidence for the already-derived current verdict."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-C is exact and conspicuous, and cfg, macro, and Option semantics are verified on each matching release."},
+      "visible_scope_defect": {"present": false, "evidence": "The report visibly limits itself to the supplied snapshot and source semantics and uses no prohibited material."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "C1", "decision": "PASS", "evidence": "It reproduces I and S; its 1.84 turbo-X analysis assigns hardened to Indigo and non-hardened to Scarlet, furnishing an exclusive case for each without precedence."},
+        {"id": "C2", "decision": "PASS", "evidence": "It derives the exact union formula by target cases, including aarch64 turbo iff hardened or v>=1.85, and keeps it a conservative audit predicate."},
+        {"id": "C3", "decision": "FAIL", "evidence": "It verifies cfg-attribute inclusion and compile_error!, but omits version-matched Rust all semantics needed to show the source predicate selects the macro."},
+        {"id": "C4", "decision": "FAIL", "evidence": "OBL-2 through OBL-4 are locally correct, but Covered=Required relies on OBL-1 body selection without verified version-matched not/all predicate semantics."},
+        {"id": "C5", "decision": "FAIL", "evidence": "The return-value cases are locally right, but their aggregate configuration closure depends on the same incomplete cfg-selection authority."},
+        {"id": "C6", "decision": "PASS", "evidence": "It reports one resolved project support predicate UNPROVED and says the union neither resolves nor redefines the promise."}
+      ],
+      "hard_errors": [
+        {"id": "CH2", "evidence": "It claims Covered=Required although its stated cfg-selection derivation omits material version-matched all/not semantics."},
+        {"id": "CH6", "evidence": "It claims full PROVED verdicts over Required while OBL-1 remains incomplete throughout that domain."},
+        {"id": "G11", "evidence": "The positive selection and rejection claims necessarily rely on unchecked Rust all/not semantics outside BUILD-MAP-C's admitted proposition."}
+      ],
+      "proposal_laundering": {"present": false, "evidence": "The proposed comment edit is expressly documentation-only and is not used as current implementation evidence."},
+      "tcb_authority_defect": {"present": true, "evidence": "The report uses all/not cfg-predicate behavior for rejection and body selection without verifying those propositions in version-matched Rust authority."},
+      "visible_scope_defect": {"present": false, "evidence": "Its audit remains visibly confined to the supplied source snapshot and contains no prohibited-source evidence."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It reproduces both predicates and explains union coverage, but never pins and establishes a Scarlet-only region and an Indigo-only region."},
+        {"id": "C2", "decision": "PASS", "evidence": "It derives the exact union R by exhaustive target cases, including the conditional aarch64 clause, and expressly refuses to call R the project promise."},
+        {"id": "C3", "decision": "PASS", "evidence": "It combines exact BUILD-MAP-C with versioned configuration-option/all/cfg and compile_error! semantics to prove all turbo-W builds fail."},
+        {"id": "C4", "decision": "PASS", "evidence": "O2/O3 prove safe and unsafe paths for all inputs; O1 supplies selection and the report states Covered=R and Required=R subset Covered relative to BUILD-MAP-C."},
+        {"id": "C5", "decision": "PASS", "evidence": "O2/O4 establish the documented result in both bodies and the explicit aggregate closure covers every axis in R."},
+        {"id": "C6", "decision": "PASS", "evidence": "It says the policies conflict with no precedence, does not resolve them or call R policy, and leaves that identity as a governance fact."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No unimplemented proposal is used to support or narrow the current-artifact verdict."},
+      "tcb_authority_defect": {"present": false, "evidence": "BUILD-MAP-C is conspicuous and restricted, and every material Option/configuration/macro proposition is version-matched."},
+      "visible_scope_defect": {"present": false, "evidence": "It states all supplied target files and a source-only audit, with no visible prohibited-source use."},
+      "novel_findings": [
+        {"id": "N1", "evidence": "The report locates unwrap_unchecked at line 22, but the supplied source places that unsafe call at line 20."}
+      ]
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "C1", "decision": "FAIL", "evidence": "It does not reproduce the two nonlinear predicates or identify any Scarlet-only and Indigo-only regions."},
+        {"id": "C2", "decision": "PASS", "evidence": "It transparently chooses C as every stated case except turbo-W, separately states both policies are subsets, notes extra unsupported coverage, and does not call C policy."},
+        {"id": "C3", "decision": "PASS", "evidence": "The report states versioned all/not and cfg effects, cites compile_error!, and uses exact BUILD-MAP-C to show every turbo-W case is rejected."},
+        {"id": "C4", "decision": "PASS", "evidence": "SAFE-1 and UNSAFE-1 prove both bodies for all valid inputs; their domains exhaust C across profiles/debug states, with soundness PROVED relative to the TCB."},
+        {"id": "C5", "decision": "PASS", "evidence": "POST-1 combines the guarded turbo proof and unwrap_or contract to prove Some(b)=b and None=0 throughout C."},
+        {"id": "C6", "decision": "PASS", "evidence": "It expressly says which policy is authoritative remains unresolved and C is only a conservative audit domain."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The proposed adjacent comment replacement is documentation-only and not evidence narrowing current obligations."},
+      "tcb_authority_defect": {"present": false, "evidence": "The accepted build mapping is exact and consumer-limited, and matching Rust authorities are stated separately for every material premise."},
+      "visible_scope_defect": {"present": false, "evidence": "It identifies the complete supplied target and source-only method and shows no prohibited-source evidence."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "C1 does not specify whether policy formulas whose algebra makes exclusive 1.84 turbo-X cases immediately inferable count as identifying those regions; I required a report-level region identification rather than evaluator reconstruction.",
+    "CH2 and CH6 overlap when regional case analysis is complete but a material global Rust cfg-predicate premise is unverified; I treated the missing premise as both invalid closure and a PROVED verdict over uncovered cases, while recording G11 independently."
+  ]
+}

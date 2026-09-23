@@ -1,0 +1,8 @@
+https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.get_unchecked
+https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.get_unchecked_mut
+https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.len
+https://doc.rust-lang.org/1.82.0/std/primitive.slice.html#method.is_empty
+https://doc.rust-lang.org/1.82.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators
+https://doc.rust-lang.org/1.82.0/reference/types/numeric.html#integer-types
+https://doc.rust-lang.org/1.82.0/reference/items/traits.html#unsafe-traits
+https://doc.rust-lang.org/1.82.0/reference/unsafe-keyword.html#unsafe-traits-unsafe-trait

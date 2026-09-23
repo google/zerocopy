@@ -18,15 +18,22 @@ on:
         required: true
         default: 'main'
 
-permissions: read-all
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   release:
+    permissions:
+      contents: write # Need to write to repo to cherry-pick
+      pull-requests: write # Required to create pull requests
     runs-on: ubuntu-latest
     name: Backport PR
     steps:
       - name: Checkout code
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           ref: ${{ github.event.inputs.target_branch }}
           # Check out the entire repository so that the target commit is checked
@@ -35,16 +42,18 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - name: Cherry-pick commit
+        env:
+          COMMIT: ${{ github.event.inputs.commit }}
         run: |
           set -eo pipefail
 
-          AUTHOR_NAME="$(git log -1 --pretty='%an' ${{ github.event.inputs.commit }})"
-          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' ${{ github.event.inputs.commit }})"
+          AUTHOR_NAME="$(git log -1 --pretty='%an' "$COMMIT")"
+          AUTHOR_EMAIL="$(git log -1 --pretty='%ae' "$COMMIT")"
 
           git config --global user.name "$AUTHOR_NAME"
           git config --global user.email "$AUTHOR_EMAIL"
 
-          git cherry-pick ${{ github.event.inputs.commit }}
+          git cherry-pick "$COMMIT"
 
           PR_TITLE="$(git log -1 --pretty=%s)"
           echo "PR_TITLE=$PR_TITLE" >> $GITHUB_ENV
@@ -53,11 +62,11 @@ jobs:
           echo "AUTHOR=$AUTHOR" >> $GITHUB_ENV
 
       - name: Submit PR
-        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.0 # zizmor: ignore[superfluous-actions]
         with:
           author: "${{ env.AUTHOR }}"
           committer: "${{ env.AUTHOR }}"
           title: "${{ env.PR_TITLE }}"
           branch: backport-${{ github.event.inputs.commit }}
           push-to-fork: google-pr-creation-bot/zerocopy
-          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }}
+          token: ${{ secrets.GOOGLE_PR_CREATION_BOT_TOKEN }} # zizmor: ignore[secrets-outside-env]

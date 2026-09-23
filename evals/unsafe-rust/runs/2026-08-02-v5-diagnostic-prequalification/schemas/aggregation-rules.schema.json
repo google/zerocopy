@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:aggregation-rules:1",
+  "$comment": "DRAFT / UNSEALED exact context aggregation rule inventory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "rules_version", "population_contract", "input_digest_contract", "default_dispositions", "rules"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "rules_version": {"const": "v5-diagnostic-aggregate-v2"},
+    "population_contract": {"type": "object"},
+    "input_digest_contract": {"type": "object"},
+    "default_dispositions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["missing", "malformed", "error"],
+      "properties": {
+        "missing": {"const": "ERROR"},
+        "malformed": {"const": "ERROR"},
+        "error": {"const": "ERROR"}
+      }
+    },
+    "rules": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["context_path", "output_type", "formula"],
+        "properties": {
+          "context_path": {"type": "string", "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$"},
+          "output_type": {"enum": ["boolean", "integer"]},
+          "formula": {
+            "type": "object",
+            "required": ["kind", "population"],
+            "properties": {"kind": {"type": "string", "pattern": "^[a-z][a-z0-9_]*_v[1-9][0-9]*$"}, "population": {"type": "string", "minLength": 1}}
+          }
+        }
+      }
+    }
+  }
+}

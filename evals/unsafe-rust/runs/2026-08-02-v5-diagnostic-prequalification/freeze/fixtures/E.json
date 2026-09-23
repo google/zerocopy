@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "E",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-alder",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "e_semantics/Cargo.toml",
+    "e_semantics/src/lib.rs::record",
+    "e_semantics/src/lib.rs::last_or",
+    "e_semantics/src/lib.rs::boundary_or",
+    "e_semantics/src/lib.rs::configured_lane",
+    "e_semantics/REQUEST.md",
+    "e_semantics/SUPPORT.md",
+    "e_semantics/TCB.md::CONFIG-MAP"
+  ],
+  "theorem_boundary_class": "Separate implementation-soundness and documented-postcondition theorems for every exported API over the complete supported configuration set; configured_lane conclusions are relative to CONFIG-MAP.",
+  "supported_set": [
+    "Rust 1.83.0, edition 2021",
+    "targets x86_64-unknown-linux-gnu and aarch64-unknown-linux-gnu",
+    "both states of feature wide",
+    "every Cargo profile and both debug-assertion states",
+    "every valid input to each exported API"
+  ],
+  "trigger_set": [
+    "omitted function output and implicit tail return",
+    "match and if branch selection",
+    "contextually typed integer arithmetic before unchecked indexing",
+    "boundary index on a nonempty slice",
+    "complementary composite cfg definitions"
+  ],
+  "alternative_proof_paths": [
+    "Equivalent arithmetic may replace the stated len-minus-one derivation if it closes typing, representability, and index bounds in every supported case.",
+    "Equivalent Boolean normalization may establish the exhaustive disjoint cfg partition if it consumes exactly CONFIG-MAP."
+  ],
+  "witness_requirement": "Any unsoundness conclusion must give a valid safe call reaching the unsafe operation with exact receiver length and index; boundary_or(&[5], 0) is the canonical minimal witness. Positive conclusions require a full-domain symbolic proof, not testing.",
+  "case_control_class": "FIXED_POSITIVE_SEMANTIC_KERNELS_WITH_BOUNDARY_NEGATIVE_AND_CFG_CONTROLS",
+  "contamination_risk": "Do not expose the boundary witness, expected verdicts, atom/control IDs, cfg answer partition, authority-consumer mapping, or evaluator-only oracle and rule paths.",
+  "claim_layers": [
+    "IMPLEMENTATION_SOUNDNESS",
+    "DOCUMENTED_POSTCONDITION",
+    "CONFIGURATION_RELATIVE_SOURCE_SELECTION",
+    "AUTHORITY_RECONCILIATION"
+  ],
+  "tcb_vacuity": "CONFIG-MAP is necessary only for configuration reachability and selected-source claims. It supplies no Rust semantics, arithmetic, unsafe precondition, source-correctness, backend, or binary theorem; record, last_or, and boundary_or do not depend on it.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust 1.83 expression semantics, cfg reasoning, integer arithmetic, lifetimes, and unsafe slice preconditions.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to the fixture source, request, support scope, manifest, or TCB",
+    "Any change to the pinned Rust version or admitted authority propositions",
+    "Any semantic change to E atoms, controls, oracle, or defect rules",
+    "Loss of the intended positive/boundary/configuration diagnostic separation"
+  ]
+}

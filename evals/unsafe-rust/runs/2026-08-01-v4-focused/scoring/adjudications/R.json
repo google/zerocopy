@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "mode": "R",
+  "decisions": [
+    {
+      "label": "A",
+      "field": "atom:R7",
+      "decision": "FAIL",
+      "evidence": "A correctly keeps the redesign conditional and demands a fresh audit, but R7 depends on R3. A's UNSOUND certificate does not establish R3 because it asserts that calling ordinary `increment` needs no unsafe context without verifying the required Rust 1.82 safe-versus-unsafe-function rule."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "A issues UNSOUND, but its valid-safe-use link asserts that `increment` needs no unsafe context without applicable version-matched function-safety authority; the four-link existential certificate is therefore incomplete."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "A necessarily relies on the unchecked Rust premise that an ordinary `fn` call carries no caller-side unsafe obligation; none of TCB-R182's cited authorities verifies that rule."
+    },
+    {
+      "label": "A",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-R182 claims the cited Rust 1.82 sources are the only semantic premises, yet omits the safe-versus-unsafe-function authority consumed by the witness's valid-call step."
+    },
+    {
+      "label": "D",
+      "field": "atom:R7",
+      "decision": "FAIL",
+      "evidence": "D explicitly leaves the sketch unaudited and requires fresh review, but R7 depends on R3. D's R3 is unestablished because its assertion that `increment` is safely callable lacks the required Rust 1.82 function-safety authority."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "D issues UNSOUND while the valid-safe-use link relies on its unsupported assertion that the ordinary `increment` call has no unsafe obligation, leaving the existential certificate incomplete."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "D necessarily consumes an unchecked safe-versus-unsafe-function rule; its cited visibility, implementation, unsafe-trait, slice, and wrapping authorities do not establish ordinary-function call safety."
+    },
+    {
+      "label": "D",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-0 omits applicable Rust 1.82 authority for the ordinary-versus-unsafe-function premise used to classify the witness call as valid safe use."
+    },
+    {
+      "label": "F",
+      "field": "atom:R7",
+      "decision": "FAIL",
+      "evidence": "F says the proposal is not a verdict and requires implementation plus fresh audit, but R7 depends on R3. F's authority-incomplete valid-safe-call step leaves R3 unestablished."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "F issues UNSOUND without verifying the material premise that calling ordinary `increment` is valid safe use, so its otherwise explicit witness lacks one required existential link."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "F necessarily relies on unchecked Rust function-safety semantics when it states that `increment` is safe; TCB-R033 supplies no applicable safe-versus-unsafe-function authority."
+    },
+    {
+      "label": "F",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-R033 omits the Rust 1.82 ordinary-versus-unsafe-function rule consumed by the witness's valid-call step, despite claiming the linked authorities are the controlling axioms."
+    },
+    {
+      "label": "G",
+      "field": "atom:R7",
+      "decision": "FAIL",
+      "evidence": "G preserves current UNSOUND, labels the redesign nonverdictal, and requires fresh audit, but R7 depends on R3. AX-ACCESS does not verify ordinary-function call safety, so G's R3 remains unestablished."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "G issues UNSOUND although its valid-use step infers from public non-unsafe syntax that `increment` has no caller-side unsafe obligation without the required Rust 1.82 function authority."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "G necessarily relies on the unchecked premise that an ordinary `fn` is callable without an unsafe obligation; AX-ACCESS's cited visibility and implementation sources do not establish it."
+    },
+    {
+      "label": "G",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-1 omits applicable Rust 1.82 safe-versus-unsafe-function authority even though FIND-1 consumes that premise to establish a valid safe call."
+    },
+    {
+      "label": "J",
+      "field": "atom:R7",
+      "decision": "FAIL",
+      "evidence": "J explicitly keeps the sketch unimplemented and requires a fresh snapshot audit, but R7 depends on R3. J's missing function-safety authority leaves the valid-safe-call link, and thus R3, unestablished."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "J issues UNSOUND without authority-complete proof that calling ordinary `increment` is valid safe use; the existential certificate therefore lacks a fully established link."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "J necessarily relies on unchecked ordinary-versus-unsafe-function semantics; TCB-R016-r1's cited authorities do not verify the caller-safety rule for `increment`."
+    },
+    {
+      "label": "J",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-R016-r1 omits the applicable Rust 1.82 safe-versus-unsafe-function authority material to classifying the witness call as safe."
+    }
+  ],
+  "ambiguities": []
+}

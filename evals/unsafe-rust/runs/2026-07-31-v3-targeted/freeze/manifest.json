@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "run_id": "2026-07-31-v3-targeted",
+  "status": "FROZEN_WHEN_LOCKED",
+  "prepared_utc": "2026-08-01T01:27:31Z",
+  "source_control": {
+    "repository_parent_commit": "47d01d20f04e4c5d4498a2f3ba3a098d370fd79c",
+    "branch": "unsafe-code-skill",
+    "note": "The freeze commit is created only after LOCK.json; every precommit freeze byte is independently bound by file-manifest.sha256."
+  },
+  "objective": {
+    "primary": "Absolute confirmation of the frozen V3 capabilities represented by all eight mode rubrics.",
+    "diagnostic_comparator": "The coherent frozen V2 package; it is not a causal ablation.",
+    "release_claim": "A pass permits a later broad release gate but is not itself release readiness."
+  },
+  "design": {
+    "modes": ["S", "C", "X", "Q", "W", "M", "R", "K"],
+    "conditions": 2,
+    "replicates_per_cell": 5,
+    "expected_reports": 80,
+    "balanced_waves": 5,
+    "maximum_concurrent_report_agents": 3,
+    "dual_blind_scorers_per_mode": 2,
+    "freshness": "fork_turns=none for every report, scorer, and adjudicator agent"
+  },
+  "inference": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "service_tier": "priority",
+    "sampling_seed": null,
+    "hosted_model_build": null,
+    "limitation": "The orchestration API exposes neither a sampling seed nor an exact hosted model-build identifier."
+  },
+  "packages": {
+    "v3": {
+      "role": "confirmatory candidate",
+      "tree_sha256": "668f70202c7bc8f23f7f894fb784a9629fd292c7f6fe69ede815b0e4c10137bf",
+      "skill_sha256": "0e23f7747cc63014bade7543efaf745e7e9a7e5d6dee2a48c602ef7a3eba091e"
+    },
+    "v2": {
+      "role": "diagnostic comparator",
+      "tree_sha256": "40b4171cc9daf7e51ba032aef52157a85a49c4c12cea8696deadb948e0867897",
+      "skill_sha256": "a0a75ef8a14497aa78b50b459981097ee99605c57fec95c637cf59aaa20fe766"
+    }
+  },
+  "targets": {
+    "S": "28ecc523e15b914a187814ab2752c0d85996948a552c62f970d8484bc6ed467a",
+    "C": "065c3cfc032af93e7576e17e49322826c4a379a707870175b16c2663d1e8e4e0",
+    "X": "25b4efef689601f3b5983bf6b914bd367153d0b21a6f1f4d40de50c5d412afa7",
+    "Q": "c0a4c43373a159cb38d08724af8b02187b249ab6a73f7e1b10b2276f38b0cb5a",
+    "W": "b27b95fbc9ffa9d335bb6b4614a9f227a5798122fca79b42cf53c9b106a6aff6",
+    "M": "b269cf068196d1c06b87be6bcded494827e7ac8a2cb6debf1eb0f0f5d0388479",
+    "R": "6d1a41909b012484d71f94d194071a7ebbb6773b7596db88127ca2a195b70ffc",
+    "K": "ca272e524b36a892e25f6169631a184ff764026451eff2f6ac4ab8e9d5e87ea2"
+  },
+  "authority": {
+    "policy": "Only direct opens of exact URL-only per-mode allowlists are permitted; search and link traversal are prohibited.",
+    "manifest": "authority-manifest.tsv",
+    "allowlist_entries": 76,
+    "distinct_retrieved_pages": 46,
+    "retrieval_started_utc": "2026-08-01T01:28:38.381052Z",
+    "retrieval_finished_utc": "2026-08-01T01:28:40.797781Z",
+    "live_page_rule": "Immediately before each collection wave, fetch_authority.py must reproduce every frozen byte count, SHA-256, final URL, MIME type, and fragment. Earlier waves must be complete and no cell in the new wave may be prepared; drift blocks the run.",
+    "limitation": "Agents open live versioned pages rather than an evaluator-hosted mirror; network allowlisting is procedural on the shared host."
+  },
+  "integrity": {
+    "tree_digest": "GNU tar 1.x: tar --sort=name --mtime=@0 --owner=0 --group=0 --numeric-owner -C TREE -cf - . | SHA-256; symlinks are rejected.",
+    "freeze_root": "SHA-256 of the byte-exact sorted file-manifest.sha256",
+    "randomization": "Five distinct nonzero 256-bit seeds and all derived maps are sealed and lock-covered; seed generation provenance is not externally attested.",
+    "events": "events.jsonl uses sequential canonical JSON records chained by SHA-256 of the preceding line; one run-wide operation lock serializes all protocol state transitions.",
+    "isolation": "Runtime paths and packets are neutral and inputs are read-only, but filesystem and network isolation are procedural rather than hardened."
+  },
+  "canonical_inputs": {
+    "plan": "plan.md",
+    "oracles": ["oracle/domain.md", "oracle/verdict.md", "oracle/controls.md"],
+    "rubrics": "rubrics/",
+    "allowlists": "allowlists/",
+    "prompts": "prompts/",
+    "policies": "policies/",
+    "schemas": "schemas/",
+    "randomization": "randomization/",
+    "sealed_maps": "../sealed/",
+    "generator": "../prepare.py",
+    "authority_verifier": "../fetch_authority.py",
+    "protocol_and_aggregator": "../protocol.py"
+  },
+  "primary_gates": {
+    "every_v3_atom": "PASS in 5 of 5 reports",
+    "v3_hard_errors": 0,
+    "v3_proposal_laundering": 0,
+    "v3_tcb_or_authority_defects": 0,
+    "v3_terminal_semantic_noncompletions": 0,
+    "v3_source_scope_or_budget_defects": 0
+  },
+  "known_nonclaims": [
+    "No causal effect estimate follows from the coherent V3-versus-V2 comparison.",
+    "No cryptographic claim of condition blinding or packet-only access is made.",
+    "No target was built, tested, executed, or macro-expanded during fixture or freeze validation.",
+    "No report had been collected when this manifest was prepared."
+  ]
+}

@@ -8,4 +8,6 @@ those terms. -->
 
 # Coding Guidelines
 
-Please follow the development instructions and coding guidelines defined in `AGENTS.md` located in the root of this repository.
+Please follow the development instructions and coding guidelines defined in
+`zerocopy/agent_docs/reviewing.md`, `zerocopy/AGENTS.md`, and the `AGENTS.md`
+file nearest the code you are changing.

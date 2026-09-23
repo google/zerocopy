@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-review-packet:1",
+  "$comment": "DRAFT / UNSEALED byte-identical content-addressed input for m1 and m2.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reviewer_ids", "scopes_in_order", "scope_payloads", "packet_tree"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "MATERIALITY-REVIEW-PACKET"},
+    "reviewer_ids": {"const": ["m1", "m2"]},
+    "scopes_in_order": {"const": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+    "scope_payloads": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scope", "path", "size", "sha256"],
+        "properties": {
+          "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+          "path": {"type": "string", "minLength": 1},
+          "size": {"type": "integer", "minimum": 0},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
+  }
+}

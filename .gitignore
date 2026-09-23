@@ -8,8 +8,12 @@
 # those terms.
 
 target
-Cargo.lock
 lcov.info
 
 # VSCode workspace files
 *.code-workspace
+
+# Unconditionally commit everything inside vendor directories (overrides
+# previous rules)
+!zerocopy/vendor/**
+!**/vendor/**/target/

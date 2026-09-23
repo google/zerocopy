@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "Q",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-hawthorn",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "q_metamorphic/Cargo.toml",
+    "q_metamorphic/src/lib.rs::LOCAL_ENTRY_B",
+    "q_metamorphic/src/lib.rs::local_text",
+    "q_metamorphic/src/lib.rs::catalog_text",
+    "q_metamorphic/src/lib.rs::delegated_text",
+    "q_metamorphic/caller_examples.rs::PEER_INPUT_A",
+    "q_metamorphic/caller_examples.rs::PEER_INPUT_B",
+    "q_metamorphic/caller_examples.rs::example_local",
+    "q_metamorphic/caller_examples.rs::example_peer_a",
+    "q_metamorphic/caller_examples.rs::example_peer_b",
+    "q_metamorphic/DEPENDENCY-API.md",
+    "q_metamorphic/REQUEST.md",
+    "q_metamorphic/SUPPORT.md",
+    "q_metamorphic/TCB.md"
+  ],
+  "theorem_boundary_class": "Keep the changed local catalog, sound local control, delegated unsafe-contract domain, unavailable dependency implementation, and each valid or invalid caller example in separate proof and classification layers.",
+  "supported_set": [
+    "Rust 1.83.0, edition 2021",
+    "all targets and profiles supported by that toolchain",
+    "selected dependency peer-text 3.0.0",
+    "DEPENDENCY-API.md as complete supplied dependency evidence",
+    "caller_examples.rs as an unprivileged downstream-crate fragment",
+    "no dependency implementation, build inputs, generated sources, artifacts, build scripts, cfg attributes, or accepted implementation TCB"
+  ],
+  "trigger_set": [
+    "one local catalog branch contains invalid UTF-8 bytes",
+    "matched local catalog with two valid string-literal controls",
+    "unsafe delegated API whose caller domain is exact ASCII bytes",
+    "unavailable selected dependency method implementation",
+    "one invalid-domain and one valid-domain downstream caller"
+  ],
+  "alternative_proof_paths": [
+    "Any exact invalid-UTF-8 derivation for the false local branch is accepted if it reaches from_utf8_unchecked and the resulting str validity violation.",
+    "Equivalent formulations of the ASCII caller domain are accepted if empty behavior, valid callers, invalid-caller rejection, and missing implementation evidence remain separate."
+  ],
+  "witness_requirement": "local_text(false), including example_local, must be traced through LOCAL_ENTRY_B to a non-UTF-8 str escaping the safe API. The bare construction/return must not be mislabeled immediate UB under Rust 1.83; any claimed dynamic-UB execution needs an exact downstream operation. example_peer_a is outside delegated_text's documented domain and cannot refute it. example_peer_b is within domain but cannot close the unavailable dependency implementation theorem.",
+  "case_control_class": "METAMORPHIC_LOCAL_NEGATIVE_CATALOG_POSITIVE_AND_DELEGATED_VALID_INVALID_CALLER_CONTROLS",
+  "contamination_risk": "Do not expose which catalog byte changed, expected local/catalog/delegated verdicts, caller classifications, missing-root result, atom/control IDs, or evaluator-only oracle and TCB decisions.",
+  "claim_layers": [
+    "LOCAL_IMPLEMENTATION_SOUNDNESS",
+    "CATALOG_CONTROL_SOUNDNESS",
+    "UNSAFE_CALLER_CONTRACT_DOMAIN",
+    "DEPENDENCY_IMPLEMENTATION_ROOT",
+    "DOWNSTREAM_CALLER_VALIDITY",
+    "AGGREGATE_API_DISPOSITION"
+  ],
+  "tcb_vacuity": "The TCB deliberately accepts no peer-text implementation/build/artifact proposition. Dependency metadata establishes contract and selected identities only. local_text and catalog_text are independent of that root; valid caller input does not prove dependency implementation correctness.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust UTF-8 and str validity, control-flow proof kernels, unsafe caller-domain reasoning, dependency evidence boundaries, and valid/invalid downstream-call separation.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to source, callers, request, support, dependency evidence, TCB, or manifest",
+    "Availability or acceptance of peer-text implementation, build, or artifact evidence",
+    "Any change to Rust 1.83.0 or admitted authority propositions",
+    "Any semantic change to Q atoms, controls, oracle, or defect rules"
+  ]
+}

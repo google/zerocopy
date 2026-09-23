@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:launch-record:1",
+  "$comment": "DRAFT / UNSEALED role-typed launch record bound into each one-attempt lease.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "role", "assignment_id", "slot_id", "run_id", "cell_id", "mode", "fixture_id", "task_mode", "prompt_regime", "condition_role", "condition_label", "target_label", "replicate", "workspace_root", "input_root", "output_root", "target_path", "output_path", "schema_paths", "schedule_sha256", "prompt_sha256", "package_byte_tree_sha256", "target_byte_tree_sha256", "authority_packet_path", "authority_packet_sha256", "authority_packet_visibility", "execution_manifest_sha256", "input_packet_sha256", "envelope_spec_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "role": {"enum": ["report", "scorer", "consistency", "adjudicator", "materiality-reviewer", "materiality-adjudicator"]},
+    "assignment_id": {"$ref": "#/$defs/safe_id"},
+    "slot_id": {"$ref": "#/$defs/safe_id"},
+    "run_id": {"anyOf": [{"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"}, {"type": "null"}]},
+    "cell_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q", null]},
+    "fixture_id": {"type": ["string", "null"]},
+    "task_mode": {"type": ["string", "null"]},
+    "prompt_regime": {"type": ["string", "null"]},
+    "condition_role": {"type": ["string", "null"]},
+    "condition_label": {"type": ["string", "null"]},
+    "target_label": {"type": ["string", "null"]},
+    "replicate": {"type": ["integer", "null"]},
+    "workspace_root": {"type": ["string", "null"]},
+    "input_root": {"type": "string", "minLength": 1},
+    "output_root": {"type": "string", "minLength": 1},
+    "target_path": {"type": ["string", "null"]},
+    "output_path": {"type": "string", "minLength": 1},
+    "schema_paths": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^schemas/[A-Za-z0-9._/-]+\\.schema\\.json$"}},
+    "schedule_sha256": {"$ref": "#/$defs/digest"},
+    "prompt_sha256": {"$ref": "#/$defs/digest"},
+    "package_byte_tree_sha256": {"type": ["string", "null"]},
+    "target_byte_tree_sha256": {"type": ["string", "null"]},
+    "authority_packet_path": {"type": ["string", "null"]},
+    "authority_packet_sha256": {"type": ["string", "null"]},
+    "authority_packet_visibility": {"type": ["string", "null"]},
+    "execution_manifest_sha256": {"$ref": "#/$defs/digest"},
+    "input_packet_sha256": {"$ref": "#/$defs/digest"},
+    "envelope_spec_sha256": {"$ref": "#/$defs/digest"}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"role": {"const": "report"}}, "required": ["role"]},
+      "then": {"properties": {"schema_paths": {"maxItems": 0}}},
+      "else": {"properties": {"schema_paths": {"minItems": 1}}}
+    }
+  ],
+  "$defs": {
+    "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

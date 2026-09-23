@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:integration-hooks:2",
+  "$comment": "DRAFT source schema for the exact build/review/finalize/runtime hook phases.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "blocking", "failure_gate", "hooks"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "blocking": {"const": true},
+    "failure_gate": {"const": "D-STATIC-INTEGRITY"},
+    "hooks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "phase", "required", "implementation_status", "consumes", "produces"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^H-[A-Z][A-Z0-9-]*$"},
+          "phase": {"enum": ["SNAPSHOT_BUILD", "SNAPSHOT_REVIEW", "FINALIZE_STATIC", "RUNTIME_COLLECTION", "POSTRUN_AGGREGATE"]},
+          "required": {"const": true},
+          "implementation_status": {"enum": ["DIRECTLY_REVALIDATED", "INDEPENDENT_RECEIPT_REQUIRED", "RUNTIME_RECEIPT_REQUIRED"]},
+          "consumes": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}},
+          "produces": {"type": "array", "minItems": 1, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    }
+  }
+}

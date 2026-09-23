@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:comparison-predicate:1",
+  "$comment": "DRAFT / UNSEALED exact descriptive comparison predicate; its aggregate builder is a blocking integration hook.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "predicate_id", "claim_kind", "modes", "conditions", "replicates_per_cell", "unit", "absolute_v5", "not_trailing", "on_missing", "on_malformed", "permits_inferential_claim", "permits_release_claim"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "predicate_id": {"const": "v5-diagnostic-absolute-and-not-trailing-v1"},
+    "claim_kind": {"const": "EXACT_DESCRIPTIVE"},
+    "modes": {"const": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "conditions": {"const": ["v5", "v4", "no_skill"]},
+    "replicates_per_cell": {"const": 5},
+    "unit": {"const": "MODE_ATOM_CERTIFICATE"},
+    "absolute_v5": {
+      "const": {"quantifier": "FOR_EVERY_MODE_ATOM_REPLICATE", "field": "certificate_decision", "required_value": "PASS"}
+    },
+    "not_trailing": {
+      "const": {"quantifier": "FOR_EVERY_MODE_ATOM", "metric": "PASS_COUNT_ACROSS_FIVE_REPLICATES", "comparisons": ["v5 >= v4", "v5 >= no_skill"]}
+    },
+    "on_missing": {"const": "ERROR"},
+    "on_malformed": {"const": "ERROR"},
+    "permits_inferential_claim": {"const": false},
+    "permits_release_claim": {"const": false}
+  }
+}

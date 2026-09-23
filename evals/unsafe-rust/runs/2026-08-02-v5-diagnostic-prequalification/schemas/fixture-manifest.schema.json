@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:hidden-fixture-manifest:2",
+  "$comment": "Three-phase hidden evaluator-only fixture manifest: DRAFT source, immutable SOURCE-REVIEW-CANDIDATE with an explicitly unresolved derived binding, then receipt-authorized and fully derived READY snapshot material. Never mounted to report agents.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "prompt_regime", "neutral_label", "source_tree_algorithm", "source_tree_sha256", "report_material_set_algorithm", "exact_report_material_set_sha256", "scoped_surfaces", "theorem_boundary_class", "supported_set", "trigger_set", "alternative_proof_paths", "witness_requirement", "case_control_class", "contamination_risk", "claim_layers", "tcb_vacuity", "permissions", "scorer_expertise", "scorer_version", "retirement_triggers"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "SOURCE-REVIEW-CANDIDATE", "READY"]},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "prompt_regime": {"enum": ["CONTROLLED", "NATURALISTIC"]},
+    "neutral_label": {"type": "string", "pattern": "^fixture-[a-z]+$"},
+    "source_tree_algorithm": {"const": "BYTE_TREE_V1"},
+    "source_tree_sha256": {
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"const": "INTEGRATION_BOUND_SOURCE_TREE_SHA256"}
+      ]
+    },
+    "report_material_set_algorithm": {"const": "V5_MODE_REPORT_MATERIAL_SET_V1"},
+    "exact_report_material_set_sha256": {
+      "$comment": "SHA-256 of the ASCII domain `V5_MODE_REPORT_MATERIAL_SET_V1`, one NUL byte, and canonical_json_bytes of the exact schema-v1 per-mode record set. The set contains 15 run-id-sorted records binding the byte lengths and SHA-256 digests of each generated prompt, input plan, and launch record.",
+      "oneOf": [
+        {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        {"const": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256"},
+        {"const": "DERIVE_DURING_SNAPSHOT_BUILD"}
+      ]
+    },
+    "reused_fixture_binding": {
+      "$comment": "Mode P reuses the exposed V4 regression fixture. The binding is exact so a schema-only consumer enforces the same lineage contract as freeze/validate_fixture_manifests.py.",
+      "const": {
+        "evidence_class": "EXPOSED_PRIOR_RUN_REGRESSION_ONLY",
+        "fixture_source_path": "fixtures/v4-focused/p_predicates",
+        "source_tree_algorithm": "BYTE_TREE_V1",
+        "source_tree_sha256": "2b194a735b69a8904b86baa43791a0ddac9f769ce32e87bf4e759822cb5cd52e",
+        "lineage_run_path": "runs/2026-08-01-v4-focused",
+        "target_label": "m4",
+        "target_map_path": "runs/2026-08-01-v4-focused/sealed/target-map.tsv",
+        "target_map_sha256": "f1c89a72bf11c705e04fa576d0a7979e24799ca1f714def6b4db6bd0a06d5837",
+        "lock_path": "runs/2026-08-01-v4-focused/freeze/LOCK.json",
+        "lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e",
+        "file_manifest_path": "runs/2026-08-01-v4-focused/freeze/file-manifest.sha256",
+        "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+        "authority_manifest_path": "runs/2026-08-01-v4-focused/freeze/authority-manifest.tsv",
+        "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
+        "rubric_path": "runs/2026-08-01-v4-focused/freeze/rubrics/P.md",
+        "rubric_sha256": "1e9e6622a34b3b0376b6912f676695e318edcd971ac1f4960810531ad854911d"
+      }
+    },
+    "scoped_surfaces": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "theorem_boundary_class": {"type": "string", "minLength": 1},
+    "supported_set": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "trigger_set": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "alternative_proof_paths": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "witness_requirement": {"type": "string", "minLength": 1},
+    "case_control_class": {"type": "string", "minLength": 1},
+    "contamination_risk": {"type": "string", "minLength": 1},
+    "claim_layers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "tcb_vacuity": {"type": "string", "minLength": 1},
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["target_access", "modification", "build_run_test", "network", "authority_access", "evaluator_only_material"],
+      "properties": {
+        "target_access": {"const": "DECLARED_INPUTS_READ_ONLY"},
+        "modification": {"const": "FORBIDDEN"},
+        "build_run_test": {"const": "FORBIDDEN"},
+        "network": {"const": "FORBIDDEN"},
+        "authority_access": {"const": "AGENT_VISIBLE_NEUTRAL_ONLY"},
+        "evaluator_only_material": {"const": "FORBIDDEN"}
+      }
+    },
+    "scorer_expertise": {"type": "string", "minLength": 1},
+    "scorer_version": {"type": "string", "minLength": 1},
+    "retirement_triggers": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+  },
+  "allOf": [
+    {
+      "if": {"properties": {"mode": {"const": "P"}}, "required": ["mode"]},
+      "then": {"required": ["reused_fixture_binding"]},
+      "else": {"not": {"required": ["reused_fixture_binding"]}}
+    },
+    {
+      "if": {"properties": {"status": {"const": "DRAFT"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "source_tree_sha256": {"const": "INTEGRATION_BOUND_SOURCE_TREE_SHA256"},
+          "exact_report_material_set_sha256": {"const": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "SOURCE-REVIEW-CANDIDATE"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "source_tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "not": {"const": "0000000000000000000000000000000000000000000000000000000000000000"}},
+          "exact_report_material_set_sha256": {"const": "DERIVE_DURING_SNAPSHOT_BUILD"}
+        }
+      }
+    },
+    {
+      "if": {"properties": {"status": {"const": "READY"}}, "required": ["status"]},
+      "then": {
+        "properties": {
+          "source_tree_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "not": {"const": "0000000000000000000000000000000000000000000000000000000000000000"}},
+          "exact_report_material_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$", "not": {"const": "0000000000000000000000000000000000000000000000000000000000000000"}}
+        }
+      }
+    }
+  ]
+}

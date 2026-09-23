@@ -1,0 +1,6 @@
+description = "Verify that `requires` blocks are rejected on safe functions."
+
+[test]
+args = ["verify"]
+expected_status = "failure"
+stderr_file = "expected.stderr"

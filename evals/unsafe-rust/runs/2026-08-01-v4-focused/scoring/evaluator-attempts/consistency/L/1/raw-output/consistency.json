@@ -1,0 +1,207 @@
+{
+  "schema_version": 1,
+  "mode": "L",
+  "atom_family_attestations": [
+    {
+      "atom_id": "L1",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J all identify the executed usize get_unchecked call's in-bounds obligation, state the out-of-bounds UB consequence, and target index < bytes.len(); no unequal L1 treatment remains."
+    },
+    {
+      "atom_id": "L2",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J all assert that the unsafe-containing else path has is_empty() == false and contrapose the zero-length contract. A/C/H quote true-arm exclusion as well as false-arm selection; B/D/F/G/I quote only false=>else, E gestures to unquoted same-paragraph rules, and J quotes true=>consequent plus false=>else without true=>skip-else. The cross-atom consequence of those extraction gaps is recorded as ambiguity."
+    },
+    {
+      "atom_id": "L3",
+      "all_ten_reports_compared": true,
+      "evidence": "A-D and H-J check both len's usize type and the unsigned/nonnegative domain. E omits both; F states the return type but derives nonnegativity from element-count-as-natural rather than a checked usize-domain entry; G checks the usize domain but misclassifies the len-to-usize link as a local source/type fact. The F split is recorded as an equivalence ambiguity rather than challenged."
+    },
+    {
+      "atom_id": "L4",
+      "all_ten_reports_compared": true,
+      "evidence": "A-D and G-J check built-in subtraction plus overflow boundaries and apply n > 0 across profiles. E/F assert representability and profile independence without those Rust authorities; both raw scorers consistently fail L4 there."
+    },
+    {
+      "atom_id": "L5",
+      "all_ten_reports_compared": true,
+      "evidence": "Every report A-J substitutes index = bytes.len() - 1 and explicitly derives the strict upper bound index < bytes.len(); both scorers uniformly pass L5."
+    },
+    {
+      "atom_id": "L6",
+      "all_ten_reports_compared": true,
+      "evidence": "All ten reports claim implementation PROVED and connect the branch/arithmetic chain to get_unchecked. E/F lack checked numeric leaves, B's formal Required drops valid uses/executions, and B/D/G/I/J expose the branch-extraction overlap recorded below; B's contraction is challenged under G1 rather than silently collapsed into this atom."
+    },
+    {
+      "atom_id": "L7",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J all separately call the existing lifetime-only SAFETY comment deficient for omitting the in-bounds obligation and its material derivation, while keeping that artifact verdict distinct from implementation soundness."
+    },
+    {
+      "atom_id": "L8",
+      "all_ten_reports_compared": true,
+      "evidence": "All ten supply adjacent replacement text. A-D and G-J can refer back to checked premises for the full chain; E/F assert representable subtraction despite having no checked usize/subtraction/overflow entries, and F's text also does not name get_unchecked. The s1 PASS decisions for E/F are challenged."
+    },
+    {
+      "atom_id": "L9",
+      "all_ten_reports_compared": true,
+      "evidence": "A-D and H-J inventory if selection, is_empty, len/type, usize domain, subtraction, overflow, and get_unchecked while separating source facts and mathematics. E/F omit the numeric Rust leaves; G omits len's return-type premise and misclassifies inferred index typing as local."
+    },
+    {
+      "atom_id": "L10",
+      "all_ten_reports_compared": true,
+      "evidence": "A/C/H provide narrow 1.82.0 entries whose extracted text supports every consumed proposition. B/D/I omit true-arm exclusion from AX-IF, E/F additionally omit numeric entries, G additionally omits len's usize return, and J's two AX-IF fragments still omit the true=>skip-else clause consumed by O1. J's s1 PASS is challenged."
+    },
+    {
+      "atom_id": "L11",
+      "all_ten_reports_compared": true,
+      "evidence": "A/C/H reconcile complete checked inventories. E/F/G have omitted or misclassified numeric/type leaves; B/D/I/J claim exact reconciliation although their extracted AX-IF prose does not establish true-arm exclusion. J's s1 PASS is challenged consistently with the other incomplete AX-IF reports."
+    }
+  ],
+  "defect_family_attestations": [
+    {
+      "field": "hard_error:LH1",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J all report implementation PROVED, reconstruct L1-L5, and treat comment deficiency separately; none issues UNSOUND or UNPROVED solely because of the comment."
+    },
+    {
+      "field": "hard_error:LH2",
+      "all_ten_reports_compared": true,
+      "evidence": "Every report explicitly calls the existing comment deficient; none calls it adequate."
+    },
+    {
+      "field": "hard_error:LH3",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J each state every factual link from false is_empty through nonzero length, predecessor arithmetic, and index < len to the callee obligation. Authority defects are kept in LH4/G11 rather than converted into an omitted-link LH3."
+    },
+    {
+      "field": "hard_error:LH4",
+      "all_ten_reports_compared": true,
+      "evidence": "E/F affirm complete reconciliation while wholly omitting consumed usize/subtraction/overflow authorities. B/D/G/I/J state the relevant propositions but incompletely extract or classify their support; whether that lesser evidence gap alone meets LH4's exact hard-error threshold is recorded as ambiguity."
+    },
+    {
+      "field": "hard_error:LH5",
+      "all_ten_reports_compared": true,
+      "evidence": "All ten disclaim build, test, execution, lint, or dynamic evidence and none uses such success as universal proof."
+    },
+    {
+      "field": "hard_error:G1",
+      "all_ten_reports_compared": true,
+      "evidence": "B alone formally defines Required as source x Rust/std x target x profile while omitting valid calls/inputs and executions, then certifies Covered = Required; the other reports include the valid-use/theorem domain. B's absent s2 decision is challenged."
+    },
+    {
+      "field": "hard_error:G2",
+      "all_ten_reports_compared": true,
+      "evidence": "Every report gives an explicit Required subset-of Covered or Covered = Required closure statement; B's contracted Required is handled independently as G1."
+    },
+    {
+      "field": "hard_error:G3",
+      "all_ten_reports_compared": true,
+      "evidence": "No report invents policy precedence or relabels a conservative audit domain as the project's promise."
+    },
+    {
+      "field": "hard_error:G4",
+      "all_ten_reports_compared": true,
+      "evidence": "No report uses CI, endpoints, sparse documentation, a cutoff, or a stability badge as interval coverage; all arguments are symbolic in target/profile."
+    },
+    {
+      "field": "hard_error:G5",
+      "all_ten_reports_compared": true,
+      "evidence": "No report issues UNSOUND, so the missing-four-link UNSOUND trigger is absent across A-J."
+    },
+    {
+      "field": "hard_error:G6",
+      "all_ten_reports_compared": true,
+      "evidence": "No report issues UNPROVED after establishing an existential UB certificate; all issue PROVED."
+    },
+    {
+      "field": "hard_error:G7",
+      "all_ten_reports_compared": true,
+      "evidence": "No report issues CONTRACT-BROKEN or relies on a UB-containing execution for such a verdict."
+    },
+    {
+      "field": "hard_error:G8",
+      "all_ten_reports_compared": true,
+      "evidence": "No report claims an observation remains guaranteed merely because it precedes UB."
+    },
+    {
+      "field": "hard_error:G9",
+      "all_ten_reports_compared": true,
+      "evidence": "The target has no third-party unsafe dependency or caller-controlled safe callback, and none of A-J silently trusts one."
+    },
+    {
+      "field": "hard_error:G10",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J offer comment replacements only after separately judging the unchanged implementation; none certifies an unimplemented design or narrows current obligations with it."
+    },
+    {
+      "field": "hard_error:G11",
+      "all_ten_reports_compared": true,
+      "evidence": "E/F necessarily rely on wholly unchecked numeric Rust premises and both scorers record G11. B/D/G/I/J instead cite the correct authority pages and state the propositions but incompletely extract or classify them; whether those gaps alone force G11 is recorded as ambiguity."
+    },
+    {
+      "field": "hard_error:G12",
+      "all_ten_reports_compared": true,
+      "evidence": "No report evidences inspection of an oracle, sibling, condition map, prior report, evaluator material, or another prohibited source."
+    },
+    {
+      "field": "proposal_laundering",
+      "all_ten_reports_compared": true,
+      "evidence": "All ten replacement comments are proposed artifact repairs and none is used as if already implemented to establish soundness or narrow obligations; both raw scorers uniformly record ABSENT."
+    },
+    {
+      "field": "tcb_authority_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "A/C/H have complete proposition-matched authority. E/F omit numeric premises, G misclassifies len's return type, and B/D/I/J incompletely extract AX-IF's exclusivity. Both scorers mark the defect for every such report except s1 on J; that J decision is challenged."
+    },
+    {
+      "field": "visible_scope_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "A-J discuss only the supplied target/request and allowlisted Rust authorities; neither raw scorer finds report-visible evidence of prohibited source-scope departure."
+    }
+  ],
+  "challenges": [
+    {
+      "label": "B",
+      "field": "hard_error:G1",
+      "recommended_decision": "PRESENT",
+      "evidence": "B says the request 'directly defines' Required as only exact source x Rust/std x targets x profiles, omitting valid calls/inputs and executions, then uses Covered = Required for its full PROVED certificate. That is the exact contracted-Required trigger; s2 records it absent."
+    },
+    {
+      "label": "E",
+      "field": "atom:L8",
+      "recommended_decision": "FAIL",
+      "evidence": "E's proposed comment asserts representability of len - 1, but E has no checked entry for len's usize type/domain, built-in subtraction, or overflow. It therefore cannot give the required unambiguous references to checked authority propositions for the L2-L5 chain; s1 passes it."
+    },
+    {
+      "label": "F",
+      "field": "atom:L8",
+      "recommended_decision": "FAIL",
+      "evidence": "F's replacement asserts representable subtraction while its report has no checked usize/subtraction/overflow entries, so it cannot reference checked propositions for the full chain. The text also says only 'in bounds for this same slice' without identifying get_unchecked; s1 passes L8."
+    },
+    {
+      "label": "J",
+      "field": "atom:L10",
+      "recommended_decision": "FAIL",
+      "evidence": "J consumes true-condition exclusion of the else arm, but AX-IF quotes only true=>consequent-executes and false=>else-executes; it omits the exact prose that true skips else. The extracted prose therefore does not supply the consumed proposition. s1 passes L10 while materially equivalent incomplete extractions fail elsewhere."
+    },
+    {
+      "label": "J",
+      "field": "atom:L11",
+      "recommended_decision": "FAIL",
+      "evidence": "J attests that its inventory exactly matches every semantic leaf, but O1's true-arm exclusion is not established by its quoted AX-IF fragments. This is the same reconciliation gap both scorers recognize in B/D/I; s1 passes J."
+    },
+    {
+      "label": "J",
+      "field": "tcb_authority_defect",
+      "recommended_decision": "PRESENT",
+      "evidence": "TCB-R1 claims proposition-matched checked authority, yet its AX-IF extraction omits true=>skip-else while O1 consumes that exclusivity. s1 marks no authority defect although it marks the equivalent incomplete AX-IF authority in B/D/I; s2 correctly marks it present."
+    }
+  ],
+  "ambiguities": [
+    "The frozen materials do not make explicit whether a correct, inventoried branch-selection proposition whose exact quotation supplies only one implication direction must also fail content/closure atoms L2 and L6, rather than only L10/L11, nor whether that extraction gap by itself meets the exact LH4/G11 threshold. This affects B/D/E/F/G/I/J; no challenge here resolves that overlap by speculation.",
+    "L3 prescribes the usize nonnegative-domain bridge but also requires acceptance of equivalently exact derivations. F establishes len as usize yet derives positivity from its separately stated element-count/natural-count meaning without a usize-domain entry; the packet does not unambiguously say whether that substitutes for the prescribed bridge, so the split raw L3 decision is not challenged.",
+    "L8 requires unambiguous references to checked authority propositions but does not say whether the adjacent comment itself must contain URLs or axiom labels. Direct method/contract names were treated as sufficient when the surrounding report actually contains a complete checked inventory; E/F fail for missing checked numeric entries independently of this formatting ambiguity.",
+    "L10 asks for exact prose, while some premises are carried by displayed signatures rather than prose. The packet does not specify a transcription format for such signatures; this review distinguishes an expressly inspected displayed signature from G's unquoted/misclassified len-return-type assertion."
+  ]
+}

@@ -1,0 +1,476 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+name: Anneal Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  # `v2_nix_cache` produces this file and every downstream Anneal job validates
+  # the same filename after downloading by immutable artifact ID. Keep the
+  # filename centralized here; the ID, not this name, selects the artifact.
+  ANNEAL_TOOLCHAIN_ARCHIVE: anneal-exocrate.tar.zst
+  # Keep these bounded, download-only retry counts coordinated with ci.yml and
+  # its Dockerfile. Neither setting reruns a build or test command.
+  CARGO_NET_RETRY: "10"
+  RUSTUP_MAX_RETRIES: "10"
+  RUSTFLAGS: -Dwarnings
+  RUSTDOCFLAGS: -Dwarnings
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+
+jobs:
+
+  static_checks:
+    name: Anneal Static Checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Test Anneal support scripts
+        run: |
+          set -euo pipefail
+          export PYTHONDONTWRITEBYTECODE=1
+          python3 -m py_compile \
+            anneal/v1/tools/check-release-pr-files.py \
+            anneal/v1/tools/test_exocrate_metadata_helpers.py \
+            anneal/v1/tools/test_release_pr_files.py \
+            anneal/v1/tools/collect-release-archive-metadata.py \
+            anneal/v1/tools/update-exocrate-metadata.py \
+            anneal/tests/test_prune_lake_cache.py \
+            anneal/prune-lake-cache.py \
+            anneal/rewrite-lake-vendor.py
+          python3 -m unittest discover -s anneal/v1/tools -p 'test_*.py'
+          python3 -m unittest discover -s anneal/tests -p 'test_*.py'
+          bash anneal/v1/tools/check-release-flow-dry-run.sh
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@8d87e8d5e5b8a8309d4281094560f127d9a265f1 # v3.22.5
+
+      - name: Check V2 flake evaluation
+        run: bash anneal/check-flake-eval.sh
+
+  anneal_tests:
+    name: Anneal V1 Tests
+    runs-on: ubuntu-latest
+    needs: v2_nix_cache
+    permissions:
+      actions: read # Required to download the toolchain artifact.
+      contents: write # Required to push benchmark data to the storage branch
+    env:
+      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/v1/target/anneal-toolchain
+      __ZEROCOPY_LOCAL_DEV: 1
+      RUSTFLAGS: ""
+      RUSTDOCFLAGS: ""
+      RUST_TEST_THREADS: "1"
+    steps:
+      - name: Record job start time
+        id: job_start_time
+        run: echo "unix=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Download Anneal toolchain archive
+        uses: ./.github/actions/download-artifact-with-retry
+        with:
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
+          path: anneal/target
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+
+      # Ensure `llms-full.txt` file is up-to-date.
+      - name: Check doc generation
+        run: cargo run -p doc_gen -- --check
+        working-directory: anneal/v1
+
+      - name: Install Anneal toolchain archive
+        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+        working-directory: anneal/v1
+
+      # Run unit tests separately, as they're much less likely to have bugs
+      # during local development, and this makes the GitHub Actions output
+      # easier to skim (in particular, it's clear at a glance whether a failure
+      # is due to unit or integration tests).
+      - name: Run unit tests
+        run: cargo test --verbose --bin cargo-anneal
+        working-directory: anneal/v1
+
+      # We duplicate running unit tests since they're very cheap compared to
+      # integration tests, and this way it's easier to be sure that we run all
+      # tests instead of specifically trying to carve out unit tests and risk
+      # missing test categories.
+      - name: Run all tests
+        run: |
+          start=$(date +%s)
+          cargo test --verbose
+          end=$(date +%s)
+          duration=$((end - start))
+          echo "Test Time: $duration seconds"
+          echo "[{\"name\": \"Test Time\", \"unit\": \"seconds\", \"value\": $duration}]" > test_time.json
+        working-directory: anneal/v1
+
+      - name: Combine benchmarks
+        env:
+          JOB_START_TIME_UNIX: ${{ steps.job_start_time.outputs.unix }}
+        run: |
+          total_duration=$(( $(date +%s) - JOB_START_TIME_UNIX ))
+          echo "Total CI Duration (All Steps): $total_duration seconds"
+          echo "[{\"name\": \"Total CI Duration (All Steps)\", \"unit\": \"seconds\", \"value\": $total_duration}]" > total_time.json
+
+          jq -n \
+            --slurpfile test anneal/v1/test_time.json \
+            --slurpfile total total_time.json \
+            '[
+              $test[0][0],
+              $total[0][0]
+            ]' > output.json
+
+      - name: Store CI duration benchmarks
+        # Only trusted main-branch pushes to the canonical repository can
+        # update the benchmark-data branch. Pull requests from forks receive a
+        # read-only GITHUB_TOKEN, and forks running this workflow should not try
+        # to publish benchmark history for google/zerocopy.
+        if: github.event_name == 'push' && github.repository == 'google/zerocopy' && github.ref == 'refs/heads/main'
+        uses: benchmark-action/github-action-benchmark@4322e5726e6334590d251fc4f92bec0efafc45dc # v1.22.2
+        with:
+          name: CI Durations
+          tool: 'customSmallerIsBetter'
+          output-file-path: output.json
+          gh-pages-branch: benchmark-data
+          auto-push: true
+          save-data-file: true
+          benchmark-data-dir-path: dashboard
+          fail-on-alert: false
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+  verify_examples:
+    name: Verify V1 example (${{ matrix.example }})
+    runs-on: ubuntu-latest
+    needs: v2_nix_cache
+    permissions:
+      actions: read # Required to download the toolchain artifact.
+      contents: read
+    env:
+      ANNEAL_TOOLCHAIN_DIR: ${{ github.workspace }}/anneal/v1/target/anneal-toolchain
+      __ZEROCOPY_LOCAL_DEV: 1
+      RUSTFLAGS: ""
+      RUSTDOCFLAGS: ""
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - abs
+          - anatomy
+          - checked_add
+          - const_generics
+          - design_doc
+          - linked_list
+          - namespaces
+          - never_type
+          - ptr_concat
+          - size_of_align_of
+          - swap
+          - unchecked_get
+          - update_max
+    steps:
+      - name: Free up disk space
+        run: |
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/share/boost
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install stable Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: stable
+
+      - name: Download Anneal toolchain archive
+        uses: ./.github/actions/download-artifact-with-retry
+        with:
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
+          path: anneal/target
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+
+      - name: Install Anneal toolchain archive
+        run: cargo run setup --local-archive "../target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+        working-directory: anneal/v1
+
+      - name: Verify example
+        env:
+          EXAMPLE: ${{ matrix.example }}
+        run: |
+          KNOWN_FAILING=("design_doc" "never_type" "ptr_concat")
+          example="$EXAMPLE"
+
+          expect_failure=0
+          for kf in "${KNOWN_FAILING[@]}"; do
+            if [ "$kf" = "$example" ]; then
+              expect_failure=1
+              break
+            fi
+          done
+
+          echo "Verifying $example (expect failure: $expect_failure)"
+
+          if cargo run verify --unsound-allow-is-valid --example "$example"; then
+            if [ "$expect_failure" -eq 1 ]; then
+              echo "::error::Example $example succeeded but was expected to fail."
+              exit 1
+            else
+              echo "Example $example succeeded."
+            fi
+          else
+            if [ "$expect_failure" -eq 1 ]; then
+              echo "Example $example failed as expected."
+            else
+              echo "::error::Example $example failed."
+              exit 1
+            fi
+          fi
+        working-directory: anneal/v1
+
+  # Build the Nix-produced toolchain archive once and fan out the exact archive
+  # as a workflow artifact. This avoids forcing every downstream matrix runner
+  # to realize the same Nix closure through Magic Nix Cache, which can run into
+  # GitHub Actions cache throttling under parallel fan-out.
+  v2_nix_cache:
+    name: Build Anneal Toolchain Archive
+    runs-on: ubuntu-latest
+    # All consumers depend on this job and select exactly the immutable artifact
+    # instance it published. This replaces the formerly duplicated artifact-name
+    # contract across the producer and three fan-out sites.
+    outputs:
+      toolchain_artifact_id: ${{ steps.upload_toolchain.outputs.artifact-id }}
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Restore a local Nix binary cache populated only by trusted `main`
+      # pushes. Pull requests and merge-queue runs may read the default-branch
+      # cache, but they never save their own entries there; that keeps sibling
+      # PRs from publishing toolchain archives for each other. This cache is
+      # only for cross-run reuse in the builder job. The workflow artifact below
+      # remains the cross-job fan-out mechanism for the current run.
+      #
+      # Keep the key inputs in sync with the local files that influence
+      # `.#omnibus-archive-ci`. It intentionally excludes most Anneal source
+      # files so ordinary PRs can reuse the archive built from `main`.
+      - name: Restore Anneal main Nix binary cache
+        id: restore_anneal_main_nix_cache
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: anneal/target/nix-cache-main
+          key: anneal-v2-main-nix-cache-v2-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py') }}
+
+      # Pull request caches are scoped by GitHub to the PR merge ref, so they
+      # can speed up repeated pushes to the same PR without becoming visible to
+      # `main` or to sibling PRs. This cache is a fallback for an exact miss in
+      # the trusted main cache above, not a second copy to restore after a main
+      # hit: both exact keys identify the same archive inputs, and the trusted
+      # main result is already usable by the PR.
+      #
+      # Keep this condition coordinated with both PR cache population steps
+      # below. An archive-changing PR must still be able to restore and publish
+      # its branch-local result after the trusted main key misses.
+      - name: Restore Anneal PR Nix binary cache
+        id: restore_anneal_pr_nix_cache
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: anneal/target/nix-cache-pr
+          key: anneal-v2-pr-nix-cache-v1-${{ runner.os }}-${{ runner.arch }}-pr-${{ github.event.pull_request.number }}-${{ hashFiles('anneal/flake.nix', 'anneal/flake.lock', 'anneal/rewrite-lake-vendor.py', 'anneal/prune-lake-cache.py') }}
+
+      - name: Install Nix
+        uses: DeterminateSystems/determinate-nix-action@8d87e8d5e5b8a8309d4281094560f127d9a265f1 # v3.22.5
+
+      # On Ubuntu 24.04 (currently `ubuntu-latest`), AppArmor restricts unprivileged user namespaces by default.
+      # The Nix build sandbox runs `steam-run` (which uses `bubblewrap`/`bwrap`) during the `mathlib-cache-download`
+      # phase to create an FHS environment. `bwrap` requires creating a user namespace to set up uid mappings,
+      # which fails with "Permission denied" unless this restriction is temporarily disabled on the host.
+      #
+      # We temporarily disable it right before the `nix build` step and re-enable it immediately after
+      # to maintain the principle of least privilege.
+      #
+      # FIXME(#3412): Deduplicate this with what's repeated below?
+      - name: Enable unprivileged user namespaces (Ubuntu 24.04)
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0
+
+      - name: Build Anneal toolchain archive
+        run: |
+          set -euo pipefail
+          mkdir -p target
+          nix_args=()
+          for cache in target/nix-cache-main target/nix-cache-pr; do
+            if [ -f "$cache/nix-cache-info" ]; then
+              nix_args+=(--extra-substituters "file://$PWD/$cache/?trusted=1")
+            fi
+          done
+
+          nix build "${nix_args[@]}" .#omnibus-archive-ci --out-link "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          archive="$(readlink -f "target/$ANNEAL_TOOLCHAIN_ARCHIVE")"
+          rm "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          cp "$archive" "target/$ANNEAL_TOOLCHAIN_ARCHIVE"
+          archive_size="$(python3 -c 'import os, sys; print(os.path.getsize(sys.argv[1]))' "target/$ANNEAL_TOOLCHAIN_ARCHIVE")"
+          max_github_release_asset_size=2147483647
+          printf 'Built %s (%s bytes)\n' "$ANNEAL_TOOLCHAIN_ARCHIVE" "$archive_size"
+          if [ "$archive_size" -gt "$max_github_release_asset_size" ]; then
+            echo "::error::$ANNEAL_TOOLCHAIN_ARCHIVE is ${archive_size} bytes, which exceeds GitHub's ${max_github_release_asset_size}-byte release asset limit."
+            exit 1
+          fi
+          nix build "${nix_args[@]}" .#omnibus-archive-layout-check --no-link
+        working-directory: anneal
+
+      # Re-enable the AppArmor namespace restriction to restore the runner host's default security posture.
+      # `if: always()` ensures this cleanup step runs even if the Nix build fails.
+      - name: Restore AppArmor restriction
+        if: always()
+        run: sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=1
+
+      # Populate the default-branch cache only from trusted `main` pushes.
+      # GitHub's dependency-cache scoping makes entries saved from `main`
+      # visible to PRs targeting `main`, while entries from PR merge refs are
+      # isolated to that PR. Saving only here keeps the cache useful across PRs
+      # without letting a PR publish an archive for unrelated runs.
+      - name: Populate Anneal Nix binary cache
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p target/nix-cache-main
+          # The archive is already zstd-compressed, so keep the Nix binary-cache
+          # wrapper cheap; higher levels add CPU time for negligible size wins.
+          nix copy .#omnibus-archive-ci \
+            --to "file://$PWD/target/nix-cache-main/?compression=zstd&compression-level=1&trusted=1"
+        working-directory: anneal
+
+      - name: Save Anneal Nix binary cache
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main' && steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: anneal/target/nix-cache-main
+          key: ${{ steps.restore_anneal_main_nix_cache.outputs.cache-primary-key }}
+
+      - name: Populate Anneal PR Nix binary cache
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true' &&
+          steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
+        run: |
+          set -euo pipefail
+          mkdir -p target/nix-cache-pr
+          # PR-local caches optimize repeated pushes to the same PR. The
+          # archive itself uses zstd level 6; keep this wrapper at level 1.
+          nix copy .#omnibus-archive-ci \
+            --to "file://$PWD/target/nix-cache-pr/?compression=zstd&compression-level=1&trusted=1"
+        working-directory: anneal
+
+      - name: Save Anneal PR Nix binary cache
+        if: >-
+          github.event_name == 'pull_request' &&
+          steps.restore_anneal_main_nix_cache.outputs.cache-hit != 'true' &&
+          steps.restore_anneal_pr_nix_cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: anneal/target/nix-cache-pr
+          key: ${{ steps.restore_anneal_pr_nix_cache.outputs.cache-primary-key }}
+
+      - name: Upload Anneal toolchain archive
+        id: upload_toolchain
+        # This archive is already zstd-compressed. The shared action publishes
+        # it directly instead of wrapping it in a ZIP that every matrix runner
+        # would otherwise have to extract.
+        uses: ./.github/actions/upload-file-artifact
+        with:
+          name: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+          path: anneal/target/${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+
+  v2:
+    name: Run V2 tests
+    runs-on: ubuntu-latest
+    # Depending on `v2_nix_cache` avoids duplicate Nix builds; this job only
+    # downloads the exact archive that the builder job produced.
+    needs: v2_nix_cache
+    permissions:
+      actions: read # Required to download the toolchain artifact.
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Download Anneal toolchain archive
+        uses: ./.github/actions/download-artifact-with-retry
+        with:
+          artifact-id: ${{ needs.v2_nix_cache.outputs.toolchain_artifact_id }}
+          path: anneal/target
+          expected-file: ${{ env.ANNEAL_TOOLCHAIN_ARCHIVE }}
+
+      # FIXME: Pin this nightly to the same Rust date encoded in
+      # anneal/flake.nix, or derive it from the archive metadata, so v2 CI is
+      # reproducible instead of following whatever nightly happens to be latest.
+      - name: Install latest nightly Rust
+        uses: dtolnay/rust-toolchain@02cb101ec7c40f2c49e1d9714d64511d8e1b74de # zizmor: ignore[superfluous-actions]
+        with:
+          toolchain: nightly
+
+      - name: Run V2 tests
+        run: cargo test --workspace --all-features # include, e.g., tests that assume exocrate prebuilt
+        working-directory: anneal
+
+  # Used to signal to branch protections that all other jobs have succeeded.
+  all-jobs-succeed:
+      # WARNING: This name is load-bearing! It's how GitHub's settings UI
+      # configures which jobs to block on. DO NOT change this name without
+      # updating the settings UI to match.
+      name: All checks succeeded (anneal.yml)
+      # On failure, we run and unconditionally exit with a failing status code.
+      # On success, this job is skipped. Jobs skipped using `if:` are considered
+      # to have succeeded:
+      #
+      # https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/collaborating-on-repositories-with-code-quality-features/troubleshooting-required-status-checks#handling-skipped-but-required-checks
+      if: failure()
+      runs-on: ubuntu-latest
+      needs: [static_checks, anneal_tests, verify_examples, v2_nix_cache, v2]
+      steps:
+        - name: Mark the job as failed
+          run: exit 1

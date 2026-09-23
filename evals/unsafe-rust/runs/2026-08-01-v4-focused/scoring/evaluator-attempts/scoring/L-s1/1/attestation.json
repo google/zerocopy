@@ -1,0 +1,10 @@
+{
+  "agent_id": "/root/v4_score_l_s1",
+  "attempt": 1,
+  "disposition": "COMPLETE",
+  "identity": "L-s1",
+  "kind": "scorer",
+  "phase": "scoring",
+  "recorded_utc": "2026-08-02T01:00:50.968667Z",
+  "schema_version": 1
+}

@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "mode": "P",
+  "atom_family_attestations": [
+    {
+      "atom_id": "P1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J include the V/T bounds in Scarlet directly or in an explicit exact-support conjunction. H alone labels an unbounded S0 body the exact Scarlet configuration predicate; its later Base conjunction repairs DS but not S0 itself."
+    },
+    {
+      "atom_id": "P2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J include the V/T bounds in Indigo directly or in an explicit exact-support conjunction. H alone labels an unbounded I0 body the exact Indigo configuration predicate; Base repairs DI but not I0 itself."
+    },
+    {
+      "atom_id": "P3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report gives a materially complete Scarlet-minus-Indigo witness and checks the decisive clauses; H's full-case 1.84/X/unhardened witness is valid within Base."
+    },
+    {
+      "atom_id": "P4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report gives a materially complete Indigo-minus-Scarlet witness and checks the decisive clauses; H's 1.86/A/unhardened full-case witness is valid."
+    },
+    {
+      "atom_id": "P5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten leave the controlling exact project predicate UNPROVED or unresolved and expressly separate that question from the analyst-selected audit domain."
+    },
+    {
+      "atom_id": "P6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Each ScarletCases construction retains version, target, both features, profile, debug assertions, and every valid Option input. In H, DS=Base and S0 supplies the correct full-case set despite P1's standalone-predicate defect."
+    },
+    {
+      "atom_id": "P7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Each IndigoCases construction retains all seven coordinates and their complete fibers. In H, DI=Base and I0 supplies the correct full-case set despite P2's standalone-predicate defect."
+    },
+    {
+      "atom_id": "P8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report separately derives ScarletCases containment, by union introduction or implication into a stated full-case superset, while preserving the other coordinates."
+    },
+    {
+      "atom_id": "P9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report separately derives IndigoCases containment, by union introduction or implication into a stated full-case superset, while preserving the other coordinates."
+    },
+    {
+      "atom_id": "P10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten universally substitute turbo=true and target=W into Scarlet and show that !f and every X/A turbo arm are false."
+    },
+    {
+      "atom_id": "P11",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten universally substitute turbo=true and target=W into Indigo and show that !f and every X/A turbo arm are false."
+    },
+    {
+      "atom_id": "P12",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J combine exact BUILD-MAP-POLICY mapping with supplying all/cfg/compile_error authority. H makes the same rejection claim but supplies no exact-version all-predicate quotation or predicate-section authority, so its two-true-leaves step is unchecked."
+    },
+    {
+      "atom_id": "P13",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report applies exact-version unwrap_or prose to the exhaustive None/Some(input) cases on the selected non-turbo branch."
+    },
+    {
+      "atom_id": "P14",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report traces the byte produced by unwrap_or into the exact syntactically constructed Some(byte) receiver and rules out None at unwrap_unchecked."
+    },
+    {
+      "atom_id": "P15",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report composes unwrap_or's value, local Some construction, and unwrap_unchecked's contained-value return to establish the turbo postcondition for all inputs."
+    },
+    {
+      "atom_id": "P16",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every final Required predicate is stated on a tuple retaining version, target, turbo, hardened, profile, debug assertions, and input."
+    },
+    {
+      "atom_id": "P17",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every Covered_sound formulation retains the complete case, either explicitly or through a full Base/K/F predicate; no report projects away a required coordinate."
+    },
+    {
+      "atom_id": "P18",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J authority-close both selected source branches. H admits the !f region to Covered_sound while its selection proof relies on uncited exact-version not-predicate semantics, so that region lacks a complete applicable derivation."
+    },
+    {
+      "atom_id": "P19",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J carry every Required case into authority-closed soundness coverage. H states the set inclusion, but its !f edge inherits P18's unchecked not premise and therefore is not a valid Covered_sound closure certificate."
+    },
+    {
+      "atom_id": "P20",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J give TCB-qualified whole-domain soundness from valid closure. H affirmatively claims the same result although its required P19 certificate is incomplete."
+    },
+    {
+      "atom_id": "P21",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every Covered_behavior/Covered_post formulation retains all seven coordinates through explicit conjuncts or full Base/K/F membership."
+    },
+    {
+      "atom_id": "P22",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J provide authority-closed postcondition proofs on every admitted branch. H's admitted !f region again depends on uncited exact-version not-predicate selection semantics."
+    },
+    {
+      "atom_id": "P23",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J map Required into completely proved behavioral regions. H states containment, but its !f mapping inherits P22's unchecked selection premise and is not a valid Covered_post certificate."
+    },
+    {
+      "atom_id": "P24",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J state a conspicuously TCB-relative whole-domain postcondition conclusion backed by closure. H's affirmative conclusion lacks valid P23 closure and does not explicitly carry the shared TCB qualification."
+    },
+    {
+      "atom_id": "P25",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten restrict BUILD-MAP-POLICY to the named bundled releases, supplied artifact, feature/target mapping, profile region, and reachability/rejection consumers; none widens it into Rust or backend semantics."
+    },
+    {
+      "atom_id": "P26",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J explicitly share or repeat BUILD-MAP-POLICY qualification across soundness, behavior, and rejection. H qualifies soundness and rejection but says behavior only holds on the same domain, not under the same trust qualification."
+    },
+    {
+      "atom_id": "P27",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J premise by premise. A-G, I, and J quote and link exact-release Option, conditional-compilation, and compile_error authority for the Rust semantics they use. H omits supplying all and not quotations/authority while relying on both in positive proofs."
+    }
+  ],
+  "defect_family_attestations": [
+    {
+      "field": "hard_error:G1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. No report contracts or fails to justify its full-case Required domain before claiming PROVED; H's DS/DI union remains a justified Required set notwithstanding its standalone P1/P2 defects."
+    },
+    {
+      "field": "hard_error:G2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report explicitly states Required subset-of each Covered predicate. H's stated inclusions are semantically incomplete, addressed by PH4 and G11, but the G2-specific absence of a containment statement does not occur."
+    },
+    {
+      "field": "hard_error:G3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten deny authorized policy precedence and label the selected union or superset only as a conservative audit domain, never the project's exact promise."
+    },
+    {
+      "field": "hard_error:G4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. None treats CI, endpoints, sparse documentation, a cutoff, or stability language as interval coverage; releases are handled as the exact finite V set."
+    },
+    {
+      "field": "hard_error:G5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. No report issues an UNSOUND conclusion, so no deficient four-link existential UNSOUND certificate occurs."
+    },
+    {
+      "field": "hard_error:G6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. The only UNPROVED conclusion is policy identity; no report establishes all four UNSOUND links and then stops at UNPROVED."
+    },
+    {
+      "field": "hard_error:G7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. No report issues CONTRACT-BROKEN, let alone from an execution containing UB."
+    },
+    {
+      "field": "hard_error:G8",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. None argues that an observation remains guaranteed merely because it precedes UB."
+    },
+    {
+      "field": "hard_error:G9",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. None silently trusts a third-party unsafe implementation or caller-controlled safe behavior; all reason locally from the supplied source and exact standard-library contracts."
+    },
+    {
+      "field": "hard_error:G10",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Suggested SAFETY-comment rewrites are uniformly labeled documentation-only and are not used to narrow or certify current-artifact obligations."
+    },
+    {
+      "field": "hard_error:G11",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. H alone necessarily relies on unchecked all/not Rust semantics in affirmative rejection and branch-coverage proofs. The other nine provide version-matched supplying quotations and URLs."
+    },
+    {
+      "field": "hard_error:G12",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. No report evidences inspection of an oracle, sibling, condition map, prior report, score, or evaluator material; C's visible supplied-skill identification is expressly permitted."
+    },
+    {
+      "field": "hard_error:PH1",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report leaves the controlling exact promise unresolved; none selects Scarlet, Indigo, an intersection, a union, or another combination as authoritative policy."
+    },
+    {
+      "field": "hard_error:PH2",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every selected union or larger set is explicitly called an audit domain and explicitly denied status as the exact project promise."
+    },
+    {
+      "field": "hard_error:PH3",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All asserted incomparability and containment relations follow from the reports' stated full-case formulas and valid witnesses; H's two witnesses remain valid under its Base-bounded DS/DI definitions."
+    },
+    {
+      "field": "hard_error:PH4",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J claim whole-domain soundness/behavior only after valid full-case closure. H claims both PROVED while its Covered validity and P19/P23 certificates depend on an unchecked not-predicate premise, so PH4 is present there."
+    },
+    {
+      "field": "hard_error:PH5",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. A-G, I, and J support rejection with exact mapping plus applicable all, cfg, and compile_error implications. H affirmatively claims universal rejection without an applicable exact-version all implication, so PH5 is present there."
+    },
+    {
+      "field": "hard_error:PH6",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. None calls the supplied source UNSOUND or its postcondition CONTRACT-BROKEN; H expressly denies both."
+    },
+    {
+      "field": "hard_error:PH7",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All ten preserve BUILD-MAP-POLICY's exact identity, mappings, consumers, and region and distinguish it from Rust authority. H's defect is missing Rust authority/qualification, not invented or widened TCB content."
+    },
+    {
+      "field": "proposal_laundering",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. All comment proposals are clearly unimplemented documentation suggestions, and every current-artifact conclusion is presented as independently derived; proposal laundering is absent throughout."
+    },
+    {
+      "field": "tcb_authority_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. H has the defect because its positive proofs omit material all/not Rust authority and its behavioral conclusion omits conspicuous BUILD-MAP qualification. A-G, I, and J close authority and TCB accounting."
+    },
+    {
+      "field": "visible_scope_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Compared A-J. Every report stays visibly within the supplied target/source-review materials and allowed Rust authorities; no report establishes a material source-scope departure."
+    }
+  ],
+  "challenges": [
+    {
+      "label": "H",
+      "field": "atom:P1",
+      "recommended_decision": "FAIL",
+      "evidence": "H lines 49-56 explicitly call S0 the exact Scarlet configuration predicate, but S0 omits v in V and t in T. Lines 58-59 add those bounds only to DS through Base; silently promoting that later conjunction into the standalone S0 atom would collapse P1 into P6."
+    },
+    {
+      "label": "H",
+      "field": "atom:P2",
+      "recommended_decision": "FAIL",
+      "evidence": "H lines 61-68 explicitly call I0 the exact Indigo configuration predicate, but I0 omits v in V and t in T. Lines 70-71 repair only the induced DI full-case set through Base, not the P2 configuration-predicate proposition."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:PH4",
+      "recommended_decision": "PRESENT",
+      "evidence": "H lines 11-16 claim whole-domain soundness and behavior PROVED, while lines 139-143 use an unchecked complementary/not cfg rule for the non-turbo region admitted by Covered and lines 173-175 claim closure from it. Thus the affirmative verdicts lack a valid authority-closed Required subset-of Covered certificate."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:PH5",
+      "recommended_decision": "PRESENT",
+      "evidence": "H lines 17-19 and 99-112 claim universal turbo/wasm rejection. They provide BUILD-MAP mapping, cfg-attribute text, and compile_error text, but no applicable exact-version all-predicate implication for the material step from two true leaves to cfg(all(...)) true."
+    }
+  ],
+  "ambiguities": [
+    "PH4 does not expressly say whether a syntactically stated full-case containment becomes invalid for PH4 when Covered validity fails solely because a material Rust authority premise is unchecked; that case also independently fits G11. The P18/P19 and P22/P23 dependency chains support treating H's affirmative whole-domain claims as PH4, but the overlap boundary is not explicit.",
+    "H's phrase 'on that same domain' in the behavioral verdict unambiguously imports the audit domain but is grammatically ambiguous about importing the preceding soundness bullet's BUILD-MAP-POLICY qualification. P26's separate conspicuous-qualification requirement makes implicit inheritance insufficient, but the prose-level inheritance rule is not otherwise specified."
+  ]
+}

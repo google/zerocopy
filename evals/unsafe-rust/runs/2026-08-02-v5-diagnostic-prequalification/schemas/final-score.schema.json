@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:mode-final-score:3",
+  "$comment": "DRAFT / UNSEALED mode envelope over A-O preserving direct, blocker, certificate, and root layers.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "input_binding_sha256", "adjudication_packet_sha256", "adjudication_sha256", "reports"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "FINAL-SCORE"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "input_binding_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adjudication_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "adjudication_sha256": {"anyOf": [{"type": "string", "pattern": "^[0-9a-f]{64}$"}, {"type": "null"}]},
+    "reports": {
+      "type": "array",
+      "minItems": 15,
+      "maxItems": 15,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "atoms", "hard_errors", "global_defects", "novel_findings"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "atoms": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/final_atom"}},
+          "hard_errors": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(GH[1-9][0-9]*|[EVFPBLRQ]H[1-9][0-9]*)$"}},
+          "global_defects": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^GD[1-9][0-9]*$"}},
+          "novel_findings": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["id", "classification", "sources"],
+              "properties": {
+                "id": {"type": "string", "pattern": "^N-[0-9a-f]{24}$"},
+                "classification": {"enum": ["VALID_NEW_FINDING", "VALID_PROOF_DOCUMENTATION_GAP", "DUPLICATE_OR_BROADER_ORACLE_ATOM", "UNSUPPORTED_REASONABLE_QUESTION", "INVALID_ASSERTION", "REQUIRES_UPSTREAM_OR_RUST_DOC_CLARIFICATION"]},
+                "sources": {
+                  "type": "array",
+                  "minItems": 1,
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": ["scorer_id", "source_id"],
+                    "properties": {
+                      "scorer_id": {"enum": ["s1", "s2"]},
+                      "source_id": {"type": "string", "pattern": "^s[12]-N[1-9][0-9]*$"}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "final_atom": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "direct_decision", "blocked_by", "certificate_decision", "root_failures"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[EVFPBLRQ][1-9][0-9]*$"},
+        "direct_decision": {"enum": ["PASS", "FAIL"]},
+        "blocked_by": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[EVFPBLRQ][1-9][0-9]*$"}},
+        "certificate_decision": {"enum": ["PASS", "FAIL"]},
+        "root_failures": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^[EVFPBLRQ][1-9][0-9]*$"}}
+      }
+    }
+  }
+}

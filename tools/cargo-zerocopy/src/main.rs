@@ -20,12 +20,19 @@
 // Cargo.toml section.
 
 use std::{
+    collections::HashSet,
     env, fmt, fs,
-    io::{self, Read as _},
-    process::{self, Command, Output},
+    io::{self, BufRead as _, Write as _},
+    process::{self, Command, Output, Stdio},
 };
 
 use toml::{map::Map, Value};
+
+// Cargo test executables inherit these variables from the delegated process.
+// `testutil::UiTestRunner` reuses the exact outer feature selection when it
+// recursively builds artifacts for UI fixtures.
+const UI_TEST_FEATURE_ARG_COUNT_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT";
+const UI_TEST_FEATURE_ARG_ENV_PREFIX: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_";
 
 #[derive(Debug)]
 enum Error {
@@ -126,54 +133,200 @@ fn get_toolchain_versions() -> Versions {
     }
 }
 
-fn is_toolchain_installed(versions: &Versions, name: &str) -> Result<bool, Error> {
-    let version = versions.get(name)?;
-    let output = rustup(["run", version, "cargo", "version"], None).output().unwrap();
-    if output.status.success() {
-        let output = rustup([&format!("+{version}"), "component", "list"], None).output_or_exit();
-        let stdout = String::from_utf8(output.stdout).unwrap();
-        Ok(stdout.contains("rust-src (installed)"))
+fn ensure_installed_or_exit(
+    is_installed: impl FnOnce() -> Result<bool, Error>,
+    install: impl FnOnce() -> Result<(), Error>,
+    missing_item_desc: &str,
+    prompt: &str,
+) -> Result<(), Error> {
+    if is_installed()? {
+        return Ok(());
+    }
+
+    eprintln!("[cargo-zerocopy] {missing_item_desc}");
+    if env::var("GITHUB_RUN_ID").is_ok() {
+        eprintln!("[cargo-zerocopy] detected GitHub Actions environment; auto-installing without waiting for confirmation");
+    } else if env::var("CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN").is_ok() {
+        eprintln!("[cargo-zerocopy] detected CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN environment variable; auto-installing without waiting for confirmation");
     } else {
-        Ok(false)
-    }
-}
-
-fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Error> {
-    eprintln!("[cargo-zerocopy] missing either toolchain '{name}' or component 'rust-src'");
-    if env::vars().any(|v| v.0 == "GITHUB_RUN_ID") {
-        // If we're running in a GitHub action, then it's better to bail than to
-        // hang waiting for input we're never going to get.
-        process::exit(1);
-    }
-
-    loop {
-        eprint!("[cargo-zerocopy] would you like to install toolchain '{name}' and component 'rust-src' via 'rustup' (y/n)? ");
-        let mut input = [0];
-        io::stdin().read_exact(&mut input).unwrap();
-        match input[0] as char {
-            'y' | 'Y' => break,
-            'n' | 'N' => process::exit(1),
-            _ => (),
+        eprintln!("[cargo-zerocopy] set CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 to always install toolchains and targets without prompting");
+        loop {
+            eprint!("[cargo-zerocopy] {prompt} (y/n)? ");
+            io::stderr().flush().unwrap();
+            let mut line = String::new();
+            io::stdin().lock().read_line(&mut line).unwrap();
+            let input = line.trim().to_lowercase();
+            if input.starts_with('y') {
+                break;
+            } else if input.starts_with('n') {
+                process::exit(1);
+            }
         }
     }
 
-    let version = versions.get(name)?;
-    rustup(["toolchain", "install", version, "-c", "rust-src"], None).execute();
+    install()?;
 
     Ok(())
 }
 
-fn get_rustflags(name: &str) -> &'static str {
-    // See #1792 for context on zerocopy_derive_union_into_bytes.
-    if name == "nightly" {
-        "--cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS --cfg zerocopy_derive_union_into_bytes "
-    } else {
-        "--cfg zerocopy_derive_union_into_bytes "
+fn install_toolchain_or_exit(versions: &Versions, name: &str) -> Result<(), Error> {
+    let version = versions.get(name)?.to_string();
+    let is_nightly = version.contains("nightly");
+
+    ensure_installed_or_exit(
+        || {
+            let output = rustup(["run", &version, "cargo", "version"], None).output();
+            let output = match output {
+                Ok(o) => o,
+                Err(e) => {
+                    eprintln!("[cargo-zerocopy] failed to run rustup: {e}");
+                    process::exit(1);
+                }
+            };
+            if output.status.success() {
+                let output =
+                    rustup([&format!("+{version}"), "component", "list"], None).output_or_exit();
+                let stdout = String::from_utf8(output.stdout).unwrap();
+                let is_installed =
+                    |c| stdout.lines().any(|l| l.starts_with(c) && l.contains("(installed)"));
+                let mut installed =
+                    is_installed("rust-src") && is_installed("rustfmt") && is_installed("clippy");
+                if is_nightly {
+                    installed = installed && is_installed("miri");
+                }
+                Ok(installed)
+            } else {
+                Ok(false)
+            }
+        },
+        || {
+            let mut args = vec![
+                "toolchain",
+                "install",
+                &version,
+                "-c",
+                "rust-src",
+                "-c",
+                "rustfmt",
+                "-c",
+                "clippy",
+            ];
+            if is_nightly {
+                args.push("-c");
+                args.push("miri");
+            }
+            rustup(args, None).stdout(Stdio::null()).execute();
+            Ok(())
+        },
+        &format!(
+            "missing toolchain '{name}' or one of its components (rust-src, rustfmt, clippy{})",
+            if is_nightly { ", miri" } else { "" }
+        ),
+        &format!("would you like to install toolchain '{name}' and its components via 'rustup'"),
+    )
+}
+
+fn install_targets_or_exit(version: &str, targets: &[String]) -> Result<(), Error> {
+    // Avoid running `rustup` in the common case that no `--target` arguments
+    // are provided.
+    if targets.is_empty() {
+        return Ok(());
+    }
+
+    let output = rustup(["target", "list", "--toolchain", version], None).output_or_exit();
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    let mut installed = HashSet::new();
+    let mut available = HashSet::new();
+
+    for line in stdout.lines() {
+        let mut parts = line.split_whitespace();
+        if let Some(target) = parts.next() {
+            available.insert(target.to_string());
+            if parts.next() == Some("(installed)") {
+                installed.insert(target.to_string());
+            }
+        }
+    }
+
+    let to_install = targets
+        .iter()
+        .filter(|target| {
+            !installed.contains(target.as_str()) && available.contains(target.as_str())
+        })
+        .cloned()
+        .collect::<Vec<_>>();
+
+    let to_install_str = to_install.join(", ");
+    ensure_installed_or_exit(
+        || Ok(to_install.is_empty()),
+        || {
+            let mut args = vec!["target", "add", "--toolchain", version];
+            args.extend(to_install.iter().map(|s| s.as_str()));
+            rustup(args, None).stdout(Stdio::null()).execute();
+            Ok(())
+        },
+        &format!("missing target(s): {to_install_str}"),
+        &format!("would you like to install target(s) '{to_install_str}' via 'rustup'"),
+    )
+}
+
+// Capture Cargo feature-selection arguments before the test-binary separator.
+// Preserve their spelling and order: repeated feature options are additive,
+// and replaying the original arguments delegates their semantics back to
+// Cargo.
+fn capture_feature_selection_args(args: &[String]) -> Vec<String> {
+    let mut captured = Vec::new();
+    let mut index = 0;
+
+    while index < args.len() {
+        let arg = &args[index];
+        if arg == "--" {
+            break;
+        }
+
+        if arg == "--features" || arg == "-F" {
+            captured.push(arg.clone());
+            if let Some(value) = args.get(index + 1) {
+                captured.push(value.clone());
+                index += 1;
+            }
+        } else if arg == "--all-features"
+            || arg == "--no-default-features"
+            || arg.starts_with("--features=")
+            || (arg.starts_with("-F") && arg.len() > 2)
+        {
+            captured.push(arg.clone());
+        }
+
+        index += 1;
+    }
+
+    captured
+}
+
+fn set_ui_test_feature_args(command: &mut Command, args: &[String]) {
+    command.env(UI_TEST_FEATURE_ARG_COUNT_ENV, args.len().to_string());
+    for (index, arg) in args.iter().enumerate() {
+        command.env(format!("{}{}", UI_TEST_FEATURE_ARG_ENV_PREFIX, index), arg);
     }
 }
 
+fn get_rustflags(name: &str) -> String {
+    // See #1792 for context on zerocopy_derive_union_into_bytes.
+    let mut flags =
+        "--cfg zerocopy_unstable_linux --cfg zerocopy_unstable_ptr --cfg zerocopy_derive_union_into_bytes --cfg __ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE"
+            .to_string();
+    flags += &format!(" --cfg __ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN=\"{name}\"");
+
+    if name == "nightly" {
+        flags += " --cfg __ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS";
+    }
+
+    flags
+}
+
 fn get_toolchain_rustflags(name: &str) -> String {
-    format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\" ", name)
+    format!("--cfg __ZEROCOPY_TOOLCHAIN=\"{}\"", name)
 }
 
 fn rustup<'a>(args: impl IntoIterator<Item = &'a str>, env: Option<(&str, &str)>) -> Command {
@@ -217,35 +370,77 @@ fn delegate_cargo() -> Result<(), Error> {
             if let Some(name) = arg.strip_prefix('+') {
                 let version = versions.get(name)?;
 
-                if !is_toolchain_installed(&versions, name)? {
-                    install_toolchain_or_exit(&versions, name)?;
+                install_toolchain_or_exit(&versions, name)?;
+
+                let mut targets = Vec::new();
+                if let Ok(t) = env::var("CARGO_BUILD_TARGET") {
+                    targets.push(t);
                 }
+
+                let args_vec = args.collect::<Vec<_>>();
+                let feature_selection_args = capture_feature_selection_args(&args_vec);
+                let mut i = 0;
+                while i < args_vec.len() {
+                    let arg = &args_vec[i];
+                    if arg == "--" {
+                        break;
+                    }
+
+                    if arg == "--target" {
+                        if i + 1 < args_vec.len() {
+                            targets.push(args_vec[i + 1].clone());
+                            i += 1;
+                        }
+                    } else if let Some(t) = arg.strip_prefix("--target=") {
+                        targets.push(t.to_string());
+                    }
+                    i += 1;
+                }
+
+                targets.retain(|t| !t.ends_with(".json"));
+                targets.sort();
+                targets.dedup();
+
+                install_targets_or_exit(version, &targets)?;
+
+                let mut args = args_vec.into_iter();
 
                 let env_rustflags = env::vars()
                     .filter_map(|(k, v)| if k == "RUSTFLAGS" { Some(v) } else { None })
                     .next()
                     .unwrap_or_default();
+                let env_rustdocflags = env::vars()
+                    .filter_map(|(k, v)| if k == "RUSTDOCFLAGS" { Some(v) } else { None })
+                    .next()
+                    .unwrap_or_default();
 
                 let rustflags = format!(
-                    "{}{}{}",
+                    "{} {} {}",
                     get_rustflags(name),
                     get_toolchain_rustflags(name),
                     env_rustflags,
                 );
+                let rustdocflags = format!("{rustflags} {env_rustdocflags}");
 
+                // Rustdoc needs the wrapper's cfgs and the caller's RUSTFLAGS
+                // in addition to any rustdoc-specific flags supplied through
+                // RUSTDOCFLAGS.
                 let mut cmd = rustup(["run", version, "cargo"], Some(("RUSTFLAGS", &rustflags)));
+                cmd.env("RUSTDOCFLAGS", &rustdocflags);
+                set_ui_test_feature_args(&mut cmd, &feature_selection_args);
+
+                if env::var("CARGO_TARGET_DIR").is_ok() {
+                    eprintln!("[cargo-zerocopy] WARNING: `CARGO_TARGET_DIR` is set - this may cause `cargo-zerocopy` to behave unexpectedly");
+                } else {
+                    cmd.env("CARGO_TARGET_DIR", format!("target/by-toolchain/{}", name));
+                }
 
                 // Computes the fully-qualified package name of workspace package `p`.
                 let fqpn = |p| {
-                    // Generate a lockfile, if absent.
-                    // This is a prerequisite of running pkgid.
-                    let _ = rustup(["run", version, "cargo", "generate-lockfile"], None)
-                        .output_or_exit();
-
                     let output = rustup(["run", version, "cargo", "pkgid", "-p"], None)
                         .arg(p)
                         .output_or_exit();
-                    String::from_utf8(output.stdout).unwrap()
+                    String::from_utf8(output.stdout).unwrap().trim().to_string()
                 };
 
                 // Replace `-p<package>`, `-p <package>` and `--package <package`
@@ -258,7 +453,7 @@ fn delegate_cargo() -> Result<(), Error> {
                         break;
                     };
                     if arg == "-p" || arg == "--package" {
-                        cmd.arg(arg);
+                        cmd.arg(&arg);
                         let Some(arg) = args.next() else {
                             break;
                         };
@@ -266,8 +461,23 @@ fn delegate_cargo() -> Result<(), Error> {
                     } else if arg.starts_with("-p") {
                         cmd.arg("-p");
                         cmd.arg(fqpn(arg[2..].to_string()));
+                    } else if arg == "--" {
+                        cmd.arg("--");
+                        cmd.args(args);
+                        break;
                     } else {
-                        cmd.arg(arg);
+                        if arg == "--target" {
+                            cmd.arg(&arg);
+                            if let Some(target) = args.next() {
+                                cmd.arg(&target);
+                                cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                            }
+                        } else if let Some(target) = arg.strip_prefix("--target=") {
+                            cmd.arg(&arg);
+                            cmd.env("ZEROCOPY_UI_TEST_TARGET", target);
+                        } else {
+                            cmd.arg(arg);
+                        }
                     }
                 }
 
@@ -278,6 +488,75 @@ fn delegate_cargo() -> Result<(), Error> {
                 Err(Error::UnrecognizedArgument(arg.to_string()))
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::{ffi::OsStr, process::Command};
+
+    use super::{capture_feature_selection_args, set_ui_test_feature_args};
+
+    fn strings(args: &[&str]) -> Vec<String> {
+        args.iter().map(|arg| (*arg).to_string()).collect()
+    }
+
+    #[test]
+    fn captures_feature_selection_before_separator() {
+        let args = strings(&[
+            "test",
+            "--all-features",
+            "--features",
+            "alloc,derive",
+            "-Fsimd",
+            "-F",
+            "std",
+            "--no-default-features",
+            "--features=float-nightly",
+            "--",
+            "--features",
+            "ignored-test-argument",
+        ]);
+
+        assert_eq!(
+            capture_feature_selection_args(&args),
+            strings(&[
+                "--all-features",
+                "--features",
+                "alloc,derive",
+                "-Fsimd",
+                "-F",
+                "std",
+                "--no-default-features",
+                "--features=float-nightly",
+            ])
+        );
+    }
+
+    #[test]
+    fn exports_indexed_ui_test_feature_args() {
+        fn configured_env<'a>(command: &'a Command, key: &str) -> Option<&'a OsStr> {
+            command
+                .get_envs()
+                .find(|(configured, _)| *configured == OsStr::new(key))
+                .and_then(|(_, value)| value)
+        }
+        fn assert_env(command: &Command, key: &str, value: &str) {
+            assert_eq!(configured_env(command, key), Some(OsStr::new(value)));
+        }
+
+        let mut command = Command::new("cargo");
+        set_ui_test_feature_args(&mut command, &strings(&["--features", "", "-Fμ"]));
+        assert_eq!(command.get_envs().count(), 4);
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_0", "--features");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_1", "");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_2", "-Fμ");
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "3");
+
+        let mut command = Command::new("cargo");
+        set_ui_test_feature_args(&mut command, &[]);
+        assert_eq!(command.get_envs().count(), 1);
+        assert_env(&command, "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT", "0");
     }
 }
 

@@ -1,0 +1,10 @@
+{
+  "agent_id": "/root/adjudicate_r_v3",
+  "attempt": 1,
+  "disposition": "COMPLETE",
+  "identity": "R",
+  "kind": "adjudicator",
+  "phase": "adjudication",
+  "recorded_utc": "2026-08-01T10:07:58.509910Z",
+  "schema_version": 1
+}

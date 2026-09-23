@@ -1,0 +1,1228 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT_VERIFIED_PENDING_CROSS_REVIEW",
+  "ready_for_freeze": false,
+  "verification_date": "2026-08-19",
+  "manifest_path": "propositions.json",
+  "current_v5_source_review": {
+    "status": "PENDING_INDEPENDENT_SOURCE_REVIEW",
+    "scope": "ALL_CURRENT_V5_EXACT_QUOTATIONS_LOCATORS_PROPOSITIONS_ORACLES_AND_CROSS_FILE_CLOSURE",
+    "exact_quotation_evidence_algorithm": "V5_EXACT_QUOTATION_EVIDENCE_V1",
+    "exact_quotation_evidence_sha256": "a3aff9b35d747b8dc12c90d8484f37d531447122ec186509ca62baa5e360bcaa",
+    "required_review_receipts": [
+      "static/integration/reviewed-inputs/source-review-receipts/oracle-review-1.json",
+      "static/integration/reviewed-inputs/source-review-receipts/oracle-review-2.json",
+      "static/integration/reviewed-inputs/source-review-receipts/coherence-review.json"
+    ]
+  },
+  "rust_1_83_local_verification": {
+    "status": "VERIFIED",
+    "toolchain": {
+      "rustc_version": "1.83.0",
+      "rustc_commit": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+      "host": "x86_64-unknown-linux-gnu",
+      "sysroot": "/usr/local/google/home/joshlf/.rustup/toolchains/1.83.0-x86_64-unknown-linux-gnu",
+      "docs_root": "/usr/local/google/home/joshlf/.rustup/toolchains/1.83.0-x86_64-unknown-linux-gnu/share/doc/rust/html",
+      "rustc_verbose_sha256": "b7ae0e7c08f6345648e164d85d6e21d01282f0919e9c1dbc50392df53dbdfab7"
+    },
+    "quotation_match_algorithm": "Decode HTML character references with the HTML parser. For a URL with a fragment, require exactly one matching element and scope h1-h6 through the next heading of equal or higher rank, a rustdoc item to its containing details element, a regular item to its containing section element, or otherwise the identified element itself. For a fragmentless citation, scope only the exact content-addressed page and make no subsection claim. Within one p, li, td, dd, pre, tr, or h1-h6 semantic element, insert one ASCII space at block and table-cell DOM boundaries, map curly quotation marks to ASCII, remove Markdown backticks, collapse whitespace runs to one ASCII space, trim, and require a nonempty exact character sequence; never concatenate distinct semantic elements.",
+    "body_digest_algorithm": "SHA-256 of Unicode-NFKC rendered main-body text with all whitespace collapsed to single ASCII spaces.",
+    "entries": [
+      {
+        "id": "R183-FUNCTION-OUTPUT-UNIT",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/items/functions.html",
+          "reference/types/tuple.html"
+        ]
+      },
+      {
+        "id": "R183-FUNCTION-BODY-RETURN",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/items/functions.html"
+        ]
+      },
+      {
+        "id": "R183-BLOCK-TAIL",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/block-expr.html"
+        ]
+      },
+      {
+        "id": "R183-BLOCK-SEQUENCE",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/block-expr.html"
+        ]
+      },
+      {
+        "id": "R183-MATCH-SELECTION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/expressions/match-expr.html"
+        ]
+      },
+      {
+        "id": "R183-PATTERNS",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/patterns.html",
+          "reference/types/boolean.html"
+        ]
+      },
+      {
+        "id": "R183-IF-SELECTION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/if-expr.html"
+        ]
+      },
+      {
+        "id": "R183-SLICE-LEN",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/primitive.slice.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-EQUALITY",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 3,
+        "page_paths": [
+          "reference/expressions/operator-expr.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-LITERAL-CONTEXT",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/literal-expr.html"
+        ]
+      },
+      {
+        "id": "R183-USIZE-DOMAIN",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/types/numeric.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-SUBTRACTION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/expressions/operator-expr.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-OVERFLOW",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/operator-expr.html"
+        ]
+      },
+      {
+        "id": "R183-SLICE-GET-UNCHECKED",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/primitive.slice.html"
+        ]
+      },
+      {
+        "id": "R183-CFG-PREDICATE",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 3,
+        "page_paths": [
+          "reference/conditional-compilation.html"
+        ]
+      },
+      {
+        "id": "R183-CFG-ATTRIBUTE",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/conditional-compilation.html"
+        ]
+      },
+      {
+        "id": "R183-VISIBILITY",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/visibility-and-privacy.html"
+        ]
+      },
+      {
+        "id": "R183-TRAIT-IMPLEMENTATION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 3,
+        "page_paths": [
+          "reference/items/implementations.html"
+        ]
+      },
+      {
+        "id": "R183-UNSAFE-TRAITS",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/unsafe-keyword.html"
+        ]
+      },
+      {
+        "id": "R183-UNSAFE-FUNCTIONS",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/unsafe-keyword.html"
+        ]
+      },
+      {
+        "id": "R183-CALL",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/expressions/call-expr.html"
+        ]
+      },
+      {
+        "id": "R183-ARRAY-SHAPE",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 3,
+        "page_paths": [
+          "reference/expressions/array-expr.html",
+          "reference/types/array.html"
+        ]
+      },
+      {
+        "id": "R183-ARRAY-SLICE-METHOD",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 3,
+        "page_paths": [
+          "reference/expressions/method-call-expr.html",
+          "reference/type-coercions.html",
+          "std/primitive.array.html"
+        ]
+      },
+      {
+        "id": "R183-ARRAY-SLICE-COERCION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 8,
+        "page_paths": [
+          "reference/type-coercions.html"
+        ]
+      },
+      {
+        "id": "R183-DEREF-ASSIGN",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 4,
+        "page_paths": [
+          "reference/expressions/operator-expr.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-COPY-U8",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/special-types-and-traits.html",
+          "std/primitive.u8.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-COPY-U16",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/special-types-and-traits.html",
+          "std/primitive.u16.html"
+        ]
+      },
+      {
+        "id": "R183-INTEGER-COPY-U32",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/special-types-and-traits.html",
+          "std/primitive.u32.html"
+        ]
+      },
+      {
+        "id": "R183-LIFETIME-ELISION",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "reference/lifetime-elision.html"
+        ]
+      },
+      {
+        "id": "R183-NONZERO-NEW-UNCHECKED",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/num/struct.NonZero.html"
+        ]
+      },
+      {
+        "id": "R183-NONZERO-NEW",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/num/struct.NonZero.html"
+        ]
+      },
+      {
+        "id": "R183-NONZERO-GET",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "std/num/struct.NonZero.html"
+        ]
+      },
+      {
+        "id": "R183-STRING-LITERAL",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "reference/expressions/literal-expr.html"
+        ]
+      },
+      {
+        "id": "R183-STR-FROM-UTF8-UNCHECKED",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/str/fn.from_utf8_unchecked.html"
+        ]
+      },
+      {
+        "id": "R183-UTF8-VALIDITY",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 6,
+        "page_paths": [
+          "reference/types/textual.html",
+          "std/primitive.str.html",
+          "std/str/fn.from_utf8.html"
+        ]
+      },
+      {
+        "id": "R183-STR-AS-BYTES",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 2,
+        "page_paths": [
+          "std/primitive.str.html"
+        ]
+      },
+      {
+        "id": "R183-SLICE-GET-UNCHECKED-MUT",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "std/primitive.slice.html"
+        ]
+      },
+      {
+        "id": "R183-INDEXING",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 4,
+        "page_paths": [
+          "reference/expressions/array-expr.html"
+        ]
+      },
+      {
+        "id": "R183-U32-WRAPPING-ADD",
+        "status": "VERIFIED_LOCAL_OFFICIAL_DOCS",
+        "quotation_count": 1,
+        "page_paths": [
+          "std/primitive.u32.html"
+        ]
+      }
+    ],
+    "pages": [
+      {
+        "path_relative_to_docs_root": "reference/conditional-compilation.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation",
+          "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#the-cfg-attribute"
+        ],
+        "page_sha256": "91761e8dc133a022a263a8cb7a02a11af13dd1fdf518a64ea4b078c38827c374",
+        "normalized_main_body_sha256": "644e48c243e7949d7656798a3fb4c4a552d3b9620ba25c6d20a3aff5b5caf815"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/array-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+        ],
+        "page_sha256": "4f9082ab20ccc335b03771a73c2591bdc7c8b87da6f033fc0847b804f5d90d2f",
+        "normalized_main_body_sha256": "c89818c6db6b6345a6d40a3f554d62cdb083918e255a04d3e5cbae0d46eb924a"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/block-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
+        ],
+        "page_sha256": "f331ae747100685454adc27a66b02f3db00f4e26363c66e7413b468c887d2533",
+        "normalized_main_body_sha256": "f542941a6dc7b2a5c896d8f69d0a7e5eb7ceb845374714b038cfbb3b5dd90a98"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/call-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions"
+        ],
+        "page_sha256": "fa4dfc7250243092a26eb59024f5a4279d53a53fadee5e60533250740bc2bdd2",
+        "normalized_main_body_sha256": "63de838088d51359ee53c57047d924d32b16a285dbac8d54ea8aededd4adc0cc"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/if-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"
+        ],
+        "page_sha256": "e24637bab6b663bafe38d36f87b7076d6ab38012880eda06774f236ca99f2615",
+        "normalized_main_body_sha256": "d904628046c2fb7bddc4e1d55be4ad4c928bc31e591733f7c778cc11aa792764"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/literal-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions",
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#string-literal-expressions"
+        ],
+        "page_sha256": "a5a34495fbbf974758eac701e93b60f12fe92f23a32b87124e16205031d2a6bc",
+        "normalized_main_body_sha256": "77856c97f5d384df2cf5e8afa19a0dc043bd1b395d735fc33ef1d0c92fd0e084"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/match-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html#match-expressions"
+        ],
+        "page_sha256": "aeb733a7f00887019cc1c343e6feef63f589d4f5c17730fe24c32b205ab2d299",
+        "normalized_main_body_sha256": "1955cff4530b00c5c4456287f554b438de1a00db3bf2accb90f652e2c85718fa"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/method-call-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html#method-call-expressions"
+        ],
+        "page_sha256": "b30eeb96beb6b66eb437fd70c48318d5edf62b34270ea3fe283676b527a5077c",
+        "normalized_main_body_sha256": "e6868dba7ab00a732bb2ff6dd81d8ab05698b630dee933ceaad12a1d87b8def1"
+      },
+      {
+        "path_relative_to_docs_root": "reference/expressions/operator-expr.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators",
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#assignment-expressions",
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#comparison-operators",
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#overflow",
+          "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#the-dereference-operator"
+        ],
+        "page_sha256": "c4e8bda763300beb063fe305730a2a786ee1fe9c5e4dafa79bc95cef9127e9e3",
+        "normalized_main_body_sha256": "d910804c3362ad67ae8e340bf9bed5e4d4efd8d80712493fe6be8c6284ec4d28"
+      },
+      {
+        "path_relative_to_docs_root": "reference/items/functions.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body",
+          "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#functions"
+        ],
+        "page_sha256": "eba1eb7c050103ba2f7f22b9648b19e6800617629981b93ca47f16cfd279b0c1",
+        "normalized_main_body_sha256": "87acdf10ce4c48f3d3d45ba03303e11c7a2cd014782f647b80852298507a9fdf"
+      },
+      {
+        "path_relative_to_docs_root": "reference/items/implementations.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations"
+        ],
+        "page_sha256": "93fd8a85a7febc6f5d2f08298c6583f85fad546eb9aa447431309ccf6a41710b",
+        "normalized_main_body_sha256": "099f2ae6598039eca3c18d94cef28ffb028572edc5a222b449e15a1ab1ca544e"
+      },
+      {
+        "path_relative_to_docs_root": "reference/lifetime-elision.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/lifetime-elision.html#lifetime-elision-in-functions"
+        ],
+        "page_sha256": "7b39cc799835b6485f6cc4121159de04a1e287ef8e87a985fbc843ccbf9e2623",
+        "normalized_main_body_sha256": "e9d27bc5aa3c0faa5a68f28a3d31d9ee54b1c17e904d7123a3aba084cc5b9cb2"
+      },
+      {
+        "path_relative_to_docs_root": "reference/patterns.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/patterns.html#literal-patterns"
+        ],
+        "page_sha256": "92ba7a4c910d7c24f9d3f2deb90ee18ced5a9bb043015a496e5bcf46b0a4d505",
+        "normalized_main_body_sha256": "b5a13f8d8f7ecfdc1b0943492cbea5e2cb273b8e237a3860c9dbfe6dac7d91ef"
+      },
+      {
+        "path_relative_to_docs_root": "reference/special-types-and-traits.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/special-types-and-traits.html#copy"
+        ],
+        "page_sha256": "33f6612b95e4e06264ef2d6236b8fb5c63a9e4a7abe5deb7041759a11928ca11",
+        "normalized_main_body_sha256": "b20237ec8952ec7adbc5eb57b42ad9aeb1ed013228da4ba50f7e16aaba1efee0"
+      },
+      {
+        "path_relative_to_docs_root": "reference/type-coercions.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites",
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types",
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions",
+          "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
+        ],
+        "page_sha256": "7df33c092f9a9e83f4e3bce4110ec99230c5e2a8ef17cfa96895c1fe85faf0b4",
+        "normalized_main_body_sha256": "535a43496dd986c422329ad1d67d5146530869f0d3c57d7622b533b5df3ed557"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/array.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types"
+        ],
+        "page_sha256": "dc9d81d347f859f1841c2a9da000c4279fa825038ea3376572aa4f01c3fba0b7",
+        "normalized_main_body_sha256": "cff93e5d49906189e51fbe4c68699a4d091934eb641c94b1e89dda6d0e87f65a"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/boolean.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type"
+        ],
+        "page_sha256": "9e90b1f77cc47901e8277347cf0f3e5751f1c7e8e5193af42b90ffbe1139304a",
+        "normalized_main_body_sha256": "f940f937d3ab8ffe4260c72bc164b46acd43e98f212d582a7db148c971e60c1e"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/numeric.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#machine-dependent-integer-types"
+        ],
+        "page_sha256": "7c21b867c4ba43f66984ece635049dedb96783d8de0490750cd2f1ee0fe44ead",
+        "normalized_main_body_sha256": "167a55b89cf47f6b867830a86d010e62d51b61a1a013c8705dda861a8baeb615"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/textual.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types"
+        ],
+        "page_sha256": "d4b8e10b76e49d31252c1a32a9678e4e8d3d8b0dd9396171931913a5eae24192",
+        "normalized_main_body_sha256": "10922bae8119506d4b5611a97ae06d27697380eec8cb9d0449a88cd290630c6b"
+      },
+      {
+        "path_relative_to_docs_root": "reference/types/tuple.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/types/tuple.html#tuple-types"
+        ],
+        "page_sha256": "43213720f2d25283f4585fd301352a1b276c43c55d92a45add83304660bec829",
+        "normalized_main_body_sha256": "ecaf72652dbbf4bcc9fb4f2fe4ac369c36d1004fc590d900d4198623d8e4a83d"
+      },
+      {
+        "path_relative_to_docs_root": "reference/unsafe-keyword.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn",
+          "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-trait-implementations-unsafe-impl",
+          "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-traits-unsafe-trait"
+        ],
+        "page_sha256": "0de12b87f6a3967939624241cf67fc897de0eb93eca2b893c58dd1b734c4e0ea",
+        "normalized_main_body_sha256": "baf4532108adc7ca8c43632f1756b6a35e27980d317a58ca998babaebf838be1"
+      },
+      {
+        "path_relative_to_docs_root": "reference/visibility-and-privacy.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/reference/visibility-and-privacy.html#visibility-and-privacy"
+        ],
+        "page_sha256": "44d3c1359253613e360e80e0e92dd6c4cfa19498a89c1bd0424aa8d429595999",
+        "normalized_main_body_sha256": "c8cb50d3cdce92fd06f76a4de468a7c7c85c15f77c3f91d6a904616a1263a3e1"
+      },
+      {
+        "path_relative_to_docs_root": "std/num/struct.NonZero.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.get",
+          "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new",
+          "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked"
+        ],
+        "page_sha256": "7f0868a6e4bee9d600104cd3c0813c5b6f8b306fe4206b84d072fc86ef4b45ed",
+        "normalized_main_body_sha256": "49010d92364778bbf2812ecbabeac3b505293ffb6ac9bdd949741b6fac7ce026"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.array.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.array.html"
+        ],
+        "page_sha256": "418937bad2f318664e2a6c97ee812b2927fe1e587c9a40651796be72c8b07b31",
+        "normalized_main_body_sha256": "619a2a8a0f065183de93f24f6e36152dee9586c2034f45441c74f0990d12d9a3"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.slice.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked",
+          "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked_mut",
+          "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len"
+        ],
+        "page_sha256": "afe1753f9c1594f7e821ce5dd1e23218f2c06925d45ab9c76f3adcd73de22e30",
+        "normalized_main_body_sha256": "dc2f71b8f98a34544753bea5591d9eb7b3bb8b696878fb566db8657985c28979"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.str.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant",
+          "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"
+        ],
+        "page_sha256": "56332993d9729428f037ecc87aac9a868cc33655d2041d0ebcbc55819e3a67fb",
+        "normalized_main_body_sha256": "6f7c373a1df581229cf5aafd51aee527fe1d9bd32f6c74fb0901b6f531f72b2d"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.u16.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.u16.html#impl-Copy-for-u16"
+        ],
+        "page_sha256": "9f91c3eb1b6745589723c8bbc77f93ac4a2507a78284f3b53188dcaef0d75360",
+        "normalized_main_body_sha256": "030051e43570dee41b1e9a25a72bf1a697261be7385253fe78e571e273e1b300"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.u32.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.u32.html#impl-Copy-for-u32",
+          "https://doc.rust-lang.org/1.83.0/std/primitive.u32.html#method.wrapping_add"
+        ],
+        "page_sha256": "299211fe756c8445bbc95a5a6f938743727de922a55bd647829bd988593f3731",
+        "normalized_main_body_sha256": "b174cced0cc2f09fc3b06e8b23074aa3f3ac13283a0140c0a3d89b919aab6b9b"
+      },
+      {
+        "path_relative_to_docs_root": "std/primitive.u8.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/primitive.u8.html#impl-Copy-for-u8"
+        ],
+        "page_sha256": "e1fd10858416be2c78d4a712b97760682b68861783780d3e1a0824753a96a8bd",
+        "normalized_main_body_sha256": "4572588c2c261096da44780532f0602f6a29e4df8189cc7f5e13efbfbc8385aa"
+      },
+      {
+        "path_relative_to_docs_root": "std/str/fn.from_utf8.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples"
+        ],
+        "page_sha256": "280dec62bf0be3e8abf5b5143906fe606397393a3b65abde2a105ec74f9b2a34",
+        "normalized_main_body_sha256": "a6479e31d41879ee8d9f80be557634414b881ee1e4e35d8d43fb636fabacda8b"
+      },
+      {
+        "path_relative_to_docs_root": "std/str/fn.from_utf8_unchecked.html",
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html",
+          "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"
+        ],
+        "page_sha256": "717c64b027dec98b055e4bc231b26ccd78dee639804b17d0f5ebe0d650528c28",
+        "normalized_main_body_sha256": "cc77d06022d2caae882b14f8b7133c5e6d88f0e5ca457cb63e1a93d46059f2cf"
+      }
+    ],
+    "uncovered_entries": []
+  },
+  "versioned_page_byte_lineage": {
+    "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+    "scope": [
+      "B Rust/Cargo 1.85.1",
+      "P Rust 1.84.0, 1.85.0, and 1.86.0"
+    ],
+    "local_refetch_performed": false,
+    "coverage_basis": "The frozen V4 authority manifest binds each cited versioned official page's bytes; current V5 locators may use corrected fragments on those same content-addressed pages. This is page-byte and historical lineage only: it does not claim that V4 reviewed the current V5 quotations, propositions, locators, or fragment scopes. Those current materials remain pending until the required V5 source-review receipts exist.",
+    "freeze_root": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze",
+    "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
+    "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+    "lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e",
+    "rubric_sha256": {
+      "B": "13790584d0e5ede69cff8c2b1889be80c73df0722c4ea709c0e85ab82900a4bb",
+      "P": "1e9e6622a34b3b0376b6912f676695e318edcd971ac1f4960810531ad854911d"
+    },
+    "lock_declared_file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+    "review_signoffs": [
+      "v4-oracle-final-review: PASS/FREEZE",
+      "v4-oracle-review-2: PASS/FREEZE"
+    ],
+    "entries": [
+      {
+        "id": "R185-ENV-VAR",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent",
+          "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode",
+          "https://doc.rust-lang.org/1.85.1/std/env/fn.var.html"
+        ]
+      },
+      {
+        "id": "R185-RESULT",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/result/enum.Result.html"
+        ]
+      },
+      {
+        "id": "R185-MATCH-SELECTION",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions"
+        ]
+      },
+      {
+        "id": "R185-PATTERNS",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/patterns.html#literal-patterns",
+          "https://doc.rust-lang.org/1.85.1/reference/patterns.html#tuple-struct-patterns",
+          "https://doc.rust-lang.org/1.85.1/reference/patterns.html#wildcard-pattern"
+        ]
+      },
+      {
+        "id": "R185-FUNCTION-OUTPUT-UNIT",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions"
+        ]
+      },
+      {
+        "id": "R185-FUNCTION-BODY-RETURN",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body"
+        ]
+      },
+      {
+        "id": "R185-BLOCK-TAIL",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
+        ]
+      },
+      {
+        "id": "R185-BLOCK-SEQUENCE",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
+        ]
+      },
+      {
+        "id": "R185-STRING-AS-STR",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/string/struct.String.html#method.as_str"
+        ]
+      },
+      {
+        "id": "R185-PRINTLN",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/macro.println.html",
+          "https://doc.rust-lang.org/1.85.1/std/macro.println.html#panics"
+        ]
+      },
+      {
+        "id": "R185-PANIC",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/macro.panic.html"
+        ]
+      },
+      {
+        "id": "R185-CFG-PREDICATE",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation"
+        ]
+      },
+      {
+        "id": "R185-CFG-ATTRIBUTE",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute"
+        ]
+      },
+      {
+        "id": "R185-COMPILE-ERROR",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/macro.compile_error.html"
+        ]
+      },
+      {
+        "id": "R185-CALL",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions"
+        ]
+      },
+      {
+        "id": "R185-NONZERO-NEW-UNCHECKED",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
+          "https://doc.rust-lang.org/1.85.1/std/num/struct.NonZero.html#method.new_unchecked"
+        ]
+      },
+      {
+        "id": "R185-IF-SELECTION",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions"
+        ]
+      },
+      {
+        "id": "R185-INTEGER-COMPARISON",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators"
+        ]
+      },
+      {
+        "id": "R185-U8-DOMAIN",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 3,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX",
+          "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN"
+        ]
+      },
+      {
+        "id": "P-OPTION-UNWRAP-OR-184-186",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_or",
+          "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_or",
+          "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_or"
+        ]
+      },
+      {
+        "id": "P-OPTION-UNWRAP-UNCHECKED-184-186",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 2,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
+          "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked",
+          "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked"
+        ]
+      },
+      {
+        "id": "P-CFG-184-186",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 4,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
+          "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#the-cfg-attribute",
+          "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation",
+          "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#the-cfg-attribute",
+          "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation",
+          "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#the-cfg-attribute"
+        ]
+      },
+      {
+        "id": "P-COMPILE-ERROR-184-186",
+        "status": "PAGE_BYTES_BOUND_TO_FROZEN_V4_MANIFEST",
+        "quotation_count": 1,
+        "requested_urls": [
+          "https://doc.rust-lang.org/1.84.0/std/macro.compile_error.html",
+          "https://doc.rust-lang.org/1.85.0/std/macro.compile_error.html",
+          "https://doc.rust-lang.org/1.86.0/std/macro.compile_error.html"
+        ]
+      }
+    ],
+    "bound_pages": [
+      {
+        "requested_url": "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
+        "page_sha256": "c231b94b17857c57b47336ebede1e3e81ee8d58db68e669a6b1da1026164ac3b",
+        "retrieved_utc": "2026-08-01T17:27:56.855076Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#the-cfg-attribute",
+        "page_sha256": "c231b94b17857c57b47336ebede1e3e81ee8d58db68e669a6b1da1026164ac3b",
+        "retrieved_utc": "2026-08-01T17:27:56.855076Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.84.0/std/macro.compile_error.html",
+        "page_sha256": "b92f2f9939bf888edd27d156eea4f5a48a98867752198001dc6b12253973fedd",
+        "retrieved_utc": "2026-08-01T17:27:56.891483Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_or",
+        "page_sha256": "a395b4f6dfe1fc5242b61a13ef3c0109033f8053b3fb0772b5eb74463ca69105",
+        "retrieved_utc": "2026-08-01T17:27:56.679301Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "page_sha256": "a395b4f6dfe1fc5242b61a13ef3c0109033f8053b3fb0772b5eb74463ca69105",
+        "retrieved_utc": "2026-08-01T17:27:56.679301Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation",
+        "page_sha256": "083c3862cabe9c0b67cb63a12e254376b7769e8826d0864b32ab9fc8a737f31f",
+        "retrieved_utc": "2026-08-01T17:27:56.934066Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#the-cfg-attribute",
+        "page_sha256": "083c3862cabe9c0b67cb63a12e254376b7769e8826d0864b32ab9fc8a737f31f",
+        "retrieved_utc": "2026-08-01T17:27:56.934066Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.0/std/macro.compile_error.html",
+        "page_sha256": "2a9462a947c44b60b1131aa5f1378b8ebbb47df234aa152232d935f5a95bc8bc",
+        "retrieved_utc": "2026-08-01T17:27:56.973621Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_or",
+        "page_sha256": "e4af7fc387fab0fd0fbc29db6442f41c7a35258d03b3b4e7fa645190f7b8c86e",
+        "retrieved_utc": "2026-08-01T17:27:56.748521Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "page_sha256": "e4af7fc387fab0fd0fbc29db6442f41c7a35258d03b3b4e7fa645190f7b8c86e",
+        "retrieved_utc": "2026-08-01T17:27:56.748521Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values",
+        "page_sha256": "873f77da05771f3c06a189cec0ab15c69a46d8e968dc7879c1d0fb11376b8ab6",
+        "retrieved_utc": "2026-08-01T17:27:57.980517Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation",
+        "page_sha256": "083c3862cabe9c0b67cb63a12e254376b7769e8826d0864b32ab9fc8a737f31f",
+        "retrieved_utc": "2026-08-01T17:27:57.712603Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute",
+        "page_sha256": "083c3862cabe9c0b67cb63a12e254376b7769e8826d0864b32ab9fc8a737f31f",
+        "retrieved_utc": "2026-08-01T17:27:57.712603Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions",
+        "page_sha256": "eca5d1df45aaac303bdaa0a7a0a7e93f2e48b38171325e963bed90d3dbaf31ba",
+        "retrieved_utc": "2026-08-01T17:27:57.387388Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions",
+        "page_sha256": "e2161195a1da5fcd2dcbb738db6d8d3bbe801774b46dd3d90a525c16a9aa07f7",
+        "retrieved_utc": "2026-08-01T17:27:57.467148Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions",
+        "page_sha256": "66cb23b4db83562de51a0b3411d473b430c738aa934c44b75f30aa2dd02c8f05",
+        "retrieved_utc": "2026-08-01T17:27:57.842840Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions",
+        "page_sha256": "281bbc7dfe2c0f330e7229684b55747cd3392845fad3a5be536ec5a4918ed695",
+        "retrieved_utc": "2026-08-01T17:27:57.349298Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators",
+        "page_sha256": "da30ee41874a27f0d5d991a9f53dda6d4b59e46e8f28ad06c0c714b941a9d3e0",
+        "retrieved_utc": "2026-08-01T17:27:57.805856Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body",
+        "page_sha256": "29509dc1a7f35b06ff836884a33bd5877871e4b56e7b78667f2641649802be15",
+        "retrieved_utc": "2026-08-01T17:27:57.429150Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions",
+        "page_sha256": "29509dc1a7f35b06ff836884a33bd5877871e4b56e7b78667f2641649802be15",
+        "retrieved_utc": "2026-08-01T17:27:57.429150Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/patterns.html#literal-patterns",
+        "page_sha256": "4e3e6090c0a65f5d26e7ae807f4241f35b91e8fbd24a76ecb23a07bf4fd6d0cf",
+        "retrieved_utc": "2026-08-01T17:27:57.516001Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/patterns.html#tuple-struct-patterns",
+        "page_sha256": "4e3e6090c0a65f5d26e7ae807f4241f35b91e8fbd24a76ecb23a07bf4fd6d0cf",
+        "retrieved_utc": "2026-08-01T17:27:57.516001Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/reference/patterns.html#wildcard-pattern",
+        "page_sha256": "4e3e6090c0a65f5d26e7ae807f4241f35b91e8fbd24a76ecb23a07bf4fd6d0cf",
+        "retrieved_utc": "2026-08-01T17:27:57.516001Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent",
+        "page_sha256": "7d3b01ebf3fbb4231711605c08cba59bc18620355b8a280d0b1cb8d355465932",
+        "retrieved_utc": "2026-08-01T17:27:57.138948Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode",
+        "page_sha256": "7d3b01ebf3fbb4231711605c08cba59bc18620355b8a280d0b1cb8d355465932",
+        "retrieved_utc": "2026-08-01T17:27:57.138948Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/env/fn.var.html",
+        "page_sha256": "4254c02ef260e2a7729980cc6f84796a5b3770ac58334a598fc0b745df2d805f",
+        "retrieved_utc": "2026-08-01T17:27:57.098070Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/macro.compile_error.html",
+        "page_sha256": "c9f3ba7f85fed765c6485ac0754891ee29b9f68efee68d60967a547264ffb748",
+        "retrieved_utc": "2026-08-01T17:27:57.755232Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/macro.panic.html",
+        "page_sha256": "c7f3fe8e00889d1d9206fa39a373cfd060b993c5377b169979cc947e9efcecc0",
+        "retrieved_utc": "2026-08-01T17:27:57.672756Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/macro.println.html",
+        "page_sha256": "05b1c308b73cceceb09edd797b1cfb51b88039c26c9cd018aeda106fad2aa076",
+        "retrieved_utc": "2026-08-01T17:27:57.634145Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/macro.println.html#panics",
+        "page_sha256": "05b1c308b73cceceb09edd797b1cfb51b88039c26c9cd018aeda106fad2aa076",
+        "retrieved_utc": "2026-08-01T17:27:57.634145Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/num/struct.NonZero.html#method.new_unchecked",
+        "page_sha256": "c1393af3fca7ba25fd448504d6f70fc01fea71efac9cc50052178899ccb877dc",
+        "retrieved_utc": "2026-08-01T17:27:57.940957Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html",
+        "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
+        "retrieved_utc": "2026-08-01T17:27:57.310407Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX",
+        "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
+        "retrieved_utc": "2026-08-01T17:27:57.310407Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN",
+        "page_sha256": "3ccfd4f00c432ca6884ed62a38078fe5b56fe846ffc66564ec65825d1cf74d4f",
+        "retrieved_utc": "2026-08-01T17:27:57.310407Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/result/enum.Result.html",
+        "page_sha256": "2f69f0d6f4583c410a76edc91a4c75ece27d01842e510f58c7fddf065ebfca89",
+        "retrieved_utc": "2026-08-01T17:27:57.204497Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/std/string/struct.String.html#method.as_str",
+        "page_sha256": "d94dac44c1c9d360c7caf0806c0c41b4d2330913463d0be42eeb211416563006",
+        "retrieved_utc": "2026-08-01T17:27:57.595899Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation",
+        "page_sha256": "f5ec1c4381d47fa28bbfe7b92f0c4383c0f8a30bc7121831fa4a4cd4a5543f4c",
+        "retrieved_utc": "2026-08-01T17:27:57.020467Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#the-cfg-attribute",
+        "page_sha256": "f5ec1c4381d47fa28bbfe7b92f0c4383c0f8a30bc7121831fa4a4cd4a5543f4c",
+        "retrieved_utc": "2026-08-01T17:27:57.020467Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.86.0/std/macro.compile_error.html",
+        "page_sha256": "0aa2780471d5ac4b0b5e746ea7aa01eb78fbabf9cd584a96d3088ec1afcc5883",
+        "retrieved_utc": "2026-08-01T17:27:57.057647Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_or",
+        "page_sha256": "733fe2d8a415699250fdba975b9b943c02c5fe27e2dfe0822eb1d20f522864ea",
+        "retrieved_utc": "2026-08-01T17:27:56.813730Z",
+        "fragment_found": true
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "page_sha256": "733fe2d8a415699250fdba975b9b943c02c5fe27e2dfe0822eb1d20f522864ea",
+        "retrieved_utc": "2026-08-01T17:27:56.813730Z",
+        "fragment_found": true
+      }
+    ],
+    "uncovered_entries": [],
+    "uncovered_urls": []
+  },
+  "b_cargo_corroborative_material": {
+    "status": "BOUND_TO_FROZEN_V4_REVIEW",
+    "role": "Corroborative review evidence for the exact accepted BUILD-MAP-ORDERED TCB entry only.",
+    "atom_authority_dependency": false,
+    "not_a_substitute_for": "TCB-B-BUILD-MAP",
+    "provenance": {
+      "authority_manifest_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/authority-manifest.tsv",
+      "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
+      "rubric_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/rubrics/B.md",
+      "rubric_sha256": "13790584d0e5ede69cff8c2b1889be80c73df0722c4ea709c0e85ab82900a4bb",
+      "lock_path": "evals/unsafe-rust/runs/2026-08-01-v4-focused/freeze/LOCK.json",
+      "lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e"
+    },
+    "records": [
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#life-cycle-of-a-build-script",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "after a build script ‘successfully finishes executing, the rest of the package will be compiled’; a nonzero exit halts the build. This reviews, but does not replace, BUILD-MAP-ORDERED."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#outputs-of-the-build-script",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "Cargo interprets each stdout line beginning with cargo:: as an instruction affecting package compilation, and instruction order can matter."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#rustc-cfg",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "the directive tells Cargo to pass its value to rustc's --cfg flag for conditional compilation."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/build-scripts.html#rerun-if-env-changed",
+        "page_sha256": "1247cbaf8ce775f17349367d13ac4eecc6d9cfa343310f12d8c1deccd19e07b2",
+        "retrieved_utc": "2026-08-01T17:27:58.029869Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "the directive tells Cargo to rerun the script if that environment variable's value changes."
+      },
+      {
+        "requested_url": "https://doc.rust-lang.org/1.85.1/cargo/reference/features.html",
+        "page_sha256": "96b2337cd60180df5a8566f343e52938dfcaa369bf12e1e82723a2326f64cb25",
+        "retrieved_utc": "2026-08-01T17:27:58.075968Z",
+        "fragment_found": true,
+        "v4_review_excerpt": "Cargo sets enabled package features with rustc's --cfg, and source can test them with the cfg attribute or macro."
+      }
+    ]
+  },
+  "supplied_tcb_and_dependency_evidence": {
+    "status": "VERIFIED",
+    "entries": [
+      {
+        "id": "DEP-F-API",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/f_fanout/DEPENDENCY-API.md",
+        "source_sha256": "4a57a7d13b6d42649e311719eb3a543eb91edcbf25a59e7cba463e1aaa0a3900",
+        "quotation_count": 2
+      },
+      {
+        "id": "DEP-Q-API",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/q_metamorphic/DEPENDENCY-API.md",
+        "source_sha256": "d7309849ad8c9df8eaec5dd1a4682e3a7ad9259064ab8ad7c21c9b32b2d87200",
+        "quotation_count": 4
+      },
+      {
+        "id": "TCB-E-CFG-MAP",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/e_semantics/TCB.md#config-map",
+        "source_sha256": "6e045f1b33795844105c0da2334a411c83286c7c6783eb3d1d1926775487e0d6",
+        "quotation_count": 1
+      },
+      {
+        "id": "TCB-F-NO-IMPLEMENTATION",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/f_fanout/TCB.md",
+        "source_sha256": "a2fc52232cd8beac4e6fed9dbd410cd07d0b09bdc4183f1678241810d5157bc5",
+        "quotation_count": 1
+      },
+      {
+        "id": "TCB-Q-NO-IMPLEMENTATION",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/q_metamorphic/TCB.md",
+        "source_sha256": "60b0e6eeb0f5df566d8f33eae6d61740d6ad86642a9648c5e4e4501c7f33f1af",
+        "quotation_count": 1
+      },
+      {
+        "id": "TCB-B-BUILD-MAP",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v5-diagnostic-prequalification/b_build/TCB.md#build-map-ordered",
+        "source_sha256": "d01e263e57cc4b911dbda1669734f05dbb8b11f121b71ab83f68ca59fe1573d8",
+        "quotation_count": 3
+      },
+      {
+        "id": "TCB-P-BUILD-MAP",
+        "status": "VERIFIED_EXACT_SUPPLIED_SOURCE",
+        "source_path": "evals/unsafe-rust/fixtures/v4-focused/p_predicates/TCB.md#build-map-policy",
+        "source_sha256": "326ae63b954184bf17b779bd508f159228d21a5677b4cc30ab4c4da9c367ffa9",
+        "quotation_count": 2
+      }
+    ],
+    "uncovered_entries": []
+  },
+  "agent_visible_projection": {
+    "status": "VALIDATED_STRICT_RUST_ONLY_PROJECTION",
+    "path": "agent-visible/common.json",
+    "schema_path": "../../schemas/agent-authority-packet.schema.json",
+    "validator_path": "validate_agent_visible.py",
+    "quotation_locator_path": "quotation-locators.json",
+    "sha256": "32d37b48adcd5e6f213681df0296ad1a1e30edd23cc2832771ba6ff51a052dac",
+    "common_for_all_modes_and_conditions": true,
+    "excluded_kinds": [
+      "SUPPLIED_DEPENDENCY_EVIDENCE",
+      "TCB",
+      "TCB_BOUNDARY"
+    ]
+  },
+  "uncovered_authority_entries": [],
+  "pending": [
+    "independent oracle cross-review",
+    "independent neutral-packet leak review",
+    "integration recomputation of target/package hashes after Rust 1.83 migration"
+  ]
+}

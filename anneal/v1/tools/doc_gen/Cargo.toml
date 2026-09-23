@@ -1,0 +1,9 @@
+[package]
+name = "doc_gen"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[dependencies]
+tree-sitter = "0.25"
+tree-sitter-lean4 = "0.2"

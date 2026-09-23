@@ -1,0 +1,26 @@
+{
+  "adjudication_cells_sha256": "ec0b95e018171e6c9884bce99c6bfaad3272db6732129a54b8bb813e4b2fcf85",
+  "allowlist_sha256": "d99084daff4c4505711f97a93884043a9bbf0d06df4f1d3d8342c98486be4713",
+  "common_rules_sha256": "d3ba48b524059bf07bcbf9448053971ee931854ee80d7107246fb3761c5eca9e",
+  "consistency_review_sha256": "1418b5c85bfbde5a2ba6ae156bd8728fb23b95e2203704e6bb98ff53dc928ec2",
+  "listed_labels": [
+    "A",
+    "D",
+    "F",
+    "G",
+    "J"
+  ],
+  "mode": "R",
+  "report_sha256": {
+    "A": "7632affdeeafcfccad88b8fdf653218f196aac4cc1362ddf0525f98656a9c7b3",
+    "D": "504ff4872d456561c79c0295a3314112c456ed899917d9990ea9765f4e98c8cd",
+    "F": "d14718131a1eb74ccf317bd2f288d4a85da663414929c3e59ad4b8a5be37babf",
+    "G": "ee9aa27852c22aafafd26a8a54bd0e997998f61f25186209cb1518e5bcfcea3d",
+    "J": "74fe59f2a0341cf8fe291f8812d131a22949f51b001324e41aacdefb7cbe67f1"
+  },
+  "rubric_sha256": "af075a1aac36a19d97ec57d1fe8509d12a4b323e43739bd57c1576b071b83faf",
+  "schema_sha256": "8540160022aebd3900d88936ba3924d9160435d9d7a9d61962d1195c743d097d",
+  "schema_version": 1,
+  "source_score_packet_sha256": "f2fd13517d31ee58205668eca898464350b393225742baab9b2dfcdcc5da8ba4",
+  "target_byte_tree_sha256": "d69df1b286abd8f7f8955ac56d702c1910eb596c0bd105b7998e39d7246ca063"
+}

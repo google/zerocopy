@@ -1,0 +1,218 @@
+{
+  "confirmed_novel_findings": [
+    {
+      "evidence": "A's PL-I/PL-R discussion correctly identifies that the `High` unsafe impl and lane unchecked access lack local proof text, and supplies accurate contract-preserving comments for both sites.",
+      "field": "novel:s2:N1",
+      "label": "A"
+    },
+    {
+      "evidence": "B's PL-I/PL-R sections correctly mark both lane unsafe sites' local proofs missing and give accurate adjacent proof comments without changing the published contract.",
+      "field": "novel:s2:N1",
+      "label": "B"
+    },
+    {
+      "evidence": "D separately records missing local proofs for `High` and lane `read` and supplies accurate comments proving both contract clauses and the unchecked-index bound.",
+      "field": "novel:s2:N1",
+      "label": "D"
+    },
+    {
+      "evidence": "E's F-3 correctly identifies absent proof artifacts at the unsafe impl and unchecked lane read and proposes sound comments that preserve the existing contract.",
+      "field": "novel:s2:N1",
+      "label": "E"
+    },
+    {
+      "evidence": "F-PL-DOC/COMPAT correctly notes that both published-lane unsafe sites lack adjacent proof artifacts and supplies valid local proof text for each.",
+      "field": "novel:s2:N1",
+      "label": "F"
+    },
+    {
+      "evidence": "G's F-PL-PROOF accurately identifies the two missing adjacent proofs and gives comments establishing `High`'s full contract and lane `read`'s in-bounds obligation.",
+      "field": "novel:s2:N1",
+      "label": "G"
+    },
+    {
+      "evidence": "I explicitly marks the `High` impl and lane unchecked access proof comments missing and proposes accurate local bridges for both.",
+      "field": "novel:s2:N1",
+      "label": "I"
+    },
+    {
+      "evidence": "J correctly observes that the lane unsafe impl and unchecked read lack local proof comments and supplies accurate adjacent proof text while retaining their proved implementation verdicts.",
+      "field": "novel:s2:N1",
+      "label": "J"
+    }
+  ],
+  "mode": "K",
+  "reports": [
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "A",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "B",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "C",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "D",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "E",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "F",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "G",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "H",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "I",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "K1": "PASS",
+        "K2": "PASS",
+        "K3": "PASS",
+        "K4": "PASS",
+        "K5": "PASS",
+        "K6": "PASS",
+        "K7": "PASS",
+        "K8": "PASS"
+      },
+      "hard_errors": [],
+      "label": "J",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    }
+  ],
+  "schema_version": 1
+}

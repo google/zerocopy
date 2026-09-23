@@ -1,0 +1,9 @@
+
+[package]
+name = "test_6_1_external_crate"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[workspace]

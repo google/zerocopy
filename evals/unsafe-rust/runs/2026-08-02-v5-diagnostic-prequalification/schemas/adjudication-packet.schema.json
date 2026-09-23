@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:adjudication-packet:3",
+  "$comment": "DRAFT / UNSEALED deterministic mode-level adjudication packet schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "cells", "packet_tree"],
+  "properties": {
+    "schema_version": {"const": 3},
+    "status": {"const": "ADJUDICATION-PACKET"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_s1_sha256", "score_s2_sha256", "score_input_s1_sha256", "score_input_s2_sha256", "consistency_c1_sha256", "consistency_c2_sha256", "consistency_packet_sha256", "atom_manifest_sha256", "defect_rules_sha256"],
+      "properties": {
+        "score_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_s2_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s2_sha256": {"$ref": "#/$defs/digest"},
+        "consistency_c1_sha256": {"$ref": "#/$defs/digest"},
+        "consistency_c2_sha256": {"$ref": "#/$defs/digest"},
+        "consistency_packet_sha256": {"$ref": "#/$defs/digest"},
+        "atom_manifest_sha256": {"$ref": "#/$defs/digest"},
+        "defect_rules_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "binding_sha256": {"$ref": "#/$defs/digest"},
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cell_id", "label", "field", "reasons"],
+        "properties": {
+          "cell_id": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "field": {"type": "string", "pattern": "^(atom:[EVFPBLRQ][1-9][0-9]*|hard_error:(GH[1-9][0-9]*|[EVFPBLRQ]H[1-9][0-9]*)|global_defect:GD[1-9][0-9]*|novel:N-[0-9a-f]{24})$"},
+          "reasons": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"enum": ["SCORER_DISAGREEMENT", "AGREED_POSITIVE_DEFECT", "CONSISTENCY_CHALLENGE", "CONSISTENCY_REVIEWER_DISAGREEMENT", "NOVEL_MANDATORY_ADJUDICATION", "NOVEL_CLASSIFICATION_DISAGREEMENT"]}}
+        }
+      }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

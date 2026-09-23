@@ -1,0 +1,185 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "manifest_version": "v5-diagnostic-prequalification-draft-1",
+  "gates": [
+    {
+      "id": "G-ISOLATION",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Collaboration agents share the checkout and lack an enforced filesystem/network/tool boundary.",
+      "prerequisites": [],
+      "inputs": [],
+      "predicate": {"kind": "constant", "outcome": "FAIL"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "G-OUTPUT-FINALIZATION",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Final response capture and seal initiation are coordinator-mediated, not trusted-runner atomic.",
+      "prerequisites": [],
+      "inputs": [],
+      "predicate": {"kind": "constant", "outcome": "FAIL"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-STATIC-INTEGRITY",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "The exact static bundle passes STATIC-LOCK verification and every gate input is rederived from the mutually authenticated 154-to-163-attempt success path and exact immutable six-stage aggregation chain; a terminal runtime ERROR cannot substitute a final context.",
+      "prerequisites": [],
+      "inputs": [],
+      "predicate": {"kind": "verified_bound_context"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-ORACLE-COVERAGE",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Every diagnostic atom has complete blinded oracle coverage.",
+      "prerequisites": ["D-STATIC-INTEGRITY"],
+      "inputs": [{"id": "oracle_coverage", "type": "boolean", "source": {"kind": "context", "path": "oracle.coverage_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "oracle_coverage"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-COLLECTION-COMPLETE",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Every one of the 120 scheduled report slots has exactly one verified canonical SEALED envelope and word-count receipt in the completed aggregate.",
+      "prerequisites": ["D-STATIC-INTEGRITY"],
+      "inputs": [{"id": "collection_complete", "type": "boolean", "source": {"kind": "context", "path": "collection.complete"}}],
+      "predicate": {"kind": "boolean_true", "input": "collection_complete"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-OUTPUT-VALID",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "On a completed aggregation, every canonical report envelope, primary response, process disposition, format/semantic check, and word-cap receipt is valid; unusable reports or invalid evaluators instead prevent gate evaluation with authenticated terminal ERROR.",
+      "prerequisites": ["D-COLLECTION-COMPLETE"],
+      "inputs": [{"id": "invalid_output_count", "type": "integer", "source": {"kind": "context", "path": "collection.invalid_output_count"}}],
+      "predicate": {"kind": "integer_equals", "input": "invalid_output_count", "value": 0},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-FOCUSED-RECALL",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Every required V5 atom certificate passes in every required replicate.",
+      "prerequisites": ["D-ORACLE-COVERAGE", "D-COLLECTION-COMPLETE", "D-OUTPUT-VALID"],
+      "inputs": [{"id": "focused_recall", "type": "boolean", "source": {"kind": "context", "path": "scores.focused_recall_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "focused_recall"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-PROOF-QUALITY",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "Every applicable proof-quality floor passes.",
+      "prerequisites": ["D-COLLECTION-COMPLETE", "D-OUTPUT-VALID"],
+      "inputs": [{"id": "proof_quality", "type": "boolean", "source": {"kind": "context", "path": "scores.proof_quality_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "proof_quality"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-CONTROLS",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "All frozen controls are correctly classified.",
+      "prerequisites": ["D-COLLECTION-COMPLETE", "D-OUTPUT-VALID"],
+      "inputs": [{"id": "controls", "type": "boolean", "source": {"kind": "context", "path": "scores.controls_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "controls"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-NO-HARD-ERROR",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "No adjudicated hard error is present in V5 candidate reports only.",
+      "prerequisites": ["D-COLLECTION-COMPLETE"],
+      "inputs": [{"id": "hard_error_count", "type": "integer", "source": {"kind": "context", "path": "scores.hard_error_count"}}],
+      "predicate": {"kind": "integer_equals", "input": "hard_error_count", "value": 0},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-NO-GLOBAL-DEFECT",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "No adjudicated GD* global-defect rule is present in V5 candidate reports only.",
+      "prerequisites": ["D-COLLECTION-COMPLETE"],
+      "inputs": [{"id": "global_defect_count", "type": "integer", "source": {"kind": "context", "path": "scores.global_defect_count"}}],
+      "predicate": {"kind": "integer_equals", "input": "global_defect_count", "value": 0},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-NO-MATERIAL-FINDING",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "No unresolved qualifying material diagnostic finding remains.",
+      "prerequisites": ["D-COLLECTION-COMPLETE"],
+      "inputs": [{"id": "material_finding_count", "type": "integer", "source": {"kind": "context", "path": "scores.material_finding_count"}}],
+      "predicate": {"kind": "integer_equals", "input": "material_finding_count", "value": 0},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-COMPARISON",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "The deterministic content-bound aggregate satisfies the exact comparison-predicate.json formula.",
+      "prerequisites": ["D-COLLECTION-COMPLETE"],
+      "inputs": [{"id": "comparison", "type": "boolean", "source": {"kind": "context", "path": "comparison.predicate_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "comparison"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-COHERENCE",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "The candidate package and maintainer rationale pass subtractive/coherence review.",
+      "prerequisites": ["D-STATIC-INTEGRITY"],
+      "inputs": [{"id": "coherence", "type": "boolean", "source": {"kind": "context", "path": "review.coherence_pass"}}],
+      "predicate": {"kind": "boolean_true", "input": "coherence"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    },
+    {
+      "id": "D-DIAGNOSTIC-COMPLETION",
+      "version": 1,
+      "mandatory_root": true,
+      "description": "All D-* diagnostic gates pass; this does not confer release eligibility.",
+      "prerequisites": [
+        "D-STATIC-INTEGRITY",
+        "D-ORACLE-COVERAGE",
+        "D-COLLECTION-COMPLETE",
+        "D-OUTPUT-VALID",
+        "D-FOCUSED-RECALL",
+        "D-PROOF-QUALITY",
+        "D-CONTROLS",
+        "D-NO-HARD-ERROR",
+        "D-NO-GLOBAL-DEFECT",
+        "D-NO-MATERIAL-FINDING",
+        "D-COMPARISON",
+        "D-COHERENCE"
+      ],
+      "inputs": [],
+      "predicate": {"kind": "constant", "outcome": "PASS"},
+      "on_missing": "ERROR",
+      "on_error": "ERROR"
+    }
+  ]
+}

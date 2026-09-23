@@ -1,1 +1,0 @@
-../ui-nightly/struct.rs

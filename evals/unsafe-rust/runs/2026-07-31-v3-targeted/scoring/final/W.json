@@ -1,0 +1,127 @@
+{
+  "confirmed_novel_findings": [],
+  "mode": "W",
+  "reports": [
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "A",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "B",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "C",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "D",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "E",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "F",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "G",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "H",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "I",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "W1": "PASS",
+        "W2": "PASS",
+        "W3": "PASS"
+      },
+      "hard_errors": [],
+      "label": "J",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    }
+  ],
+  "schema_version": 1
+}

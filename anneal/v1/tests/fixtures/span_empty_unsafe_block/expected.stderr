@@ -1,0 +1,9 @@
+  × unsafe
+   ╭─[[PROJECT_ROOT]/src/lib.rs:1:10]
+ 1 │ fn m() { unsafe {} }
+   ·          ────┬────
+   ·              ╰── danger
+ 2 │ 
+   ╰────
+
+Error: Diagnostic error in charon

@@ -1,0 +1,4 @@
+# A common source of confusing bugs is creating `target` directories inside test
+# fixtures, causing odd test behavior from the perspective of a developer who
+# doesn't realize they exist because they don't show up in `git status`.
+!target

@@ -1,0 +1,10 @@
+{
+  "agent_id": "/root/v4_consistency_r",
+  "attempt": 1,
+  "disposition": "COMPLETE",
+  "identity": "R",
+  "kind": "consistency",
+  "phase": "consistency",
+  "recorded_utc": "2026-08-02T01:41:38.195309Z",
+  "schema_version": 1
+}

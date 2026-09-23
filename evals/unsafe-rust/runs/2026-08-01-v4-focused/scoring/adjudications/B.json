@@ -1,0 +1,928 @@
+{
+  "schema_version": 1,
+  "mode": "B",
+  "decisions": [
+    {
+      "label": "A",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "The six rows are stated exhaustive, but Result exhaustiveness and tuple-struct enum-pattern semantics are not verified."
+    },
+    {
+      "label": "A",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "R,S and normal success are asserted, but successful println output, tuple-pattern handling of NotPresent, and implicit return are not authoritatively established."
+    },
+    {
+      "label": "A",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The arena row has the right endpoint but lacks verified successful-output and implicit-function-return premises for the complete trace."
+    },
+    {
+      "label": "A",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "The arena-stop row has the right panic/no-library result, but successful A-line completion is not verified by the cited println premise."
+    },
+    {
+      "label": "A",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "Other-Unicode/non-Unicode rows are present, but successful R output and tuple-struct-pattern semantics are incomplete."
+    },
+    {
+      "label": "A",
+      "field": "atom:B7",
+      "decision": "FAIL",
+      "evidence": "It handles failed calls and incomplete bytes, but the completed R prefix used after second-write failure lacks a verified successful-println effect."
+    },
+    {
+      "label": "A",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "Exact TCB consumers are listed, but upstream successful traces and Rust all/not source selection are incomplete."
+    },
+    {
+      "label": "A",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The freshness prose is exact, yet the prerequisite successful arena and completed-line local trace lacks full Rust authority."
+    },
+    {
+      "label": "A",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The exclusion uses all(...) without verifying Rust all/key-value truth semantics, and depends on incomplete successful-selector closure."
+    },
+    {
+      "label": "A",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "It calls the blocks complementary but never verifies all/not configuration semantics or complete build-to-source reachability."
+    },
+    {
+      "label": "A",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "The witness states all four ideas, but authoritative reachability through the successful arena build and selected block is incomplete."
+    },
+    {
+      "label": "A",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "M has the intended formula, but the positive and complement proofs consume the unproved body/build partition."
+    },
+    {
+      "label": "A",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The not-C zero proof is conditional on an unproved current-source partition and therefore does not cover the required build relation."
+    },
+    {
+      "label": "A",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "It gives the intended UNPROVED wording, but the underlying B12 and B14 derivations are incomplete."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "UNSOUND is issued without an authoritative complete reachability chain through normal build-script return and exact cfg selection."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "PROVED and UNSOUND conclusions necessarily rely on unchecked successful-println, function-return, Result-pattern, and all/not premises."
+    },
+    {
+      "label": "A",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "The asserted witness lacks a validly established supported-current-library reachability link."
+    },
+    {
+      "label": "A",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The TCB itself is kept narrow, but material Rust premises for build completion and cfg selection are not verified."
+    },
+    {
+      "label": "B",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "Absent/system [RERUN,CS] normal return is asserted without verified println success or implicit function-return semantics."
+    },
+    {
+      "label": "B",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "Arena [RERUN,CA] normal return lacks verified completed-line and implicit-return premises."
+    },
+    {
+      "label": "B",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "Arena-stop's later panic is right, but successful CA completion is not verified because AX-EXIT covers only println failure."
+    },
+    {
+      "label": "B",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "Both rejection classes are partitioned correctly, but the completed RERUN prefix lacks verified successful println output semantics."
+    },
+    {
+      "label": "B",
+      "field": "atom:B7",
+      "decision": "FAIL",
+      "evidence": "It handles every failure and arbitrary partial bytes, but the required preceding completed [RERUN] is not supported by a verified successful-println proposition."
+    },
+    {
+      "label": "B",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "The TCB and cfg stages are explicit, but the successful/failure local relation remains incomplete through B3-B7."
+    },
+    {
+      "label": "B",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "Freshness outcomes are enumerated, but the prior successful [RERUN,CA] trace lacks output/return authority."
+    },
+    {
+      "label": "B",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The wasm/arena cfg proof is correct conditionally, but actual effective closure depends on incomplete B8 selector success."
+    },
+    {
+      "label": "B",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "AX-CFG proves complementarity conditionally, but supported current-source selection depends on incomplete B4/B8."
+    },
+    {
+      "label": "B",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "The zero/NZ/UB links are correct, but current Q-library reachability is incomplete at successful script output/return."
+    },
+    {
+      "label": "B",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "Smax and the four cases are exact algebraically, but every-complement UB reachability is not completely established."
+    },
+    {
+      "label": "B",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The checked-body zero proof is correct conditionally, but complete Required-to-body coverage through B8 is absent."
+    },
+    {
+      "label": "B",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "The intended verdict is stated, but B12/B14 do not provide complete applicable certificates."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "The report issues UNSOUND without a fully verified successful-build reachability link."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "PROVED/UNSOUND conclusions necessarily rely on unchecked successful-println and function-return semantics."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "Its A64/on/arena safe-call certificate is incomplete at println success and normal main return."
+    },
+    {
+      "label": "B",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded correctly, but material successful-output and normal-return Rust premises are unverified."
+    },
+    {
+      "label": "C",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "The table lists all six classes, but exact Result/VarError variant exhaustiveness and literal/wildcard/tuple-pattern semantics are not verified."
+    },
+    {
+      "label": "C",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "The two system rows lack verified enum/literal pattern selection and implicit main-return semantics."
+    },
+    {
+      "label": "C",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The arena row states R,A0 success but does not verify literal-pattern selection or normal function return."
+    },
+    {
+      "label": "C",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "R,A0 then panic/no library is stated, but reaching the arena-stop arm is unsupported by applicable literal-pattern authority."
+    },
+    {
+      "label": "C",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "The rejection rows are correct textually, but wildcard and NotUnicode tuple-pattern selection are not verified."
+    },
+    {
+      "label": "C",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "Cargo effects are narrowly qualified, but the successful local traces and exact Rust cfg truth/selection relation remain incomplete."
+    },
+    {
+      "label": "C",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The requested stale-build outcomes are enumerated, but prerequisite arena/arena-stop path selection and successful return are unverified."
+    },
+    {
+      "label": "C",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "It asserts the wasm32/arena all predicate and converse without verifying all, option-truth, and false-cfg removal semantics."
+    },
+    {
+      "label": "C",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "Q/not-Q are called complementary without verified all/not cfg rules and complete successful mapping."
+    },
+    {
+      "label": "C",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "The stated safe zero witness lacks a valid authoritative source-reachability derivation."
+    },
+    {
+      "label": "C",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "The maximal formula and case split are correct, but rely on unproved cfg/build reachability and false-if behavior."
+    },
+    {
+      "label": "C",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The regional panic assertion lacks a complete cfg/body and false/true conditional-semantics derivation over Required."
+    },
+    {
+      "label": "C",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "The verdict is worded correctly, but neither its complete UB certificate nor regional proof is established."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "The UNSOUND verdict rests on an incompletely authorized successful-selector and cfg-body reachability chain."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "The report necessarily relies on unchecked Result/pattern, function-return, and all/not semantics for its affirmative conclusions."
+    },
+    {
+      "label": "C",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "The existential certificate's reachability link is not validly established from the cited Rust premises."
+    },
+    {
+      "label": "C",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "Although BUILD-MAP-ORDERED is bounded, required Rust semantic leaves for exhaustive paths and cfg selection are missing."
+    },
+    {
+      "label": "D",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "The R,CS rows assert return success, but no versioned function-body premise establishes implicit normal return after the final println."
+    },
+    {
+      "label": "D",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The R,CA arena row likewise lacks authoritative implicit-return completion despite correct order/output reasoning."
+    },
+    {
+      "label": "D",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "Cargo/cfg composition is otherwise exact, but the only-successful-return premise consumes unverified implicit main-return semantics from B3/B4."
+    },
+    {
+      "label": "D",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The compile_error proof is exact conditionally, but effective build-to-source closure still depends on the incomplete successful-arena B8 derivation."
+    },
+    {
+      "label": "D",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "The all/not body proof is exact conditionally, but current supported-source reachability depends on the incomplete B4/B8 success relation."
+    },
+    {
+      "label": "D",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "Safe use, false NZ, and zero-UB are authoritative; current-library reachability remains incomplete at the build-script normal-return edge."
+    },
+    {
+      "label": "D",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "M/WIT are algebraically exact, but maximality consumes the incomplete supported reachability certificate."
+    },
+    {
+      "label": "D",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The zero-source proof is correct conditionally, but Required-to-current-body coverage is incomplete through B8/B11."
+    },
+    {
+      "label": "D",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "The intended UNPROVED reasoning is present, but its prerequisite complete B12 and B14 certificates do not hold."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "It issues UNSOUND although the current supported library reachability link omits verified implicit-return semantics."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "Its build/source and maximality affirmatives necessarily rely on unchecked function-return semantics."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "F-UB's raw-arena-to-current-library reachability certificate is incomplete at normal main return."
+    },
+    {
+      "label": "D",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The exact TCB is carefully bounded, but normal build-script return is a material unverified Rust premise used by positive verdicts."
+    },
+    {
+      "label": "F",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "It calls the partition exhaustive but explicitly lets BUILD.md supply it; Result/VarError exhaustiveness and exact pattern behavior are not verified as Rust semantics."
+    },
+    {
+      "label": "F",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "The system rows lack exact match/pattern and implicit-return authority despite showing the intended R,L_s endpoint."
+    },
+    {
+      "label": "F",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The arena row shows R,L_a success but does not verify exact literal-arm selection or falling-through main return."
+    },
+    {
+      "label": "F",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "Its arena-stop prefix/panic outcome is correct, but reaching that literal arm is not established by the cited vague match premise."
+    },
+    {
+      "label": "F",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "Other-Unicode/non-Unicode outcomes are listed, but wildcard and tuple-struct pattern semantics are not verified."
+    },
+    {
+      "label": "F",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "Exact TCB use is described, but selector success/exhaustiveness and Rust cfg all/not source selection remain incomplete."
+    },
+    {
+      "label": "F",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The three rerun failures are right, but the prior-success and arena-stop arm derivations rely on unchecked local Rust semantics."
+    },
+    {
+      "label": "F",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "B-03 asserts all(...) and exact rejection without verifying all/key-value cfg semantics or complete B8 mapping."
+    },
+    {
+      "label": "F",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "The C/not-C block split is asserted without version-matched all/not and false-cfg semantics, atop incomplete mapping."
+    },
+    {
+      "label": "F",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "F-01 states four bullets, but supported current-source reachability is not validly established by the report's authorities."
+    },
+    {
+      "label": "F",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "S has the intended formula, but its complement proof relies on the incomplete cfg/build reachability chain."
+    },
+    {
+      "label": "F",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "S-01's zero panic proof is only conditional on an unproved complementary source selection."
+    },
+    {
+      "label": "F",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "POST-01 gives the intended verdict, but B12/B14 are not complete applicable derivations."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "UNSOUND is issued without a valid authoritative reachability link through the accepted raw arena path and cfg body."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "The report expressly uses BUILD.md to supply a Rust-semantic raw partition and also omits material return/all-not authorities."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "F-01's current-library/source reachability link is incomplete despite correct zero and UB propositions."
+    },
+    {
+      "label": "F",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "It treats BUILD.md as supplying the complete raw semantic partition and leaves other material Rust cfg/return premises unchecked."
+    },
+    {
+      "label": "G",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "The six classes are explicitly called exhaustive, but Result's two-way shape and tuple-struct enum matching are not verified."
+    },
+    {
+      "label": "G",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "Absent/system R,Sline normal return lacks verified successful-println and implicit-return premises, with tuple matching also omitted for absence."
+    },
+    {
+      "label": "G",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The arena success trace asserts a complete Aline and normal return without verifying println success or function-body return."
+    },
+    {
+      "label": "G",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "The arena-stop ordering is stated, but completion of R/Aline on successful println calls is not verified."
+    },
+    {
+      "label": "G",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "The two R-only rejection rows lack verified successful-line and NotUnicode tuple-pattern premises."
+    },
+    {
+      "label": "G",
+      "field": "atom:B7",
+      "decision": "FAIL",
+      "evidence": "q correctly avoids atomicity assumptions, but the completed [R] premise after a later failure lacks verified println-success semantics."
+    },
+    {
+      "label": "G",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "The TCB is conspicuous and cfg rules are cited, but upstream successful return/output and exhaustive selector traces are incomplete."
+    },
+    {
+      "label": "G",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The freshness sequence is exact textually, yet its successful prior [R,Aline] premise is not authoritatively established."
+    },
+    {
+      "label": "G",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The conditional compile_error proof is correct in isolation, but effective build closure depends on the incomplete successful-arena mapping in B8."
+    },
+    {
+      "label": "G",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "all/not semantics are stated, but the exact supported current-source partition still depends on the incomplete B4/B8 mapping."
+    },
+    {
+      "label": "G",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "Valid use, false precondition, and UB are stated; the authoritative current-library reachability link is incomplete."
+    },
+    {
+      "label": "G",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "M and both set arguments are stated, but every excluded-case UB proof consumes the incomplete reachability certificate."
+    },
+    {
+      "label": "G",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The not-K zero source argument is present, but the required build-to-body coverage remains incomplete."
+    },
+    {
+      "label": "G",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "UNPROVED/not-CONTRACT-BROKEN is correct, but the report has not completed the prerequisite whole UB and regional coverage proofs."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "It reports UNSOUND while the supported-current-library reachability link lacks verified successful-output and function-return semantics."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "Its PROVED/UNSOUND results necessarily rely on unchecked Result/tuple, println-success, and function-return premises."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "F-1's reachability certificate is incomplete even though its false-precondition and UB links are correct."
+    },
+    {
+      "label": "G",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is not widened, but material Rust semantics needed for current selector success and exhaustiveness are unverified."
+    },
+    {
+      "label": "H",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "Calls the six classes exhaustive, but AX-ENV omits Result's Ok/Err exhaustiveness and tuple-struct-pattern semantics needed to exclude another outcome."
+    },
+    {
+      "label": "H",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "The R,S success row lacks verified block sequencing, successful println line effect, and implicit main-return semantics."
+    },
+    {
+      "label": "H",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The R,A success row asserts normal return without verified source-order, successful-output, or function-return premises."
+    },
+    {
+      "label": "H",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "It states R,A then explicit panic/no library, but the completed-line and source-order premises are not verified by its authorities."
+    },
+    {
+      "label": "H",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "The R-only rejection rows lack tuple-pattern/source-order and successful-line authority sufficient for both raw classes."
+    },
+    {
+      "label": "H",
+      "field": "atom:B7",
+      "decision": "FAIL",
+      "evidence": "Although q models failed-call bytes, no block-order or successful-println premise verifies the prior completed R prefix at allocator-write failures."
+    },
+    {
+      "label": "H",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "The Cargo qualification is conspicuous, but the successful/failing local traces and exact Rust cfg selection needed for composition remain unproved."
+    },
+    {
+      "label": "H",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "BUILD-2 states the requested sequence, but relies on unverified R-before-A successful and arena-stop local traces."
+    },
+    {
+      "label": "H",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "CFG-1 asserts all(...) truth and cfg inclusion without verifying all, key/value-option truth, and true/false cfg-attribute rules."
+    },
+    {
+      "label": "H",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "The U/not-U body partition is asserted without verified all/not, key/value, and true-versus-false cfg semantics."
+    },
+    {
+      "label": "H",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "The UNSOUND witness reaches the first body only through the incomplete build/cfg derivation, so authoritative reachability is missing."
+    },
+    {
+      "label": "H",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "The formula is correct, but both containments rely on the unverified body/build partition and unverified false-if flow."
+    },
+    {
+      "label": "H",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The regional zero argument relies on the unverified complementary cfg selection and build-to-source closure."
+    },
+    {
+      "label": "H",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "UNPROVED is stated correctly, but its required UB and regional-panic certificates are incomplete because B12/B14 are unproved."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "It issues UNSOUND while supported-Q reachability rests on unverified build-return and exact cfg-selection premises."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "Its positive build/source conclusions necessarily use unchecked Rust block, println-success, return, and all/not semantics."
+    },
+    {
+      "label": "H",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "SOUND-1 lacks a valid authoritative reachability link from raw arena through the current library to the unchecked body."
+    },
+    {
+      "label": "H",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED is bounded, but multiple material Rust premises supporting PROVED/UNSOUND claims are not verified by applicable versioned text."
+    },
+    {
+      "label": "I",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "The six classes are stated, but Result/VarError exact variants and literal/wildcard/tuple-pattern propositions are not verified."
+    },
+    {
+      "label": "I",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "System-success rows lack verified pattern selection, successful println output, and implicit return semantics."
+    },
+    {
+      "label": "I",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "Arena success asserts CFG(arena) and return without verified literal-pattern, completed-line, or function-return premises."
+    },
+    {
+      "label": "I",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "arena-stop's complete line then panic is stated, but literal-arm reachability and successful-line semantics are unverified."
+    },
+    {
+      "label": "I",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "Other-Unicode/non-Unicode R-only rejections lack verified wildcard/tuple patterns and successful stdout-line effect."
+    },
+    {
+      "label": "I",
+      "field": "atom:B7",
+      "decision": "FAIL",
+      "evidence": "It models failed-call byte prefixes and all sites, but the preceding complete RERUN relies on uncited println-success semantics."
+    },
+    {
+      "label": "I",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "BUILD-MAP use is narrow, but successful raw traces and exact Rust all/not cfg source mapping remain incomplete."
+    },
+    {
+      "label": "I",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The freshness outcomes are correct textually, but prerequisite successful-arena and arena-stop local traces lack full authority."
+    },
+    {
+      "label": "I",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The exclusion asserts all truth/falsehood without verifying Rust all/key-value semantics and depends on incomplete B8."
+    },
+    {
+      "label": "I",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "H/not-H selection is asserted without version-matched all/not and false-cfg authority or complete mapping."
+    },
+    {
+      "label": "I",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "BAD has the right safe-zero and UB facts, but current-body reachability rests on incomplete build/cfg derivations."
+    },
+    {
+      "label": "I",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "SOUND is algebraically right, but its positive and excluded-case proofs rely on unverified cfg and if/comparison behavior."
+    },
+    {
+      "label": "I",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "The not-H zero panic assertion has no verified if/equality semantics and lacks complete Required-to-body mapping."
+    },
+    {
+      "label": "I",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "The intended verdict is present, but B12/B14 do not supply complete applicable certificates."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "UNSOUND is issued while the current-source reachability link lacks verified pattern, output, return, and cfg semantics."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "PROVED/UNSOUND claims necessarily rely on unchecked Result/pattern, println-success, function-return, all/not, and if/comparison premises."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "BAD's reachability chain is incomplete despite correct safe-use, false-precondition, and UB assertions."
+    },
+    {
+      "label": "I",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "BUILD-MAP-ORDERED remains narrow, but numerous material Rust semantic premises are unverified."
+    },
+    {
+      "label": "J",
+      "field": "atom:B2",
+      "decision": "FAIL",
+      "evidence": "It states exact Result/VarError and literal/wildcard cases, but does not verify match-arm choice or tuple-struct enum-pattern semantics."
+    },
+    {
+      "label": "J",
+      "field": "atom:B3",
+      "decision": "FAIL",
+      "evidence": "The [R,S] system returns lack verified match selection and implicit function-return semantics."
+    },
+    {
+      "label": "J",
+      "field": "atom:B4",
+      "decision": "FAIL",
+      "evidence": "The [R,A] arena return lacks verified match-arm and falling-through-main return premises."
+    },
+    {
+      "label": "J",
+      "field": "atom:B5",
+      "decision": "FAIL",
+      "evidence": "The complete arena-stop prefix/panic is stated, but exact arm selection is unsupported without match semantics."
+    },
+    {
+      "label": "J",
+      "field": "atom:B6",
+      "decision": "FAIL",
+      "evidence": "The R-only rows are stated, but NotUnicode tuple matching and match control are not verified."
+    },
+    {
+      "label": "J",
+      "field": "atom:B8",
+      "decision": "FAIL",
+      "evidence": "The Cargo mapping is exact conditionally, but upstream selector partition/success traces lack match and return authority."
+    },
+    {
+      "label": "J",
+      "field": "atom:B9",
+      "decision": "FAIL",
+      "evidence": "The stale sequence is complete textually, but the successful arena and arena-stop source paths are not validly established."
+    },
+    {
+      "label": "J",
+      "field": "atom:B10",
+      "decision": "FAIL",
+      "evidence": "The compile_error argument is correct conditionally, but effective current-build mapping remains incomplete through B8."
+    },
+    {
+      "label": "J",
+      "field": "atom:B11",
+      "decision": "FAIL",
+      "evidence": "Cfg all/not semantics are supplied, but the supported current-source partition depends on incomplete B4/B8 reachability."
+    },
+    {
+      "label": "J",
+      "field": "atom:B12",
+      "decision": "FAIL",
+      "evidence": "Zero falsity and UB are authoritative, but the safe call's current-library reachability is incomplete."
+    },
+    {
+      "label": "J",
+      "field": "atom:B13",
+      "decision": "FAIL",
+      "evidence": "M has the exact intended set shape, but inclusion/maximality also use unverified if/comparison behavior and incomplete reachability."
+    },
+    {
+      "label": "J",
+      "field": "atom:B14",
+      "decision": "FAIL",
+      "evidence": "It asserts zero enters the checked panic without verifying Rust if/comparison semantics or complete build-to-body coverage."
+    },
+    {
+      "label": "J",
+      "field": "atom:B15",
+      "decision": "FAIL",
+      "evidence": "UNPROVED is stated, but its UB and regional-panic prerequisite proofs are incomplete."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G5",
+      "decision": "PRESENT",
+      "evidence": "It reports UNSOUND without a valid authoritative match/return-supported current-library reachability link."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "Its affirmative conclusions necessarily rely on unchecked match, tuple-pattern, function-return, and if/comparison semantics."
+    },
+    {
+      "label": "J",
+      "field": "hard_error:BH7",
+      "decision": "PRESENT",
+      "evidence": "The stated aarch64/burst/arena certificate is incomplete at build-path and source reachability."
+    },
+    {
+      "label": "J",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The Cargo TCB is bounded, but several material Rust control-flow and pattern premises are absent from its authority log."
+    }
+  ],
+  "ambiguities": [
+    "The frozen rules do not quantify how much quotation is needed for an accurate proposition-level paraphrase. I credited precise version-matched proposition paraphrases, but not unsupported endpoint assertions that omit a material semantic premise or derivation.",
+    "Atom dependency failure is not mechanically transitive. A later listed atom fails here only where its own proof consumes the same omitted material premise."
+  ]
+}

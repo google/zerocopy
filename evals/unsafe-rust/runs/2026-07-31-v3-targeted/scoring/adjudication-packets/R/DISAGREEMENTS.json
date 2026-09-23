@@ -1,0 +1,18 @@
+{
+  "cells": [
+    {
+      "field": "visible_scope_defect",
+      "label": "I",
+      "s1": {
+        "decision": "ABSENT",
+        "evidence": "The report says it reviewed the supplied source without execution, expansion, dependencies, prior material, or tool evidence."
+      },
+      "s2": {
+        "decision": "PRESENT",
+        "evidence": "Its Supported set adds 'every Rust 1.82 edition,' an axis absent from REQUEST.md's exact Rust/target/ordinary-profile scope."
+      }
+    }
+  ],
+  "mode": "R",
+  "schema_version": 1
+}

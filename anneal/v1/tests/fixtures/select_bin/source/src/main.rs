@@ -1,0 +1,3 @@
+/// ```lean, anneal
+/// ```
+fn main() {}

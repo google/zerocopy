@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:word-count-manifest:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces the exact keyed r001-r120 inventory and relational bindings.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "algorithm_id", "records"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "COMPLETE"},
+    "algorithm_id": {"const": "unicode-whitespace-runs-python-v1"},
+    "records": {
+      "type": "array",
+      "minItems": 120,
+      "maxItems": 120,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["run_id", "receipt"],
+        "properties": {
+          "run_id": {"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"},
+          "receipt": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["schema_version", "status", "algorithm_id", "report_sha256", "word_count", "word_cap", "valid"],
+            "properties": {
+              "schema_version": {"const": 1},
+              "status": {"const": "COUNTED"},
+              "algorithm_id": {"const": "unicode-whitespace-runs-python-v1"},
+              "report_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+              "word_count": {"type": "integer", "minimum": 0},
+              "word_cap": {"type": "integer", "minimum": 1},
+              "valid": {"type": "boolean"}
+            }
+          }
+        }
+      }
+    }
+  }
+}

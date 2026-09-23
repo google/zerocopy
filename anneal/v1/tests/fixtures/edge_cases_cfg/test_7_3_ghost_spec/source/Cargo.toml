@@ -1,0 +1,9 @@
+
+[package]
+name = "test_7_3_ghost_spec"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[workspace]

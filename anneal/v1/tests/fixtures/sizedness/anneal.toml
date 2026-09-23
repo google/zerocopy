@@ -1,0 +1,21 @@
+description = "Verify recursive Sized macro handles sized structs and rejects dynamically sized structs."
+
+[test]
+
+[[test.artifact]]
+package = "sizedness_pass"
+target = "sizedness_pass"
+should_exist = true
+kind = "lean"
+content_contains = ["derive_sized sizedness_pass.NamedStruct"]
+
+[[test.phases]]
+name = "reject"
+expected_status = "failure"
+args = ["verify", "--allow-sorry", "-p", "sizedness_reject"]
+stderr_file = "expected.stderr"
+
+[[test.phases]]
+name = "success"
+expected_status = "success"
+args = ["verify", "--allow-sorry", "-p", "sizedness_pass"]

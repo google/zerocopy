@@ -1,1 +1,0 @@
-../ui-nightly/transmute-ref-illegal-lifetime.rs

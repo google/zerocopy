@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "P",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-dogwood",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "reused_fixture_binding": {
+    "evidence_class": "EXPOSED_PRIOR_RUN_REGRESSION_ONLY",
+    "fixture_source_path": "fixtures/v4-focused/p_predicates",
+    "source_tree_algorithm": "BYTE_TREE_V1",
+    "source_tree_sha256": "2b194a735b69a8904b86baa43791a0ddac9f769ce32e87bf4e759822cb5cd52e",
+    "lineage_run_path": "runs/2026-08-01-v4-focused",
+    "target_label": "m4",
+    "target_map_path": "runs/2026-08-01-v4-focused/sealed/target-map.tsv",
+    "target_map_sha256": "f1c89a72bf11c705e04fa576d0a7979e24799ca1f714def6b4db6bd0a06d5837",
+    "lock_path": "runs/2026-08-01-v4-focused/freeze/LOCK.json",
+    "lock_sha256": "cd7a300f83b045f76530eded20ec2d22bd6abbd484d6459ff50245fb07ef943e",
+    "file_manifest_path": "runs/2026-08-01-v4-focused/freeze/file-manifest.sha256",
+    "file_manifest_sha256": "059cde170e6e31d4ef4c4997b4a64413fdd9e47e9f9e5df74c1c9707bf6e3c58",
+    "authority_manifest_path": "runs/2026-08-01-v4-focused/freeze/authority-manifest.tsv",
+    "authority_manifest_sha256": "48444682cfc13966ce2769add9d4fbde82426a7a6e8777c421be8b26d15ff293",
+    "rubric_path": "runs/2026-08-01-v4-focused/freeze/rubrics/P.md",
+    "rubric_sha256": "1e9e6622a34b3b0376b6912f676695e318edcd971ac1f4960810531ad854911d"
+  },
+  "scoped_surfaces": [
+    "p_predicates/Cargo.toml",
+    "p_predicates/src/lib.rs::value_or_zero",
+    "p_predicates/src/lib.rs::turbo-wasm32 compile_error",
+    "p_predicates/POLICY-SCARLET.md",
+    "p_predicates/POLICY-INDIGO.md",
+    "p_predicates/REQUEST.md",
+    "p_predicates/TCB.md::BUILD-MAP-POLICY"
+  ],
+  "theorem_boundary_class": "Keep the two unresolved published support predicates distinct, choose a conservative full-case audit domain containing both, and prove source soundness and behavior by exact Required-to-Covered containment relative to BUILD-MAP-POLICY.",
+  "supported_set": [
+    "Rust 1.84.0, 1.85.0, and 1.86.0 with their bundled Cargo releases",
+    "targets x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu, and wasm32-unknown-unknown",
+    "both states of turbo and hardened",
+    "every Cargo profile and both debug-assertion states selected by each policy",
+    "every valid Option<u8> input",
+    "Scarlet and Indigo as separate current commitments with no authorized precedence rule"
+  ],
+  "trigger_set": [
+    "non-equal and non-containing published support predicates",
+    "full-case dimensions that must not be projected away",
+    "policy exclusion plus source compile-time rejection",
+    "cfg-selected safe and unsafe implementation branches",
+    "TCB-relative whole-domain containment proof"
+  ],
+  "alternative_proof_paths": [
+    "Any logically equivalent Scarlet and Indigo formulas and any valid separating witnesses are accepted.",
+    "Any conservative full-case domain containing both policy domains is accepted if both containments and both coverage inclusions are proved without claiming it is the exact promise."
+  ],
+  "witness_requirement": "Provide one configuration in Scarlet but not Indigo and one in Indigo but not Scarlet; canonical witnesses are (1.84.0, x86_64, turbo=true, hardened=false) and (1.84.0, x86_64, turbo=true, hardened=true). Whole-domain conclusions require symbolic coverage of every case dimension.",
+  "case_control_class": "DUAL_POLICY_PREDICATE_SEPARATION_WITH_TCB_RELATIVE_FIXED_SOUNDNESS_AND_BEHAVIOR_CONTROLS",
+  "contamination_risk": "Do not expose normalized policy relations, canonical separating witnesses, selected audit predicates, expected theorem results, atom/control IDs, or evaluator-only authority entailment decisions.",
+  "claim_layers": [
+    "PUBLISHED_SUPPORT_PROMISE_IDENTITY",
+    "CONSERVATIVE_FULL_CASE_AUDIT_DOMAIN",
+    "SOURCE_EFFECTIVE_REJECTION",
+    "IMPLEMENTATION_SOUNDNESS",
+    "DOCUMENTED_BEHAVIOR",
+    "TCB_RELATIVE_AUTHORITY_ENTAILMENT"
+  ],
+  "tcb_vacuity": "BUILD-MAP-POLICY is necessary for feature/target reachability and effective rejection and therefore qualifies the whole-domain conclusions. It supplies no Rust semantics, source-branch correctness, compatibility outside the three releases, or backend/binary theorem.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Boolean support-policy normalization, quantified full-case coverage, Rust cfg semantics across exact releases, Option behavior, and TCB-relative proof qualification.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to source, request, either policy, TCB, or manifest",
+    "Authorization of a support-policy precedence or conflict-resolution rule",
+    "Any change to the three exact Rust/Cargo releases or authority propositions",
+    "Any semantic change to P atoms, controls, oracle, or defect rules"
+  ]
+}

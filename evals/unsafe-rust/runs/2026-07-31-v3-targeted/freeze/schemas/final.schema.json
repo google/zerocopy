@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "unsafe-rust-v3-targeted-final-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode", "reports", "confirmed_novel_findings"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "mode": {"enum": ["S", "C", "X", "Q", "W", "M", "R", "K"]},
+    "reports": {
+      "type": "array",
+      "minItems": 10,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "atoms", "hard_errors", "proposal_laundering", "tcb_authority_defect", "visible_scope_defect"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-J]$"},
+          "atoms": {"type": "object"},
+          "hard_errors": {"type": "array", "items": {"type": "string"}},
+          "proposal_laundering": {"type": "boolean"},
+          "tcb_authority_defect": {"type": "boolean"},
+          "visible_scope_defect": {"type": "boolean"}
+        }
+      }
+    },
+    "confirmed_novel_findings": {
+      "type": "array",
+      "items": {"type": "object"}
+    }
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "L",
+  "prompt_regime": "NATURALISTIC",
+  "neutral_label": "fixture-fir",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "l_proof/lib.rs::last",
+    "l_proof/lib.rs::last SAFETY comment",
+    "l_proof/REQUEST.md"
+  ],
+  "theorem_boundary_class": "Reconstruct implementation soundness over the full scope independently from assessing whether the adjacent SAFETY comment records the proof needed for the unchecked operation and returned reference.",
+  "supported_set": [
+    "Rust 1.83.0, edition 2021",
+    "all targets and profiles supported by that toolchain",
+    "every valid borrowed byte slice",
+    "no dependencies or generated code"
+  ],
+  "trigger_set": [
+    "empty/nonempty branch split",
+    "usize len-minus-one representability and bound",
+    "unchecked slice access returning an input-borrowed reference",
+    "true but materially incomplete adjacent SAFETY comment"
+  ],
+  "alternative_proof_paths": [
+    "Any equivalent in-bounds arithmetic proof is accepted if it covers typing, overflow, and every supported profile.",
+    "Any concise replacement comment is accepted if it records both index validity and the returned reference's lifetime/provenance basis."
+  ],
+  "witness_requirement": "No UB witness is required because the implementation is sound. The report must instead reconstruct the nonempty-path proof and identify the missing in-bounds substance in the existing comment without falsely claiming the comment's lifetime statement is wrong.",
+  "case_control_class": "NATURALISTIC_SOUND_IMPLEMENTATION_WITH_MATERIALLY_DEFICIENT_PROOF_ARTIFACT_CONTROL",
+  "contamination_risk": "Do not expose the sound-but-documentation-deficient split, expected replacement-comment content, atom/control IDs, or evaluator-only oracle and authority mapping.",
+  "claim_layers": [
+    "IMPLEMENTATION_SOUNDNESS",
+    "LOCAL_UNSAFE_PRECONDITION_PROOF",
+    "RETURNED_REFERENCE_LIFETIME",
+    "SAFETY_COMMENT_ADEQUACY"
+  ],
+  "tcb_vacuity": "No TCB entry is admitted or needed. The entire implementation and documentation assessment rests on inspected source, arithmetic, and exact Rust semantics.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust slice indexing, usize arithmetic, branch semantics, reference lifetimes and provenance, and SAFETY-comment proof sufficiency.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to source or request",
+    "Any change to Rust 1.83.0 scope or authority propositions",
+    "Any semantic change to L atoms, controls, oracle, or defect rules",
+    "Loss of the intended implementation-soundness/comment-adequacy separation"
+  ]
+}

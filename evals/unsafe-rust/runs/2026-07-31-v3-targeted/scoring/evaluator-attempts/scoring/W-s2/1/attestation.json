@@ -1,0 +1,10 @@
+{
+  "agent_id": "/root/score_w_s2",
+  "attempt": 1,
+  "disposition": "COMPLETE",
+  "identity": "W-s2",
+  "kind": "scorer",
+  "phase": "scoring",
+  "recorded_utc": "2026-08-01T09:15:19.102034Z",
+  "schema_version": 1
+}

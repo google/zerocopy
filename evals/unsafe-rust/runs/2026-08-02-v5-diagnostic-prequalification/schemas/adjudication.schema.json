@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:mode-adjudication:3",
+  "$comment": "DRAFT / UNSEALED one-output-per-mode adjudication schema.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "packet_sha256", "resolutions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "ADJUDICATED"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "resolutions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["cell_id", "decision", "evidence"],
+        "properties": {
+          "cell_id": {"type": "string", "pattern": "^[0-9a-f]{24}$"},
+          "decision": {"enum": ["PASS", "FAIL", "PRESENT", "ABSENT", "VALID_NEW_FINDING", "VALID_PROOF_DOCUMENTATION_GAP", "DUPLICATE_OR_BROADER_ORACLE_ATOM", "UNSUPPORTED_REASONABLE_QUESTION", "INVALID_ASSERTION", "REQUIRES_UPSTREAM_OR_RUST_DOC_CLARIFICATION"]},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

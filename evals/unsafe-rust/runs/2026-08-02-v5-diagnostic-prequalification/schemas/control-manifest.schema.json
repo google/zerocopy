@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/unsafe-rust/v5/control-manifest.schema.json",
+  "$comment": "DRAFT / UNSEALED evaluator-only control inventory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "controls"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "controls": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "family", "mode", "fixture_id", "atom_ids", "applicability", "expected_relation", "rationale"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^(PQ|CC)-[EVFPBLRQ]-[A-Z0-9-]+$"},
+          "family": {"enum": ["PROOF_QUALITY", "CLASSIFICATION_CONTROL"]},
+          "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+          "fixture_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]+$"},
+          "atom_ids": {
+            "type": "array",
+            "minItems": 1,
+            "uniqueItems": true,
+            "items": {"type": "string", "pattern": "^[EVFPBLRQ][1-9][0-9]*$"}
+          },
+          "applicability": {"const": "V5_REPORTS_ONLY"},
+          "expected_relation": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["kind", "certificate_field", "expected_decision"],
+            "properties": {
+              "kind": {"const": "ALL_LISTED_ATOM_CERTIFICATES_EQUAL"},
+              "certificate_field": {"const": "certificate_decision"},
+              "expected_decision": {"const": "PASS"}
+            }
+          },
+          "rationale": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

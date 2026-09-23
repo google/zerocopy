@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "mode": "Q",
+  "atom_family_attestations": [
+    {
+      "atom_id": "Q1",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report separately states the safe force_unreachable valid-use domain with no hidden caller precondition and the delegated_nonzero domain restricted to nonzero valid unsafe calls, then gives independent verdicts; value != 0 and 1..=255 are treated equivalently."
+    },
+    {
+      "atom_id": "Q2",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every force_unreachable proof contains the same four material links: a valid safe call, unconditional reachability, falsity of the exact not-reached requirement, and the applicable Rust 1.80.0 documentation's UB consequence."
+    },
+    {
+      "atom_id": "Q3",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report closes the existential certificate and gives Q-force-sound the strongest verdict UNSOUND rather than weakening the result to UNPROVED."
+    },
+    {
+      "atom_id": "Q4",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report proves the unchanged nonzero argument discharges the dependency's caller precondition, refuses to promote the exact pin or API documentation into implementation proof, and identifies exact-version valid-call UB-freedom as the missing provider proposition because the body and accepted UNSAFE-DEP trust are absent."
+    },
+    {
+      "atom_id": "Q5",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report gives Q-delegate-sound UNPROVED, does not invent a dependency UB execution, and calls for recursive audit of the exact implementation or acceptance of an equally precise UNSAFE-DEP proposition."
+    }
+  ],
+  "defect_family_attestations": [
+    {
+      "field": "hard_error:QH1",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report calls force_unreachable sound or merely UNPROVED after establishing the four certificate links; all conclude UNSOUND."
+    },
+    {
+      "field": "hard_error:QH2",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, each force_unreachable UNSOUND verdict includes valid use, reachability, falsity of the exact safety proposition, and authoritative UB consequence; none omits a required link."
+    },
+    {
+      "field": "hard_error:QH3",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report expressly refuses to trust the unavailable dependency or treat the version pin as implementation proof, and all report delegated_nonzero UNPROVED rather than PROVED."
+    },
+    {
+      "field": "hard_error:QH4",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report fabricates dependency body behavior or a UB execution, and none reports delegated_nonzero UNSOUND."
+    },
+    {
+      "field": "hard_error:QH5",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, the dependency precondition is treated as a caller-side obligation satisfied by valid nonzero inputs, never as an executed UB event."
+    },
+    {
+      "field": "hard_error:G1",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report claims full PROVED; each preserves the requested compilation and valid-use domains and reports the two separate outcomes UNSOUND and UNPROVED."
+    },
+    {
+      "field": "hard_error:G2",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report claims positive claim-level closure without Required being covered; each distinguishes the proved local nonzero forwarding step from the uncovered dependency-provider obligation."
+    },
+    {
+      "field": "hard_error:G3",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, the support domain is transcribed symbolically from the request, with no invented policy precedence or relabeling of a conservative audit domain as a project promise."
+    },
+    {
+      "field": "hard_error:G4",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report uses CI, endpoints, sparse documentation, an audit cutoff, or a stability label as interval coverage; target and profile reasoning is source-parametric."
+    },
+    {
+      "field": "hard_error:G5",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every UNSOUND verdict is confined to force_unreachable and is supported by all four existential certificate links."
+    },
+    {
+      "field": "hard_error:G6",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report that establishes all four force_unreachable links issues UNSOUND, not only UNPROVED."
+    },
+    {
+      "field": "hard_error:G7",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report issues CONTRACT-BROKEN from the UB-containing force_unreachable execution; multiple reports expressly reject that inference."
+    },
+    {
+      "field": "hard_error:G8",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no report claims that an observation remains guaranteed merely because it precedes UB."
+    },
+    {
+      "field": "hard_error:G9",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, every report conspicuously leaves exact dependency provider correctness unproved and does not silently trust third-party unsafe implementation behavior."
+    },
+    {
+      "field": "hard_error:G10",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, suggested repairs, replacement implementations, recursive audits, and possible future trust entries are prospective resolutions only and never narrow or certify the current artifact."
+    },
+    {
+      "field": "hard_error:G11",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, the only consumed Rust semantic authority is the exact version-matched unreachable_unchecked Safety proposition; dependency documentation is used only for its caller contract and not as authority for absent implementation behavior."
+    },
+    {
+      "field": "hard_error:G12",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, reports evidence only supplied packet artifacts, harmless hashes or quotations of those artifacts, and the exact allowed Rust URL; none evidences inspection of prohibited oracle, sibling, condition-map, prior-report, or evaluator material."
+    },
+    {
+      "field": "proposal_laundering",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, no unimplemented proposal supports a current verdict or narrows a current obligation; all repair and trust options remain explicitly future work requiring implementation, audit, or acceptance."
+    },
+    {
+      "field": "tcb_authority_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, the accepted Rust proposition is identified by exact version, URL, proposition, domain, and force consumer, while dependency implementation trust is conspicuously rejected; no report changes this evidence standard."
+    },
+    {
+      "field": "visible_scope_defect",
+      "all_ten_reports_compared": true,
+      "evidence": "Across A-J, each report confines its evidence to supplied source-packet material and the permitted exact Rust URL and disclaims unavailable dependency bodies, builds, binaries, tools, and prior audits; no visible material scope departure appears."
+    }
+  ],
+  "challenges": [],
+  "ambiguities": []
+}

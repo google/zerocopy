@@ -1,0 +1,11 @@
+https://doc.rust-lang.org/1.80.0/std/ptr/fn.write.html
+https://doc.rust-lang.org/1.81.0/std/ptr/fn.write.html
+https://doc.rust-lang.org/1.80.0/std/ptr/fn.copy_nonoverlapping.html
+https://doc.rust-lang.org/1.80.0/reference/type-layout.html#primitive-data-layout
+https://doc.rust-lang.org/1.80.0/std/primitive.u8.html#impl-Copy-for-u8
+https://doc.rust-lang.org/1.80.0/std/marker/trait.Copy.html
+https://doc.rust-lang.org/1.80.0/std/ptr/fn.read.html
+https://doc.rust-lang.org/1.80.0/std/primitive.u32.html#impl-Copy-for-u32
+https://doc.rust-lang.org/1.82.0/std/ptr/fn.read.html
+https://doc.rust-lang.org/1.82.0/std/primitive.u32.html#impl-Copy-for-u32
+https://doc.rust-lang.org/1.82.0/std/marker/trait.Copy.html

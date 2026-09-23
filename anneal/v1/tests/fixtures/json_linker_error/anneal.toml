@@ -1,0 +1,12 @@
+description = """
+Purpose: Exercises fallback logic for span-less compilation errors.
+Behavior: Mocks a generic "linker failed" error with no attached file spans. Checks that Anneal correctly intercepts the unstructured fatal failure from standard cargo compilation.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-review:1",
+  "$comment": "DRAFT / UNSEALED one of two independent bounded materiality reviews.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "reviewer_id", "input_packet_sha256", "scope_attestations", "findings"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "MATERIALITY-REVIEW"},
+    "reviewer_id": {"enum": ["m1", "m2"]},
+    "input_packet_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "scope_attestations": {
+      "type": "array",
+      "minItems": 4,
+      "maxItems": 4,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["scope", "complete", "evidence"],
+        "properties": {
+          "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+          "complete": {"const": true},
+          "evidence": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "scope", "description", "evidence", "proposed_blocking"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"},
+          "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+          "description": {"type": "string", "minLength": 1},
+          "evidence": {"type": "string", "minLength": 1},
+          "proposed_blocking": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

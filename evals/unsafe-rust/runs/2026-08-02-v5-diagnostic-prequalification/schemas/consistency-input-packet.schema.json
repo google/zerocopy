@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:consistency-input-packet:2",
+  "$comment": "DRAFT / UNSEALED deterministic packet shared byte-identically by the two independent consistency reviewers for a mode; the embedded scorer packets are the complete evidence source.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "mode", "input_digests", "binding_sha256", "labels_in_order", "novel_assertions", "packet_tree"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "status": {"const": "CONSISTENCY-INPUT-PACKET"},
+    "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["score_s1_sha256", "score_s2_sha256", "score_input_s1_sha256", "score_input_s2_sha256", "atom_manifest_sha256", "defect_rules_sha256"],
+      "properties": {
+        "score_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_s2_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s1_sha256": {"$ref": "#/$defs/digest"},
+        "score_input_s2_sha256": {"$ref": "#/$defs/digest"},
+        "atom_manifest_sha256": {"$ref": "#/$defs/digest"},
+        "defect_rules_sha256": {"$ref": "#/$defs/digest"}
+      }
+    },
+    "binding_sha256": {"$ref": "#/$defs/digest"},
+    "labels_in_order": {"type": "array", "minItems": 15, "maxItems": 15, "uniqueItems": true, "items": {"type": "string", "pattern": "^[A-O]$"}},
+    "novel_assertions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "label", "normalized_description", "sources"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^N-[0-9a-f]{24}$"},
+          "label": {"type": "string", "pattern": "^[A-O]$"},
+          "normalized_description": {"type": "string", "minLength": 1},
+          "sources": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["scorer_id", "source_id", "description", "evidence"],
+              "properties": {
+                "scorer_id": {"enum": ["s1", "s2"]},
+                "source_id": {"type": "string", "pattern": "^s[12]-N[1-9][0-9]*$"},
+                "description": {"type": "string", "minLength": 1},
+                "evidence": {"type": "string", "minLength": 1}
+              }
+            }
+          }
+        }
+      }
+    },
+    "packet_tree": {"$ref": "urn:zerocopy:v5-diagnostic:draft:packet-tree:1"}
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

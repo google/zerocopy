@@ -1,0 +1,9 @@
+description = """
+Purpose: Exercises extraction of advanced Rust typing invariants.
+Behavior: Evaluates structural logic involving `const N: usize` generics, associated trait types (`AssocType.Item`), and implicitly uninhabited `nomatch` variants. Tracks accurate translation into Lean typeclasses/instances.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+expected_status = "failure"
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

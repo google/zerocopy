@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:materiality-ledger:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces exact keyed scopes/findings and deterministic two-review/adjudication derivation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "input_digests", "completed_reviewer_ids", "scope_complete", "findings"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "COMPLETE"},
+    "input_digests": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["review_packet_sha256", "review_m1_sha256", "review_m2_sha256", "adjudication_packet_sha256", "adjudication_sha256"],
+      "properties": {
+        "review_packet_sha256": {"$ref": "#/$defs/digest"},
+        "review_m1_sha256": {"$ref": "#/$defs/digest"},
+        "review_m2_sha256": {"$ref": "#/$defs/digest"},
+        "adjudication_packet_sha256": {"$ref": "#/$defs/digest"},
+        "adjudication_sha256": {"anyOf": [{"$ref": "#/$defs/digest"}, {"type": "null"}]}
+      }
+    },
+    "completed_reviewer_ids": {"const": ["m1", "m2"]},
+    "scope_complete": {"const": true},
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "scope", "normalized_description", "blocking", "resolution", "sources"],
+        "properties": {
+          "finding_id": {"type": "string", "pattern": "^M-[0-9a-f]{24}$"},
+          "scope": {"enum": ["V5_CANDIDATE_REPORTS", "CANDIDATE_PACKAGE", "HARNESS_PROTOCOL", "ADVERSARIAL_AND_COHERENCE_REVIEWS"]},
+          "normalized_description": {"type": "string", "minLength": 1},
+          "blocking": {"type": "boolean"},
+          "resolution": {"enum": ["AGREED", "ADJUDICATED"]},
+          "sources": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "pattern": "^m[12]-F[1-9][0-9]*$"}}
+        }
+      }
+    }
+  },
+  "$defs": {"digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}}
+}

@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "F",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-cedar",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "f_fanout/Cargo.toml",
+    "f_fanout/src/lib.rs::staged_token",
+    "f_fanout/src/lib.rs::staged_value",
+    "f_fanout/src/lib.rs::staged_is_nonzero",
+    "f_fanout/src/lib.rs::local_token",
+    "f_fanout/src/lib.rs::checked_token",
+    "f_fanout/DEPENDENCY-API.md",
+    "f_fanout/REQUEST.md",
+    "f_fanout/SUPPORT.md",
+    "f_fanout/TCB.md"
+  ],
+  "theorem_boundary_class": "One unavailable selected-implementation evidence root blocks a minimal safety/nonzero theorem and a separate stronger wrapping-result theorem across three independently scored API consumers; the independent local defect, checked control, conditional proofs, and aggregate conclusions remain separate.",
+  "supported_set": [
+    "Rust 1.83.0, edition 2021",
+    "all targets and profiles supported by that toolchain",
+    "selected dependency peer-stage 2.1.0",
+    "DEPENDENCY-API.md as the complete supplied dependency evidence",
+    "no dependency implementation, build inputs, generated sources, artifacts, build scripts, cfg attributes, or accepted implementation TCB"
+  ],
+  "trigger_set": [
+    "unsafe NonZeroU8 construction fed by an unavailable dependency implementation",
+    "multiple public conclusions sharing one missing-evidence root but consuming distinct safety and behavior theorems",
+    "independent unchecked NonZeroU8 construction from unconstrained input",
+    "checked constructor positive control"
+  ],
+  "alternative_proof_paths": [
+    "Equivalent stable naming for the single dependency root is accepted if all and only its direct dependents are listed.",
+    "Conditional downstream reasoning may be expressed compositionally or per API if it does not claim the missing implementation theorem."
+  ],
+  "witness_requirement": "local_token(0) must be recognized as an independent direct invalid-value witness. No concrete UB witness may be fabricated for the unavailable dependency implementation; closing that root requires selected implementation/build/artifact evidence and a proof.",
+  "case_control_class": "MISSING_PREMISE_FANOUT_WITH_INDEPENDENT_NEGATIVE_AND_CHECKED_POSITIVE_CONTROL",
+  "contamination_risk": "Do not expose the root identity, dependent list, local zero witness, expected dispositions, atom/control IDs, or evaluator-only TCB and oracle classifications.",
+  "claim_layers": [
+    "DEPENDENCY_IMPLEMENTATION_ROOT",
+    "CONDITIONAL_PUBLIC_API_PROOF",
+    "INDEPENDENT_LOCAL_UNSOUNDNESS",
+    "CHECKED_CONSTRUCTION_CONTROL",
+    "AGGREGATE_API_DISPOSITION"
+  ],
+  "tcb_vacuity": "The TCB deliberately accepts no dependency implementation proposition. DEPENDENCY-API.md establishes only a public claim and evidence absence; it cannot discharge the unsafe constructor premise. Local and checked APIs do not depend on that root.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust invalid-value UB, NonZero types, dependency evidence boundaries, minimal missing-premise analysis, and proof-DAG fan-out.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to target source, request, support, dependency evidence, TCB, or manifest",
+    "Availability or acceptance of peer-stage implementation, build, or artifact evidence",
+    "Any semantic change to F atoms, controls, oracle, or defect rules",
+    "Loss of the intended shared-root/independent-defect/positive-control separation"
+  ]
+}

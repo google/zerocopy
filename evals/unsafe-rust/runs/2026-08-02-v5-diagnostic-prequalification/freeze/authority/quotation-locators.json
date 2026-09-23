@@ -1,0 +1,932 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "records": [
+    {
+      "authority_id": "P-CFG-184-186",
+      "exact_excerpt": "The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate.",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#the-cfg-attribute",
+        "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#the-cfg-attribute",
+        "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#the-cfg-attribute"
+      ]
+    },
+    {
+      "authority_id": "P-CFG-184-186",
+      "exact_excerpt": "all of the given predicates",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "P-CFG-184-186",
+      "exact_excerpt": "predicate is false",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "P-CFG-184-186",
+      "exact_excerpt": "true if the option is set",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.85.0/reference/conditional-compilation.html#conditional-compilation",
+        "https://doc.rust-lang.org/1.86.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "P-COMPILE-ERROR-184-186",
+      "exact_excerpt": "Causes compilation to fail with the given error message when encountered.",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/std/macro.compile_error.html",
+        "https://doc.rust-lang.org/1.85.0/std/macro.compile_error.html",
+        "https://doc.rust-lang.org/1.86.0/std/macro.compile_error.html"
+      ]
+    },
+    {
+      "authority_id": "P-OPTION-UNWRAP-OR-184-186",
+      "exact_excerpt": "Returns the contained `Some` value or a provided default.",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_or",
+        "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_or",
+        "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_or"
+      ]
+    },
+    {
+      "authority_id": "P-OPTION-UNWRAP-UNCHECKED-184-186",
+      "exact_excerpt": "Calling this method on `None` is undefined behavior.",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked"
+      ]
+    },
+    {
+      "authority_id": "P-OPTION-UNWRAP-UNCHECKED-184-186",
+      "exact_excerpt": "Returns the contained `Some` value, consuming the `self` value, without checking that the value is not `None`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.84.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "https://doc.rust-lang.org/1.85.0/std/option/enum.Option.html#method.unwrap_unchecked",
+        "https://doc.rust-lang.org/1.86.0/std/option/enum.Option.html#method.unwrap_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SHAPE",
+      "exact_excerpt": "An array is a fixed-size sequence of `N` elements of type `T`. The array type is written as `[T; N]`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SHAPE",
+      "exact_excerpt": "The size is a constant expression that evaluates to a `usize`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/array.html#array-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SHAPE",
+      "exact_excerpt": "Indices are zero-based for arrays and slices.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-METHOD",
+      "exact_excerpt": "Arrays coerce to slices (`[T]`), so a slice method may be called on an array. Indeed, this provides most of the API for working with arrays.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.array.html"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-METHOD",
+      "exact_excerpt": "The first step is to build a list of candidate receiver types. Obtain these by repeatedly dereferencing the receiver expression's type, adding each type encountered to the list, then finally attempting an unsized coercion at the end, and adding the result type if that is successful.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/method-call-expr.html#method-call-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-METHOD",
+      "exact_excerpt": "`[T; n]` to `[T]`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "`let` statements where an explicit type is given.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "Arguments for function calls",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "The value being coerced is the actual parameter, and it is coerced to the type of the formal parameter.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-sites"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "To find the common type for a series of match arms.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#least-upper-bound-coercions"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "TyCtor(`T`) to TyCtor(`U`), where TyCtor(`T`) is one of",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "`&T`",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "and where `U` can be obtained from `T` by unsized coercion.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#coercion-types"
+      ]
+    },
+    {
+      "authority_id": "R183-ARRAY-SLICE-COERCION",
+      "exact_excerpt": "`[T; n]` to `[T]`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/type-coercions.html#unsized-coercions"
+      ]
+    },
+    {
+      "authority_id": "R183-BLOCK-SEQUENCE",
+      "exact_excerpt": "Then the final operand is executed, if given.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-BLOCK-SEQUENCE",
+      "exact_excerpt": "When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-BLOCK-TAIL",
+      "exact_excerpt": "The type of a block is the type of the final operand, or `()` if the final operand is omitted.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-BLOCK-TAIL",
+      "exact_excerpt": "Then the final operand is executed, if given.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-CALL",
+      "exact_excerpt": "A call expression calls a function.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-CALL",
+      "exact_excerpt": "If the function eventually returns, then the expression completes.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-CFG-ATTRIBUTE",
+      "exact_excerpt": "The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#the-cfg-attribute"
+      ]
+    },
+    {
+      "authority_id": "R183-CFG-ATTRIBUTE",
+      "exact_excerpt": "If the predicate is true, the thing is rewritten to not have the `cfg` attribute on it. If the predicate is false, the thing is removed from the source code.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#the-cfg-attribute"
+      ]
+    },
+    {
+      "authority_id": "R183-CFG-PREDICATE",
+      "exact_excerpt": "A configuration option. The predicate is true if the option is set, and false if it is unset.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R183-CFG-PREDICATE",
+      "exact_excerpt": "It is true if all of the given predicates are true, or if the list is empty.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R183-CFG-PREDICATE",
+      "exact_excerpt": "It is true if its predicate is false and false if its predicate is true.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R183-DEREF-ASSIGN",
+      "exact_excerpt": "An assignment expression always produces the unit value.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#assignment-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-DEREF-ASSIGN",
+      "exact_excerpt": "An assignment expression moves a value into a specified place.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#assignment-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-DEREF-ASSIGN",
+      "exact_excerpt": "If the expression is of type `&mut T` or `*mut T`, and is either a local variable, a (nested) field of a local variable or is a mutable place expression, then the resulting memory location can be assigned to.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#the-dereference-operator"
+      ]
+    },
+    {
+      "authority_id": "R183-DEREF-ASSIGN",
+      "exact_excerpt": "When applied to a pointer it denotes the pointed-to location.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#the-dereference-operator"
+      ]
+    },
+    {
+      "authority_id": "R183-FUNCTION-BODY-RETURN",
+      "exact_excerpt": "the tail expression of the block, if evaluated, ends up being returned to the caller",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body"
+      ]
+    },
+    {
+      "authority_id": "R183-FUNCTION-OUTPUT-UNIT",
+      "exact_excerpt": "For convenience and historical reasons, the tuple type with no fields (`()`) is often called unit or the unit type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/tuple.html#tuple-types"
+      ]
+    },
+    {
+      "authority_id": "R183-FUNCTION-OUTPUT-UNIT",
+      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/items/functions.html#functions"
+      ]
+    },
+    {
+      "authority_id": "R183-IF-SELECTION",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-IF-SELECTION",
+      "exact_excerpt": "If all `if` and `else if` conditions evaluate to `false` then any `else` block is executed.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/if-expr.html#if-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
+      "exact_excerpt": "Array access is a constant expression, so bounds can be checked at compile-time with a constant index value.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
+      "exact_excerpt": "Array and slice-typed values can be indexed by writing a square-bracket-enclosed expression of type `usize` (the index) after them.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
+      "exact_excerpt": "Otherwise a check will be performed at run-time that will put the thread in a panicked state if it fails.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INDEXING",
+      "exact_excerpt": "When the array is mutable, the resulting memory location can be assigned to.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/array-expr.html#array-and-slice-indexing-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U16",
+      "exact_excerpt": "Values whose type implements `Copy` are copied rather than moved upon assignment.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/special-types-and-traits.html#copy"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U16",
+      "exact_excerpt": "impl Copy for u16",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.u16.html#impl-Copy-for-u16"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U32",
+      "exact_excerpt": "Values whose type implements `Copy` are copied rather than moved upon assignment.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/special-types-and-traits.html#copy"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U32",
+      "exact_excerpt": "impl Copy for u32",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.u32.html#impl-Copy-for-u32"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U8",
+      "exact_excerpt": "Values whose type implements `Copy` are copied rather than moved upon assignment.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/special-types-and-traits.html#copy"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-COPY-U8",
+      "exact_excerpt": "impl Copy for u8",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.u8.html#impl-Copy-for-u8"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-EQUALITY",
+      "exact_excerpt": "Comparison operators are also defined both for primitive types and many types in the standard library.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#comparison-operators"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-EQUALITY",
+      "exact_excerpt": "`!=` Not equal",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#comparison-operators"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-EQUALITY",
+      "exact_excerpt": "`==` Equal",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#comparison-operators"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-LITERAL-CONTEXT",
+      "exact_excerpt": "If an integer type can be uniquely determined from the surrounding program context, the expression has that type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-LITERAL-CONTEXT",
+      "exact_excerpt": "The value of the expression is determined from the string representation of the token as follows:",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-OVERFLOW",
+      "exact_excerpt": "Integer operators will panic when they overflow when compiled in debug mode.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#overflow"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-OVERFLOW",
+      "exact_excerpt": "When `+`, `*` or binary `-` create a value greater than the maximum value, or less than the minimum value that can be stored.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#overflow"
+      ]
+    },
+    {
+      "authority_id": "R183-INTEGER-SUBTRACTION",
+      "exact_excerpt": "`-` Subtraction",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#arithmetic-and-logical-binary-operators"
+      ]
+    },
+    {
+      "authority_id": "R183-LIFETIME-ELISION",
+      "exact_excerpt": "If the receiver has type `&Self` or `&mut Self`, then the lifetime of that reference to `Self` is assigned to all elided output lifetime parameters.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/lifetime-elision.html#lifetime-elision-in-functions"
+      ]
+    },
+    {
+      "authority_id": "R183-LIFETIME-ELISION",
+      "exact_excerpt": "If there is exactly one lifetime used in the parameters (elided or not), that lifetime is assigned to all elided output lifetimes.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/lifetime-elision.html#lifetime-elision-in-functions"
+      ]
+    },
+    {
+      "authority_id": "R183-MATCH-SELECTION",
+      "exact_excerpt": "The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/match-expr.html#match-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-NONZERO-GET",
+      "exact_excerpt": "Returns the contained value as a primitive type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.get"
+      ]
+    },
+    {
+      "authority_id": "R183-NONZERO-NEW",
+      "exact_excerpt": "Creates a non-zero if the given value is not zero.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new"
+      ]
+    },
+    {
+      "authority_id": "R183-NONZERO-NEW",
+      "exact_excerpt": "pub const fn new(n: T) -> Option<NonZero<T>>",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new"
+      ]
+    },
+    {
+      "authority_id": "R183-NONZERO-NEW-UNCHECKED",
+      "exact_excerpt": "This results in undefined behaviour if the value is zero.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-NONZERO-NEW-UNCHECKED",
+      "exact_excerpt": "The value must not be zero.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-PATTERNS",
+      "exact_excerpt": "Literal patterns match exactly the same value as what is created by the literal.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/patterns.html#literal-patterns"
+      ]
+    },
+    {
+      "authority_id": "R183-PATTERNS",
+      "exact_excerpt": "The boolean type or bool is a primitive data type that can take on one of two values, called true and false.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/boolean.html#boolean-type"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-GET-UNCHECKED",
+      "exact_excerpt": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-GET-UNCHECKED",
+      "exact_excerpt": "pub unsafe fn get_unchecked<I>( &self, index: I, ) -> &<I as SliceIndex<[T]>>::Output where I: SliceIndex<[T]>,",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-GET-UNCHECKED-MUT",
+      "exact_excerpt": "Calling this method with an out-of-bounds index is undefined behavior even if the resulting reference is not used.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.get_unchecked_mut"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-LEN",
+      "exact_excerpt": "pub const fn len(&self) -> usize",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len"
+      ]
+    },
+    {
+      "authority_id": "R183-SLICE-LEN",
+      "exact_excerpt": "Returns the number of elements in the slice.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.slice.html#method.len"
+      ]
+    },
+    {
+      "authority_id": "R183-STR-AS-BYTES",
+      "exact_excerpt": "Converts a string slice to a byte slice.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"
+      ]
+    },
+    {
+      "authority_id": "R183-STR-AS-BYTES",
+      "exact_excerpt": "pub const fn as_bytes(&self) -> &[u8]",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#method.as_bytes"
+      ]
+    },
+    {
+      "authority_id": "R183-STR-FROM-UTF8-UNCHECKED",
+      "exact_excerpt": "The bytes passed in must be valid UTF-8.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html#safety"
+      ]
+    },
+    {
+      "authority_id": "R183-STR-FROM-UTF8-UNCHECKED",
+      "exact_excerpt": "pub const unsafe fn from_utf8_unchecked(v: &[u8]) -> &str",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8_unchecked.html"
+      ]
+    },
+    {
+      "authority_id": "R183-STRING-LITERAL",
+      "exact_excerpt": "The expression's value is a reference to a statically allocated `str` containing the UTF-8 encoding of the represented string.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#string-literal-expressions"
+      ]
+    },
+    {
+      "authority_id": "R183-TRAIT-IMPLEMENTATION",
+      "exact_excerpt": "At least one of the types `T0..=Tn` must be a local type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations"
+      ]
+    },
+    {
+      "authority_id": "R183-TRAIT-IMPLEMENTATION",
+      "exact_excerpt": "Given `impl<P1..=Pn> Trait<T1..=Tn> for T0`, an `impl` is valid only if at least one of the following is true:",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations"
+      ]
+    },
+    {
+      "authority_id": "R183-TRAIT-IMPLEMENTATION",
+      "exact_excerpt": "`Trait` is a local trait",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/items/implementations.html#trait-implementations"
+      ]
+    },
+    {
+      "authority_id": "R183-U32-WRAPPING-ADD",
+      "exact_excerpt": "Wrapping (modular) addition. Computes `self + rhs`, wrapping around at the boundary of the type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.u32.html#method.wrapping_add"
+      ]
+    },
+    {
+      "authority_id": "R183-UNSAFE-FUNCTIONS",
+      "exact_excerpt": "Such a function must be prefixed with the keyword `unsafe` and can only be called from inside an `unsafe` block, or inside `unsafe fn` without the `unsafe_op_in_unsafe_fn` lint.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn"
+      ]
+    },
+    {
+      "authority_id": "R183-UNSAFE-FUNCTIONS",
+      "exact_excerpt": "We say they have extra safety conditions, which are requirements that must be upheld by all callers and that the compiler does not check.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn"
+      ]
+    },
+    {
+      "authority_id": "R183-UNSAFE-TRAITS",
+      "exact_excerpt": "An unsafe trait is a trait that comes with extra safety conditions that must be upheld by implementations of the trait.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-traits-unsafe-trait"
+      ]
+    },
+    {
+      "authority_id": "R183-UNSAFE-TRAITS",
+      "exact_excerpt": "By writing `unsafe impl`, the programmer states that they have taken care of satisfying the extra safety conditions required by the trait.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-trait-implementations-unsafe-impl"
+      ]
+    },
+    {
+      "authority_id": "R183-USIZE-DOMAIN",
+      "exact_excerpt": "The `usize` type is an unsigned integer type with the same number of bits as the platform's pointer type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/numeric.html#machine-dependent-integer-types"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "A value of type `str` is represented the same way as `[u8]`, a slice of 8-bit unsigned bytes.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "However, the Rust standard library makes extra assumptions about `str`: methods working on `str` assume and ensure that the data in there is valid UTF-8.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/types/textual.html#textual-types"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "Constructing a non-UTF-8 string slice is not immediate undefined behavior, but any function called on a string slice may assume that it is valid UTF-8, which means that a non-UTF-8 string slice can lead to undefined behavior down the road.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "Rust libraries may assume that string slices are always valid UTF-8.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/primitive.str.html#invariant"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "assert!(str::from_utf8(&sparkle_heart).is_err());",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples"
+      ]
+    },
+    {
+      "authority_id": "R183-UTF8-VALIDITY",
+      "exact_excerpt": "let sparkle_heart = vec![0, 159, 146, 150];",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/std/str/fn.from_utf8.html#examples"
+      ]
+    },
+    {
+      "authority_id": "R183-VISIBILITY",
+      "exact_excerpt": "If an item is public, then it can be accessed externally from some module `m` if you can access all the item's ancestor modules from `m`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.83.0/reference/visibility-and-privacy.html#visibility-and-privacy"
+      ]
+    },
+    {
+      "authority_id": "R185-BLOCK-SEQUENCE",
+      "exact_excerpt": "When evaluating a block expression, each statement, except for item declaration statements, is executed sequentially.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-BLOCK-TAIL",
+      "exact_excerpt": "The type of a block is the type of the final operand, or `()` if the final operand is omitted.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/block-expr.html#block-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-CALL",
+      "exact_excerpt": "A call expression calls a function.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/call-expr.html#call-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-CFG-ATTRIBUTE",
+      "exact_excerpt": "The `cfg` attribute conditionally includes the thing it is attached to based on a configuration predicate.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute"
+      ]
+    },
+    {
+      "authority_id": "R185-CFG-ATTRIBUTE",
+      "exact_excerpt": "If the predicate is true, the thing is rewritten to not have the `cfg` attribute on it. If the predicate is false, the thing is removed from the source code.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#the-cfg-attribute"
+      ]
+    },
+    {
+      "authority_id": "R185-CFG-PREDICATE",
+      "exact_excerpt": "A configuration option. The predicate is true if the option is set, and false if it is unset.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R185-CFG-PREDICATE",
+      "exact_excerpt": "It is true if all of the given predicates are true, or if the list is empty.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R185-CFG-PREDICATE",
+      "exact_excerpt": "It is true if its predicate is false and false if its predicate is true.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/conditional-compilation.html#conditional-compilation"
+      ]
+    },
+    {
+      "authority_id": "R185-COMPILE-ERROR",
+      "exact_excerpt": "Causes compilation to fail with the given error message when encountered.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/macro.compile_error.html"
+      ]
+    },
+    {
+      "authority_id": "R185-ENV-VAR",
+      "exact_excerpt": "Fetches the environment variable `key` from the current process.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/env/fn.var.html"
+      ]
+    },
+    {
+      "authority_id": "R185-ENV-VAR",
+      "exact_excerpt": "NotPresent",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotPresent"
+      ]
+    },
+    {
+      "authority_id": "R185-ENV-VAR",
+      "exact_excerpt": "NotUnicode(OsString)",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/env/enum.VarError.html#variant.NotUnicode"
+      ]
+    },
+    {
+      "authority_id": "R185-FUNCTION-BODY-RETURN",
+      "exact_excerpt": "an explicit `return` expression within the body of the function will short-cut that implicit return, if reached",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body"
+      ]
+    },
+    {
+      "authority_id": "R185-FUNCTION-BODY-RETURN",
+      "exact_excerpt": "the tail expression of the block, if evaluated, ends up being returned to the caller",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#function-body"
+      ]
+    },
+    {
+      "authority_id": "R185-FUNCTION-OUTPUT-UNIT",
+      "exact_excerpt": "If the output type is not explicitly stated, it is the unit type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/items/functions.html#functions"
+      ]
+    },
+    {
+      "authority_id": "R185-IF-SELECTION",
+      "exact_excerpt": "If a condition operand evaluates to `false`, the consequent block is skipped and any subsequent `else if` condition is evaluated.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-IF-SELECTION",
+      "exact_excerpt": "If a condition operand evaluates to `true`, the consequent block is executed and any subsequent `else if` or `else` block is skipped.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/if-expr.html#if-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-INTEGER-COMPARISON",
+      "exact_excerpt": "Comparison operators are also defined both for primitive types and many types in the standard library.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators"
+      ]
+    },
+    {
+      "authority_id": "R185-INTEGER-COMPARISON",
+      "exact_excerpt": "`==` Equal",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/operator-expr.html#comparison-operators"
+      ]
+    },
+    {
+      "authority_id": "R185-MATCH-SELECTION",
+      "exact_excerpt": "The first arm with a matching pattern is chosen as the branch target of the `match`, any variables bound by the pattern are assigned to local variables in the arm's block, and control enters the block.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/expressions/match-expr.html#match-expressions"
+      ]
+    },
+    {
+      "authority_id": "R185-NONZERO-NEW-UNCHECKED",
+      "exact_excerpt": "In the standard library, this affects `NonNull<T>` and `NonZero<T>`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values"
+      ]
+    },
+    {
+      "authority_id": "R185-NONZERO-NEW-UNCHECKED",
+      "exact_excerpt": "and producing an invalid value is hence immediate UB.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/behavior-considered-undefined.html#invalid-values"
+      ]
+    },
+    {
+      "authority_id": "R185-NONZERO-NEW-UNCHECKED",
+      "exact_excerpt": "The value must not be zero.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/num/struct.NonZero.html#method.new_unchecked"
+      ]
+    },
+    {
+      "authority_id": "R185-PANIC",
+      "exact_excerpt": "Panics the current thread.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/macro.panic.html"
+      ]
+    },
+    {
+      "authority_id": "R185-PATTERNS",
+      "exact_excerpt": "Literal patterns match exactly the same value as what is created by the literal.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/patterns.html#literal-patterns"
+      ]
+    },
+    {
+      "authority_id": "R185-PATTERNS",
+      "exact_excerpt": "The wildcard pattern (an underscore symbol) matches any value.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/patterns.html#wildcard-pattern"
+      ]
+    },
+    {
+      "authority_id": "R185-PATTERNS",
+      "exact_excerpt": "Tuple struct patterns match tuple struct and enum values that match all criteria defined by its subpatterns.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/reference/patterns.html#tuple-struct-patterns"
+      ]
+    },
+    {
+      "authority_id": "R185-PRINTLN",
+      "exact_excerpt": "Panics if writing to `io::stdout` fails.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/macro.println.html#panics"
+      ]
+    },
+    {
+      "authority_id": "R185-PRINTLN",
+      "exact_excerpt": "Prints to the standard output, with a newline.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/macro.println.html"
+      ]
+    },
+    {
+      "authority_id": "R185-RESULT",
+      "exact_excerpt": "`Result` is a type that represents either success (`Ok`) or failure (`Err`).",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/result/enum.Result.html"
+      ]
+    },
+    {
+      "authority_id": "R185-STRING-AS-STR",
+      "exact_excerpt": "Extracts a string slice containing the entire `String`.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/string/struct.String.html#method.as_str"
+      ]
+    },
+    {
+      "authority_id": "R185-U8-DOMAIN",
+      "exact_excerpt": "The 8-bit unsigned integer type.",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html"
+      ]
+    },
+    {
+      "authority_id": "R185-U8-DOMAIN",
+      "exact_excerpt": "pub const MAX: u8 = 255u8",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MAX"
+      ]
+    },
+    {
+      "authority_id": "R185-U8-DOMAIN",
+      "exact_excerpt": "pub const MIN: u8 = 0u8",
+      "urls": [
+        "https://doc.rust-lang.org/1.85.1/std/primitive.u8.html#associatedconstant.MIN"
+      ]
+    }
+  ]
+}

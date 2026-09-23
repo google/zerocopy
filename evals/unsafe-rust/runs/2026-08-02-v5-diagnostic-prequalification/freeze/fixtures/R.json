@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "R",
+  "prompt_regime": "NATURALISTIC",
+  "neutral_label": "fixture-ginkgo",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "r_redesign/lib.rs::Slot",
+    "r_redesign/lib.rs::Slot::index",
+    "r_redesign/lib.rs::Tail",
+    "r_redesign/lib.rs::<Tail as Slot>::index",
+    "r_redesign/lib.rs::increment",
+    "r_redesign/REQUEST.md::Design review request"
+  ],
+  "theorem_boundary_class": "First assess the current public generic abstraction under valid safe downstream use; then assess a behavior-preserving capability-reducing redesign as a conditional proposal, not as current implementation proof.",
+  "supported_set": [
+    "Rust 1.83.0 snapshot",
+    "required behavior is wrapping increment of element 1 in a two-element u32 array",
+    "unpublished crate with no downstream generic callers",
+    "all valid safe downstream uses permitted by the current public API"
+  ],
+  "trigger_set": [
+    "public safe trait permits downstream index selection",
+    "safe generic function performs unchecked mutable indexing",
+    "crate-owned Tail happens to return the required index",
+    "required behavior needs no generic index capability",
+    "safe direct-index specialization available"
+  ],
+  "alternative_proof_paths": [
+    "Any downstream type returning an out-of-bounds usize is an equivalent current-API witness.",
+    "Any redesign that removes downstream index authority, uses checked or safe indexing, preserves wrapping increment of element 1, and does not add stronger requirements is equivalent."
+  ],
+  "witness_requirement": "Give a valid safe downstream implementation of Slot whose index is at least 2 and trace increment through get_unchecked_mut. The redesign proof must establish exact element-1 mutation and wrapping behavior while labeling the conclusion conditional on implementation and audit.",
+  "case_control_class": "NATURALISTIC_CURRENT_ABSTRACTION_NEGATIVE_WITH_CONDITIONAL_SAFE_SPECIALIZATION_CONTROL",
+  "contamination_risk": "Do not expose the downstream witness, preferred redesign shape, expected current/proposed verdicts, atom/control IDs, or evaluator-only oracle reasoning.",
+  "claim_layers": [
+    "CURRENT_PUBLIC_API_SOUNDNESS",
+    "VALID_SAFE_DOWNSTREAM_USE",
+    "REQUIRED_BEHAVIOR",
+    "CAPABILITY_REDUCTION",
+    "PROPOSED_DESIGN_SOUNDNESS",
+    "IMPLEMENTATION_AND_AUDIT_CONDITIONALITY"
+  ],
+  "tcb_vacuity": "No TCB entry is admitted. The current witness follows from public source and Rust semantics; the redesign conclusion is a proof obligation over a proposed implementation and cannot be promoted to a theorem about current bytes.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust public abstraction soundness, downstream coherence, unchecked mutable indexing, alias/lifetime reasoning, wrapping arithmetic, and capability-oriented API redesign.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to source or request behavior/downstream constraints",
+    "Publication or acquisition of downstream generic callers",
+    "Any change to Rust 1.83.0 or admitted authority propositions",
+    "Any semantic change to R atoms, controls, oracle, or defect rules"
+  ]
+}

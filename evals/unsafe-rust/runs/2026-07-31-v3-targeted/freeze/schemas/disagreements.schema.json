@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "unsafe-rust-v3-targeted-disagreements-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "mode", "cells"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "mode": {"enum": ["S", "C", "X", "Q", "W", "M", "R", "K"]},
+    "cells": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["label", "field", "s1", "s2"],
+        "properties": {
+          "label": {"type": "string", "pattern": "^[A-J]$"},
+          "field": {"type": "string", "minLength": 1},
+          "s1": {"$ref": "#/$defs/position"},
+          "s2": {"$ref": "#/$defs/position"}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision", "evidence"],
+      "properties": {
+        "decision": {"enum": ["PASS", "FAIL", "PRESENT", "ABSENT"]},
+        "evidence": {"type": "string", "pattern": "\\S"}
+      }
+    }
+  }
+}

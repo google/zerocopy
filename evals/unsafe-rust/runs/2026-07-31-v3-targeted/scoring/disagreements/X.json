@@ -1,0 +1,162 @@
+{
+  "cells": [
+    {
+      "field": "atom:X11",
+      "label": "A",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "P-GOOD proves only the complement; O-NZ-BAD records the zero counterexample but never proves nonzero inputs inside BAD sound."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "P-GOOD proves every input outside BAD via the guard; the coverage equation and witness isolate only value zero inside BAD, leaving its nonzero inputs proved."
+      }
+    },
+    {
+      "field": "atom:X12",
+      "label": "B",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "The report promotes 'the nonzero result behavior' as proved documented behavior, although the supplied docs specify only the zero panic and no nonzero return postcondition."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The complementary region's zero panic is proved from the explicit guard relative to BUILD-MAP-X; return-type validity is used only for soundness, not promoted to an undocumented API promise."
+      }
+    },
+    {
+      "field": "atom:X4",
+      "label": "C",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "States other Unicode and non-Unicode inputs panic and no library is compiled, while separately calling stdout failure infrastructure rather than a selector rejection."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "The report correctly labels stdout failure as infrastructure rather than policy rejection, but never derives that failure of the preceding directive writes prevents reaching selector handling."
+      }
+    },
+    {
+      "field": "atom:X11",
+      "label": "C",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "It proves Required minus Bad but explicitly describes Bad only as existentially refuted; it does not prove the nonzero-input portion of Bad sound."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "OBL-U2 proves all inputs outside Bad using the explicit zero guard, while the report also proves nonzero inputs in Bad satisfy the exact precondition."
+      }
+    },
+    {
+      "field": "atom:X4",
+      "label": "E",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Other Unicode and non-Unicode inputs panic/no-compile, while stdout failure is separately identified as an unsuccessful attempt, not a configuration."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "Invalid values and stdout failure receive different classifications, but the report never establishes the earlier rerun/check-cfg write-success precondition or that their failure prevents selector handling."
+      }
+    },
+    {
+      "field": "atom:X11",
+      "label": "E",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "O-01 proves G and O-02 establishes the zero defect in B, but no proof is stated for B's nonzero-input subregion."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O-01 proves all inputs in S minus B with the explicit guard, and the report separately states nonzero construction in B is proved."
+      }
+    },
+    {
+      "field": "atom:X12",
+      "label": "E",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "O-01 asserts that nonzero execution constructs the returned nonzero from value, adding an undocumented nonzero return-value postcondition to the regional panic proof."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "The explicit zero branch proves the regional panic theorem on G; discussion of result validity is part of the unsafe proof rather than an extra documented promise."
+      }
+    },
+    {
+      "field": "atom:X12",
+      "label": "F",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "Although zero-panic is proved in the complement, O-03 additionally asserts that nonzero calls return the corresponding NonZeroU8, an undocumented return-value postcondition."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O-05 proves zero reaches panic in every ordinary cell relative to the exact mapping; the statement about a corresponding NonZero result is local source detail, not an asserted documented API postcondition."
+      }
+    },
+    {
+      "field": "atom:X4",
+      "label": "G",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Invalid selector cases panic/no-compile, while a stdout failure is explicitly distinguished as infrastructure and not successful policy rejection."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "It correctly distinguishes infrastructure failure from successful policy rejection, but does not show that failure of the earlier directive writes prevents reaching environment/selector handling."
+      }
+    },
+    {
+      "field": "atom:X12",
+      "label": "G",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "Beyond proving the regional zero panic, O-4 asserts the returned NonZeroU8 is constructed from value, an undocumented nonzero return-value postcondition."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O-3 proves zero panics in every configuration outside B; the note about valid NonZero construction is soundness reasoning, not an added documented API contract."
+      }
+    },
+    {
+      "field": "atom:X4",
+      "label": "H",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Shows other Unicode and non-Unicode inputs panic/no-compile and explicitly labels stdout failure infrastructure rather than selector-policy rejection."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "It separates stdout failure from policy rejection, but never states or derives that a failed preceding directive write stops before selector handling; rejected-input reachability is not qualified by both preceding writes."
+      }
+    },
+    {
+      "field": "atom:X4",
+      "label": "I",
+      "s1": {
+        "decision": "PASS",
+        "evidence": "Shows invalid and non-Unicode cases panic after the initial declarations, and separately says stdout failure is infrastructure rather than successful policy rejection."
+      },
+      "s2": {
+        "decision": "FAIL",
+        "evidence": "It gives directive-before-selector order and distinguishes infrastructure failure, but never states or verifies that a failed preceding println write aborts before selector handling, a material clause of X4."
+      }
+    },
+    {
+      "field": "atom:X11",
+      "label": "J",
+      "s1": {
+        "decision": "FAIL",
+        "evidence": "It defines Covered(SOUND)=Good and proves only Good; no positive proof is supplied for nonzero inputs inside Bad."
+      },
+      "s2": {
+        "decision": "PASS",
+        "evidence": "O-44 proves every Good input with the guard, while the report states the only Bad violation is zero and its nonzero inputs satisfy INV-NZ."
+      }
+    }
+  ],
+  "mode": "X",
+  "schema_version": 1
+}

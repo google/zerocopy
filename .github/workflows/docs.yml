@@ -6,74 +6,165 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-# Publish every commit from `main` to google.github.io/zerocopy.
+# Publish commits from `main` which pass both CI workflows to
+# google.github.io/zerocopy.
 
 name: Publish Rustdoc on GitHub Pages
 on:
-  push:
-    branches:
-      - main
+  # Both workflow names are coupled to `.github/workflows/ci.yml` and
+  # `.github/workflows/anneal.yml`. Triggering on both lets either workflow be
+  # the last to finish and lets a successful rerun repair a previously failed
+  # pair. The `coordinate` job below prevents the two completion events from
+  # deploying the same SHA twice.
+  workflow_run: # zizmor: ignore[dangerous-triggers]
+    workflows: ["Build & Tests", "Anneal Tests"]
+    types: [completed]
+    branches: [main]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+permissions: {}
+
+env:
+  CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+
 concurrency:
   group: deploy
   cancel-in-progress: false
 
 jobs:
+  coordinate:
+    name: Verify both CI workflows
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only main-branch push runs publish documentation. In particular, a
+    # manually-dispatched CI run must not substitute for the checks associated
+    # with a commit's push.
+    if: |
+      github.repository == 'google/zerocopy' &&
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      deploy: ${{ steps.coordinate.outputs.deploy }}
+      sha: ${{ steps.coordinate.outputs.sha }}
+      anneal_run_id: ${{ steps.coordinate.outputs.anneal_run_id }}
+    steps:
+      - name: Select the successful CI pair
+        id: coordinate
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha }}
+          TRIGGER_RUN_ID: ${{ github.event.workflow_run.id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          RUNS='[]'
+          for WORKFLOW in ci.yml anneal.yml; do
+            # These filenames are coupled to the workflow names in
+            # `on.workflow_run.workflows` above. Query by filename so a future
+            # run-name collision cannot satisfy this deployment gate.
+            RESPONSE="$(
+              gh api --method GET \
+                -H 'X-GitHub-Api-Version: 2022-11-28' \
+                "repos/$REPOSITORY/actions/workflows/$WORKFLOW/runs" \
+                -f branch=main \
+                -f event=push \
+                -f head_sha="$SOURCE_SHA" \
+                -F per_page=100
+            )"
+            RUN="$(
+              jq -c --arg SHA "$SOURCE_SHA" '
+                [.workflow_runs[]
+                  | select(
+                      .head_sha == $SHA
+                      and .head_branch == "main"
+                      and .event == "push"
+                    )]
+                | sort_by([.updated_at, .id])
+                | last // empty
+              ' <<< "$RESPONSE"
+            )"
+
+            if [ -z "$RUN" ]; then
+              echo "No $WORKFLOW push run exists for $SOURCE_SHA" \
+                >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            RUNS="$(jq -c --argjson RUN "$RUN" '. + [$RUN]' <<< "$RUNS")"
+          done
+
+          jq -r '
+            .[]
+            | "- \(.name): \(.status) / \(.conclusion // "pending") (\(.html_url))"
+          ' <<< "$RUNS" >> "$GITHUB_STEP_SUMMARY"
+
+          if ! jq -e '
+            all(.[]; .status == "completed" and .conclusion == "success")
+          ' <<< "$RUNS" >/dev/null; then
+            echo "Both CI workflows have not succeeded for $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # Both completions trigger this workflow. Only the completion with
+          # the latest `(updated_at, id)` pair proceeds, which makes the choice
+          # deterministic even when GitHub records both updates in the same
+          # second. A later successful rerun naturally becomes the new winner.
+          WINNER_RUN_ID="$(
+            jq -r 'sort_by([.updated_at, .id]) | last | .id' <<< "$RUNS"
+          )"
+          if [ "$WINNER_RUN_ID" != "$TRIGGER_RUN_ID" ]; then
+            echo "Run $WINNER_RUN_ID owns deployment for $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          # A manually rerun workflow retains event `push` even after its
+          # commit stops being the tip of main. Never let such a stale run
+          # replace newer Pages content.
+          MAIN_SHA="$(
+            gh api \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/git/ref/heads/main" \
+              --jq .object.sha
+          )"
+          if [ "$MAIN_SHA" != "$SOURCE_SHA" ]; then
+            echo "Refusing to replace $MAIN_SHA docs with stale $SOURCE_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "deploy=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          jq -r '
+            .[] | select(.name == "Anneal Tests") | "anneal_run_id=\(.id)"
+          ' <<< "$RUNS" >> "$GITHUB_OUTPUT"
+
   build:
     name: Build
     runs-on: ubuntu-latest
+    needs: coordinate
+    if: needs.coordinate.outputs.deploy == 'true'
+    defaults:
+      run:
+        working-directory: zerocopy
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
-      - name: Configure environment variables
-        run: |
-          set -eo pipefail
-  
-          # We use toolchain descriptors ("msrv", "stable", "nightly", and
-          # values from the "metadata.build-rs" key in Cargo.toml) in the
-          # matrix. This step converts the current descriptor to a particular
-          # toolchain version by looking up the corresponding key in
-          # `Cargo.toml`. It sets the `ZC_NIGHTLY_TOOLCHAIN` environment
-          # variable for use in the next step (toolchain installation) because
-          # GitHub variable interpolation doesn't support running arbitrary
-          # commands. In other words, we can't rewrite:
-          #
-          #   toolchain: $ {{ env.ZC_NIGHTLY_TOOLCHAIN }}
-          #
-          # ...to:
-          #
-          #   toolchain: $ {{ ./cargo.sh --version matrix.toolchain }} # hypothetical syntax
-          ZC_NIGHTLY_TOOLCHAIN="$(./cargo.sh --version nightly)"
-          echo "Found that the 'nightly' toolchain is $ZC_NIGHTLY_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
-          echo "ZC_NIGHTLY_TOOLCHAIN=$ZC_NIGHTLY_TOOLCHAIN" >> $GITHUB_ENV
-  
-      # On our MSRV, `cargo` does not know about the `rust-version` field. As a
-      # result, in `cargo.sh`, if we use our MSRV toolchain in order to run `cargo
-      # metadata`, we will not be able to extract the `rust-version` field. Thus,
-      # in `cargo.sh`, we explicitly do `cargo +stable metadata`. This requires a
-      # (more recent) stable toolchain to be installed. As of this writing, this
-      # toolchain is not used for anything else.
-      - name: Install stable Rust for use in 'cargo.sh'
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          toolchain: stable
-          # This isn't actually required to build docs, but `cargo.sh` checks
-          # for it in order to help avoid the subtle UI test bugs that happen
-          # when UI tests are run without it installed.
-          components: rust-src
-  
-      - name: Install Rust with nightly toolchain (${{ env.ZC_NIGHTLY_TOOLCHAIN }})
-        uses: dtolnay/rust-toolchain@00b49be78f40fba4e87296b2ead62868750bdd83 # stable
-        with:
-            toolchain: ${{ env.ZC_NIGHTLY_TOOLCHAIN }}
-            targets: "x86_64-unknown-linux-gnu"
+          # `workflow_run` otherwise checks out the latest default branch,
+          # which may not be the commit whose tests caused this deployment.
+          ref: ${{ needs.coordinate.outputs.sha }}
+          persist-credentials: false
 
       - name: Configure GitHub pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
 
       - name: Cargo doc
         # We pass --document-private-items and --document-hidden items to ensure
@@ -83,34 +174,86 @@ jobs:
         # breaks or removes it, we can just update CI to no longer pass that
         # flag.
         run: |
+            set -eo pipefail
+            ZC_NIGHTLY_TOOLCHAIN="$(./cargo.sh --version nightly)"
+            echo "Found that the 'nightly' toolchain is $ZC_NIGHTLY_TOOLCHAIN" | tee -a $GITHUB_STEP_SUMMARY
+
             # Include arguments passed during docs.rs deployments to make sure those
             # work properly.
             #
             # TODO(#1228): Use `jq` to parse these from `Cargo.toml` instead of
             # hard-coding them once we've gotten it working again.
-            METADATA_DOCS_RS_RUSTDOC_ARGS='--cfg doc_cfg --generate-link-to-definition'
+            METADATA_DOCS_RS_RUSTDOC_ARGS="--cfg doc_cfg --cfg zerocopy_unstable_ptr --generate-link-to-definition --extend-css $PWD/rustdoc/style.css"
             export RUSTDOCFLAGS="-Z unstable-options --document-hidden-items $METADATA_DOCS_RS_RUSTDOC_ARGS"
 
             # TODO: Use `./cargo.sh` instead once we've debugged why it won't work.
-            cargo +${{ env.ZC_NIGHTLY_TOOLCHAIN }} doc --document-private-items --package zerocopy --all-features
+            cargo +$ZC_NIGHTLY_TOOLCHAIN doc --document-private-items --package zerocopy --all-features
 
       - name: Add HTML redirect to doc root
         # By default, Rustdoc doesn't redirect to the documentation root, so we
         # manually generate a redirect.
         run: echo '<meta http-equiv="refresh" content="0;url=zerocopy/index.html">' > target/doc/index.html
 
-      - name: Upload Cargo doc output to GitHub Pages
-        uses: actions/upload-pages-artifact@v3
+      - name: Checkout benchmark data
+        # We check out the dedicated branch where benchmark history is stored.
+        # We put it in a temporary directory to avoid conflicts with the main
+        # checkout.
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          path: target/doc
+          ref: benchmark-data
+          path: temp-bench
+          persist-credentials: false
+
+      - name: Move benchmark files
+        # We copy the dashboard files generated by the benchmark action into
+        # the documentation folder so they get published to GitHub Pages.
+        run: |
+          mkdir -p target/doc/bench
+          if [ -d ../temp-bench/dashboard ]; then
+            cp -r ../temp-bench/dashboard/* target/doc/bench/
+          else
+            echo "No benchmark dashboard files found to copy."
+          fi
+
+      - name: Upload Cargo doc output to GitHub Pages
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: zerocopy/target/doc
   deploy:
     name: Deploy to GitHub Pages
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    needs: build
+    needs: [coordinate, build]
+    permissions:
+      contents: read
+      pages: write # Required for Pages deployment
+      id-token: write # Required for OIDC-based Pages deployment
     steps:
+      - name: Revalidate current main immediately before deployment
+        id: current
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPOSITORY: ${{ github.repository }}
+          SOURCE_SHA: ${{ needs.coordinate.outputs.sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAIN_SHA="$(
+            gh api \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "repos/$REPOSITORY/git/ref/heads/main" \
+              --jq .object.sha
+          )"
+          if [ "$MAIN_SHA" = "$SOURCE_SHA" ]; then
+            echo "deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Skipping stale $SOURCE_SHA; current main is $MAIN_SHA" \
+              >> "$GITHUB_STEP_SUMMARY"
+          fi
+
       - name: Deploy to GitHub Pages
+        if: steps.current.outputs.deploy == 'true'
         id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1

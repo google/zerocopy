@@ -1,0 +1,6 @@
+[package]
+name = "nested_out_of_line"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "B",
+  "prompt_regime": "NATURALISTIC",
+  "neutral_label": "fixture-elm",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "b_build/Cargo.toml",
+    "b_build/build.rs",
+    "b_build/src/lib.rs::lane_id",
+    "b_build/src/lib.rs::wasm32-arena compile_error",
+    "b_build/BUILD.md",
+    "b_build/SUPPORT.md",
+    "b_build/TCB.md::BUILD-MAP-ORDERED",
+    "b_build/REQUEST.md"
+  ],
+  "theorem_boundary_class": "Trace the complete ordered raw-selector partition to successful or rejected current builds, derive selected source relative to BUILD-MAP-ORDERED, then separate regional implementation findings from the whole supported-domain postcondition disposition.",
+  "supported_set": [
+    "Rust and Cargo 1.85.1",
+    "targets x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu, and wasm32-unknown-unknown",
+    "both states of burst and allocator models system and arena",
+    "all listed combinations except wasm32 with arena",
+    "every Cargo profile, both debug-assertion states, every valid u8 input, and the complete raw environment partition",
+    "only current successful accepted-selector builds supply a library"
+  ],
+  "trigger_set": [
+    "ordered build-script output with unsuccessful partial prefixes",
+    "present-to-present selector freshness canary",
+    "accepted, rejected-Unicode, and rejected-non-Unicode environment classes",
+    "cfg-selected unchecked NonZeroU8 construction",
+    "source-level wasm32-arena rejection"
+  ],
+  "alternative_proof_paths": [
+    "A compact exhaustive prose trace may replace a table if every raw selector class, write-failure prefix, and current-build result is unambiguous.",
+    "A nonmaximal regional description is accepted if the demonstrated affected region and whole-domain aggregate conclusion are exact."
+  ],
+  "witness_requirement": "The direct defect requires a supported successful burst/aarch64/arena build and lane_id(0), traced through the selected unchecked branch. Rejected selector executions and wasm32/arena must not be misused as library-runtime witnesses.",
+  "case_control_class": "NATURALISTIC_BUILD_TRACE_WITH_SELECTED_REGION_NEGATIVE_EXCLUSION_AND_AGGREGATE_CONTROLS",
+  "contamination_risk": "Do not expose the affected cfg region, lane_id zero witness, selector trace answer, expected aggregate disposition, atom/control IDs, or evaluator-only build and authority reconciliation.",
+  "claim_layers": [
+    "ORDERED_BUILD_TRACE",
+    "CURRENT_BUILD_FRESHNESS_AND_REJECTION",
+    "SELECTED_SOURCE",
+    "REGIONAL_IMPLEMENTATION_SOUNDNESS",
+    "DOCUMENTED_POSTCONDITION",
+    "WHOLE_SUPPORTED_DOMAIN_AGGREGATE"
+  ],
+  "tcb_vacuity": "BUILD-MAP-ORDERED is essential to interpret successful current directives, unsuccessful exits, freshness, feature/target reachability, and selected source. It does not establish local emissions or order, source correctness, Rust semantics, backend behavior, or binary properties.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Cargo build-script sequencing and freshness, environment-value partitioning, cfg source selection, NonZero invalid values, and scoped aggregate unsafe-code reporting.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to build.rs, library source, request, BUILD, SUPPORT, TCB, or manifest",
+    "Any change to Cargo/Rust 1.85.1 identity or accepted BUILD-MAP-ORDERED disposition",
+    "Any semantic change to B atoms, controls, oracle, or defect rules",
+    "Loss of the intended accepted/rejected/freshness or regional/aggregate distinction"
+  ]
+}

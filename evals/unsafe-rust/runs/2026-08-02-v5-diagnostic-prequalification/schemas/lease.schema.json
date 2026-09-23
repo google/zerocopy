@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:lease:1",
+  "$comment": "DRAFT / UNSEALED authoritative one-attempt lease with embedded immutable inputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "slot_id", "attempt_id", "agent_id", "lease_token", "launch_record_sha256", "launch_record_bytes_base64", "attempt_root", "attempt_root_claim_sha256", "envelope_spec_sha256", "envelope_spec_bytes_base64", "input_packet_sha256", "input_packet_bytes_base64"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "STARTED"},
+    "slot_id": {"$ref": "#/$defs/safe_id"},
+    "attempt_id": {"$ref": "#/$defs/safe_id"},
+    "agent_id": {"$ref": "#/$defs/safe_id"},
+    "lease_token": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "launch_record_sha256": {"$ref": "#/$defs/digest"},
+    "launch_record_bytes_base64": {"type": "string", "contentEncoding": "base64"},
+    "attempt_root": {"type": "string", "minLength": 1},
+    "attempt_root_claim_sha256": {"$ref": "#/$defs/digest"},
+    "envelope_spec_sha256": {"$ref": "#/$defs/digest"},
+    "envelope_spec_bytes_base64": {"type": "string", "contentEncoding": "base64"},
+    "input_packet_sha256": {"$ref": "#/$defs/digest"},
+    "input_packet_bytes_base64": {"type": "string", "contentEncoding": "base64"}
+  },
+  "$defs": {
+    "safe_id": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"},
+    "digest": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

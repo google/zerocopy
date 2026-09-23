@@ -1,0 +1,19 @@
+description = "Test the `expand` subcommand with different emit targets"
+
+[[test.phases]]
+name = "Expand All (Default)"
+args = ["expand", "--allow-sorry"]
+expected_status = "success"
+stdout_file = "expected-all.stdout"
+
+[[test.phases]]
+name = "Expand Anneal Only"
+args = ["expand", "--allow-sorry", "--emit", "anneal"]
+expected_status = "success"
+stdout_file = "expected-anneal.stdout"
+
+[[test.phases]]
+name = "Expand Aeneas Only"
+args = ["expand", "--allow-sorry", "--emit", "aeneas"]
+expected_status = "success"
+stdout_file = "expected-aeneas.stdout"

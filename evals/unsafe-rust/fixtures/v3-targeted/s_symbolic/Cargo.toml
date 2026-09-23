@@ -1,0 +1,12 @@
+[package]
+name = "symbolic-domain-target"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.84"
+
+[features]
+default = []
+telemetry = []
+
+[lib]
+path = "src/lib.rs"

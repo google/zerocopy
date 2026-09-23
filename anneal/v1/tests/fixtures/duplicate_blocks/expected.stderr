@@ -1,0 +1,15 @@
+
+=== Anneal Verification Failed ===
+
+[Anneal Error] anneal::doc_block
+
+  × Documentation block error: Multiple Anneal blocks found on a single item.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:5:1]
+ 4 │ /// ```
+ 5 │ /// ```lean, anneal
+   · ─────────┬─────────
+   ·          ╰── problematic block
+ 6 │ /// context:
+   ╰────
+
+Error: Aborting due to 1 previous errors.

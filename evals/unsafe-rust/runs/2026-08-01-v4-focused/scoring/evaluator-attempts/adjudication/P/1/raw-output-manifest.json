@@ -1,0 +1,12 @@
+[
+  {
+    "path": ".",
+    "type": "directory"
+  },
+  {
+    "bytes": 2969,
+    "path": "adjudication.json",
+    "sha256": "b10a254798f7f99d3668e10943d6dcd70123d3ad5f51de4c67e571017af2f1af",
+    "type": "file"
+  }
+]

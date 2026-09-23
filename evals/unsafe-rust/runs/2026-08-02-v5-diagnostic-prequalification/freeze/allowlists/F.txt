@@ -1,0 +1,9 @@
+https://doc.rust-lang.org/1.83.0/reference/expressions/block-expr.html#block-expressions
+https://doc.rust-lang.org/1.83.0/reference/expressions/call-expr.html#call-expressions
+https://doc.rust-lang.org/1.83.0/reference/expressions/literal-expr.html#integer-literal-expressions
+https://doc.rust-lang.org/1.83.0/reference/expressions/operator-expr.html#comparison-operators
+https://doc.rust-lang.org/1.83.0/reference/items/functions.html#function-body
+https://doc.rust-lang.org/1.83.0/reference/unsafe-keyword.html#unsafe-functions-unsafe-fn
+https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.get
+https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new
+https://doc.rust-lang.org/1.83.0/std/num/struct.NonZero.html#method.new_unchecked

@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:root-inventory:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally freezes the exact ordered diagnostic root/source inventory, which is not the default release-root inventory.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "inventory_kind", "inventory_version", "scope", "release_eligibility", "required_gate_ids", "requirements"],
+  "oneOf": [
+    {
+      "properties": {
+        "status": {"const": "DRAFT"},
+        "inventory_version": {"const": "v5-diagnostic-prequalification-draft-1"}
+      }
+    },
+    {
+      "properties": {
+        "status": {"const": "READY"},
+        "inventory_version": {"const": "v5-diagnostic-prequalification-1"}
+      }
+    }
+  ],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "inventory_kind": {"const": "DIAGNOSTIC"},
+    "inventory_version": {"type": "string"},
+    "scope": {"type": "string", "minLength": 1},
+    "release_eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["eligible", "decision", "blocking_gate_ids", "reason"],
+      "properties": {
+        "eligible": {"const": false},
+        "decision": {"const": "INELIGIBLE"},
+        "blocking_gate_ids": {"const": ["G-ISOLATION", "G-OUTPUT-FINALIZATION"]},
+        "reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "required_gate_ids": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"}
+    },
+    "requirements": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["gate_id", "source", "summary"],
+        "properties": {
+          "gate_id": {"type": "string", "pattern": "^[DG]-[A-Z][A-Z0-9-]*$"},
+          "source": {"type": "string", "minLength": 1},
+          "summary": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  }
+}

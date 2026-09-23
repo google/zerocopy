@@ -1,0 +1,749 @@
+{
+  "schema_version": 1,
+  "mode": "M",
+  "scorer_id": "s1",
+  "reports": [
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "M1",
+          "decision": "PASS",
+          "evidence": "The claim/domain preserves V_ack={1.80.0,1.80.1,1.81.0,1.82.0}, every item-bearing target, ordinary debug/release profiles, and all valid calls; acknowledge has no added safety precondition."
+        },
+        {
+          "id": "M2",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve V_store={1.80.0,1.81.0} with all required targets/profiles/valid calls and separately state soundness and each normal-return effect."
+        },
+        {
+          "id": "M3",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_copy releases with all required targets/profiles/valid calls and separately state soundness and both postconditions."
+        },
+        {
+          "id": "M4",
+          "decision": "PASS",
+          "evidence": "The domain and results preserve all four V_load releases with all required targets/profiles/valid calls, separately for soundness and both postconditions."
+        },
+        {
+          "id": "M5",
+          "decision": "PASS",
+          "evidence": "The acknowledge proof checks a zero-parameter unit signature and exact empty body, conspicuously uses accepted SEM-EMPTY-BLOCK-180-182 over its exact axes, notes unsafe only changes the caller obligation, and closes Required."
+        },
+        {
+          "id": "M6",
+          "decision": "PASS",
+          "evidence": "The store soundness proof applies the 1.80.0 and 1.81.0 write contracts to their separate singleton cases, derives write-validity/alignment from the caller contract, and exhausts V_store by their union."
+        },
+        {
+          "id": "M7",
+          "decision": "PASS",
+          "evidence": "The store postcondition proof uses each versioned write description to establish the supplied value is written without reading or dropping the old value, over the same exhaustive two-case partition."
+        },
+        {
+          "id": "M8",
+          "decision": "PASS",
+          "evidence": "The copy soundness proof checks T=u8, count=1, size 1, u8: Copy and Copy semantics, maps all caller clauses, and limits accepted COMPAT-COPY-180-182 to its exact releases, axes, and consumer."
+        },
+        {
+          "id": "M9",
+          "decision": "PASS",
+          "evidence": "The copy postcondition proof uses the accepted exact compatibility proposition to establish destination equality and unchanged source for every required release/target/profile case, relative to that TCB entry."
+        },
+        {
+          "id": "M10",
+          "decision": "PASS",
+          "evidence": "The load soundness proof covers only 1.80.0 and 1.82.0 with version-matched read, u32: Copy, and Copy facts; it leaves 1.80.1 and 1.81.0 and the complete claim UNPROVED and claims no UB witness."
+        },
+        {
+          "id": "M11",
+          "decision": "PASS",
+          "evidence": "The load postcondition proof covers return-value and source-preservation only at 1.80.0 and 1.82.0, leaves both interior releases and the complete claim UNPROVED, and claims no defined wrong-result witness."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report audits the implemented bodies using only listed versioned authorities and the two already accepted TCB entries; it neither proposes nor certifies an unimplemented design."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The report identifies SEM-EMPTY-BLOCK-180-182 and COMPAT-COPY-180-182 as accepted out-of-band/non-authoritative premises, preserves their exact consumers and scope, and does not transfer them."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states a source-only review of the supplied snapshot and disclaims builds, execution, binary/backend claims, generated artifacts, dependencies, and extra evidence; it reveals no prohibited inspection."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": []
+}
+

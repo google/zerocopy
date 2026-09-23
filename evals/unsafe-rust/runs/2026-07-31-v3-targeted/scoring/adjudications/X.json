@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "mode": "X",
+  "decisions": [
+    {
+      "label": "A",
+      "field": "atom:X11",
+      "decision": "FAIL",
+      "evidence": "P-GOOD proves only GOOD. O-NZ-BAD identifies the zero violation but gives no affirmative proof that nonzero inputs in BAD/Q_X satisfy the constructor obligation and are sound."
+    },
+    {
+      "label": "B",
+      "field": "atom:X12",
+      "decision": "PASS",
+      "evidence": "O-4 proves the explicit zero panic throughout Required \\ S relative to BUILD-MAP-X. Its NZ discussion is return-type validity used for soundness, not an extra value-level API postcondition."
+    },
+    {
+      "label": "C",
+      "field": "atom:X4",
+      "decision": "FAIL",
+      "evidence": "The report proves invalid Unicode and non-Unicode inputs panic/no-compile and labels stdout failure infrastructure, but never establishes that failure of either preceding directive write stops before selector handling."
+    },
+    {
+      "label": "C",
+      "field": "atom:X11",
+      "decision": "FAIL",
+      "evidence": "OBL-U2 closes Required \\ Bad. OBL-U1 supplies the zero counterexample in Bad but no positive derivation for Bad's nonzero-input subregion."
+    },
+    {
+      "label": "E",
+      "field": "atom:X4",
+      "decision": "FAIL",
+      "evidence": "Invalid selector cases and infrastructure failure are classified separately, but the report omits the required derivation that failed rerun/check-cfg writes prevent reaching selector handling."
+    },
+    {
+      "label": "E",
+      "field": "atom:X11",
+      "decision": "FAIL",
+      "evidence": "O-01 proves G and O-02 refutes B at zero; neither states nor derives soundness for nonzero inputs within B/Q_X."
+    },
+    {
+      "label": "E",
+      "field": "atom:X12",
+      "decision": "PASS",
+      "evidence": "O-03 proves zero reaches the dominating panic branch on G. O-01's statement that the unsafe constructor constructs the result from value is local soundness reasoning, not an asserted documented API postcondition."
+    },
+    {
+      "label": "F",
+      "field": "atom:X12",
+      "decision": "PASS",
+      "evidence": "O-05 proves zero panics in every ordinary tuple relative to the exact mapping. O-03's corresponding-NonZero statement is a local constructor fact within the soundness proof, not a promoted API guarantee."
+    },
+    {
+      "label": "G",
+      "field": "atom:X4",
+      "decision": "FAIL",
+      "evidence": "The report distinguishes invalid-selector rejection from stdout infrastructure failure, but does not show that a failure of either earlier directive write prevents environment and selector handling."
+    },
+    {
+      "label": "G",
+      "field": "atom:X12",
+      "decision": "PASS",
+      "evidence": "O-3 proves zero takes panic in every not(B) configuration. O-4's construction statement is explicitly local soundness bookkeeping and is not presented as an additional documented return-value contract."
+    },
+    {
+      "label": "H",
+      "field": "atom:X4",
+      "decision": "FAIL",
+      "evidence": "The invalid input arms and infrastructure classification are present, but the report never proves that failure of the preceding rerun or check-cfg write terminates before selector handling."
+    },
+    {
+      "label": "I",
+      "field": "atom:X4",
+      "decision": "FAIL",
+      "evidence": "The report states directive-before-selector order and no compilation after stdout failure, but omits the material link that a failed preceding println write prevents selector handling itself."
+    },
+    {
+      "label": "J",
+      "field": "atom:X11",
+      "decision": "FAIL",
+      "evidence": "The report expressly sets Covered(SOUND)=Good and proves O-44 only on Good; O-31 supplies a zero refutation but no positive proof for nonzero Bad/Q_X inputs."
+    }
+  ],
+  "ambiguities": [
+    "X12's ban on an undocumented nonzero return-value postcondition is ambiguous as to whether a correct local constructor-result fact used solely to discharge soundness counts. I treated such bookkeeping as harmless unless the report promoted a value-level fact to an API/documented guarantee."
+  ]
+}

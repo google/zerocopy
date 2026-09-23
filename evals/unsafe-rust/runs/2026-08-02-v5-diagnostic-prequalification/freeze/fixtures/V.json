@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "V",
+  "prompt_regime": "CONTROLLED",
+  "neutral_label": "fixture-birch",
+  "source_tree_algorithm": "BYTE_TREE_V1",
+  "source_tree_sha256": "INTEGRATION_BOUND_SOURCE_TREE_SHA256",
+  "report_material_set_algorithm": "V5_MODE_REPORT_MATERIAL_SET_V1",
+  "exact_report_material_set_sha256": "INTEGRATION_BOUND_EXACT_REPORT_MATERIAL_SET_SHA256",
+  "scoped_surfaces": [
+    "v_valid_use/Cargo.toml",
+    "v_valid_use/src/lib.rs::Slot",
+    "v_valid_use/src/lib.rs::Slot::index",
+    "v_valid_use/src/lib.rs::choose",
+    "v_valid_use/src/lib.rs::Anchor",
+    "v_valid_use/src/lib.rs::<Anchor as Slot>::index",
+    "v_valid_use/src/lib.rs::owned",
+    "v_valid_use/caller_examples.rs::East",
+    "v_valid_use/caller_examples.rs::<East as Slot>::index",
+    "v_valid_use/caller_examples.rs::example_east",
+    "v_valid_use/caller_examples.rs::West",
+    "v_valid_use/caller_examples.rs::<West as Slot>::index",
+    "v_valid_use/caller_examples.rs::example_west",
+    "v_valid_use/REQUEST.md",
+    "v_valid_use/SUPPORT.md"
+  ],
+  "theorem_boundary_class": "Separate library implementation and contract theorems from unsafe-trait implementer obligations and from the validity of each submitted downstream example.",
+  "supported_set": [
+    "Rust 1.83.0, edition 2021",
+    "all targets and profiles supported by that toolchain",
+    "the supplied library snapshot",
+    "the supplied downstream-crate caller_examples.rs fragment",
+    "no dependencies, build scripts, generated sources, cfg attributes, or accepted TCB entries"
+  ],
+  "trigger_set": [
+    "public unsafe trait whose implementer controls an unchecked index",
+    "crate-owned contract-violating unsafe impl",
+    "safe generic call path to unchecked indexing",
+    "contract-violating and contract-satisfying downstream impl controls"
+  ],
+  "alternative_proof_paths": [
+    "An equivalent valid-safe-use witness may use any two-element u8 array and any reached index of 2 or greater.",
+    "An equivalent implementer analysis may phrase the unsafe-trait obligation as a proof duty, provided library and caller ownership remain separate."
+  ],
+  "witness_requirement": "The crate-owned unsoundness certificate must trace a valid safe call to owned through Anchor::index() = 2 and the out-of-bounds unchecked operation. East must be rejected as a contract-violating control; West must be analyzed as a valid control.",
+  "case_control_class": "VALID_SAFE_USE_NEGATIVE_WITH_IMPLEMENTER_OWNERSHIP_AND_VALID_INVALID_DOWNSTREAM_CONTROLS",
+  "contamination_risk": "Do not expose Anchor/East/West expected classifications, the canonical witness, atom/control IDs, expected verdicts, or evaluator-only authority and oracle material.",
+  "claim_layers": [
+    "LIBRARY_IMPLEMENTATION",
+    "PUBLIC_CONTRACT",
+    "UNSAFE_TRAIT_IMPLEMENTER_OBLIGATION",
+    "DOWNSTREAM_CALLER_VALIDITY",
+    "VALID_SAFE_USE_UNSOUNDNESS"
+  ],
+  "tcb_vacuity": "No TCB proposition is admitted. Trait metadata, source reachability, Rust semantics, and each implementer's obligation must be proved or inspected directly within its proper crate boundary.",
+  "permissions": {
+    "target_access": "DECLARED_INPUTS_READ_ONLY",
+    "modification": "FORBIDDEN",
+    "build_run_test": "FORBIDDEN",
+    "network": "FORBIDDEN",
+    "authority_access": "AGENT_VISIBLE_NEUTRAL_ONLY",
+    "evaluator_only_material": "FORBIDDEN"
+  },
+  "scorer_expertise": "Rust unsafe-trait obligations, downstream coherence and visibility, generic call transfer, arrays and slices, and valid-safe-use soundness.",
+  "scorer_version": "v5-diagnostic-direct-decision-v1",
+  "retirement_triggers": [
+    "Any byte change to the library, caller examples, request, support scope, or manifest",
+    "Any change to the pinned Rust version or admitted authority propositions",
+    "Any semantic change to V atoms, controls, oracle, or defect rules",
+    "Loss of the intended library/implementer/caller obligation separation"
+  ]
+}

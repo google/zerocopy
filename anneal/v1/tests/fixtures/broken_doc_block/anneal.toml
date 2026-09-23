@@ -1,0 +1,9 @@
+description = """
+Purpose: Tests Anneal' error handling of malformed literate documentation.
+Behavior: Provides a source file with an unclosed `/// ```lean, anneal` block. Expects Anneal to fail gracefully with a specific "Unclosed Anneal block" diagnostic.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"

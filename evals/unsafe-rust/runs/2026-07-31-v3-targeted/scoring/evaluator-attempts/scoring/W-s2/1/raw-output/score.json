@@ -1,0 +1,348 @@
+{
+  "schema_version": 1,
+  "mode": "W",
+  "scorer_id": "s2",
+  "reports": [
+    {
+      "label": "F",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "Calls classify(0) a valid safe call, follows the zero arm through the marker statements to unreachable_unchecked, applies the 1.80.0 contract, and reports UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Treats the zero execution as UB-containing as a whole, rejects it as a behavioral refutation, identifies no independent UB-free zero witness, and reports the panic claim UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "Separately derives that classify(1) avoids the unsafe block, normally returns 2 UB-free, and refutes the promised result 1 with CONTRACT-BROKEN."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The suggested repairs are not used to certify the current source and are explicitly said to require a fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 identifies the exact Rust 1.80.0 std and Reference propositions, consumers, and target/profile applicability."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report expressly limits itself to the supplied source and says it did not build, execute, test, expand, or inspect other artifacts."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "Establishes safe-call validity for classify(0), zero-arm reachability through the locals, falsity of the unreachable-site obligation, authoritative UB, and UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Says the zero execution contains UB as a whole and cannot establish CONTRACT-BROKEN; with no separate UB-free zero derivation it reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "The input-1 case is explicitly independent, executes no unsafe operation, normally returns 2 UB-free, and yields CONTRACT-BROKEN because 2 differs from 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposed source edits are remediation only and the report requires a fresh audit of any edited artifact."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R009-v1 records the exact versioned std and Reference claims, their consumers, and their configuration scope after direct verification."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It states this was a source-level review with no compiler, binary, test, generated artifact, dependency, or prior audit used."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "Uses the valid safe witness classify(0), shows the zero arm and inert locals reach the unsafe call, falsifies its obligation, applies AXIOM-UU, and concludes UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Explicitly classifies the zero path as UB-containing and therefore unusable as a defined nonpanic witness; no independent witness exists, so the panic claim is UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "Shows classify(1) takes the distinct safe arm, returns normally and UB-free with 2, and refutes equality to input 1 as CONTRACT-BROKEN."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Repairs are presented only as future remediation; the report says source changes require re-audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 gives exact Rust 1.80.0 page identities, propositions, consumers, and supported configuration scope."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report confines itself to the supplied source and exact authorities and disclaims tests, execution, compilation, expansion, and out-of-band evidence."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "Witness W0 establishes a valid safe classify(0), selection of the zero arm, completion of the marker locals, reachability and falsity of the unsafe precondition, UB, and UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Classifies W0 as UB-containing and not a UB-free panic refutation, finds no independent zero witness, leaves the entire zero panic obligation unresolved, and reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "Witness W1 selects 1 => 2, enters no unsafe block, returns normally UB-free, and proves CONTRACT-BROKEN because 2 is not input 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The current verdict is not based on either proposed repair, and changed source is expressly said to need re-audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-classify-1 names and verifies the exact Rust 1.80.0 std/Reference propositions and attributes cross-configuration applicability to submitted evidence."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It limits the review to the submitted source and exact authorized pages and says no compilation, testing, backend, binary, or dependency evidence was used."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "A",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "Derives that valid safe classify(0) selects the first arm, evaluates the harmless locals, reaches unreachable_unchecked, violates its precondition, incurs UB, and makes the API UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "States the zero execution as a whole contains UB, supplies no defined observation or UB-free postcondition refutation, has no independent zero witness, and reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "Independently shows classify(1) executes no unsafe operation and normally returns 2 UB-free, establishing CONTRACT-BROKEN against input 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Proposed fixes are not treated as present behavior and are followed by an explicit requirement to audit the changed snapshot."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 records the exact verified 1.80.0 std and Reference text, scope, consumers, and re-audit conditions."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report says it used the supplied source and authorized authorities only, with no build, test, execution, expansion, or backend claim."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "F-UB0 supplies all links: classify(0) is valid safe use, the zero arm and locals reach the call, the comment's proposition is false, AXIOM-UU entails UB, and the verdict is UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "F-PANIC0 says UB applies to the whole zero execution, rejects pre-UB observations as a contract witness, identifies no distinct applicable witness, and reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "F-RET1 shows classify(1) selects the safe return arm, normally returns 2 in a UB-free whole execution, and establishes CONTRACT-BROKEN because 2 differs from 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Repair suggestions do not support the current verdict and are framed as future changes requiring re-audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-R1 uses the exact independently opened Rust 1.80.0 std and Reference pages and expressly limits their propositions and scope."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It describes a source-only review and disclaims build, execution, testing, expansion, backend, and binary evidence."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "The input-0 row follows the selected arm through its two local operations to the intrinsic, applies AXIOM-UU, and classifies the valid safe call and API as UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Treats W0 as UB-containing as a whole, refuses to use its apparent observations for a defined breach, finds no UB-free zero proof, and reports PANIC UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "Treats W1 independently: input 1 avoids the unsafe arm, returns 2 normally and UB-free, and refutes RESULT because 2 is not 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The minimal resolutions are not used as current-artifact evidence, and the report requires fresh review of resulting source."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-C1 identifies the exact Rust 1.80.0 std and Reference claims, consumers, accepted scope, and re-audit triggers."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It expressly says the audit was source-only and performed no build, execution, test, expansion, source change, or tool-derived evidence collection."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "For input 0 it establishes safe-call validity, first-arm selection through the marker locals, reachability and falsity of the unsafe obligation, authoritative UB, and UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "Says the zero execution as a whole contains UB, cannot certify CONTRACT-BROKEN or a defined normal observation, has no independent UB-free zero execution, and leaves panic UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "For input 1 it derives a distinct UB-free normal return of 2 without entering the unsafe block and reports CONTRACT-BROKEN because the input was 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The report separates proposed remediation from the current verdict and says repaired source requires a fresh audit."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "The TCB log identifies exact 1.80.0 authorities and consumers, while D1 conspicuously identifies EVIDENCE.md as the submitted cross-configuration premise."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "It confines itself to the submitted source and authority pages and disclaims tests, tools, compiler implementation, dependencies, and deployment assumptions."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "O-UB-0 shows safe classify(0) selects the zero arm, completes the marker statements, reaches the call, falsifies the safety comment, incurs UB under AXIOM-UB-1, and yields UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "O-PANIC-0 acknowledges no earlier panic operation but classifies the whole execution as UB-containing, rejects it as a behavioral refutation, finds no independent witness, and reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "O-RESULT-1 independently derives that input 1 never executes unsafe code and returns 2 normally in a UB-free execution, proving CONTRACT-BROKEN against input 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "The proposed edits are future remediation and the report explicitly requires a fresh audit after applying them."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-1 uses the exact 1.80.0 std safety proposition and controlling Reference context, identifies its consumer and scope, and disclaims extra premises."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The report states it is source-level, uses no tests or tool-derived evidence, and excludes dependencies, backend, binary, and external material."
+      },
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {
+          "id": "W1",
+          "decision": "PASS",
+          "evidence": "F-UB-0 explicitly supplies valid safe use, zero-arm and local-statement reachability, the false unreachable proposition, the exact 1.80.0 UB consequence, and UNSOUND."
+        },
+        {
+          "id": "W2",
+          "decision": "PASS",
+          "evidence": "F-PANIC-0 classifies the whole zero execution as UB-containing, refuses to use it for CONTRACT-BROKEN, identifies no independent UB-free zero proof, and reports UNPROVED."
+        },
+        {
+          "id": "W3",
+          "decision": "PASS",
+          "evidence": "F-RETURN-1 derives a separate safe input-1 path with no unsafe operation, a UB-free normal result 2, and CONTRACT-BROKEN because 2 differs from 1."
+        }
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {
+        "present": false,
+        "evidence": "Repairs are clearly prospective and no proposed implementation is used to narrow or certify the current artifact."
+      },
+      "tcb_authority_defect": {
+        "present": false,
+        "evidence": "TCB-1 names the exact Rust 1.80.0 std and Reference propositions, their consumers, their supplied configuration applicability, and direct verification."
+      },
+      "visible_scope_defect": {
+        "present": false,
+        "evidence": "The attestation says only target/lib.rs, REQUEST.md, EVIDENCE.md, and the authorized pages were used, with no repository, build, test, execution, or generated material inspected."
+      },
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": []
+}

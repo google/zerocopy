@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:static-lock:2",
+  "$comment": "DRAFT source schema for the bundle-kind-authenticated final static lock.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "bundle_kind", "lock_kind", "manifest_path", "manifest_algorithm", "manifest_sha256", "manifest_entry_count", "path_domain", "metadata_policy", "static_exclusions", "runtime_carve_out", "snapshot_descriptor_sha256", "snapshot_manifest_sha256", "hook_inventory_sha256", "receipt_sha256", "structural_hooks", "byte_tree_algorithm", "last_static_byte_mutation"],
+  "properties": {
+    "schema_version": {"const": 2},
+    "status": {"const": "STATIC-LOCKED"},
+    "bundle_kind": {"enum": ["PRODUCTION", "SYNTHETIC-TEST-ONLY"]},
+    "lock_kind": {"const": "IMMUTABLE_PRELAUNCH_STATIC"},
+    "manifest_path": {"const": "STATIC-MANIFEST.sha256"},
+    "manifest_algorithm": {"const": "V5_DOMAIN_FRAMED_TREE_V1"},
+    "manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "manifest_entry_count": {"type": "integer", "minimum": 1},
+    "path_domain": {"const": "PORTABLE_ASCII_RELATIVE_PATH_V1"},
+    "metadata_policy": {"const": "STATIC_FILES_0444_STATIC_DIRS_0555_RUNTIME_STATE_0700"},
+    "static_exclusions": {"const": ["STATIC-MANIFEST.sha256", "STATIC-LOCK.json", "runtime/state/**"]},
+    "runtime_carve_out": {"const": "EXACT_RUNTIME_STATE_SUBTREE_ONLY"},
+    "snapshot_descriptor_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "snapshot_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "hook_inventory_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "receipt_sha256": {"$ref": "#/$defs/digest_map"},
+    "structural_hooks": {"const": ["H-BUILD-WHOLE-FILE-MANIFEST", "H-CREATE-LOCK-LAST"]},
+    "byte_tree_algorithm": {"const": "BYTE_TREE_V1"},
+    "last_static_byte_mutation": {"const": true}
+  },
+  "$defs": {
+    "digest_map": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+    }
+  }
+}

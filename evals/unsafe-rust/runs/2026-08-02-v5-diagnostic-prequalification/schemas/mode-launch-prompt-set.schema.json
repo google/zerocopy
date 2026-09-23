@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:mode-launch-prompt-set:1",
+  "$comment": "DRAFT / UNSEALED integration artifact binding every exact rendered report prompt, not merely a template.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "modes"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "modes": {
+      "type": "array",
+      "minItems": 8,
+      "maxItems": 8,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["mode", "records"],
+        "properties": {
+          "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+          "records": {
+            "type": "array",
+            "minItems": 15,
+            "maxItems": 15,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["run_id", "cell_id", "prompt_sha256"],
+              "properties": {
+                "run_id": {"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"},
+                "cell_id": {"type": "string", "pattern": "^[0-9a-f]{32}$"},
+                "prompt_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:report-projection-contract:2",
+  "$comment": "DRAFT / UNSEALED finite provenance-typed exact-secret scorer-visible projection contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "algorithm_id", "secret_categories", "matching", "allowed_match_kinds", "minimum_token_bytes", "forbidden_generic_tokens", "placeholder_format", "scorer_receipt_fields", "evaluator_audit_receipt_fields", "raw_report_policy", "scorer_visible_policy", "gh12_policy", "broad_regex_redaction_forbidden", "ordinary_target_paths_and_source_names_preserved", "generic_technical_condition_word_preserved", "protected_target_values_must_not_match", "style_inference_limitation_gate"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "algorithm_id": {"const": "finite-secret-byte-projection-v1"},
+    "secret_categories": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string"}},
+    "matching": {"const": "PROVENANCE_TYPED_EXACT_TOKENS_LONGEST_FIRST_LEFT_TO_RIGHT"},
+    "allowed_match_kinds": {"type": "array", "minItems": 4, "maxItems": 4, "uniqueItems": true, "items": {"type": "string"}},
+    "minimum_token_bytes": {"const": 12},
+    "forbidden_generic_tokens": {"const": ["v5", "v4", "no_skill", "condition"]},
+    "placeholder_format": {"const": "[REDACTED:NOMINAL]"},
+    "scorer_receipt_fields": {"const": ["projected_report_sha256", "redaction_present", "replacement_count"]},
+    "evaluator_audit_receipt_fields": {"const": ["raw_report_sha256", "projected_report_sha256", "category", "offset", "length", "secret_sha256", "placeholder"]},
+    "raw_report_policy": {"const": "SEALED_EVALUATOR_RESTRICTED"},
+    "scorer_visible_policy": {"const": "PROJECTED_REPORT_PLUS_VALUE_FREE_RECEIPT"},
+    "gh12_policy": {"const": "FORCE_PRESENT_IFF_RECEIPT_REDACTION_PRESENT"},
+    "broad_regex_redaction_forbidden": {"const": true},
+    "ordinary_target_paths_and_source_names_preserved": {"const": true},
+    "generic_technical_condition_word_preserved": {"const": true},
+    "protected_target_values_must_not_match": {"const": true},
+    "style_inference_limitation_gate": {"const": "G-ISOLATION"}
+  }
+}

@@ -1,0 +1,11 @@
+description = """
+Purpose: Allows build-only local path dependencies outside the selected workspace root.
+Behavior: Runs from a nested workspace whose selected package depends on a sibling crate
+outside that workspace. The sibling crate should not be rejected merely because Cargo
+metadata includes it; Anneal only scans the selected package.
+"""
+
+[test]
+args = ["verify"]
+cwd = "workspace"
+expected_status = "success"

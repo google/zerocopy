@@ -1,0 +1,22 @@
+# Copyright 2023 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+[package]
+name = "testutil"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+parking_lot = "0.12.1"
+cargo_metadata = "0.18.1"
+
+[lints.rust]
+unexpected_cfgs = { level = "deny", check-cfg = [
+    'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)',
+    'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN, values("msrv", "stable", "nightly"))',
+] }

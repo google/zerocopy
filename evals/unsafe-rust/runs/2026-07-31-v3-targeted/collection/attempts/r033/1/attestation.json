@@ -1,0 +1,12 @@
+{
+  "agent_id": "/root/report_r033",
+  "api_state": "INFRASTRUCTURE_FAILURE",
+  "attempt": 1,
+  "evidence": "Agent disappeared from collaboration state after user steering interrupted the orchestration wait; no completion callback or report output was available.",
+  "operational_scope_deviation": false,
+  "recorded_utc": "2026-08-01T06:18:37.963341Z",
+  "rerunnable": true,
+  "run_id": "r033",
+  "schema_version": 1,
+  "terminal_disposition": "ORCHESTRATOR_TOOL_FAILURE"
+}

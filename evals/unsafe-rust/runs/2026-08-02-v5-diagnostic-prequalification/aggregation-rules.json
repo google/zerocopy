@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "rules_version": "v5-diagnostic-aggregate-v2",
+  "population_contract": {
+    "candidate_condition": "v5",
+    "candidate_only_paths": [
+      "scores.focused_recall_pass",
+      "scores.proof_quality_pass",
+      "scores.controls_pass",
+      "scores.hard_error_count",
+      "scores.global_defect_count"
+    ],
+    "all_condition_paths": [
+      "collection.complete",
+      "collection.invalid_output_count",
+      "comparison.predicate_pass"
+    ],
+    "separate_review_paths": [
+      "oracle.coverage_pass",
+      "scores.material_finding_count",
+      "review.coherence_pass"
+    ],
+    "novel_classifications_are_not_material_findings": true
+  },
+  "input_digest_contract": {
+    "algorithm": "sha256",
+    "canonicalization": "UTF8_SORTED_KEYS_COMPACT_JSON_LF_V1",
+    "exact_key_set": [
+      "schedule_slots_sha256",
+      "envelopes_sha256",
+      "word_counts_sha256",
+      "atom_manifests_sha256",
+      "oracle_receipts_sha256",
+      "blind_join_sha256",
+      "joined_reports_sha256",
+      "projection_audit_manifest_sha256",
+      "scoring_bundle_manifest_sha256",
+      "control_manifest_sha256",
+      "control_results_sha256",
+      "materiality_ledger_sha256",
+      "comparison_predicate_sha256",
+      "coherence_review_sha256"
+    ],
+    "binds_exact_artifact_set": true
+  },
+  "default_dispositions": {
+    "missing": "ERROR",
+    "malformed": "ERROR",
+    "error": "ERROR"
+  },
+  "rules": [
+    {
+      "context_path": "oracle.coverage_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "authenticated_oracle_review_closure_v2",
+        "population": "TWO_SOURCE_ORACLE_REVIEWS_AND_ONE_SNAPSHOT_COVERAGE_REVIEW",
+        "source_review_kind": "INDEPENDENT_ORACLE",
+        "source_review_count": 2,
+        "snapshot_hook_id": "H-VALIDATE-ORACLE-COVERAGE",
+        "required_status": "PASS"
+      }
+    },
+    {
+      "context_path": "collection.complete",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "collection_exact_slots_v1",
+        "population": "ALL_120_REPORT_SLOTS",
+        "set_relation": "schedule_slot_ids == envelope_slot_ids == word_count_slot_ids",
+        "required_terminal_status": "SEALED"
+      }
+    },
+    {
+      "context_path": "collection.invalid_output_count",
+      "output_type": "integer",
+      "formula": {
+        "kind": "invalid_output_count_v1",
+        "population": "ALL_120_REPORT_SLOTS",
+        "invalid_if_any": [
+          "terminal_status != SEALED",
+          "semantic_valid != true",
+          "format_valid != true",
+          "word_count_valid != true"
+        ]
+      }
+    },
+    {
+      "context_path": "scores.focused_recall_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "candidate_atom_recall_v1",
+        "population": "V5_REPORTS_ONLY",
+        "quantifier": "EVERY_MODE_ATOM_REPLICATE",
+        "field": "certificate_decision",
+        "required_value": "PASS"
+      }
+    },
+    {
+      "context_path": "scores.proof_quality_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "candidate_control_family_v1",
+        "population": "V5_REPORTS_ONLY",
+        "control_family": "PROOF_QUALITY",
+        "set_relation": "observed_control_ids == expected_control_ids",
+        "decision_relation": "decision == expected_decision"
+      }
+    },
+    {
+      "context_path": "scores.controls_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "candidate_control_family_v1",
+        "population": "V5_REPORTS_ONLY",
+        "control_family": "CLASSIFICATION_CONTROL",
+        "set_relation": "observed_control_ids == expected_control_ids",
+        "decision_relation": "decision == expected_decision"
+      }
+    },
+    {
+      "context_path": "scores.hard_error_count",
+      "output_type": "integer",
+      "formula": {
+        "kind": "candidate_present_rule_count_v1",
+        "population": "V5_REPORTS_ONLY",
+        "field": "hard_errors",
+        "deduplication_key": ["slot_id", "rule_id"]
+      }
+    },
+    {
+      "context_path": "scores.global_defect_count",
+      "output_type": "integer",
+      "formula": {
+        "kind": "candidate_present_rule_count_v1",
+        "population": "V5_REPORTS_ONLY",
+        "field": "global_defects",
+        "deduplication_key": ["slot_id", "rule_id"]
+      }
+    },
+    {
+      "context_path": "scores.material_finding_count",
+      "output_type": "integer",
+      "formula": {
+        "kind": "blocking_materiality_count_v1",
+        "population": "CANDIDATE_HARNESS_ADVERSARIAL_REVIEW_LEDGER",
+        "required_ledger_status": "COMPLETE",
+        "required_reviewer_ids": ["m1", "m2"],
+        "required_scope_complete": true,
+        "field": "blocking",
+        "required_value": true,
+        "novel_review_source_forbidden": true,
+        "empty_allowed_iff": "BOTH_REVIEWS_COMPLETE_AND_ATTEST_NO_FINDINGS",
+        "deduplication_key": ["finding_id"]
+      }
+    },
+    {
+      "context_path": "comparison.predicate_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "exact_comparison_predicate_v1",
+        "population": "ALL_THREE_CONDITIONS",
+        "predicate_id": "v5-diagnostic-absolute-and-not-trailing-v1"
+      }
+    },
+    {
+      "context_path": "review.coherence_pass",
+      "output_type": "boolean",
+      "formula": {
+        "kind": "authenticated_coherence_review_v2",
+        "population": "ONE_SOURCE_COHERENCE_REVIEW",
+        "source_review_kind": "COHERENCE",
+        "source_review_count": 1,
+        "required_status": "PASS"
+      }
+    }
+  ]
+}

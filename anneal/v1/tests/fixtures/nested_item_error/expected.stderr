@@ -1,0 +1,18 @@
+
+=== Anneal Verification Failed ===
+
+[Anneal Error] anneal::nested_item
+
+  × Nested item error: Anneal cannot verify items defined inside function
+  │ bodies or other blocks. Move this item to the module level if you wish to
+  │ verify it.
+   ╭─[[PROJECT_ROOT]/src/lib.rs:2:5]
+ 1 │     fn outer() {
+ 2 │ ╭─▶     /// ```lean, anneal
+ 3 │ │       /// ```
+ 4 │ ├─▶     fn inner() {}
+   · ╰──── this item is defined inside a function body
+ 5 │     }
+   ╰────
+
+Error: Aborting due to 1 previous errors.

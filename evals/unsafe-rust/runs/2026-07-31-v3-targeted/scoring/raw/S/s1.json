@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "mode": "S",
+  "scorer_id": "s1",
+  "reports": [
+    {
+      "label": "A",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Supported(c) by the closed released-stable 1.84.0–1.86.0 predicate, all three targets, both telemetry states, all profiles/assertion states, and rejects Cargo/CI substitution."},
+        {"id": "S2", "decision": "PASS", "evidence": "OBL-1/3 identify the exact 1.84.0 pages and propositions; the TCB log gives the accepted entry's exact region, propositions, consumers, limits, and material qualification."},
+        {"id": "S3", "decision": "PASS", "evidence": "INV-BRANCH derives that false is_none fallthrough leaves the unchanged, still-owned value as Some(b), discharging unwrap_unchecked's precondition."},
+        {"id": "S4", "decision": "PASS", "evidence": "OBL-4 exhaustively derives None -> 0 and Some(b) -> b from the applicable is_none and unwrap propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "States the derivation is uniform across targets, releases, features, profiles, and assertion states and closes their Cartesian product parametrically."},
+        {"id": "S6", "decision": "PASS", "evidence": "Reports soundness PROVED for every Supported(c), relative to COMPAT-OPTION-184-186, and supplies obligations plus whole-product closure."},
+        {"id": "S7", "decision": "PASS", "evidence": "Reports the documented result PROVED over the same exact domain, conspicuously TCB-relative, with exhaustive input and configuration coverage."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The suggested comment is explicitly documentation debt; the current implementation verdict is supported by the reconstructed proof, not the proposal."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report identifies the accepted entry, base pages, exact transported propositions, region, consumers, exclusions, and qualifies every consuming verdict."},
+      "visible_scope_defect": {"present": false, "evidence": "It states complete-snapshot scope and inventories the sole public API, sole unsafe call, target files, configuration axes, and exclusions."},
+      "novel_findings": []
+    },
+    {
+      "label": "B",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines R symbolically as every released stable 1.84.0–1.86.0 toolchain and retains the exact three targets, two feature states, every profile, and both assertion states."},
+        {"id": "S2", "decision": "PASS", "evidence": "Explicitly verifies both 1.84.0 method pages and their exact classification, Some-result, and None-UB text, then applies only the accepted exact TCB entry."},
+        {"id": "S3", "decision": "PASS", "evidence": "O1 derives Some(v) from false fallthrough, the exhaustive Option variants, and the unchanged local before unwrap_unchecked."},
+        {"id": "S4", "decision": "PASS", "evidence": "O2/O3 prove the exhaustive None return of 0 and Some(v) return of v using the applicable exact contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Defines Covered = Required and explains why source and accepted premises are parametric over T × F × P × A."},
+        {"id": "S6", "decision": "PASS", "evidence": "Explicitly establishes Required ⊆ Covered and reports whole-domain soundness PROVED relative to COMPAT-OPTION-184-186."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same explicit closure and exhaustive input proof support the documented-result PROVED verdict, with the TCB qualification repeated."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The proposed comment replacement is labeled documentation debt and is not used to certify or narrow the current artifact."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies the versioned base text and records the accepted entry's exact proposition, domain, consumers, exclusions, and qualification."},
+      "visible_scope_defect": {"present": false, "evidence": "It names all six supplied files and inventories the complete crate-defined API and unsafe surface; minor line-number imprecision does not omit source."},
+      "novel_findings": []
+    },
+    {
+      "label": "E",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines S as every released stable r in the closed interval, all three targets, both telemetry states, every profile, and either assertion state; CI remains sampling only."},
+        {"id": "S2", "decision": "PASS", "evidence": "Quotes and links both 1.84.0 base contracts, then records COMPAT-OPTION-184-186 as accepted with its exact scope, consumers, limitations, and triggers."},
+        {"id": "S3", "decision": "PASS", "evidence": "BRANCH-SOME and the case analysis show false is_none fallthrough preserves the owned Some(v) value until the unsafe call."},
+        {"id": "S4", "decision": "PASS", "evidence": "The two exhaustive cases derive literal 0 for None and v for Some(v) from the admitted exact contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains that the feature is unused and one source proof applies parametrically to every target, feature, profile, and debug-assertion combination."},
+        {"id": "S6", "decision": "PASS", "evidence": "States no supported combination is uncovered and reports soundness PROVED for all S, conspicuously relative to the accepted entry."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same complete configuration and input case coverage supports documented result PROVED for S, with the accepted-entry qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "Its replacement comment is expressly a proof-artifact repair; the report proves the supplied implementation before proposing it."},
+      "tcb_authority_defect": {"present": false, "evidence": "The base pages and exact accepted premise are verified, narrowly consumed, fully scoped, and conspicuous in every verdict."},
+      "visible_scope_defect": {"present": false, "evidence": "All six supplied target files are identified by name/hash, and the sole public and unsafe surfaces are completely inventoried."},
+      "novel_findings": []
+    },
+    {
+      "label": "F",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "States the exact symbolic released-stable interval, all three targets, both telemetry states, every Cargo profile, and both assertion states while rejecting Cargo/CI substitution."},
+        {"id": "S2", "decision": "PASS", "evidence": "Accurately states both 1.84.0 contracts and records the accepted TCB entry's exact preserved propositions, complete supported region, consumers, and exclusions."},
+        {"id": "S3", "decision": "PASS", "evidence": "O2 shows that reaching the call means the true branch did not execute, so the unchanged receiver is Some(v) and the exact precondition holds."},
+        {"id": "S4", "decision": "PASS", "evidence": "O1/O3/O4 exhaustively prove None -> 0 and Some(v) -> v from the applicable exact Option propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "The configuration-closure paragraph expressly applies one proof to every Cartesian combination and identifies why no non-release axis changes it."},
+        {"id": "S6", "decision": "PASS", "evidence": "Reports source-level soundness PROVED for every supported configuration, relative to the accepted entry, after the complete parametric closure argument."},
+        {"id": "S7", "decision": "PASS", "evidence": "Reports documented behavior PROVED over the same supported predicate and exhaustive inputs with the same conspicuous TCB qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The proposed adjacent comment is explicitly documentation-only and supplies no evidence for the already completed current-source proof."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies versioned base text and preserves the accepted entry's identity, exact propositions, full scope, permitted consumers, and limitations."},
+      "visible_scope_defect": {"present": false, "evidence": "The complete six-file snapshot, safe API, internal unsafe operation, and all configuration/source exclusions are visibly covered."},
+      "novel_findings": []
+    },
+    {
+      "label": "G",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines Supported(c) using the literal released-stable closed interval, all three targets, both feature states, any profile, and both assertion states; Cargo and CI are not substituted."},
+        {"id": "S2", "decision": "PASS", "evidence": "Identifies the exact 1.84.0 pages and base results, then states the accepted entry's exact iff, Some-result, and None-UB proposition, region, consumers, and limits."},
+        {"id": "S3", "decision": "PASS", "evidence": "O1/O2 derive Some(v) from the false branch and exhaustive variants, retain the unchanged value, and discharge unwrap_unchecked's exact condition."},
+        {"id": "S4", "decision": "PASS", "evidence": "O3 proves the exhaustive None return of zero and Some(v) return of v with the applicable transported propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "O4 explains why the source and accepted premise are parametric over every target, feature, profile, and debug-assertion state."},
+        {"id": "S6", "decision": "PASS", "evidence": "States no supported source configuration is uncovered and reports soundness PROVED for all Supported(c), repeatedly qualified by the accepted entry."},
+        {"id": "S7", "decision": "PASS", "evidence": "The same exhaustive cases and configuration closure support documented behavior PROVED over the complete domain, TCB-relative."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The replacement comment is labeled documentation maintenance and the report expressly says it is not an implementation change or proof basis."},
+      "tcb_authority_defect": {"present": false, "evidence": "The report preserves the accepted entry's exact identity, proposition, supported region, consumers, exclusions, and conspicuous verdict qualification."},
+      "visible_scope_defect": {"present": false, "evidence": "It inventories the exact six supplied files, sole API, sole unsafe operation, and all source/configuration boundaries without an omitted target component."},
+      "novel_findings": []
+    },
+    {
+      "label": "I",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines R with the closed released-stable predicate and retains all three targets, two feature states, every profile, and both debug-assertion states; Cargo/CI are correctly limited."},
+        {"id": "S2", "decision": "PASS", "evidence": "AXIOM-OPTION-184 verifies both exact versioned base contracts; COMPAT-OPTION-184-186 is accepted, exact, fully scoped, narrowly consumed, and conspicuous."},
+        {"id": "S3", "decision": "PASS", "evidence": "OBL-1 derives Some(v) from false is_none, exhaustive variants, and the same retained input before permitting unwrap_unchecked."},
+        {"id": "S4", "decision": "PASS", "evidence": "OBL-2 exhaustively derives None -> 0 and Some(v) -> v, expressly including Some(0), from the applicable contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains source independence from every non-release axis and explicitly sets Covered = Required with Required ⊆ Covered."},
+        {"id": "S6", "decision": "PASS", "evidence": "The SOUND row reports PROVED over every Required configuration and safe call, relative to the accepted entry, backed by explicit closure."},
+        {"id": "S7", "decision": "PASS", "evidence": "The RESULT row reports PROVED for every Required configuration and safe call, with exhaustive behavior and the same explicit closure and qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No implementation proposal is offered or used; the report audits and certifies only the supplied current source."},
+      "tcb_authority_defect": {"present": false, "evidence": "The TCB audit log verifies the versioned base, accepted disposition, exact proposition, region, consumers, exclusions, and re-audit boundary."},
+      "visible_scope_defect": {"present": false, "evidence": "It visibly covers all supplied target files, the complete public surface, the unsafe call, the support policy, and configuration closure."},
+      "novel_findings": []
+    },
+    {
+      "label": "J",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Normalizes Required to the literal released-stable closed interval with all three targets, both features, all profiles, and both assertion states, explicitly rejecting Cargo/CI substitution."},
+        {"id": "S2", "decision": "PASS", "evidence": "BASE-OPTION-184 states both exact versioned contracts; the accepted compatibility entry is quoted with its exact scope, consumers, exclusions, and limits."},
+        {"id": "S3", "decision": "PASS", "evidence": "O1/O2 derive INV-NONNONE from false fallthrough and unchanged ownership, then discharge unwrap_unchecked's condition."},
+        {"id": "S4", "decision": "PASS", "evidence": "O3 exhaustively proves None -> 0 and Some(b) -> b from the exact classification and unwrap result propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "Shows the derivation is identical across t/f/p/d and explicitly derives each Covered = Required and Required ⊆ Covered."},
+        {"id": "S6", "decision": "PASS", "evidence": "The SOUND theorem is PROVED for every Required configuration and safe call with explicit closure and conspicuous COMPAT qualification."},
+        {"id": "S7", "decision": "PASS", "evidence": "The RESULT theorem is PROVED under the same complete quantification, exhaustive inputs, explicit closure, and accepted-entry qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No unimplemented design is proposed or used; all certification is tied to the supplied source and accepted premise."},
+      "tcb_authority_defect": {"present": false, "evidence": "The versioned base and accepted transport premise are exact, applicable, narrowly consumed, fully limited, and repeated in both verdicts."},
+      "visible_scope_defect": {"present": false, "evidence": "The report names the complete six-file snapshot and fully inventories the sole API, unsafe site, configuration axes, and residual scope."},
+      "novel_findings": []
+    },
+    {
+      "label": "C",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Preserves ReleasedStableRust(r) with the exact closed bounds and all three targets, both telemetry states, every profile, and both assertion states; CI remains a sample."},
+        {"id": "S2", "decision": "PASS", "evidence": "Quotes and links both exact 1.84.0 base contracts and uses the supplied accepted entry directly, with exact proposition, scope, consumers, exclusions, and qualification."},
+        {"id": "S3", "decision": "PASS", "evidence": "O2/O3 use false is_none, exhaustive variants, and the unchanged local to establish Some(v) and satisfy the unsafe precondition."},
+        {"id": "S4", "decision": "PASS", "evidence": "O4 and the explicit two-case proof establish None -> 0 and Some(v) -> v using the applicable exact contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "States source identity across configuration axes and explicitly makes each Covered predicate equal Required, establishing Required ⊆ Covered."},
+        {"id": "S6", "decision": "PASS", "evidence": "Reports SOUND PROVED for every Required configuration and safe call, relative to the accepted entry, with explicit parametric closure."},
+        {"id": "S7", "decision": "PASS", "evidence": "Reports RESULT PROVED over the same exact domain and exhaustive inputs, with explicit closure and conspicuous TCB qualification."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "The suggested comment is explicitly a documentation repair; current implementation and behavior are proved without assuming that repair."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies the exact base pages and records the accepted entry's authority, proposition, region, consumers, exclusions, and triggers."},
+      "visible_scope_defect": {"present": false, "evidence": "All six supplied files, the complete crate-defined API, sole unsafe operation, controlling policy, and residual boundaries receive a disposition."},
+      "novel_findings": []
+    },
+    {
+      "label": "D",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "States the controlling released-stable closed predicate before its finite inventory and retains all targets, both feature states, every profile, and both assertion states; CI is sampling only."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies the exact 1.84.0 classification, Some-result, and None-UB text and applies the supplied accepted entry only to its exact proposition, supported domain, and named consumers."},
+        {"id": "S3", "decision": "PASS", "evidence": "O2 derives Some(v) from false fallthrough under the exact classification and immediately discharges unwrap_unchecked's condition."},
+        {"id": "S4", "decision": "PASS", "evidence": "O3 exhaustively proves the documented zero/contained-byte results from the applicable is_none and unwrap contracts."},
+        {"id": "S5", "decision": "PASS", "evidence": "Explains why one source/dataflow proof is parametric over every non-toolchain axis and why the accepted entry covers every toolchain/configuration tuple."},
+        {"id": "S6", "decision": "PASS", "evidence": "Reports soundness PROVED throughout the supported set, relative to the accepted entry, and states no supported combination is uncovered."},
+        {"id": "S7", "decision": "PASS", "evidence": "Reports the documented result PROVED over the same complete set and exhaustive inputs with the TCB qualification repeated."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "Its proposed comment is expressly documentation-only and is not used to establish the current source's already proved obligations."},
+      "tcb_authority_defect": {"present": false, "evidence": "The base authority, accepted identity, exact transported proposition, scope, consumers, exclusions, and qualification are all explicit and applicable."},
+      "visible_scope_defect": {"present": false, "evidence": "The complete six-file target, sole safe API, sole unsafe site, support axes, and source-level exclusions are visibly audited."},
+      "novel_findings": []
+    },
+    {
+      "label": "H",
+      "atoms": [
+        {"id": "S1", "decision": "PASS", "evidence": "Defines D by every released stable 1.84.0–1.86.0 toolchain, all three targets, both feature states, any profile, and both assertion states, without finite normalization."},
+        {"id": "S2", "decision": "PASS", "evidence": "Verifies all exact 1.84.0 base text and records the supplied accepted entry's precise proposition, complete region, consumers, exclusions, and conspicuous use."},
+        {"id": "S3", "decision": "PASS", "evidence": "FALLTHROUGH-SOME is derived from the false branch, exact classification, unchanged ownership, and absence of an intervening operation before the unsafe call."},
+        {"id": "S4", "decision": "PASS", "evidence": "The full case proof exhaustively establishes None -> 0 and Some(v) -> v from the applicable exact propositions."},
+        {"id": "S5", "decision": "PASS", "evidence": "States parametric independence from t/f/p/d and explicitly derives Covered = D and Required = D ⊆ Covered = D."},
+        {"id": "S6", "decision": "PASS", "evidence": "Reports SOUND PROVED over exactly D and every safe call, relative to COMPAT-OPTION-184-186, with explicit subset closure."},
+        {"id": "S7", "decision": "PASS", "evidence": "Reports RESULT PROVED over exactly D and all inputs, relative to the same entry, with exhaustive behavior and explicit subset closure."}
+      ],
+      "hard_errors": [],
+      "proposal_laundering": {"present": false, "evidence": "No unimplemented proposal is offered or relied upon; Findings is expressly none and the proof concerns only supplied source."},
+      "tcb_authority_defect": {"present": false, "evidence": "It verifies the exact versioned base and confines the accepted entry to its authorized identity, proposition, region, consumers, exclusions, and verdicts."},
+      "visible_scope_defect": {"present": false, "evidence": "Every supplied target file, the sole public API, sole unsafe operation, domain source, configuration product, and residual scope are addressed."},
+      "novel_findings": []
+    }
+  ],
+  "ambiguities": [
+    "Several reports omit the input coordinate from a displayed Required tuple, but their theorem statements and exhaustive Option case splits explicitly quantify over every safe input; I treated the combined proposition as retaining O_S.",
+    "The rubric does not require an adjacent SAFETY comment to repeat version/TCB authority. I did not count the contrary report-authored documentation-debt opinions as genuine novel findings because the existing comment states the local precondition argument and each audit keeps the TCB conspicuous.",
+    "S2 does not prescribe quotation granularity. I treated an exact versioned page identity plus accurate base propositions distributed across a report's authority and TCB sections as verification, rather than requiring every clause in one paragraph."
+  ]
+}

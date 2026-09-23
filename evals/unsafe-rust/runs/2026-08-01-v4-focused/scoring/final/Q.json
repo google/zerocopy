@@ -1,0 +1,147 @@
+{
+  "confirmed_novel_findings": [],
+  "mode": "Q",
+  "reports": [
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "A",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "B",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "C",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "D",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "E",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "F",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "G",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "H",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "I",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "Q1": "PASS",
+        "Q2": "PASS",
+        "Q3": "PASS",
+        "Q4": "PASS",
+        "Q5": "PASS"
+      },
+      "hard_errors": [],
+      "label": "J",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    }
+  ],
+  "schema_version": 1
+}

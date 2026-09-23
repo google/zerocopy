@@ -1,0 +1,12 @@
+description = """
+Purpose: Tests multi-level nested diagnostic tracing.
+Behavior: Injects a JSON diagnostic tree with a child `help` note containing its own hierarchy. Assures Anneal digs into child arrays recursively generating properly chained error terminal output.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"
+
+[test.mock]
+charon = "mock_charon_output.json"

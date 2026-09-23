@@ -1,0 +1,102 @@
+name: Set up Docker with retry
+description: Set up Buildx and authenticate to a registry, retrying transient failures
+
+inputs:
+  registry:
+    description: Container registry hostname
+    required: false
+    default: ghcr.io
+  username:
+    description: Container registry username
+    required: true
+  password:
+    description: Container registry password or token
+    required: true
+
+runs:
+  using: composite
+  steps:
+    # Retry the actions themselves rather than reproducing their behavior in
+    # shell. This preserves Buildx's builder cleanup and login-action's use of
+    # password-stdin and its end-of-job logout. The first two attempts use
+    # `continue-on-error` only so this composite can inspect `outcome`; the last
+    # attempt fails the caller normally.
+    - name: Set up Docker Buildx (attempt 1)
+      id: buildx_1
+      continue-on-error: true
+      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+    - name: Wait to retry Docker Buildx
+      if: ${{ !cancelled() && steps.buildx_1.outcome == 'failure' }}
+      shell: bash
+      run: |
+        set -eu
+        delay=$((5 + RANDOM % 11))
+        echo "Docker Buildx setup failed; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Set up Docker Buildx (attempt 2)
+      id: buildx_2
+      if: ${{ !cancelled() && steps.buildx_1.outcome == 'failure' }}
+      continue-on-error: true
+      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+    - name: Wait to retry Docker Buildx again
+      if: ${{ !cancelled() && steps.buildx_2.outcome == 'failure' }}
+      shell: bash
+      run: |
+        set -eu
+        delay=$((15 + RANDOM % 16))
+        echo "Docker Buildx setup failed again; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Set up Docker Buildx (attempt 3)
+      if: ${{ !cancelled() && steps.buildx_2.outcome == 'failure' }}
+      uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+    # Keep the token inside action inputs. In particular, do not pass it to a
+    # shell or expose it in a `docker login` command line.
+    - name: Log in to the container registry (attempt 1)
+      id: login_1
+      continue-on-error: true
+      uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+
+    - name: Wait to retry container registry login
+      if: ${{ !cancelled() && steps.login_1.outcome == 'failure' }}
+      shell: bash
+      run: |
+        set -eu
+        delay=$((5 + RANDOM % 11))
+        echo "Container registry login failed; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Log in to the container registry (attempt 2)
+      id: login_2
+      if: ${{ !cancelled() && steps.login_1.outcome == 'failure' }}
+      continue-on-error: true
+      uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}
+
+    - name: Wait to retry container registry login again
+      if: ${{ !cancelled() && steps.login_2.outcome == 'failure' }}
+      shell: bash
+      run: |
+        set -eu
+        delay=$((15 + RANDOM % 16))
+        echo "Container registry login failed again; retrying in ${delay}s"
+        sleep "$delay"
+
+    - name: Log in to the container registry (attempt 3)
+      if: ${{ !cancelled() && steps.login_2.outcome == 'failure' }}
+      uses: docker/login-action@abd2ef45e78c5afb21d64d4ca52ee8550d9572c7 # v4.5.1
+      with:
+        registry: ${{ inputs.registry }}
+        username: ${{ inputs.username }}
+        password: ${{ inputs.password }}

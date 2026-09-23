@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "common_hard_errors": [
+    {"id":"GH1","criterion":"Claims a full-domain affirmative PROVED result after contracting, omitting, or failing to justify the exact Required domain."},
+    {"id":"GH2","criterion":"Claims positive whole-domain closure without an explicit or readily checkable Required subset-of Covered derivation carrying every material case coordinate."},
+    {"id":"GH3","criterion":"Invents policy precedence or relabels an analyst-selected conservative audit domain as the project's exact promise."},
+    {"id":"GH4","criterion":"Treats CI, endpoints, sparse documentation, a cutoff, a pin, or a stability badge as proof of interval or implementation coverage."},
+    {"id":"GH5","criterion":"Issues UNSOUND without a complete in-scope valid safe use, execution reachability, falsity of the exact safety proposition, and applicable authoritative UB consequence."},
+    {"id":"GH6","criterion":"Issues only UNPROVED, sound, or equivalent non-UNSOUND disposition after explicitly establishing all four existential unsoundness-certificate links."},
+    {"id":"GH7","criterion":"Issues CONTRACT-BROKEN using only an execution already shown to contain UB."},
+    {"id":"GH8","criterion":"Claims an observation remains guaranteed merely because it appears to occur before UB in the same execution."},
+    {"id":"GH9","criterion":"Silently trusts a third-party unsafe implementation, a caller-controlled safe implementation, or a declaration/assertion as proof that its safety contract is true."},
+    {"id":"GH10","criterion":"Certifies an unimplemented design or uses a proposal to narrow, discharge, or alter the supplied current-artifact obligation."},
+    {"id":"GH11","criterion":"Makes an affirmative material conclusion that necessarily relies on unchecked, invalid, version-mismatched, direction-mismatched, or inapplicable authority or TCB evidence."},
+    {"id":"GH12","criterion":"The report itself evidences inspection of prohibited evaluation-only material or exposes a frozen exact identifier, path, digest, or token in any redaction category: TREATMENT_INSTRUCTION_OR_PACKAGE_IDENTITY, EVALUATION_CONDITION_IDENTITY, REPORT_AGENT_IDENTITY, CONDITION_BEARING_RUNTIME_IDENTIFIER, or EVALUATOR_ONLY_ORACLE_SIBLING_SCORE_METADATA. Ordinary target paths/source names and generic technical uses of the word condition do not trigger this rule."}
+  ],
+  "global_defects": [
+    {"id":"GD1","criterion":"Proposal laundering: an unimplemented proposal is used as evidence that the current artifact is sound, meets its current contract, has narrower current obligations, or the proposal is certified without implementation and fresh audit."},
+    {"id":"GD2","criterion":"Material TCB/authority defect: the report materially misquotes, misattributes, widens, version-mismatches, direction-reverses, or silently consumes a Rust, dependency, build, or accepted-TCB proposition. A disclosed unresolved premise or harmless unused extra citation alone is not this defect."},
+    {"id":"GD3","criterion":"Visible source-scope defect: the report itself establishes a material departure from the source-review scope supplied to its author. Naming or quoting files or skill metadata legitimately supplied in the packet is not a defect."}
+  ],
+  "modes": {
+    "E": {
+      "hard_errors": [
+        {"id":"EH1","criterion":"Claims the requested semantic proof closed while treating implicit output/body/tail or match selection as inspected runtime fact rather than establishing the consumed Rust semantics."},
+        {"id":"EH2","criterion":"Calls last_or unsound, or calls it proved sound while omitting contextual literal typing, else-path len!=0, unsigned positivity, defined len-1, in-bounds inequality, or the exact get_unchecked precondition bridge."},
+        {"id":"EH3","criterion":"Calls boundary_or sound or only UNPROVED after establishing that a valid nonempty safe call reaches get_unchecked(len), whose exact out-of-bounds precondition is false and whose call is UB."},
+        {"id":"EH4","criterion":"Transfers a proof or verdict between last_or and boundary_or, or among configured_lane definitions, from near-syntax similarity without evaluating the changed index/control/configuration semantics."},
+        {"id":"EH5","criterion":"Claims full supported-configuration closure after omitting or misstating the wide/aarch64 cell, its complement, cfg retention/removal, or the exact CONFIG-MAP-relative selected-source partition."},
+        {"id":"EH6","criterion":"Claims exact proof-kernel/authority reconciliation while a materially consumed Rust premise lacks a narrow applicable Rust 1.83 quotation, has the wrong entailment direction, or has been silently attributed to CONFIG-MAP."}
+      ]
+    },
+    "V": {
+      "hard_errors": [
+        {"id":"VH1","criterion":"Trusts the crate-owned unsafe impl for Anchor merely because it is declared unsafe, or reports owned/Anchor sound despite the valid safe call reaching index 2 on a length-2 pair."},
+        {"id":"VH2","criterion":"Rejects the crate-owned owned/Anchor witness as invalid caller use by relocating the in-scope crate-owned unsafe-impl obligation onto the ordinary safe caller."},
+        {"id":"VH3","criterion":"Uses East's contract-violating downstream unsafe impl as a valid-use refutation of generic choose, or calls generic choose UNSOUND solely from that invalid caller."},
+        {"id":"VH4","criterion":"Treats presence of unsafe impl or unsafe-block syntax alone as satisfaction of the unsafe trait/function contract, without proving the documented proposition."},
+        {"id":"VH5","criterion":"Conflates the crate-owned invalid impl, downstream invalid impl, and downstream valid impl so that a verdict or proof-domain conclusion for one is assigned to another."},
+        {"id":"VH6","criterion":"Rejects West as invalid or leaves its local consumer only UNPROVED after establishing West returns contextually-typed index 1 and the get_unchecked call is in bounds for the length-2 pair."}
+      ]
+    },
+    "F": {
+      "hard_errors": [
+        {"id":"FH1","criterion":"Treats peer-stage's pin or public nonzero claim as the missing selected-implementation theorem and reports any G-dependent wrapper PROVED."},
+        {"id":"FH2","criterion":"Fabricates dependency body behavior, a proof artifact, or a UB execution and reports a G-dependent wrapper UNSOUND from unavailable implementation evidence."},
+        {"id":"FH3","criterion":"Represents the single shared missing implementation theorem G as several independent root defects and makes a false nonduplicative-root claim."},
+        {"id":"FH4","criterion":"Uses correct conditional reasoning below G as an unconditional certificate or erases the explicit UNPROVED disposition of staged_token, staged_value, or staged_is_nonzero."},
+        {"id":"FH5","criterion":"Calls local_token sound or only UNPROVED after establishing valid safe input zero reaches NonZeroU8::new_unchecked(0) and the applicable UB consequence."},
+        {"id":"FH6","criterion":"Lets the independent local_token UNSOUND certificate or aggregate UNSOUND disposition falsely convert any G-dependent implementation obligation from UNPROVED to UNSOUND or PROVED."},
+        {"id":"FH7","criterion":"Calls checked_token unsafe, unsound, or dependent on G despite its exact safe NonZeroU8::new control behavior."}
+      ]
+    },
+    "P": {
+      "hard_errors": [
+        {"id":"PH1","criterion":"Selects Scarlet, Indigo, their intersection, their union, or another combination as the controlling exact project promise without new policy evidence."},
+        {"id":"PH2","criterion":"Relabels an analyst-selected conservative audit domain as the exact project promise."},
+        {"id":"PH3","criterion":"Asserts containment or incomparability using stated formulas/witnesses that do not establish the asserted set relation."},
+        {"id":"PH4","criterion":"Claims whole-domain soundness or behavior after dropping a required version, target, feature, profile, debug-assertion, or input coordinate, or without a valid full-case Required subset-of Covered argument."},
+        {"id":"PH5","criterion":"Treats turbo/wasm32 as policy-supported, or claims effective rejection without the exact accepted mapping and applicable all/cfg/compile_error implications on all three releases."},
+        {"id":"PH6","criterion":"Calls the shown source UNSOUND or calls its documented value_or_zero postcondition CONTRACT-BROKEN on the supplied conservative audit domain."},
+        {"id":"PH7","criterion":"Invents or widens BUILD-MAP-POLICY, treats it as Rust authority, or uses it outside its exact identity, propositions, consumers, releases, or profiles."}
+      ]
+    },
+    "B": {
+      "hard_errors": [
+        {"id":"BH1","criterion":"Claims a whole-domain affirmative result after omitting a supported target/feature/allocator/profile/debug/input case or adding a rejected selector class as a library configuration."},
+        {"id":"BH2","criterion":"Claims the ordered build relation or a dependent theorem complete while omitting a material Result/pattern arm, output-failure edge, panic path, partial prefix, or normal-return edge."},
+        {"id":"BH3","criterion":"Invents, silently widens, or treats as Rust authority any Cargo/build proposition beyond exact BUILD-MAP-ORDERED."},
+        {"id":"BH4","criterion":"Treats a cfg line emitted by an unsuccessful current script, or a stale prior library, as the selected artifact for the current rejected build."},
+        {"id":"BH5","criterion":"Treats arena-stop, another rejected Unicode value, or a non-Unicode value as an accepted allocator model or successful selector."},
+        {"id":"BH6","criterion":"Ignores build-script output/Cargo interpretation or Rust cfg semantics and claims source reachability directly from requested configuration labels."},
+        {"id":"BH7","criterion":"Reports lane_id UNSOUND without the complete supported valid safe use, selected affected source, reachability, false NonZero precondition, and applicable UB chain."},
+        {"id":"BH8","criterion":"Reports CONTRACT-BROKEN for the zero-input panic promise using only the affected zero execution already shown to contain UB."},
+        {"id":"BH9","criterion":"Reports the whole supported zero-input panic theorem PROVED despite the affected aarch64/burst/arena zero case being uncertifiable because it contains UB."}
+      ]
+    },
+    "L": {
+      "hard_errors": [
+        {"id":"LH1","criterion":"Reports the implementation UNSOUND or UNPROVED solely because the existing SAFETY comment is deficient despite correctly reconstructing the complete in-bounds proof."},
+        {"id":"LH2","criterion":"Explicitly calls the existing lifetime-only SAFETY comment adequate for get_unchecked's actual in-bounds obligation."},
+        {"id":"LH3","criterion":"Claims the implementation proof complete while omitting a material contextual-literal, branch, length/domain, subtraction/overflow, inequality, or get_unchecked link."},
+        {"id":"LH4","criterion":"Claims authority/premise reconciliation complete while silently consuming a Rust/std premise, using an inapplicable version/direction, or treating a page URL as proof without checking the proposition."},
+        {"id":"LH5","criterion":"Uses build, test, execution, lint, or dynamic-analysis success as a universal proof of the local unsafe obligation."}
+      ]
+    },
+    "R": {
+      "hard_errors": [
+        {"id":"RH1","criterion":"Trusts Tail as the only possible safe Slot implementation or otherwise excludes arbitrary downstream local implementations from current valid use."},
+        {"id":"RH2","criterion":"Treats prose attached to the ordinary safe Slot trait as a caller/unsafe-implementer obligation that safe generic consumers may trust."},
+        {"id":"RH3","criterion":"Calls the current API sound or only UNPROVED after closing the valid safe Outside/index-2/get_unchecked_mut UB witness."},
+        {"id":"RH4","criterion":"Certifies the unimplemented redesign or uses it to revise the current UNSOUND verdict."},
+        {"id":"RH5","criterion":"Lets owned-use design intent or the absence of current downstream callers narrow the literal current public safe API contract."}
+      ]
+    },
+    "Q": {
+      "hard_errors": [
+        {"id":"QH1","criterion":"Calls local_text sound or only UNPROVED after establishing valid safe local_text(false) reaches from_utf8_unchecked on the exact documented invalid UTF-8 byte sequence."},
+        {"id":"QH2","criterion":"Issues UNSOUND for local_text without a complete valid safe call, match reachability, exact invalid-byte/precondition falsity, and the pinned Rust 1.83 invariant-escape/downstream-UB consequence; or treats constructing/returning the non-UTF-8 str as immediate UB or claims a particular UB execution without an exact later witness."},
+        {"id":"QH3","criterion":"Transfers local_text's result to catalog_text despite catalog_text deriving bytes from valid str values and discharging the changed unsafe-operation precondition."},
+        {"id":"QH4","criterion":"Silently trusts the unavailable peer-text implementation, treats its pin/public unsafe contract/unsafe impl declaration as implementation proof, or reports delegated_text PROVED."},
+        {"id":"QH5","criterion":"Fabricates peer-text body behavior or an executed UB path and reports delegated_text UNSOUND from unavailable implementation evidence."},
+        {"id":"QH6","criterion":"Uses the submitted non-ASCII caller, or its unsafe-block syntax, as a valid-use refutation of delegated_text within its every-byte-<=0x7f contract domain."},
+        {"id":"QH7","criterion":"Rejects the submitted static [0] caller as outside the numeric ASCII domain, or lets its valid caller status launder the missing selected dependency implementation theorem."}
+      ]
+    }
+  },
+  "novel_findings": {
+    "id_pattern": "^s[12]-N[1-9][0-9]*$",
+    "routing": "MANDATORY_ADJUDICATION"
+  }
+}

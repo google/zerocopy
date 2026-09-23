@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:envelope-spec:1",
+  "$comment": "DRAFT / UNSEALED envelope-spec schema; a started attempt requires an integration-frozen READY instance. validate_envelope_spec additionally enforces path-key uniqueness, each file max_bytes <= max_total_output_bytes, and successful Python fullmatch-regex compilation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "files", "final_response", "max_total_output_bytes", "allowed_process_dispositions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["DRAFT", "READY"]},
+    "files": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "required", "max_bytes", "utf8"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(?!_encoded-posix-path/)(?!/)(?!.*\\\\)(?!.*//)(?!.*(?:^|/)\\.{1,2}(?:/|$))(?!.*[\\u0000-\\u001f])(?!\\s)(?!.*\\s$)[^/]+(?:/[^/]+)*$"},
+          "required": {"type": "boolean"},
+          "max_bytes": {"type": "integer", "minimum": 0, "maximum": 4194304},
+          "utf8": {"type": "boolean"}
+        }
+      }
+    },
+    "final_response": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "max_bytes", "utf8", "utf8_fullmatch_regex"],
+      "properties": {
+        "required": {"type": "boolean"},
+        "max_bytes": {"type": "integer", "minimum": 0, "maximum": 4194304},
+        "utf8": {"const": true},
+        "utf8_fullmatch_regex": {"type": "string", "minLength": 1}
+      }
+    },
+    "max_total_output_bytes": {"type": "integer", "minimum": 1, "maximum": 4194304},
+    "allowed_process_dispositions": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "pattern": "^[A-Za-z0-9][A-Za-z0-9._-]{0,127}$"}
+    }
+  }
+}

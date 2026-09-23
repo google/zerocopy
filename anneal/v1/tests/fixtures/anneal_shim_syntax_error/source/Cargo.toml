@@ -1,0 +1,8 @@
+[package]
+name = "anneal_shim_syntax_error"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[workspace]

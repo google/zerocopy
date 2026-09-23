@@ -1,0 +1,1107 @@
+{
+  "condition_map": {
+    "c0": "v2",
+    "c1": "v3"
+  },
+  "confirmed_novel_findings": [
+    {
+      "evidence": "The report twice locates unwrap_unchecked at src/lib.rs line 22, but the supplied numbered source places the unsafe expression at line 20; line 22 is blank.",
+      "field": "novel:s2:N1",
+      "label": "E",
+      "mode": "C"
+    },
+    {
+      "evidence": "A's PL-I/PL-R discussion correctly identifies that the `High` unsafe impl and lane unchecked access lack local proof text, and supplies accurate contract-preserving comments for both sites.",
+      "field": "novel:s2:N1",
+      "label": "A",
+      "mode": "K"
+    },
+    {
+      "evidence": "B's PL-I/PL-R sections correctly mark both lane unsafe sites' local proofs missing and give accurate adjacent proof comments without changing the published contract.",
+      "field": "novel:s2:N1",
+      "label": "B",
+      "mode": "K"
+    },
+    {
+      "evidence": "D separately records missing local proofs for `High` and lane `read` and supplies accurate comments proving both contract clauses and the unchecked-index bound.",
+      "field": "novel:s2:N1",
+      "label": "D",
+      "mode": "K"
+    },
+    {
+      "evidence": "E's F-3 correctly identifies absent proof artifacts at the unsafe impl and unchecked lane read and proposes sound comments that preserve the existing contract.",
+      "field": "novel:s2:N1",
+      "label": "E",
+      "mode": "K"
+    },
+    {
+      "evidence": "F-PL-DOC/COMPAT correctly notes that both published-lane unsafe sites lack adjacent proof artifacts and supplies valid local proof text for each.",
+      "field": "novel:s2:N1",
+      "label": "F",
+      "mode": "K"
+    },
+    {
+      "evidence": "G's F-PL-PROOF accurately identifies the two missing adjacent proofs and gives comments establishing `High`'s full contract and lane `read`'s in-bounds obligation.",
+      "field": "novel:s2:N1",
+      "label": "G",
+      "mode": "K"
+    },
+    {
+      "evidence": "I explicitly marks the `High` impl and lane unchecked access proof comments missing and proposes accurate local bridges for both.",
+      "field": "novel:s2:N1",
+      "label": "I",
+      "mode": "K"
+    },
+    {
+      "evidence": "J correctly observes that the lane unsafe impl and unchecked read lack local proof comments and supplies accurate adjacent proof text while retaining their proved implementation verdicts.",
+      "field": "novel:s2:N1",
+      "label": "J",
+      "mode": "K"
+    }
+  ],
+  "counts": {
+    "C": {
+      "v2": {
+        "C1": 0,
+        "C2": 5,
+        "C3": 5,
+        "C4": 5,
+        "C5": 5,
+        "C6": 5
+      },
+      "v3": {
+        "C1": 1,
+        "C2": 5,
+        "C3": 3,
+        "C4": 3,
+        "C5": 3,
+        "C6": 5
+      }
+    },
+    "K": {
+      "v2": {
+        "K1": 5,
+        "K2": 5,
+        "K3": 5,
+        "K4": 5,
+        "K5": 5,
+        "K6": 5,
+        "K7": 5,
+        "K8": 5
+      },
+      "v3": {
+        "K1": 5,
+        "K2": 5,
+        "K3": 5,
+        "K4": 5,
+        "K5": 5,
+        "K6": 5,
+        "K7": 5,
+        "K8": 5
+      }
+    },
+    "M": {
+      "v2": {
+        "M1": 5,
+        "M10": 5,
+        "M11": 5,
+        "M2": 5,
+        "M3": 5,
+        "M4": 5,
+        "M5": 5,
+        "M6": 5,
+        "M7": 5,
+        "M8": 5,
+        "M9": 5
+      },
+      "v3": {
+        "M1": 5,
+        "M10": 5,
+        "M11": 5,
+        "M2": 5,
+        "M3": 5,
+        "M4": 5,
+        "M5": 5,
+        "M6": 5,
+        "M7": 5,
+        "M8": 5,
+        "M9": 5
+      }
+    },
+    "Q": {
+      "v2": {
+        "Q1": 5,
+        "Q2": 5,
+        "Q3": 5,
+        "Q4": 5,
+        "Q5": 5
+      },
+      "v3": {
+        "Q1": 5,
+        "Q2": 5,
+        "Q3": 5,
+        "Q4": 5,
+        "Q5": 5
+      }
+    },
+    "R": {
+      "v2": {
+        "R1": 5,
+        "R2": 5,
+        "R3": 5,
+        "R4": 5,
+        "R5": 5,
+        "R6": 5,
+        "R7": 5
+      },
+      "v3": {
+        "R1": 5,
+        "R2": 5,
+        "R3": 5,
+        "R4": 5,
+        "R5": 5,
+        "R6": 5,
+        "R7": 5
+      }
+    },
+    "S": {
+      "v2": {
+        "S1": 5,
+        "S2": 5,
+        "S3": 5,
+        "S4": 5,
+        "S5": 5,
+        "S6": 5,
+        "S7": 5
+      },
+      "v3": {
+        "S1": 5,
+        "S2": 5,
+        "S3": 5,
+        "S4": 5,
+        "S5": 5,
+        "S6": 5,
+        "S7": 5
+      }
+    },
+    "W": {
+      "v2": {
+        "W1": 5,
+        "W2": 5,
+        "W3": 5
+      },
+      "v3": {
+        "W1": 5,
+        "W2": 5,
+        "W3": 5
+      }
+    },
+    "X": {
+      "v2": {
+        "X1": 5,
+        "X10": 5,
+        "X11": 4,
+        "X12": 5,
+        "X13": 5,
+        "X2": 5,
+        "X3": 5,
+        "X4": 0,
+        "X5": 5,
+        "X6": 0,
+        "X7": 1,
+        "X8": 5,
+        "X9": 5
+      },
+      "v3": {
+        "X1": 5,
+        "X10": 5,
+        "X11": 2,
+        "X12": 5,
+        "X13": 5,
+        "X2": 5,
+        "X3": 5,
+        "X4": 0,
+        "X5": 5,
+        "X6": 0,
+        "X7": 0,
+        "X8": 5,
+        "X9": 5
+      }
+    }
+  },
+  "defects": {
+    "C": {
+      "v2": [],
+      "v3": [
+        {
+          "hard_errors": [
+            "G11",
+            "CH2",
+            "CH6"
+          ],
+          "label": "C",
+          "operational_scope_deviation": false,
+          "proposal_laundering": false,
+          "run_id": "r046",
+          "semantic_noncompletion": false,
+          "tcb_authority_defect": true,
+          "visible_scope_defect": false,
+          "word_budget_defect": false
+        },
+        {
+          "hard_errors": [
+            "G11",
+            "CH2",
+            "CH6"
+          ],
+          "label": "G",
+          "operational_scope_deviation": false,
+          "proposal_laundering": false,
+          "run_id": "r010",
+          "semantic_noncompletion": false,
+          "tcb_authority_defect": true,
+          "visible_scope_defect": false,
+          "word_budget_defect": false
+        }
+      ]
+    },
+    "K": {
+      "v2": [],
+      "v3": [
+        {
+          "hard_errors": [],
+          "label": "B",
+          "operational_scope_deviation": false,
+          "proposal_laundering": false,
+          "run_id": "r016",
+          "semantic_noncompletion": false,
+          "tcb_authority_defect": true,
+          "visible_scope_defect": false,
+          "word_budget_defect": false
+        }
+      ]
+    },
+    "M": {
+      "v2": [],
+      "v3": []
+    },
+    "Q": {
+      "v2": [],
+      "v3": []
+    },
+    "R": {
+      "v2": [
+        {
+          "hard_errors": [],
+          "label": "D",
+          "operational_scope_deviation": false,
+          "proposal_laundering": false,
+          "run_id": "r011",
+          "semantic_noncompletion": false,
+          "tcb_authority_defect": false,
+          "visible_scope_defect": true,
+          "word_budget_defect": false
+        }
+      ],
+      "v3": []
+    },
+    "S": {
+      "v2": [],
+      "v3": []
+    },
+    "W": {
+      "v2": [],
+      "v3": []
+    },
+    "X": {
+      "v2": [],
+      "v3": []
+    }
+  },
+  "diagnostic_comparison": {
+    "any_v3_below_v2": true,
+    "atoms": [
+      {
+        "atom": "S1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S4",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S6",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "S7",
+        "classification": "CEILING_REPLICATION",
+        "mode": "S",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "C1",
+        "classification": "V3_HIGHER_BUT_CONFIRMATION_FAILED",
+        "mode": "C",
+        "v2_passes": 0,
+        "v3_passes": 1
+      },
+      {
+        "atom": "C2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "C",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "C3",
+        "classification": "V3_BELOW_V2",
+        "mode": "C",
+        "v2_passes": 5,
+        "v3_passes": 3
+      },
+      {
+        "atom": "C4",
+        "classification": "V3_BELOW_V2",
+        "mode": "C",
+        "v2_passes": 5,
+        "v3_passes": 3
+      },
+      {
+        "atom": "C5",
+        "classification": "V3_BELOW_V2",
+        "mode": "C",
+        "v2_passes": 5,
+        "v3_passes": 3
+      },
+      {
+        "atom": "C6",
+        "classification": "CEILING_REPLICATION",
+        "mode": "C",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X4",
+        "classification": "MATCHED_BELOW_CEILING",
+        "mode": "X",
+        "v2_passes": 0,
+        "v3_passes": 0
+      },
+      {
+        "atom": "X5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X6",
+        "classification": "MATCHED_BELOW_CEILING",
+        "mode": "X",
+        "v2_passes": 0,
+        "v3_passes": 0
+      },
+      {
+        "atom": "X7",
+        "classification": "V3_BELOW_V2",
+        "mode": "X",
+        "v2_passes": 1,
+        "v3_passes": 0
+      },
+      {
+        "atom": "X8",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X9",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X10",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X11",
+        "classification": "V3_BELOW_V2",
+        "mode": "X",
+        "v2_passes": 4,
+        "v3_passes": 2
+      },
+      {
+        "atom": "X12",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "X13",
+        "classification": "CEILING_REPLICATION",
+        "mode": "X",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "Q1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "Q",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "Q2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "Q",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "Q3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "Q",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "Q4",
+        "classification": "CEILING_REPLICATION",
+        "mode": "Q",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "Q5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "Q",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "W1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "W",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "W2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "W",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "W3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "W",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M4",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M6",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M7",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M8",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M9",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M10",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "M11",
+        "classification": "CEILING_REPLICATION",
+        "mode": "M",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R4",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R6",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "R7",
+        "classification": "CEILING_REPLICATION",
+        "mode": "R",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K1",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K2",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K3",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K4",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K5",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K6",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K7",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      },
+      {
+        "atom": "K8",
+        "classification": "CEILING_REPLICATION",
+        "mode": "K",
+        "v2_passes": 5,
+        "v3_passes": 5
+      }
+    ],
+    "causal_claim": false,
+    "reason": "The coherent V3 and V2 packages differ in more than one isolated instruction."
+  },
+  "failed_atom_cells": [
+    {
+      "atom": "C1",
+      "label": "A",
+      "mode": "C",
+      "role": "v2",
+      "run_id": "r030"
+    },
+    {
+      "atom": "C1",
+      "label": "B",
+      "mode": "C",
+      "role": "v2",
+      "run_id": "r004"
+    },
+    {
+      "atom": "C3",
+      "label": "C",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r046"
+    },
+    {
+      "atom": "C4",
+      "label": "C",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r046"
+    },
+    {
+      "atom": "C5",
+      "label": "C",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r046"
+    },
+    {
+      "atom": "C1",
+      "label": "D",
+      "mode": "C",
+      "role": "v2",
+      "run_id": "r079"
+    },
+    {
+      "atom": "C1",
+      "label": "E",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r077"
+    },
+    {
+      "atom": "C1",
+      "label": "F",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r023"
+    },
+    {
+      "atom": "C1",
+      "label": "G",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r010"
+    },
+    {
+      "atom": "C3",
+      "label": "G",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r010"
+    },
+    {
+      "atom": "C4",
+      "label": "G",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r010"
+    },
+    {
+      "atom": "C5",
+      "label": "G",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r010"
+    },
+    {
+      "atom": "C1",
+      "label": "H",
+      "mode": "C",
+      "role": "v2",
+      "run_id": "r043"
+    },
+    {
+      "atom": "C1",
+      "label": "I",
+      "mode": "C",
+      "role": "v2",
+      "run_id": "r051"
+    },
+    {
+      "atom": "C1",
+      "label": "J",
+      "mode": "C",
+      "role": "v3",
+      "run_id": "r062"
+    },
+    {
+      "atom": "X11",
+      "label": "A",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r066"
+    },
+    {
+      "atom": "X4",
+      "label": "A",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r066"
+    },
+    {
+      "atom": "X6",
+      "label": "A",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r066"
+    },
+    {
+      "atom": "X7",
+      "label": "A",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r066"
+    },
+    {
+      "atom": "X4",
+      "label": "B",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r006"
+    },
+    {
+      "atom": "X6",
+      "label": "B",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r006"
+    },
+    {
+      "atom": "X7",
+      "label": "B",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r006"
+    },
+    {
+      "atom": "X11",
+      "label": "C",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r018"
+    },
+    {
+      "atom": "X4",
+      "label": "C",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r018"
+    },
+    {
+      "atom": "X6",
+      "label": "C",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r018"
+    },
+    {
+      "atom": "X7",
+      "label": "C",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r018"
+    },
+    {
+      "atom": "X4",
+      "label": "D",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r015"
+    },
+    {
+      "atom": "X6",
+      "label": "D",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r015"
+    },
+    {
+      "atom": "X7",
+      "label": "D",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r015"
+    },
+    {
+      "atom": "X11",
+      "label": "E",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r022"
+    },
+    {
+      "atom": "X4",
+      "label": "E",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r022"
+    },
+    {
+      "atom": "X6",
+      "label": "E",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r022"
+    },
+    {
+      "atom": "X7",
+      "label": "E",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r022"
+    },
+    {
+      "atom": "X4",
+      "label": "F",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r042"
+    },
+    {
+      "atom": "X6",
+      "label": "F",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r042"
+    },
+    {
+      "atom": "X7",
+      "label": "F",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r042"
+    },
+    {
+      "atom": "X4",
+      "label": "G",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r049"
+    },
+    {
+      "atom": "X6",
+      "label": "G",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r049"
+    },
+    {
+      "atom": "X7",
+      "label": "G",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r049"
+    },
+    {
+      "atom": "X4",
+      "label": "H",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r034"
+    },
+    {
+      "atom": "X6",
+      "label": "H",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r034"
+    },
+    {
+      "atom": "X7",
+      "label": "H",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r034"
+    },
+    {
+      "atom": "X4",
+      "label": "I",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r078"
+    },
+    {
+      "atom": "X6",
+      "label": "I",
+      "mode": "X",
+      "role": "v2",
+      "run_id": "r078"
+    },
+    {
+      "atom": "X11",
+      "label": "J",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r064"
+    },
+    {
+      "atom": "X4",
+      "label": "J",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r064"
+    },
+    {
+      "atom": "X6",
+      "label": "J",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r064"
+    },
+    {
+      "atom": "X7",
+      "label": "J",
+      "mode": "X",
+      "role": "v3",
+      "run_id": "r064"
+    }
+  ],
+  "final_score_sha256": {
+    "C": "ed6457c9815bb7275182cf6000f7795f28004e0cbba54e063e891178ab33e1b9",
+    "K": "f045aed4a1ec8942992a4c83a6e4611cc5d3c03d794a929f87f34041cd6a24bb",
+    "M": "c80f06d81c2814b3f3c8836a33071daf786fd253cd37f2115f6404c299bda3da",
+    "Q": "ac39b01aeb020d54d50a2cc5eefa0a7a9d155acfb8745195d0a46e77fd421e7b",
+    "R": "3b9b073459dd432b7348c55b177e3ffbfab51a021f70528926eb8957be256bb0",
+    "S": "b019e547c4b6df3c8bfd581507673eb2630d2fbfcf3fca3fd2356e0adbeec374",
+    "W": "36656cf7ae14fdb7deff205762f0a4f143dc32ad0297318b6b59aeee40e6d585",
+    "X": "05cd4259e8a68e4ba7b245350892845b068de73ad08e934fb7835462d0b9f51f"
+  },
+  "schema_version": 1,
+  "unblinded_utc": "2026-08-01T10:14:15.316432Z",
+  "v3_gate": {
+    "all_v3_atoms_5_of_5": false,
+    "overall": false,
+    "zero_v3_hard_errors": false,
+    "zero_v3_proposal_laundering": true,
+    "zero_v3_scope_budget_defects": true,
+    "zero_v3_semantic_noncompletion": true,
+    "zero_v3_tcb_authority_defects": false
+  }
+}

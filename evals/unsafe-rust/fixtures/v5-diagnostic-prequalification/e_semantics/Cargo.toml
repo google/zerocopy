@@ -1,0 +1,12 @@
+[package]
+name = "semantic-kernel-target"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.83.0"
+
+[features]
+default = []
+wide = []
+
+[lib]
+path = "src/lib.rs"

@@ -1,0 +1,4 @@
+description = """
+Purpose: Verifies that the installed Nix-built archive can be used read-only by a fresh generated Lake workspace.
+Behavior: Builds and diagnoses a tiny workspace with a complete relative Lake manifest pointing at the installed Aeneas archive.
+"""

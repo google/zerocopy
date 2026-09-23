@@ -7,6 +7,13 @@
 // those terms.
 
 {
+    "rust-analyzer.linkedProjects": [
+        "zerocopy/Cargo.toml",
+        "tools/Cargo.toml",
+        "anneal/Cargo.toml",
+        "anneal/v1/Cargo.toml",
+        "exocrate/Cargo.toml"
+    ],
     // Extra cfgs added to rust-analyzer.
     "rust-analyzer.cargo.cfgs": [
         // Expensive-to-compile tests can `cfg(not(rust_analyzer))` to avoid

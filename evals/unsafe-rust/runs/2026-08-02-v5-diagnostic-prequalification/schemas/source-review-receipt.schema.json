@@ -1,0 +1,95 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:source-review-receipt:1",
+  "$comment": "An independently authenticated reviewer statement over one immutable reviewed-source candidate and exact review contract.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "review_kind", "actor", "reviewer_runtime", "input_digests", "output_digests", "work_product", "result"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"enum": ["PASS", "SYNTHETIC-TEST-ONLY"]},
+    "review_kind": {"enum": ["INDEPENDENT_ORACLE", "COHERENCE"]},
+    "actor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["identity", "role", "implementation", "version"],
+      "properties": {
+        "identity": {"type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{15,127}$"},
+        "role": {"const": "INDEPENDENT_REVIEWER"},
+        "implementation": {"type": "string", "pattern": "^v5-source-review/[a-z0-9-]+$"},
+        "version": {"const": "v5-source-review-v1"}
+      }
+    },
+    "reviewer_runtime": {"$ref": "#/$defs/reviewer_runtime"},
+    "input_digests": {"type": "object", "minProperties": 3, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "output_digests": {"type": "object", "minProperties": 2, "additionalProperties": {"type": "string", "pattern": "^[0-9a-f]{64}$"}},
+    "work_product": {"$ref": "#/$defs/work_product"},
+    "result": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["summary", "checks"],
+      "properties": {
+        "summary": {"type": "string", "minLength": 20},
+        "checks": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "status", "evidence"],
+            "properties": {
+              "id": {"type": "string", "pattern": "^[A-Z][A-Z0-9-]*$"},
+              "status": {"const": "PASS"},
+              "evidence": {"type": "string", "minLength": 20}
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "reviewer_runtime": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schema_version", "algorithm", "python_implementation", "python_version", "python_cache_tag", "openssl_version", "platform_system", "platform_release", "platform_machine"],
+      "properties": {
+        "schema_version": {"const": 1},
+        "algorithm": {"const": "V5_REVIEWER_RUNTIME_ATTESTATION_V1"},
+        "python_implementation": {"type": "string", "minLength": 1},
+        "python_version": {"type": "string", "minLength": 1},
+        "python_cache_tag": {"type": "string", "minLength": 1},
+        "openssl_version": {"type": "string", "minLength": 1},
+        "platform_system": {"type": "string", "minLength": 1},
+        "platform_release": {"type": "string", "minLength": 1},
+        "platform_machine": {"type": "string", "minLength": 1}
+      }
+    },
+    "work_product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["algorithm", "narrative", "narrative_sha256", "coverage"],
+      "properties": {
+        "algorithm": {"const": "V5_REVIEW_WORK_PRODUCT_V1"},
+        "narrative": {"type": "string", "minLength": 100},
+        "narrative_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+        "coverage": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "subject", "decision", "rationale"],
+            "properties": {
+              "id": {"type": "string", "minLength": 2},
+              "subject": {"type": "string", "minLength": 1},
+              "decision": {"const": "PASS"},
+              "rationale": {"type": "string", "minLength": 40}
+            }
+          }
+        }
+      }
+    }
+  }
+}

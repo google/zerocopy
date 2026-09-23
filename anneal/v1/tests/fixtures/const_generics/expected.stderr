@@ -1,0 +1,11 @@
+  × type expected, got
+  │   (fun x => True : ?m.1 → Prop)
+   ╭─[[PROJECT_ROOT]/src/lib.rs:8:7]
+ 7 │ /// isSafe :
+ 8 │ ///   fun _ => True
+   ·       ──────┬──────
+   ·             ╰── here
+ 9 │ /// ```
+   ╰────
+
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

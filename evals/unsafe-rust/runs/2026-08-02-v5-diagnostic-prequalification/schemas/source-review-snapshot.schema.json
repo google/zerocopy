@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:source-review-snapshot:1",
+  "$comment": "Immutable reviewed-source candidate descriptor binding the exact pre-review theorem and semantic inputs.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "review_kind", "payload_manifest_path", "payload_manifest_algorithm", "payload_manifest_sha256", "payload_entry_count", "path_domain", "required_reviews", "finalization_additions"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "REVIEW-CANDIDATE"},
+    "review_kind": {"const": "V5-REVIEWED-SOURCE-INPUTS"},
+    "payload_manifest_path": {"const": "SOURCE-REVIEW.manifest"},
+    "payload_manifest_algorithm": {"const": "V5_DOMAIN_FRAMED_TREE_V1"},
+    "payload_manifest_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "payload_entry_count": {"type": "integer", "minimum": 1},
+    "path_domain": {"const": "PORTABLE_ASCII_RELATIVE_PATH_V1"},
+    "required_reviews": {
+      "type": "array",
+      "minItems": 3,
+      "maxItems": 3,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["file", "review_kind", "contract_path", "contract_sha256"],
+        "properties": {
+          "file": {"enum": ["oracle-review-1.json", "oracle-review-2.json", "coherence-review.json"]},
+          "review_kind": {"enum": ["INDEPENDENT_ORACLE", "COHERENCE"]},
+          "contract_path": {"type": "string", "pattern": "^source-review-contracts/(?:oracle-review-[12]|coherence-review)[.]json$"},
+          "contract_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "finalization_additions": {"const": ["source-review-receipts/**"]}
+  }
+}

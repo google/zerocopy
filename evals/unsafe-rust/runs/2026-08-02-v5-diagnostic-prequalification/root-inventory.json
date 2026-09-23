@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "inventory_kind": "DIAGNOSTIC",
+  "inventory_version": "v5-diagnostic-prequalification-draft-1",
+  "scope": "Diagnostic rehearsal only; no admission, release, terminal look, or VN claim.",
+  "release_eligibility": {
+    "eligible": false,
+    "decision": "INELIGIBLE",
+    "blocking_gate_ids": ["G-ISOLATION", "G-OUTPUT-FINALIZATION"],
+    "reason": "Shared filesystem and coordinator-mediated output capture fail nonwaivable release requirements; the complete default release-root inventory is intentionally not evaluated here."
+  },
+  "required_gate_ids": [
+    "G-ISOLATION",
+    "G-OUTPUT-FINALIZATION",
+    "D-STATIC-INTEGRITY",
+    "D-ORACLE-COVERAGE",
+    "D-COLLECTION-COMPLETE",
+    "D-OUTPUT-VALID",
+    "D-FOCUSED-RECALL",
+    "D-PROOF-QUALITY",
+    "D-CONTROLS",
+    "D-NO-HARD-ERROR",
+    "D-NO-GLOBAL-DEFECT",
+    "D-NO-MATERIAL-FINDING",
+    "D-COMPARISON",
+    "D-COHERENCE",
+    "D-DIAGNOSTIC-COMPLETION"
+  ],
+  "requirements": [
+    {"gate_id": "G-ISOLATION", "source": "testing-plan:artifact-architecture", "summary": "Nonwaivable release blocker: enforced filesystem, package, prompt, network, documentation, and paired-side isolation."},
+    {"gate_id": "G-OUTPUT-FINALIZATION", "source": "testing-plan:fresh-agent-protocol", "summary": "Nonwaivable release blocker: trusted leased-attempt and atomic whole-envelope finalization."},
+    {"gate_id": "D-STATIC-INTEGRITY", "source": "run-specific", "summary": "PASS only for a verified STATIC-LOCK whose coordinator claim, 154-to-163 success-path envelopes, exact immutable six-stage manifest chain, score merges, controls, materiality ledger, and comparison inputs deterministically rederive the bound final aggregate; a caller-provided or terminal-ERROR context remains invalid."},
+    {"gate_id": "D-ORACLE-COVERAGE", "source": "diagnostic-design", "summary": "Every diagnostic atom has evaluator-oracle-blind fixture coverage."},
+    {"gate_id": "D-COLLECTION-COMPLETE", "source": "run-specific", "summary": "Every one of the 120 scheduled report slots has exactly one verified canonical SEALED envelope and content-bound word-count receipt in the completed aggregate."},
+    {"gate_id": "D-OUTPUT-VALID", "source": "attempt-envelope.schema.json+aggregation-rules.json", "summary": "On the completed path, all 120 canonical report envelopes and word-count receipts are valid; a usable over-cap report reaches this gate and fails it, while unusable report bytes or any invalid evaluator produce authenticated terminal ERROR before gates."},
+    {"gate_id": "D-FOCUSED-RECALL", "source": "diagnostic-design", "summary": "Every required V5 atom certificate passes in every required replicate."},
+    {"gate_id": "D-PROOF-QUALITY", "source": "diagnostic-design", "summary": "Every applicable diagnostic proof-quality floor passes."},
+    {"gate_id": "D-CONTROLS", "source": "diagnostic-design", "summary": "Frozen diagnostic controls are correctly classified."},
+    {"gate_id": "D-NO-HARD-ERROR", "source": "aggregation-rules.json", "summary": "No adjudicated hard error is present in V5 candidate reports; comparator errors do not fail this candidate gate."},
+    {"gate_id": "D-NO-GLOBAL-DEFECT", "source": "aggregation-rules.json", "summary": "No adjudicated closed global defect is present in V5 candidate reports; comparator defects do not fail this candidate gate."},
+    {"gate_id": "D-NO-MATERIAL-FINDING", "source": "diagnostic-design", "summary": "No unresolved qualifying material diagnostic finding remains."},
+    {"gate_id": "D-COMPARISON", "source": "comparison-predicate.json", "summary": "Exact V5 5/5 absolute atom-certificate closure and per-mode/atom non-trailing counts, without inferential claims."},
+    {"gate_id": "D-COHERENCE", "source": "diagnostic-design", "summary": "Runtime instructions, routed references, templates, and rationale are coherent for this rehearsal."},
+    {"gate_id": "D-DIAGNOSTIC-COMPLETION", "source": "run-specific", "summary": "All diagnostic D-* gates pass; this does not alter release ineligibility."}
+  ]
+}

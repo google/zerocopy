@@ -1,0 +1,2 @@
+cat: [PROJECT_ROOT]/bin/mock_charon_output.json: No such file or directory
+Error: Charon failed with status: exit status: 101

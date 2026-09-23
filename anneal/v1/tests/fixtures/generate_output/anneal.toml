@@ -1,0 +1,7 @@
+description = "Test the `generate` subcommand"
+
+[[test.phases]]
+name = "Generate"
+args = ["generate", "--allow-sorry"]
+expected_status = "success"
+stdout_file = "expected-generate.stdout"

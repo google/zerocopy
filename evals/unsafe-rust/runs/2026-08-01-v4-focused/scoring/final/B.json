@@ -1,0 +1,283 @@
+{
+  "confirmed_novel_findings": [],
+  "mode": "B",
+  "reports": [
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "FAIL",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "A",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "PASS",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "FAIL",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "B",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "PASS",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "C",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "PASS",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "PASS",
+        "B6": "PASS",
+        "B7": "PASS",
+        "B8": "FAIL",
+        "B9": "PASS"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "D",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "PASS",
+        "B11": "PASS",
+        "B12": "PASS",
+        "B13": "PASS",
+        "B14": "PASS",
+        "B15": "PASS",
+        "B2": "PASS",
+        "B3": "PASS",
+        "B4": "PASS",
+        "B5": "PASS",
+        "B6": "PASS",
+        "B7": "PASS",
+        "B8": "PASS",
+        "B9": "PASS"
+      },
+      "hard_errors": [],
+      "label": "E",
+      "proposal_laundering": false,
+      "tcb_authority_defect": false,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "PASS",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "F",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "FAIL",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "G",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "FAIL",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "H",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "FAIL",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "I",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    },
+    {
+      "atoms": {
+        "B1": "PASS",
+        "B10": "FAIL",
+        "B11": "FAIL",
+        "B12": "FAIL",
+        "B13": "FAIL",
+        "B14": "FAIL",
+        "B15": "FAIL",
+        "B2": "FAIL",
+        "B3": "FAIL",
+        "B4": "FAIL",
+        "B5": "FAIL",
+        "B6": "FAIL",
+        "B7": "PASS",
+        "B8": "FAIL",
+        "B9": "FAIL"
+      },
+      "hard_errors": [
+        "G5",
+        "G11",
+        "BH7"
+      ],
+      "label": "J",
+      "proposal_laundering": false,
+      "tcb_authority_defect": true,
+      "visible_scope_defect": false
+    }
+  ],
+  "schema_version": 1
+}

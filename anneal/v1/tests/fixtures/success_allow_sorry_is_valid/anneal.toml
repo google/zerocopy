@@ -1,0 +1,5 @@
+
+description = "Coalesced integration tests for performance"
+
+[test]
+args = ["verify", "--allow-sorry", "--unsound-allow-is-valid"]

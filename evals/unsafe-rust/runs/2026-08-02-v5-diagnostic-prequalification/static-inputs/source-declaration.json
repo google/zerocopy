@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT-SOURCE-SELECTION",
+  "byte_tree_algorithm": "BYTE_TREE_V1",
+  "source_paths_relative_to": "unsafe-rust-root",
+  "packages": {
+    "v5": {
+      "source_path": "frozen-packages/072a5c9d1b0000d04986f92a62ecc0ee2c7ff60c931c3fcd500128739c06c106",
+      "skill_path": "SKILL.md",
+      "directory_name_is_byte_tree_sha256": true
+    },
+    "v4": {
+      "source_path": "frozen-packages/6d7e197e431b82eb81dbe7eefc79fde811e0e238435d38c69460cc068e631abb",
+      "skill_path": "SKILL.md",
+      "directory_name_is_byte_tree_sha256": true
+    },
+    "no_skill": null
+  },
+  "targets": [
+    {"mode": "E", "fixture_id": "e_semantics", "source_path": "fixtures/v5-diagnostic-prequalification/e_semantics", "prompt_regime": "controlled", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "V", "fixture_id": "v_valid_use", "source_path": "fixtures/v5-diagnostic-prequalification/v_valid_use", "prompt_regime": "controlled", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "F", "fixture_id": "f_fanout", "source_path": "fixtures/v5-diagnostic-prequalification/f_fanout", "prompt_regime": "controlled", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "P", "fixture_id": "p_predicates", "source_path": "fixtures/v4-focused/p_predicates", "prompt_regime": "controlled", "provenance": "REUSED_UNCHANGED_FROM_V4_FOCUSED"},
+    {"mode": "B", "fixture_id": "b_build", "source_path": "fixtures/v5-diagnostic-prequalification/b_build", "prompt_regime": "naturalistic", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "L", "fixture_id": "l_proof", "source_path": "fixtures/v5-diagnostic-prequalification/l_proof", "prompt_regime": "naturalistic", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "R", "fixture_id": "r_redesign", "source_path": "fixtures/v5-diagnostic-prequalification/r_redesign", "prompt_regime": "naturalistic", "provenance": "V5_DIAGNOSTIC"},
+    {"mode": "Q", "fixture_id": "q_metamorphic", "source_path": "fixtures/v5-diagnostic-prequalification/q_metamorphic", "prompt_regime": "controlled", "provenance": "V5_DIAGNOSTIC"}
+  ],
+  "agent_visible_aliases": {
+    "input": "input",
+    "output": "output",
+    "target": "target",
+    "package": "package",
+    "authority": "docs/rust-documentation.json"
+  }
+}

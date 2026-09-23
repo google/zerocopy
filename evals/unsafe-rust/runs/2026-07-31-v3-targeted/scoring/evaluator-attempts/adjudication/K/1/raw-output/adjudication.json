@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "mode": "K",
+  "decisions": [
+    {
+      "label": "A",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "A's PL-I/PL-R discussion correctly identifies that the `High` unsafe impl and lane unchecked access lack local proof text, and supplies accurate contract-preserving comments for both sites."
+    },
+    {
+      "label": "B",
+      "field": "atom:K3",
+      "decision": "PASS",
+      "evidence": "B explicitly derives false `is_empty` -> n > 0 -> representable n - 1 < n and connects that bound to `get_unchecked`; the allowlisted Rust 1.82 numeric-types authority verifies its invoked premise that `usize` is unsigned."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G11",
+      "decision": "ABSENT",
+      "evidence": "B invokes the correct unsigned-`usize` premise and applicable arithmetic rule, and the exact allowlisted Rust 1.82 numeric-types page verifies that premise; the proof does not necessarily rely on unchecked, invalid, or inapplicable authority."
+    },
+    {
+      "label": "B",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "B consumes the Rust-semantic premise that `usize` is unsigned while declaring its TCB to contain only cited exact authorities, but it does not cite or inventory the numeric-types authority that supports that material premise."
+    },
+    {
+      "label": "B",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "B's PL-I/PL-R sections correctly mark both lane unsafe sites' local proofs missing and give accurate adjacent proof comments without changing the published contract."
+    },
+    {
+      "label": "D",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "D separately records missing local proofs for `High` and lane `read` and supplies accurate comments proving both contract clauses and the unchecked-index bound."
+    },
+    {
+      "label": "E",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "E's F-3 correctly identifies absent proof artifacts at the unsafe impl and unchecked lane read and proposes sound comments that preserve the existing contract."
+    },
+    {
+      "label": "F",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "F-PL-DOC/COMPAT correctly notes that both published-lane unsafe sites lack adjacent proof artifacts and supplies valid local proof text for each."
+    },
+    {
+      "label": "G",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "G's F-PL-PROOF accurately identifies the two missing adjacent proofs and gives comments establishing `High`'s full contract and lane `read`'s in-bounds obligation."
+    },
+    {
+      "label": "I",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "I explicitly marks the `High` impl and lane unchecked access proof comments missing and proposes accurate local bridges for both."
+    },
+    {
+      "label": "J",
+      "field": "novel:s2:N1",
+      "decision": "PRESENT",
+      "evidence": "J correctly observes that the lane unsafe impl and unchecked read lack local proof comments and supplies accurate adjacent proof text while retaining their proved implementation verdicts."
+    }
+  ],
+  "ambiguities": [
+    "The rubric explicitly mandates comment-quality scoring only for `local_proof::last`; it does not state whether absent comments at otherwise-proved `published_lane` unsafe sites qualify as a novel finding. I treated the factual absence plus accurate replacement proofs as a genuine documentation finding, not a soundness failure.",
+    "The common rules require material Rust premises to be verified, while the adjudication instruction permits external authority to verify a premise the report invokes. I therefore passed B's K3 derivation and did not apply G11 after verifying its explicit unsigned-`usize` premise, but separately recorded the omission from B's declared cited-authority TCB as an authority-accounting defect."
+  ]
+}

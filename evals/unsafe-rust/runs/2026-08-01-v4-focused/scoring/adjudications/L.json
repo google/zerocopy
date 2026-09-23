@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "mode": "L",
+  "decisions": [
+    {
+      "label": "B",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "Steps 1-2 explicitly state that reaching this single-condition else means q is false and contrapose AX-EMPTY to bytes.len() != 0; the cited exact Rust 1.82 if page verifies the invoked branch proposition."
+    },
+    {
+      "label": "B",
+      "field": "atom:L6",
+      "decision": "PASS",
+      "evidence": "The verdict quantifies every well-typed safe call, the proof covers both branches and connects the nonzero-length predecessor bound to AX-GET, and it closes all targets and ordinary profiles. The defective formal Required notation is recorded separately as G1."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G1",
+      "decision": "PRESENT",
+      "evidence": "B says the request directly defines Required as only source x Rust/std x targets x profiles, omitting valid calls/inputs and executions, then certifies Covered = Required for its full PROVED result."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:G11",
+      "decision": "ABSENT",
+      "evidence": "The needed branch proposition is explicit, correct, and supported by the cited exact Rust 1.82 Reference page; the incomplete quoted implication is an extraction defect, not necessary reliance on invalid or inapplicable authority."
+    },
+    {
+      "label": "B",
+      "field": "hard_error:LH4",
+      "decision": "ABSENT",
+      "evidence": "B expressly inventories the branch proposition, its exact authority identity, consumer, and region, and the cited page supports it. Its quotation is insufficient for exact reconciliation, but the premise is neither silent nor supported only by an unexamined page identity."
+    },
+    {
+      "label": "B",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "AX-IF quotes false-condition => else-executed but labels that excerpt as verifying the converse else-executed => false proposition; the report's claimed proposition-matched TCB entry is therefore not established by its extracted evidence."
+    },
+    {
+      "label": "D",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "O2 explicitly states that reaching the else makes is_empty false and applies A3 to obtain n != 0; the exact cited Rust 1.82 if authority verifies that invoked fact for this one-condition if/else."
+    },
+    {
+      "label": "D",
+      "field": "atom:L6",
+      "decision": "PASS",
+      "evidence": "O1-O3 cover every valid slice, derive representable n - 1 and index < n, discharge A1, and connect the exhaustive proof to the full-scope PROVED verdict and Required subset-of Covered certificate."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:G11",
+      "decision": "ABSENT",
+      "evidence": "D invokes the correct branch-selection proposition and cites the exact applicable Rust 1.82 page that supports it; the deficient excerpt does not make the proof necessarily rely on invalid or inapplicable authority."
+    },
+    {
+      "label": "D",
+      "field": "hard_error:LH4",
+      "decision": "ABSENT",
+      "evidence": "The branch premise is explicitly inventoried with proposition, consumer, version, and exact page, rather than silently consumed. The extraction mismatch is a reconciliation/TCB defect but does not establish the exact hard-error trigger."
+    },
+    {
+      "label": "D",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "A4's quoted false => else sentence does not itself establish A4's asserted else => false proposition, so TCB-LAST-R1 is not proposition-matched as claimed."
+    },
+    {
+      "label": "E",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "O2 explicitly places the unsafe call on the false is_empty path and contraposes A1 to n != 0; A3 cites the exact Rust 1.82 if section and invokes its same-paragraph branch rules, which verify that premise."
+    },
+    {
+      "label": "E",
+      "field": "atom:L8",
+      "decision": "FAIL",
+      "evidence": "The proposed text states representability and the predecessor bound, but E has no checked entries for len's usize type/domain, built-in subtraction, or overflow, so it cannot unambiguously refer to checked authority for the full L2-L5 chain."
+    },
+    {
+      "label": "E",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "The PROVED argument necessarily uses Rust integer typing, built-in subtraction, and overflow/profile semantics that its four-entry authority inventory never checks."
+    },
+    {
+      "label": "E",
+      "field": "hard_error:LH4",
+      "decision": "PRESENT",
+      "evidence": "E calls its authority list complete and denies any unlisted premise while silently consuming the omitted usize/type, subtraction, and overflow propositions."
+    },
+    {
+      "label": "E",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The asserted complete Rust-only authority inventory omits multiple materially consumed Rust numeric premises."
+    },
+    {
+      "label": "F",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "Steps 1-2 explicitly split the true and false outcomes, place the unsafe path in the false case, and contrapose AX-EMPTY to L != 0; the cited exact if page verifies the invoked branch fact."
+    },
+    {
+      "label": "F",
+      "field": "atom:L3",
+      "decision": "PASS",
+      "evidence": "AX-LEN explicitly states the verified proposition that len returns the element count as usize, and step 2 uses the equivalent exact nonnegativity fact that an element count is a natural count to derive L >= 1 from L != 0."
+    },
+    {
+      "label": "F",
+      "field": "atom:L8",
+      "decision": "FAIL",
+      "evidence": "The replacement asserts representable subtraction but F has no checked usize-domain, subtraction, or overflow entries, and its text does not identify get_unchecked by name; it therefore lacks the required checked-authority linkage for the full chain."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:G11",
+      "decision": "PRESENT",
+      "evidence": "F's full PROVED result necessarily relies on unchecked Rust built-in subtraction and overflow/profile behavior, irrespective of its valid natural-count argument for positivity."
+    },
+    {
+      "label": "F",
+      "field": "hard_error:LH4",
+      "decision": "PRESENT",
+      "evidence": "F claims no other Rust premise is consumed while its representability and every-profile closure require omitted subtraction and overflow semantics."
+    },
+    {
+      "label": "F",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "The claimed complete Rust 1.82 authority set has no proposition-matched entries for the materially consumed subtraction and overflow/profile semantics."
+    },
+    {
+      "label": "G",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "OBL-1 explicitly states that the else case has is_empty false and contraposes A3 to n != 0; the invoked fact is verified by G's exact Rust 1.82 if-section citation."
+    },
+    {
+      "label": "G",
+      "field": "atom:L3",
+      "decision": "PASS",
+      "evidence": "The proof explicitly states n: usize, applies A7's unsigned domain, and derives n >= 1. The report invokes the checked len/type signature, and its exact A2 page verifies len's usize return type without adding a missing premise."
+    },
+    {
+      "label": "G",
+      "field": "atom:L6",
+      "decision": "PASS",
+      "evidence": "G connects the exhaustive branch split, nonzero usize bound, defined predecessor arithmetic, and index < len to A1, then reports PROVED over the exact valid-input, target, and profile domain with Covered = Required."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:G11",
+      "decision": "ABSENT",
+      "evidence": "The branch and len-type premises are explicit and true, and their exact applicable Rust 1.82 pages are cited; incomplete extraction or classification does not make the result necessarily depend on invalid or inapplicable authority."
+    },
+    {
+      "label": "G",
+      "field": "hard_error:LH4",
+      "decision": "ABSENT",
+      "evidence": "G explicitly states both contested premises and identifies checked exact pages that support them, so neither is silently consumed or necessarily based on an unexamined page. The classification/extraction defects remain authority-reconciliation defects below the hard-error trigger."
+    },
+    {
+      "label": "G",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-LAST-1's A2 entry does not extract len's consumed usize return type and A4's excerpt supplies only false => else while claiming the converse, so the asserted proposition-matched inventory is defective."
+    },
+    {
+      "label": "I",
+      "field": "atom:L2",
+      "decision": "PASS",
+      "evidence": "Steps 1-2 explicitly state that the unsafe-containing else means is_empty was false and contrapose A1 to L != 0; the exact cited Rust 1.82 if page verifies the invoked branch proposition."
+    },
+    {
+      "label": "I",
+      "field": "atom:L6",
+      "decision": "PASS",
+      "evidence": "The report exhausts both boolean paths, derives nonoverflowing index = L - 1 < L, discharges A7, and closes the full valid-input, target, and ordinary-profile domain with PROVED and Required subset-of Covered."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:G11",
+      "decision": "ABSENT",
+      "evidence": "I invokes a correct branch premise and cites the exact applicable Rust 1.82 Reference page that supports it; its incomplete excerpt is not necessary reliance on invalid or inapplicable authority."
+    },
+    {
+      "label": "I",
+      "field": "hard_error:LH4",
+      "decision": "ABSENT",
+      "evidence": "A2 expressly gives the branch proposition, exact page, version, and consumer, and that page supports the proposition. The insufficient quoted direction defeats exact reconciliation but does not show silent consumption or an unexamined-page substitution."
+    },
+    {
+      "label": "I",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "A2 quotes false => else but records else => false as the verified proposition, leaving TCB-LAST-1's consumed branch entry unsupported by its extracted text."
+    },
+    {
+      "label": "J",
+      "field": "atom:L10",
+      "decision": "FAIL",
+      "evidence": "AX-IF's supplied excerpts say true => consequent executes and false => else executes, but omit the exact prose that true skips the subsequent else; they therefore do not supply O1's consumed true-arm exclusion as L10 requires."
+    },
+    {
+      "label": "J",
+      "field": "atom:L11",
+      "decision": "FAIL",
+      "evidence": "J attests that every semantic leaf has a complete L10 entry, but O1 consumes true-condition exclusion of the else arm and AX-IF does not quote prose supplying that leaf."
+    },
+    {
+      "label": "J",
+      "field": "tcb_authority_defect",
+      "decision": "PRESENT",
+      "evidence": "TCB-R1 is claimed proposition-matched, yet AX-IF's extraction omits the true => skip-else proposition consumed by O1, so the report's own authority evidence does not establish the full branch entry."
+    }
+  ],
+  "ambiguities": [
+    "The frozen rules do not expressly say whether an explicitly invoked, correct Rust proposition whose exact cited page supports it, but whose supplied quotation states only the opposite implication direction, must fail content/closure atoms L2 and L6 as well as exact-authority atoms. Applying the adjudication rule permitting external verification of invoked premises, I pass the content/closure atoms but do not repair L10/L11 or the TCB evidence defect.",
+    "The exact LH4/G11 threshold is ambiguous for a true, expressly inventoried premise on an applicable exact page whose excerpt or classification is incomplete. I treat that as below the hard-error threshold when the premise, identity, and consumer are explicit (B/D/G/I), while E/F trigger both errors because they omit materially consumed numeric Rust premises entirely.",
+    "L3 prescribes the usize nonnegative-domain bridge but also requires acceptance of equivalently exact derivations. I accept F's stated element-count-as-natural-number argument as an exact nonnegativity derivation after AX-LEN establishes the count and usize return type."
+  ]
+}

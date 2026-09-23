@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:snapshot-review-contract:1",
+  "$comment": "Exact READY artifact, procedure, receipt-schema, and acceptance contract derived into an immutable snapshot review candidate for one independent hook.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "hook_id", "procedure_id", "procedure_version", "procedure_path", "procedure_sha256", "receipt_schema_path", "receipt_schema_sha256", "reviewer_tool_set_algorithm", "reviewer_tools", "reviewer_tool_set_sha256", "reviewer_runtime_attestation_algorithm", "custody_requirement", "required_check_ids", "acceptance_requirements", "acceptance_requirements_sha256", "coverage_items", "coverage_set_algorithm", "coverage_set_sha256", "artifacts", "artifact_set_sha256"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "READY"},
+    "hook_id": {"type": "string", "pattern": "^H-[A-Z][A-Z0-9-]*$"},
+    "procedure_id": {"type": "string", "pattern": "^v5-snapshot-review/[a-z0-9-]+$"},
+    "procedure_version": {"const": "v5-snapshot-review-v1"},
+    "procedure_path": {"const": "static/integration/snapshot-review-procedure.md"},
+    "procedure_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "receipt_schema_path": {"const": "schemas/integration-receipt.schema.json"},
+    "receipt_schema_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewer_tool_set_algorithm": {"const": "V5_REVIEWER_TOOL_SET_V1"},
+    "reviewer_tools": {
+      "type": "array",
+      "minItems": 8,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "minLength": 1},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "reviewer_tool_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "reviewer_runtime_attestation_algorithm": {"const": "V5_REVIEWER_RUNTIME_ATTESTATION_V1"},
+    "custody_requirement": {"const": "VERIFIED_PRIVATE_COPY_AND_END_REVERIFY"},
+    "required_check_ids": {
+      "const": ["EXACT-SNAPSHOT-BOUND", "REVIEW-CONTRACT-BOUND", "ARTIFACT-INVENTORY-CHECKED", "HOOK-SEMANTICS-CHECKED", "END-OF-REVIEW-REVERIFIED"]
+    },
+    "acceptance_requirements": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 20}
+    },
+    "acceptance_requirements_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "coverage_items": {
+      "type": "array",
+      "minItems": 2,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "subject"],
+        "properties": {
+          "id": {"type": "string", "minLength": 2},
+          "subject": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "coverage_set_algorithm": {"const": "V5_REVIEW_COVERAGE_SET_V1"},
+    "coverage_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "artifacts": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "sha256"],
+        "properties": {
+          "path": {"type": "string", "pattern": "^(?!/)(?![.][.]?(?:/|$))(?!.*(?:/[.][.]?)(?:/|$))(?!.*[\\u0000-\\u001f])(?!.*//)(?!.*[/]$).+$"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+        }
+      }
+    },
+    "artifact_set_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+  }
+}

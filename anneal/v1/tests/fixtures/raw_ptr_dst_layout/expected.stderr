@@ -1,0 +1,30 @@
+  ⚠ `progress` has been renamed to `step`. The `progress` syntax is deprecated
+  │ and will be removed in a future version. Set `set_option
+  │ Aeneas.Deprecated.progressWarning false` to silence this warning.
+    ╭─[[PROJECT_ROOT]/src/lib.rs:28:7]
+ 27 │ ///   unfold test_slice at *
+ 28 │ ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, i_post ⟩
+    ·       ───────────────────────────────────┬──────────────────────────────────
+    ·                                          ╰── here
+ 29 │ ///   · exact {}
+    ╰────
+
+  × Goal is not a `spec m P`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:28:7]
+ 27 │ ///   unfold test_slice at *
+ 28 │ ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, i_post ⟩
+    ·       ───────────────────────────────────┬──────────────────────────────────
+    ·                                          ╰── here
+ 29 │ ///   · exact {}
+    ╰────
+
+  × Unknown identifier `h_ret_`
+    ╭─[[PROJECT_ROOT]/src/lib.rs:36:28]
+ 35 │ /// proof (h_align_div):
+ 36 │ ///   unfold test_slice at h_ret_
+    ·                            ───┬──
+    ·                               ╰── here
+ 37 │ ///   progress with raw_ptr_dst_layout.size_of_val_raw.spec as ⟨ i, i_post ⟩
+    ╰────
+
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:zerocopy:v5-diagnostic:draft:control-results:1",
+  "$comment": "DRAFT / UNSEALED structural schema; protocol.py additionally enforces the exact keyed control inventory and deterministic derivation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schema_version", "status", "records"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "status": {"const": "DERIVED"},
+    "records": {
+      "type": "array",
+      "minItems": 35,
+      "maxItems": 35,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "family", "mode", "passed", "candidate_run_ids"],
+        "properties": {
+          "id": {"type": "string", "pattern": "^(PQ|CC)-[EVFPBLRQ]-[A-Z0-9-]+$"},
+          "family": {"enum": ["PROOF_QUALITY", "CLASSIFICATION_CONTROL"]},
+          "mode": {"enum": ["E", "V", "F", "P", "B", "L", "R", "Q"]},
+          "passed": {"type": "boolean"},
+          "candidate_run_ids": {"type": "array", "minItems": 5, "maxItems": 5, "uniqueItems": true, "items": {"type": "string", "pattern": "^r(?:00[1-9]|0[1-9][0-9]|1[01][0-9]|120)$"}}
+        }
+      }
+    }
+  }
+}

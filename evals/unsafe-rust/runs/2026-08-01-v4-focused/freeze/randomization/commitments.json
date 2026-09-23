@@ -1,0 +1,12 @@
+{
+  "algorithm": "sha256(tag_utf8 || NUL || seed_bytes)",
+  "commitments": {
+    "blind": "4941a662e4a63eba04ab4000a09bee780bbe88beea7cec70af4c3582c4904b61",
+    "condition": "3537bcedb9d55efe1a9b043ab7009a8eead43391789c94dd40c1ca6f2f2d1f06",
+    "consistency": "80cced2b0d6eacda5958cbdc2d02e55369e3282a794667869eb97020bac6f9af",
+    "presentation": "1fa5c1e21ba6c360932c53adbf1e977fd91f7d6113ffa58d88b45d4a7bdd88f2",
+    "schedule": "15983d0d344f7d801c10308dff411792ca1c3c4d2a0c8ff2708f51e549fb4b32",
+    "scorer": "2bc3121feb893cac316576f4f98546d334d4ae139d012f4eb71234ac563fc378"
+  },
+  "schema_version": 1
+}

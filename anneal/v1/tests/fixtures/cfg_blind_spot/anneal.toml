@@ -1,0 +1,9 @@
+description = """
+Purpose: Verifies detection of annotated items that are hidden from the compiler via `#[cfg]`.
+Behavior: Places a Anneal annotation on a function blocked by `#[cfg(target_os = "haiku")]`. Expects failure since Anneal' surface parser sees the doc comment, but Charon fails because the target item does not exist in the compiled MIR.
+"""
+
+[test]
+stderr_file = "expected.stderr"
+args = ["verify", "--allow-sorry"]
+expected_status = "failure"

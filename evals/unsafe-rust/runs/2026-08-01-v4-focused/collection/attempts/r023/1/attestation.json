@@ -1,0 +1,12 @@
+{
+  "agent_id": "/root/v4_report_r023",
+  "api_state": "INFRASTRUCTURE_FAILURE",
+  "attempt": 1,
+  "evidence": "Coordinator remained pending_init and never produced an artifact or return; interrupt confirmed previous_status pending_init.",
+  "operational_scope_deviation": false,
+  "recorded_utc": "2026-08-01T19:27:40.076946Z",
+  "rerunnable": true,
+  "run_id": "r023",
+  "schema_version": 1,
+  "terminal_disposition": "ORCHESTRATOR_TOOL_FAILURE"
+}

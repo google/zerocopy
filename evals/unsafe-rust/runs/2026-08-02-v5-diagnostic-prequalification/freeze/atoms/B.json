@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "status": "DRAFT",
+  "mode": "B",
+  "atoms": [
+    {"id":"B1","direct_criterion":"Recover the exact supported full-case predicate from the manifest and supplied build/support policy without adding rejected selector classes.","prerequisites":[],"authority_dependencies":["TCB-B-BUILD-MAP"],"applicability":"REQUIRED"},
+    {"id":"B2","direct_criterion":"Partition the raw selector domain exhaustively into every accepted, explicitly rejected, and non-Unicode class present in the source/policy.","prerequisites":[],"authority_dependencies":["R185-ENV-VAR","R185-RESULT"],"applicability":"REQUIRED"},
+    {"id":"B3","direct_criterion":"Recover the literal claim-relevant operation order, including every output attempt, branch, panic, return, and possible partial prefix.","prerequisites":[],"authority_dependencies":["R185-BLOCK-SEQUENCE"],"applicability":"REQUIRED"},
+    {"id":"B4","direct_criterion":"Derive the complete selector match input and match selection for every raw selector class from exact String::as_str, Result, pattern, and match semantics rather than inspected syntax alone.","prerequisites":["B2","B3"],"authority_dependencies":["R185-STRING-AS-STR","R185-MATCH-SELECTION","R185-PATTERNS"],"applicability":"REQUIRED"},
+    {"id":"B5","direct_criterion":"Close the tail-expression, omitted-output, function-body, and normal-return semantic edges on every successful script path.","prerequisites":["B3","B4"],"authority_dependencies":["R185-FUNCTION-OUTPUT-UNIT","R185-FUNCTION-BODY-RETURN","R185-BLOCK-TAIL"],"applicability":"REQUIRED"},
+    {"id":"B6","direct_criterion":"Derive complete successful and unsuccessful ordered traces, including stdout failures, partial emitted prefixes, and exits before later operations.","prerequisites":["B3","B4","B5"],"authority_dependencies":["R185-PRINTLN","R185-PANIC"],"applicability":"REQUIRED"},
+    {"id":"B7","direct_criterion":"Apply only the exact accepted Cargo/build TCB to map successful current outputs to cfg-selected library source and prove failed executions produce no current compilation.","prerequisites":["B6"],"authority_dependencies":["TCB-B-BUILD-MAP"],"applicability":"REQUIRED"},
+    {"id":"B8","direct_criterion":"Prove the requested rerun/freshness sequence and reject stale-artifact reasoning using only the accepted invalidation premise.","prerequisites":["B6","B7"],"authority_dependencies":["TCB-B-BUILD-MAP"],"applicability":"REQUIRED"},
+    {"id":"B9","direct_criterion":"Prove the supported exclusion and composite-cfg source partition over every relevant feature/target/selector case.","prerequisites":["B1","B7"],"authority_dependencies":["R185-CFG-PREDICATE","R185-CFG-ATTRIBUTE","R185-COMPILE-ERROR"],"applicability":"REQUIRED"},
+    {"id":"B10","direct_criterion":"From the exact ordinary public fn declaration and accepted source/configuration selection, establish an exact valid safe use and its input domain.","prerequisites":["B1","B9"],"authority_dependencies":["R185-CALL"],"applicability":"REQUIRED"},
+    {"id":"B11","direct_criterion":"From the exact typed source and u8 domain, establish zero, explicit-return transfer, reachability, false unsafe precondition, applicable UB, and the scoped verdict.","prerequisites":["B10"],"authority_dependencies":["R185-U8-DOMAIN","R185-FUNCTION-BODY-RETURN","R185-NONZERO-NEW-UNCHECKED"],"applicability":"REQUIRED"},
+    {"id":"B12","direct_criterion":"Give the correct aggregate postcondition disposition and make no false regional or whole-domain assertion; a voluntary regional claim must prove its stated boundary, but no maximal region or detailed region output is required.","prerequisites":["B9","B11"],"authority_dependencies":["R185-IF-SELECTION","R185-U8-DOMAIN","R185-INTEGER-COMPARISON"],"applicability":"REQUIRED"},
+    {"id":"B13","direct_criterion":"Reconcile every consumed Rust semantic edge and every build-tool premise to narrow Rust 1.85.1 authority or the exact accepted TCB, without widening either.","prerequisites":["B4","B5","B6","B7","B8","B9","B10","B11","B12"],"authority_dependencies":[],"applicability":"REQUIRED"}
+  ]
+}
