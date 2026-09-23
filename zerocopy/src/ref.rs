@@ -9,9 +9,7 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 use super::*;
-use crate::pointer::{
-    BecauseMutationCompatible, BecauseSharedCompatible, MutationCompatible, TransmuteFromPtr,
-};
+use crate::pointer::{BecauseMutationCompatible, BecauseSharedCompatible, TransmuteFromPtr};
 
 mod def {
     use core::marker::PhantomData;
@@ -633,7 +631,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, BecauseImmutable, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -685,7 +683,7 @@ where
                 cast_for_sized::<
                     T,
                     _,
-                    (BecauseRead, BecauseExclusive),
+                    BecauseExclusive,
                     (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
@@ -815,7 +813,7 @@ where
             let ptr = Ptr::from_ref(b);
             // SAFETY: We just checked that `T: Sized`. By invariant on `r`,
             // `b`'s size is equal to `size_of::<T>()`.
-            let ptr = unsafe { cast_for_sized::<T, _, _, _>(ptr) };
+            let ptr = unsafe { cast_for_sized::<T, _, BecauseImmutable, _>(ptr) };
 
             // SAFETY: None of the preceding transformations modifies the
             // address of the pointer, and by invariant on `r`, we know that it
@@ -861,7 +859,7 @@ where
                 cast_for_sized::<
                     T,
                     _,
-                    (BecauseRead, BecauseExclusive),
+                    BecauseExclusive,
                     (BecauseMutationCompatible, BecauseSharedCompatible),
                 >(ptr)
             };
@@ -963,8 +961,9 @@ unsafe fn cast_for_sized<'a, T, A, R, S>(
 where
     T: FromBytes + KnownLayout + ?Sized,
     A: crate::invariant::Aliasing,
-    [u8]: MutationCompatible<T, A, Initialized, Initialized, R>,
-    T: TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
+    [u8]: crate::pointer::invariant::Read<A, R>,
+    T: crate::pointer::invariant::Read<A, R>
+        + TransmuteFromPtr<T, A, Initialized, Safe, crate::pointer::cast::IdCast, S>,
 {
     use crate::pointer::cast::{Cast, Project};
 
@@ -989,7 +988,7 @@ where
     unsafe impl<T: ?Sized + KnownLayout> Cast<[u8], T> for CastForSized {}
 
     ptr.recall_validity::<Initialized, (_, (_, _))>()
-        .cast::<_, CastForSized, _>()
+        .cast::<_, CastForSized, (BecauseRead, R)>()
         .recall_validity::<Safe, _>()
 }
 

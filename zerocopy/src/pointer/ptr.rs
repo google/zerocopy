@@ -446,24 +446,23 @@ mod _conversions {
             self.transmute_with::<U, V, <U as SizeEq<T>>::CastFrom, R>()
         }
 
-        /// Reinterprets the same byte region as `U` with validity `V` using
-        /// `C`.
+        /// Reinterprets the same address as `U` with validity `V` using `C`.
         ///
-        /// `C: CastExact` preserves the byte region. The aliasing invariant is
-        /// preserved, while alignment is conservatively forgotten because the
-        /// destination type may have a different alignment requirement.
+        /// `C: Cast` preserves the address and may preserve or shrink the byte
+        /// region. The aliasing invariant is preserved, while alignment is
+        /// conservatively forgotten because the destination type may have a
+        /// different alignment requirement.
         #[inline]
         #[must_use]
         pub fn transmute_with<U, V, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, V)>
         where
             V: Validity,
             U: TransmuteFromPtr<T, I::Aliasing, I::Validity, V, C, R> + ?Sized,
-            C: CastExact<T, U>,
+            C: Cast<T, U>,
         {
             // SAFETY:
-            // - By `C: CastExact`, `C` preserves referent address, and so we
-            //   don't need to consider projections in the following safety
-            //   arguments.
+            // - By `C: Cast`, `C` preserves referent address and only
+            //   preserves or shrinks the referent byte range.
             // - If aliasing is `Shared`, then by `U: TransmuteFromPtr<T>`, at
             //   least one of the following holds:
             //   - `T: Immutable` and `U: Immutable`, in which case it is
@@ -573,9 +572,9 @@ mod _conversions {
             self,
         ) -> Ptr<'a, crate::Unalign<T>, (I::Aliasing, Aligned, I::Validity)> {
             // FIXME(#1359): This should be a `transmute_with` call.
-            // Unfortunately, to avoid blanket impl conflicts, we only implement
-            // `TransmuteFrom<T>` for `Unalign<T>` (and vice versa) specifically
-            // for `Safe` validity, not for all validity types.
+            // Unfortunately, to avoid blanket impl conflicts, we only provide
+            // cast-relative `TransmuteFrom` proofs between `T` and `Unalign<T>`
+            // specifically for `Safe` validity, not for all validity types.
 
             // SAFETY:
             // - By `CastSized: Cast`, `CastSized` preserves referent address,
@@ -887,11 +886,11 @@ mod _casts {
         #[must_use]
         pub fn cast<U, C, R>(self) -> Ptr<'a, U, (I::Aliasing, Unaligned, I::Validity)>
         where
-            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, R>,
+            T: MutationCompatible<U, I::Aliasing, I::Validity, I::Validity, C, R>,
             U: 'a + ?Sized + CastableFrom<T, I::Validity, I::Validity>,
             C: Cast<T, U>,
         {
-            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, R>`, one
+            // SAFETY: Because `T: MutationCompatible<U, I::Aliasing, _, _, C, R>`, one
             // of the following holds:
             // - `T: Read<I::Aliasing>` and `U: Read<I::Aliasing>`, in which
             //   case one of the following holds:
