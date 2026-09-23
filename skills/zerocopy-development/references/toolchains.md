@@ -3,9 +3,8 @@
 ## Cargo Wrapper
 
 Run zerocopy Cargo commands through `./cargo.sh`. The wrapper resolves
-repository-controlled
-compiler versions so local commands use the same toolchains expected by CI and
-UI tests.
+repository-controlled compiler versions so local commands use the same
+toolchains expected by CI and UI tests.
 
 Use:
 

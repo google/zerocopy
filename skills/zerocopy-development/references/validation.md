@@ -48,7 +48,7 @@ For Kani, mark harnesses with `#[kani::proof]`, use `kani::any()` for arbitrary
 inputs, `kani::assume(...)` for explicit preconditions, and `assert!(...)` for
 properties being checked. When Kani evidence supports an unsafe-code soundness
 claim or safety argument, also use the
-[`unsafe-rust`](../../unsafe-rust/SKILL.md) skill and account for
+`unsafe-rust` skill and account for
 the exact harness, assumptions, model, and proved property under that skill's
 evidence rules. Kani runs in CI with repository-selected feature flags; inspect
 the current CI configuration rather than copying those flags into this guide.

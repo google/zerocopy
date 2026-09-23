@@ -9,8 +9,8 @@ description: >-
 
 # Zerocopy Code Review
 
-Follow [`zerocopy/AGENTS.md`](../../zerocopy/AGENTS.md) while reviewing
-changes in the `zerocopy/` subtree.
+Apply the repository-scoped instructions for the `zerocopy/` subtree in
+addition to this skill.
 
 ## Establish Context
 
@@ -33,7 +33,7 @@ Prioritize findings in this order when several concerns compete for attention:
 If the review involves unsafe Rust, unsafe APIs or traits, raw pointers, FFI,
 layout or validity reasoning, safety comments or `# Safety` documentation,
 soundness analysis, or invariant-bearing abstractions, also use the sibling
-[`unsafe-rust`](../unsafe-rust/SKILL.md) skill. That skill is authoritative for
+`unsafe-rust` skill. That skill is authoritative for
 unsafe-code review methodology; do not reproduce a separate unsafe checklist
 here.
 

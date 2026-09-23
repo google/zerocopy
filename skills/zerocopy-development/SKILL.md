@@ -9,9 +9,9 @@ description: >-
 
 # Zerocopy Development
 
-Follow [`zerocopy/AGENTS.md`](../../zerocopy/AGENTS.md) while working in
-the `zerocopy/` subtree. Commands in this skill assume the working directory
-is `zerocopy/` unless stated otherwise.
+Apply the repository-scoped instructions for the `zerocopy/` subtree in
+addition to this skill. Commands in this skill assume the working directory is
+`zerocopy/` unless stated otherwise.
 
 ## Workflow
 
@@ -26,7 +26,7 @@ is `zerocopy/` unless stated otherwise.
 4. If the change authors or modifies unsafe Rust, an unsafe API or trait, raw
    pointer or FFI code, safety documentation, a soundness argument, or an
    invariant-bearing abstraction, also use the sibling
-   [`unsafe-rust`](../unsafe-rust/SKILL.md) skill.
+   `unsafe-rust` skill.
    Do not substitute a separate zerocopy-specific unsafe methodology.
 5. Add or update tests at the level that owns the behavior. For UI,
    compile-fail, or compiler-output changes, read
