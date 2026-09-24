@@ -1,24 +1,21 @@
 # Technical reference corpus
 
-This orphan branch contains a self-contained corpus of technical reference
-reports. Its purpose is to preserve precise, expensive-to-recover knowledge for
-future agents: behavior discovered through source inspection, execution,
-specifications, documentation synthesis, or other evidence that would otherwise
-need to be researched again.
-
-The corpus is general-purpose. It may cover Lean, Rust, Charon, Aeneas, Anneal,
-zerocopy, or other systems.
+This orphan branch preserves precise technical knowledge that would otherwise be
+expensive to recover through source crawls, experiments, or synthesis. The corpus
+is general-purpose and may cover Lean, Rust, Charon, Aeneas, Anneal, zerocopy, or
+other systems.
 
 ## Start here
 
-Agents must read [`AGENTS.md`](AGENTS.md) before using or changing the corpus.
-It defines the branch's authority, evidence discipline, and publication rules.
+Agents must read [`AGENTS.md`](AGENTS.md) before using or changing the corpus. It
+defines branch authority, maintenance, validation, and publication.
 
-Before authoring a report, also read [`FORMAT.md`](FORMAT.md). It defines the
-current report structure, subject-identification requirements, evidence roles,
-scope boundaries, and revalidation guidance.
+Before authoring or revising a report, also read [`FORMAT.md`](FORMAT.md). It
+defines report metadata, evidence roles, applicability, investigation boundaries,
+and revalidation expectations.
 
-Browse [`CATALOG.md`](CATALOG.md) for the generated report index.
+[`CATALOG.json`](CATALOG.json) is the generated machine-readable report index.
+Technical reports themselves live under `reports/`.
 
 Validate the current tree with:
 
@@ -26,37 +23,17 @@ Validate the current tree with:
 python3 tools/reference.py check
 ```
 
-After editing reports, regenerate the catalog with:
+After editing reports, regenerate the catalog and validate:
 
 ```console
 python3 tools/reference.py catalog
+python3 tools/reference.py check
 ```
 
-The validation tool and its tests use only the Python standard library. After
-changing `tools/reference.py` or `tests/test_reference.py`, run:
+After changing the validation tool or tests, run:
 
 ```console
 python3 -m unittest discover -s tests -v
 ```
 
-Technical reports live under `reports/`. Each report is a self-contained
-directory whose entry point is `REPORT.md`; a report may also preserve local
-evidence or probes when doing so materially reduces future research cost.
-
-The current tip of `refs/heads/reference` is the canonical corpus state. Git
-history records how that state evolved, but readers should not need to reconstruct
-the current corpus from historical commits.
-
-## What this corpus is for
-
-Use this branch for durable technical knowledge whose future retrieval or
-reconstruction would be meaningfully expensive, especially when the result is
-subtle, version-sensitive, distributed across several primary sources, or easy to
-overgeneralize.
-
-Reports are intentionally precise about what was examined and what the evidence
-establishes. An old report remains useful evidence about the exact subject it
-identifies when upstream software moves on.
-
-This branch is not a mirror of upstream documentation and is not authoritative
-for the systems it describes. Primary upstream sources retain that authority.
+The validator and tests use only the Python standard library.
