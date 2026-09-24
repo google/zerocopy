@@ -18,6 +18,27 @@ Before authoring a report, also read [`FORMAT.md`](FORMAT.md). It defines the
 current report structure, subject-identification requirements, evidence roles,
 scope boundaries, and revalidation guidance.
 
+Browse [`CATALOG.md`](CATALOG.md) for the generated report index.
+
+Validate the current tree with:
+
+```console
+python3 tools/reference.py check
+```
+
+After editing reports, regenerate the catalog with:
+
+```console
+python3 tools/reference.py catalog
+```
+
+The validation tool and its tests use only the Python standard library. After
+changing `tools/reference.py` or `tests/test_reference.py`, run:
+
+```console
+python3 -m unittest discover -s tests -v
+```
+
 Technical reports live under `reports/`. Each report is a self-contained
 directory whose entry point is `REPORT.md`; a report may also preserve local
 evidence or probes when doing so materially reduces future research cost.

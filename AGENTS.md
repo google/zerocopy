@@ -107,8 +107,10 @@ edit its technical content independently of the reports from which it is derived
 Branch-local validation tools check corpus integrity, not upstream truth. A
 structural validator passing does not prove that a technical report is correct.
 
-When branch-local validation tooling exists, run the checks required by the
-current branch instructions before publication.
+Before publication, run `python3 tools/reference.py check`.
+
+When changing `tools/reference.py` or its tests, also run
+`python3 -m unittest discover -s tests -v`.
 
 ## Publication
 
