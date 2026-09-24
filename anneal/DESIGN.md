@@ -21,27 +21,61 @@ results and interfaces, not the mechanisms used to implement them.
 
 At a high level, an Anneal claim has:
 
-- a **subject** whose behavior is being verified;
+- a **scope** identifying the program artifacts, configurations, and executions
+  to which the claim applies;
 - **requirements** under which the claim applies; and
-- **guarantees** that hold when those requirements are satisfied.
+- **guarantees** that hold within that scope when those requirements are
+  satisfied.
 
-Anneal checks that the requirements imply the guarantees. That checked reasoning
-is itself conditional on Anneal's trusted computing base (TCB).
+The scope must bind the claim unambiguously to what was actually verified. A
+result for one revision, generated input, dependency set, feature configuration,
+target, profile, compiled artifact, or other relevant input must not silently
+apply to materially different code or configuration. A claim may cover a
+precisely defined family rather than a single concrete build, but the result must
+make that domain precise enough to determine whether a particular artifact or
+execution is covered.
+
+Anneal checks that the requirements imply the guarantees for that scope. That
+reasoning is itself conditional on Anneal's trusted computing base (TCB).
 
 Requirements and TCB assumptions play different roles. A requirement is a
 condition on the program's inputs, callers, or environment. It must be satisfied
 when the claim is used. A TCB assumption is an unchecked premise in Anneal's
 reasoning about whether the claim is true.
 
-Every fact Anneal itself needs to justify a reported claim must therefore either
-be established by checked evidence or be represented explicitly in the TCB. A
-required fact may not disappear merely because an analysis was skipped,
-incomplete, unsupported, or failed.
+## Successful verification also constrains trust
 
-Why a fact is trusted does not change this core semantics. Anneal may record that
-provenance for diagnostics, auditing, or policy, but an unfinished proof, an
-external semantic assumption, and another unchecked premise are all trusted
-premises at this level.
+Every fact Anneal itself needs to justify a reported claim must either be
+established by checked evidence or represented explicitly in the TCB.
+
+That condition alone is not sufficient for verification success. Otherwise,
+Anneal could turn an obligation it failed to prove into a new trusted assumption
+and report success without having provided the assurance the user requested.
+
+A verification result therefore also has an **assurance policy**: a constraint on
+which unchecked premises may appear in the TCB while the result still counts as
+successful. Any premise that the policy requires Anneal to establish must remain
+outside the TCB and be supported by checked evidence.
+
+The assurance policy need not enumerate every intermediate lemma individually.
+It may instead identify trusted components, semantic boundaries, classes of
+assumptions, guarantees that must be established end-to-end, or other principled
+boundaries. The exact way users, projects, or Anneal itself specify this policy is
+a lower-level design question.
+
+An unfinished proof, skipped analysis, unsupported operation, or failed tool does
+not authorize new trust merely by occurring. If the missing fact is not permitted
+by the applicable assurance policy, Anneal has not produced a successful result.
+
+Development workflows may deliberately use weaker assurance policies. Such a
+result must remain distinguishable from a result satisfying the intended
+verification policy; in particular, bypassing required UB checks must not silently
+acquire the meaning of ordinary verification success.
+
+At the logical level, trusted premises are simply premises: why a fact is trusted
+does not change the conditional theorem Anneal has established. Its identity,
+provenance, or origin may nevertheless matter to the assurance policy, diagnostics,
+auditing, or other higher-level interpretation of the result.
 
 Checked evidence about an intermediate model supports a Rust-level guarantee only
 if the connection from Rust to that model is itself checked or included in the
@@ -57,13 +91,19 @@ intermediate mathematical model.
 Every successful Anneal result includes two baseline guarantees:
 
 1. the Rust executions covered by the claim are well-defined; and
-2. subject to the TCB, the compiled code corresponds to the Rust source semantics
-   strongly enough to preserve the guarantees reported by Anneal.
+2. subject to the TCB, the behavior of the compiled artifact corresponds to the
+   Rust source semantics strongly enough to preserve the guarantees reported by
+   Anneal.
 
 The second guarantee need not mean that the source and compiled program have
 literally identical sets of behaviors. The required relationship is whatever is
 strong enough to justify carrying each reported source-level guarantee to the
 compiled code.
+
+The verification scope must bind this end-to-end claim to the source and compiled
+artifacts, or precisely characterized families of artifacts, for which the
+relationship was established. Verifying one source or build must not bless a
+different binary merely because they occupy the same nominal project or package.
 
 Developers may ask Anneal to prove additional guarantees beyond well-definedness.
 Those guarantees may themselves have requirements. For example, a safe binary
@@ -122,34 +162,44 @@ mathematical necessity. Anneal chooses this boundary to align its formal
 guarantees with Rust's conventions about what callers must establish and what API
 implementations may assume.
 
+Two kinds of constraints on values must be distinguished:
+
+- **Rust language validity requirements** are conditions required by Rust's
+  abstract semantics for the value or execution itself to be well-defined. Anneal
+  cannot relax these requirements for either safe or unsafe APIs.
+- **API or library invariants** may be stronger than Rust language validity.
+  Rust's conventions may permit an API implementation to rely on such an
+  invariant even though violating the invariant is not itself immediate undefined
+  behavior. Valid UTF-8 for `str` is an example.
+
 For a safe API, Anneal's baseline guarantees must hold for every use that:
 
-- is permitted by the Rust type system; and
-- supplies values satisfying the invariants associated with their Rust types that
-  Rust convention permits implementations to rely upon.
-
-The second condition may be stronger than requiring that constructing or passing
-the value has not already caused undefined behavior. For example, an
-implementation receiving a `&str` may rely on the invariant that the `str`
-contains valid UTF-8.
+- is permitted by the Rust type system;
+- satisfies Rust's language validity requirements; and
+- supplies values satisfying the API or library invariants that Rust convention
+  permits the implementation to rely upon.
 
 A safe API may not impose any additional unchecked caller requirement needed for
-Anneal's baseline well-definedness guarantee. A type-correct safe caller supplying
-values that satisfy the applicable type invariants must not be able to violate
-that guarantee merely because it failed to satisfy some hidden condition.
+Anneal's baseline well-definedness guarantee. A type-correct safe caller meeting
+the applicable validity requirements and API invariants must not be able to
+violate that guarantee merely because it failed to satisfy some hidden condition.
 
 Additional developer-defined guarantees may have additional preconditions. Those
-preconditions limit only the corresponding additional guarantees; violating them
+preconditions limit only the corresponding additional guarantees. Violating them
 must not invalidate the baseline guarantee of a safe API.
 
 For an unsafe API, admissible use additionally requires satisfying the API's
 explicit safety requirements. Anneal's baseline guarantee is conditional on those
 requirements.
 
-By default, values passed to an unsafe API are also assumed to satisfy their
-ordinary type invariants. Some unsafe APIs may need to accept values that violate
-invariants normally associated with their types. Whether Anneal permits an unsafe
-API contract to relax such an invariant, and how that permission is expressed,
+Rust language validity requirements remain mandatory at an unsafe API boundary.
+An `unsafe` contract cannot make a value or execution valid when Rust's language
+semantics already makes it invalid.
+
+API or library invariants stronger than language validity are different. Some
+unsafe APIs may legitimately need to accept values that violate invariants
+normally associated with their types. Whether Anneal permits an unsafe API
+contract to relax such an invariant, and how that permission is expressed,
 remains unresolved.
 
 ## Anneal is general over guarantees and program behaviors
