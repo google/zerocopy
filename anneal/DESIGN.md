@@ -17,6 +17,27 @@ The principles are authoritative over this document. If the two conflict, this
 document must be corrected. This document constrains the meaning of Anneal's
 results and interfaces, not the mechanisms used to implement them.
 
+## Verification results have stable meaning
+
+An ordinary successful Anneal result fixes three things:
+
+- the **claim** Anneal established;
+- the complete **trusted computing base (TCB)** on which that claim depends; and
+- the **assurance policy** under which that TCB was accepted.
+
+Everything whose identity can affect the meaning of the claim or whether the
+result qualifies as successful must be fixed by the result, either directly or
+through an immutable reference.
+
+A later change to source code, generated input, a specification, a dependency, a
+TCB manifest, an assurance policy, or another referenced input must not
+retroactively change what an existing result means or whether it qualified as
+successful when produced.
+
+Mutable names and configuration such as branches, profiles, or named policies may
+be convenient inputs to verification. A result that depends on them must bind the
+specific identities or contents that were actually used.
+
 ## Anneal proves conditional guarantees
 
 An Anneal claim has a **scope** and one or more **guarantee clauses**.
@@ -50,8 +71,7 @@ premise in Anneal's reasoning that the guarantee follows from its requirements.
 
 ## Successful verification has an auditable trust boundary
 
-Anneal establishes its claims using checked evidence and a trusted computing base
-(TCB).
+Anneal establishes its claims using checked evidence and a TCB.
 
 Every fact Anneal itself needs to justify a reported claim must either be
 established by checked evidence or represented in the TCB. An unchecked
@@ -74,19 +94,25 @@ while the result still counts as successful. It may identify trusted components,
 semantic boundaries, classes of assumptions, guarantees that must be established
 by checked evidence, or other principled trust boundaries.
 
-The result must identify the assurance policy under which it reports success, so
-that its actual TCB can be interpreted against that policy.
+The result must contain or immutably reference the exact assurance policy under
+which it reports success. A mutable policy name may select a policy before
+verification, but later changes to that name must not alter the interpretation of
+an existing result.
 
 An unfinished proof, skipped analysis, unsupported operation, or failed tool does
 not by itself authorize new trust. If the resulting unchecked premise is not
 permitted by the applicable assurance policy, Anneal has not produced a successful
 result.
 
-The project principles impose minimum assurance requirements independent of any
-user-selected policy. In particular, bypassing a required UB obligation cannot
-silently become ordinary verification success by moving that obligation into the
-TCB. Development workflows may deliberately accept weaker assurance, but their
-results must remain distinguishable from ordinary successful verification.
+The project principles impose minimum assurance requirements that an assurance
+policy cannot weaken. In particular, a required UB obligation cannot become an
+ordinary successful verification result merely by moving that obligation into the
+TCB.
+
+Anneal may provide development-only modes that bypass UB checks or turn them into
+warnings. Such outputs do not have ordinary successful-verification semantics and
+must clearly label both the result and its TCB audit log as tainted or irreparably
+untrustworthy, as required by `PRINCIPLES.md`.
 
 At the logical level, trusted premises are simply premises: why a fact is trusted
 does not change the conditional claim Anneal has established. Its identity or
@@ -106,9 +132,8 @@ Every successful Anneal result includes baseline guarantee clauses establishing
 that:
 
 1. the Rust executions covered by the claim are well-defined; and
-2. subject to the TCB, the behavior of the compiled artifact corresponds to the
-   Rust source semantics strongly enough to preserve the guarantees Anneal
-   reports.
+2. the behavior of the compiled artifact corresponds to the Rust source semantics
+   strongly enough to preserve the guarantees Anneal reports.
 
 The second guarantee need not mean that the source and compiled program have
 literally identical sets of behaviors. The required relationship is whatever is
