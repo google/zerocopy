@@ -17,7 +17,7 @@ const _: () = {
             Self,
             {
                 #[repr(u16)]
-                #[allow(dead_code)]
+                #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
                 #[derive(Copy, Clone, PartialEq)]
                 pub enum ___ZerocopyTag {
                     Bar,
