@@ -992,8 +992,8 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
 
     quote! {
         #repr
-        #[allow(dead_code)]
-        #[derive(Copy, Clone, PartialEq, Eq)]
+        #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
+        #[derive(Copy, Clone, PartialEq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }
