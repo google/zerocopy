@@ -108,7 +108,7 @@ fn normalize_generated_code_clippy_policy(pretty: String) -> String {
     pretty
         .lines()
         .filter(|line| line.trim() != "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]")
-        .map(|line| format!("{line}\n"))
+        .map(|line| format!("{}\n", line))
         .collect()
 }
 
