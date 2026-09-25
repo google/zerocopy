@@ -333,6 +333,27 @@
         "anneal/coverage"
       ]
     },
+    "lean-trust-admissions-v4-30-0-rc2": {
+      "observed_at": "2026-09-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 trust and admission behavior selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/trust",
+        "lean/axioms",
+        "lean/sorry",
+        "lean/unsafe",
+        "lean/native-evaluation"
+      ]
+    },
     "rust-lifetimes-charon-aeneas-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
