@@ -105,42 +105,20 @@ fn pretty_print(ts: TokenStream) -> String {
 // expansion snapshots so changes to the lint-group policy don't rewrite every
 // expected derive output.
 fn normalize_generated_code_clippy_policy(pretty: String) -> String {
-    let lines = pretty.lines().collect::<Vec<_>>();
-    let mut normalized = String::new();
-    let mut idx = 0;
-    while idx < lines.len() {
-        let is_downstream_policy = lines[idx].trim() == "#[allow("
-            && lines.get(idx + 1).map(|line| line.trim()) == Some("clippy::all,")
-            && lines.get(idx + 2).map(|line| line.trim()) == Some("clippy::cargo,")
-            && lines.get(idx + 3).map(|line| line.trim()) == Some("clippy::pedantic,")
-            && lines.get(idx + 4).map(|line| line.trim()) == Some("clippy::nursery,")
-            && lines.get(idx + 5).map(|line| line.trim()) == Some("clippy::restriction,")
-            && lines.get(idx + 6).map(|line| line.trim()) == Some(")]");
-        if is_downstream_policy {
-            idx += 7;
-            continue;
-        }
-
-        if lines[idx].trim() == "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]" {
-            idx += 1;
-            continue;
-        }
-
-        normalized.push_str(lines[idx]);
-        normalized.push('\n');
-        idx += 1;
-    }
-    normalized
+    pretty
+        .lines()
+        .filter(|line| line.trim() != "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]")
+        .map(|line| format!("{line}\n"))
+        .collect()
 }
 
 #[test]
-fn test_generated_code_clippy_policy() {
+fn test_downstream_generated_code_does_not_lower_clippy_lints() {
     let policy = crate::util::generated_code_lints().to_string().replace(' ', "");
-    assert!(policy.contains("clippy::all"));
-    assert!(policy.contains("clippy::cargo"));
-    assert!(policy.contains("clippy::pedantic"));
-    assert!(policy.contains("clippy::nursery"));
-    assert!(policy.contains("clippy::restriction"));
+    assert!(!policy.contains("clippy::all"));
+    assert!(!policy.contains("clippy::pedantic"));
+    assert!(!policy.contains("clippy::nursery"));
+    assert!(!policy.contains("clippy::restriction"));
 }
 
 #[track_caller]
