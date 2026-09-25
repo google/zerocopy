@@ -488,8 +488,9 @@ jobs:
           --target $TARGET \
           --test clippy \
           --verbose
-      # Test the production policy separately from the internal lint mode below.
-      # One native target is sufficient for this downstream-facing regression.
+      # Test ordinary downstream output separately from the internal lint mode
+      # below. The fixture uses `forbid` to ensure generated code does not rely
+      # on Clippy lint-level overrides. One native target is sufficient.
       if: matrix.toolchain == 'nightly' && matrix.crate == 'zerocopy-derive' && matrix.target == 'x86_64-unknown-linux-gnu'
 
     - name: Clippy tests
