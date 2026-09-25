@@ -1,12 +1,12 @@
 Iterations:        100
-Instructions:      2300
-Total Cycles:      791
-Total uOps:        2600
+Instructions:      1900
+Total Cycles:      644
+Total uOps:        2200
 
 Dispatch Width:    4
-uOps Per Cycle:    3.29
-IPC:               2.91
-Block RThroughput: 6.5
+uOps Per Cycle:    3.42
+IPC:               2.95
+Block RThroughput: 5.5
 
 
 Instruction Info:
@@ -31,15 +31,11 @@ Instruction Info:
  1      1     0.33                        movabs	rcx, -6148914691236517205
  2      4     1.00                        mul	rcx
  1      1     0.50                        shr	rdx
- 1      1     0.50                        lea	rcx, [rdx + 2*rdx]
- 1      1     0.33                        sub	rsi, rcx
- 1      1     0.33                        or	rcx, -4
- 1      1     0.33                        add	rsi, rdi
- 1      1     0.50                        lea	rdi, [rcx + rsi]
- 1      1     0.33                        add	rdi, -8
+ 1      1     0.33                        and	esi, 3
+ 1      1     0.50                        lea	rcx, [rdi + rsi]
  1      0     0.25                        xor	eax, eax
- 2      6     0.50    *                   cmp	word ptr [rcx + rsi - 8], -16192
- 2      2     0.67                        cmove	rax, rdi
+ 2      6     0.50    *                   cmp	word ptr [rdi + rsi], -16192
+ 2      2     0.67                        cmove	rax, rcx
  1      1     1.00                  U     ret
 
 
@@ -56,30 +52,26 @@ Resources:
 
 Resource pressure per iteration:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  
- -      -     7.70   7.58    -     7.72   0.50   0.50   
+ -      -     6.33   6.33    -     6.34   0.50   0.50   
 
 Resource pressure by instruction:
 [0]    [1]    [2]    [3]    [4]    [5]    [6.0]  [6.1]  Instructions:
- -      -     0.26   0.74    -      -      -      -     lea	eax, [rsi + rdi]
- -      -     0.19   0.28    -     0.53    -      -     test	al, 3
+ -      -     0.33   0.67    -      -      -      -     lea	eax, [rsi + rdi]
+ -      -     0.99    -      -     0.01    -      -     test	al, 3
  -      -      -      -      -     1.00    -      -     jne	.LBB5_1
- -      -     0.93   0.06    -     0.01    -      -     movabs	rax, 9223372036854775804
- -      -     0.81   0.14    -     0.05    -      -     and	rax, rsi
- -      -     0.55   0.43    -     0.02    -      -     cmp	rax, 9
+ -      -     0.01   0.66    -     0.33    -      -     movabs	rax, 9223372036854775804
+ -      -     0.32   0.34    -     0.34    -      -     and	rax, rsi
+ -      -     0.65   0.03    -     0.32    -      -     cmp	rax, 9
  -      -      -      -      -     1.00    -      -     jae	.LBB5_3
  -      -      -      -      -      -      -      -     xor	eax, eax
  -      -      -      -      -     1.00    -      -     ret
- -      -     0.42   0.56    -     0.02    -      -     add	rax, -9
- -      -     0.67   0.30    -     0.03    -      -     movabs	rcx, -6148914691236517205
+ -      -     0.02   0.98    -      -      -      -     add	rax, -9
+ -      -     0.35   0.65    -      -      -      -     movabs	rcx, -6148914691236517205
  -      -     1.00   1.00    -      -      -      -     mul	rcx
- -      -     0.71    -      -     0.29    -      -     shr	rdx
- -      -     0.32   0.68    -      -      -      -     lea	rcx, [rdx + 2*rdx]
- -      -     0.57   0.04    -     0.39    -      -     sub	rsi, rcx
- -      -     0.28   0.67    -     0.05    -      -     or	rcx, -4
- -      -     0.29   0.29    -     0.42    -      -     add	rsi, rdi
- -      -     0.02   0.98    -      -      -      -     lea	rdi, [rcx + rsi]
- -      -     0.02   0.41    -     0.57    -      -     add	rdi, -8
+ -      -     1.00    -      -      -      -      -     shr	rdx
+ -      -     0.16   0.84    -      -      -      -     and	esi, 3
+ -      -     0.17   0.83    -      -      -      -     lea	rcx, [rdi + rsi]
  -      -      -      -      -      -      -      -     xor	eax, eax
- -      -     0.57   0.01    -     0.42   0.50   0.50   cmp	word ptr [rcx + rsi - 8], -16192
- -      -     0.09   0.99    -     0.92    -      -     cmove	rax, rdi
+ -      -     0.34   0.32    -     0.34   0.50   0.50   cmp	word ptr [rdi + rsi], -16192
+ -      -     0.99   0.01    -     1.00    -      -     cmove	rax, rcx
  -      -      -      -      -     1.00    -      -     ret
