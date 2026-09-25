@@ -105,22 +105,37 @@ fn pretty_print(ts: TokenStream) -> String {
 // expansion snapshots so changes to the lint-group policy don't rewrite every
 // expected derive output.
 fn normalize_generated_code_clippy_policy(pretty: String) -> String {
-    pretty
-        .replace(
-            "#[allow(\n    clippy::all,\n    clippy::cargo,\n    clippy::pedantic,\n    clippy::nursery,\n    clippy::restriction,\n)]\n",
-            "",
-        )
-        .replace(
-            "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]\n",
-            "",
-        )
+    let lines = pretty.lines().collect::<Vec<_>>();
+    let mut normalized = String::new();
+    let mut idx = 0;
+    while idx < lines.len() {
+        let is_downstream_policy = lines[idx].trim() == "#[allow("
+            && lines.get(idx + 1).map(|line| line.trim()) == Some("clippy::all,")
+            && lines.get(idx + 2).map(|line| line.trim()) == Some("clippy::cargo,")
+            && lines.get(idx + 3).map(|line| line.trim()) == Some("clippy::pedantic,")
+            && lines.get(idx + 4).map(|line| line.trim()) == Some("clippy::nursery,")
+            && lines.get(idx + 5).map(|line| line.trim()) == Some("clippy::restriction,")
+            && lines.get(idx + 6).map(|line| line.trim()) == Some(")]");
+        if is_downstream_policy {
+            idx += 7;
+            continue;
+        }
+
+        if lines[idx].trim() == "#[deny(clippy::all, clippy::pedantic, clippy::nursery)]" {
+            idx += 1;
+            continue;
+        }
+
+        normalized.push_str(lines[idx]);
+        normalized.push('\n');
+        idx += 1;
+    }
+    normalized
 }
 
 #[test]
 fn test_generated_code_clippy_policy() {
-    let policy = prettyplease::unparse(
-        &syn::parse_file(&crate::util::generated_code_lints().to_string()).unwrap(),
-    );
+    let policy = crate::util::generated_code_lints().to_string().replace(' ', "");
     assert!(policy.contains("clippy::all"));
     assert!(policy.contains("clippy::cargo"));
     assert!(policy.contains("clippy::pedantic"));
