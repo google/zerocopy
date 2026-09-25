@@ -6,17 +6,13 @@
     non_upper_case_globals,
     non_snake_case,
     non_ascii_idents,
-    clippy::all,
-    clippy::pedantic,
-    clippy::nursery,
-    clippy::restriction,
 )]
 #[deny(ambiguous_associated_items)]
 #[automatically_derived]
 const _: () = {
     #[repr(C)]
     #[allow(dead_code)]
-    #[derive(Copy, Clone, PartialEq)]
+    #[derive(Copy, Clone, PartialEq, Eq)]
     pub enum ___ZerocopyTag {
         UnitLike,
         StructLike,
@@ -60,10 +56,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -83,10 +75,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -114,10 +102,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -166,10 +150,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -208,10 +188,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -250,10 +226,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -292,10 +264,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -342,10 +310,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -384,10 +348,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -426,10 +386,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -468,10 +424,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -518,10 +470,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -560,10 +508,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -602,10 +546,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -644,10 +584,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -694,10 +630,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -736,10 +668,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -778,10 +706,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -820,10 +744,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -870,10 +790,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -912,10 +828,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -954,10 +866,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -996,10 +904,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1046,10 +950,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1088,10 +988,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1130,10 +1026,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1172,10 +1064,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1224,10 +1112,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1266,10 +1150,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1308,10 +1188,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1365,10 +1241,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -1386,10 +1258,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1417,10 +1285,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1469,10 +1333,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1511,10 +1371,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1553,10 +1409,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1595,10 +1447,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1645,10 +1493,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1687,10 +1531,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1729,10 +1569,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1771,10 +1607,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1821,10 +1653,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1863,10 +1691,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1905,10 +1729,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1947,10 +1767,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -1997,10 +1813,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2039,10 +1851,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2081,10 +1889,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2123,10 +1927,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2175,10 +1975,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2217,10 +2013,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2259,10 +2051,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2312,10 +2100,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -2331,10 +2115,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2359,10 +2139,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2408,10 +2184,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2447,10 +2219,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2486,10 +2254,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2535,10 +2299,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2574,10 +2334,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2613,10 +2369,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2660,10 +2412,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2699,10 +2447,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2744,10 +2488,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -2762,10 +2502,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2790,10 +2526,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2837,10 +2569,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2876,10 +2604,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2915,10 +2639,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -2954,10 +2674,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -3001,10 +2717,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -3040,10 +2752,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -3079,10 +2787,6 @@ const _: () = {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            clippy::all,
-            clippy::pedantic,
-            clippy::nursery,
-            clippy::restriction,
         )]
         #[deny(ambiguous_associated_items)]
         #[automatically_derived]
@@ -3119,10 +2823,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3150,10 +2850,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3233,10 +2929,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3275,10 +2967,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3317,10 +3005,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3380,10 +3064,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3463,10 +3143,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3505,10 +3181,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3547,10 +3219,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3610,10 +3278,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3693,10 +3357,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3735,10 +3395,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3777,10 +3433,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3840,10 +3492,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3923,10 +3571,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -3965,10 +3609,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4007,10 +3647,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4070,10 +3706,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4153,10 +3785,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4195,10 +3823,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4237,10 +3861,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4300,10 +3920,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4383,10 +3999,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4425,10 +4037,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4467,10 +4075,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4530,10 +4134,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4613,10 +4213,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4655,10 +4251,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4697,10 +4289,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4760,10 +4348,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4843,10 +4427,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4885,10 +4465,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
@@ -4927,10 +4503,6 @@ const _: () = {
         non_upper_case_globals,
         non_snake_case,
         non_ascii_idents,
-        clippy::all,
-        clippy::pedantic,
-        clippy::nursery,
-        clippy::restriction,
     )]
     #[deny(ambiguous_associated_items)]
     #[automatically_derived]
