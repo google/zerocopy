@@ -911,7 +911,39 @@ impl BoolExt for bool {
     }
 }
 
-pub(crate) fn allow_generated_code() -> TokenStream {
+fn lint_generated_code() -> bool {
+    // Cargo tracks environment variables referenced by `option_env!`, so
+    // changing this value causes the host-built proc macro to be rebuilt.
+    option_env!("ZEROCOPY_DERIVE_LINT_GENERATED_CODE").is_some()
+}
+
+pub(crate) fn generated_code_lints() -> TokenStream {
+    let clippy = if lint_generated_code() {
+        quote! {
+            // Exercise the useful general Clippy groups on generated code in
+            // zerocopy CI. We deliberately omit `clippy::restriction`: that
+            // group is policy-specific and contains mutually incompatible
+            // lints.
+            #[deny(clippy::all, clippy::pedantic, clippy::nursery)]
+        }
+    } else {
+        quote! {
+            // Generated implementation details must not break downstream builds
+            // which opt into stricter Clippy lint groups. `clippy::all` does
+            // not include the allow-by-default groups, so list those as well.
+            // `clippy::cargo` does not normally apply to emitted Rust code, but
+            // including it makes this suppression exhaustive over Clippy's
+            // public lint groups.
+            #[allow(
+                clippy::all,
+                clippy::cargo,
+                clippy::pedantic,
+                clippy::nursery,
+                clippy::restriction,
+            )]
+        }
+    };
+
     quote! {
         #[allow(
             // FIXME(#553): Add a test that generates a warning when
@@ -926,16 +958,20 @@ pub(crate) fn allow_generated_code() -> TokenStream {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
+            // This restriction lint predates the blanket generated-code policy
+            // above and remains explicit because zerocopy CI intentionally does
+            // not enable `clippy::restriction` wholesale.
             clippy::missing_inline_in_public_items,
         )]
+        #clippy
     }
 }
 
 pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
     let items = items.into_iter().flatten();
-    let allow = allow_generated_code();
+    let lint_policy = generated_code_lints();
     quote! {
-        #allow
+        #lint_policy
         #[deny(ambiguous_associated_items)]
         // While there are not currently any warnings that this suppresses
         // (that we're aware of), it's good future-proofing hygiene.
@@ -964,9 +1000,24 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
         EnumRepr::Compound(c, _) => quote! { #c },
     };
 
+    let clippy_partial_eq = if lint_generated_code() {
+        quote! {
+            #[expect(
+                clippy::derive_partial_eq_without_eq,
+                reason = "`PartialEq` is used for tag comparisons; `Eq` would be unused"
+            )]
+        }
+    } else {
+        // This is the narrow suppression shipped in #3722. Keep it in normal
+        // output so downstream users remain protected even if this helper is
+        // emitted in a mixed generated/caller-authored lint scope.
+        quote! { #[allow(clippy::derive_partial_eq_without_eq)] }
+    };
+
     quote! {
         #repr
-        #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
+        #[allow(dead_code)]
+        #clippy_partial_eq
         #[derive(Copy, Clone, PartialEq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
