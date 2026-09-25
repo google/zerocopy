@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and index the `reference` branch technical report corpus."""
+"""Validate and index an exact materialized reference-corpus candidate tree."""
 
 from __future__ import annotations
 
@@ -9,12 +9,17 @@ import json
 import os
 import re
 import sys
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
-REQUIRED_ROOT_FILES = ("AGENTS.md", "FORMAT.md", "README.md", "CATALOG.json")
+REQUIRED_SOURCE_FILES = (
+    "AGENTS.md",
+    "FORMAT.md",
+    "README.md",
+    "tools/reference.py",
+    "tests/test_reference.py",
+)
 METADATA_KEYS = frozenset({"topics", "subjects", "observed_at"})
 SUBJECT_KEYS = frozenset({"name", "identity"})
 TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+-]*(?:/[a-z0-9][a-z0-9._+-]*)*$")
@@ -41,11 +46,7 @@ class Report:
 
 
 class ValidationFailure(Exception):
-    """Raised when a corpus file cannot be parsed or generated safely."""
-
-
-class DuplicateKeyError(ValueError):
-    pass
+    """Raised when corpus machine data cannot be read or interpreted safely."""
 
 
 def _read_text(path: Path) -> str:
@@ -61,7 +62,7 @@ def _no_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
     result: dict[str, Any] = {}
     for key, value in pairs:
         if key in result:
-            raise DuplicateKeyError(f"duplicate object key {key!r}")
+            raise ValueError(f"duplicate object key {key!r}")
         result[key] = value
     return result
 
@@ -70,24 +71,20 @@ def _reject_constant(value: str) -> None:
     raise ValueError(f"invalid JSON constant {value}")
 
 
-def _validate_unicode_scalars(value: Any) -> None:
-    try:
-        json.dumps(value, ensure_ascii=False).encode("utf-8")
-    except UnicodeEncodeError as exc:
-        raise ValidationFailure("JSON strings must contain valid Unicode scalar text") from exc
-
-
 def _load_json(path: Path) -> Any:
-    text = _read_text(path)
     try:
         value = json.loads(
-            text,
+            _read_text(path),
             object_pairs_hook=_no_duplicate_keys,
             parse_constant=_reject_constant,
         )
+        # Python's JSON parser accepts escaped lone surrogates. Reject them at
+        # the JSON boundary by requiring the decoded value to encode as UTF-8.
+        json.dumps(value, ensure_ascii=False).encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise ValidationFailure("JSON strings must contain valid Unicode scalar text") from exc
     except ValueError as exc:
         raise ValidationFailure(f"invalid JSON: {exc}") from exc
-    _validate_unicode_scalars(value)
     return value
 
 
@@ -107,7 +104,7 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
     if not isinstance(topics, list) or not topics:
         problems.append(Problem(path, "metadata 'topics' must be a non-empty array"))
     else:
-        seen_topics: set[str] = set()
+        seen: set[str] = set()
         for idx, topic in enumerate(topics):
             if not isinstance(topic, str) or not topic:
                 problems.append(Problem(path, f"topics[{idx}] must be a non-empty string"))
@@ -119,15 +116,14 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
                         f"topics[{idx}]={topic!r} must be lowercase slash-separated retrieval labels",
                     )
                 )
-            if topic in seen_topics:
+            if topic in seen:
                 problems.append(Problem(path, f"duplicate topic {topic!r}"))
-            seen_topics.add(topic)
+            seen.add(topic)
 
     subjects = metadata.get("subjects")
     if not isinstance(subjects, list) or not subjects:
         problems.append(Problem(path, "metadata 'subjects' must be a non-empty array"))
     else:
-        seen_names: set[str] = set()
         for idx, subject in enumerate(subjects):
             prefix = f"subjects[{idx}]"
             if not isinstance(subject, dict):
@@ -151,21 +147,17 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
             name = subject.get("name")
             if not isinstance(name, str) or not name.strip():
                 problems.append(Problem(path, f"{prefix}.name must be a non-empty string"))
-            elif name in seen_names:
-                problems.append(Problem(path, f"duplicate subject name {name!r}"))
-            else:
-                seen_names.add(name)
 
             identity = subject.get("identity")
             if not isinstance(identity, dict) or not identity:
                 problems.append(Problem(path, f"{prefix}.identity must be a non-empty object"))
                 continue
-            for key, item in identity.items():
-                if not isinstance(key, str) or not key.strip():
+            for key, value in identity.items():
+                if not key.strip():
                     problems.append(
                         Problem(path, f"{prefix}.identity keys must be non-empty strings")
                     )
-                if not isinstance(item, str) or not item.strip():
+                if not isinstance(value, str) or not value.strip():
                     problems.append(
                         Problem(
                             path,
@@ -191,23 +183,22 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
 
 
 def _ordinary_file(path: Path) -> bool:
-    return path.exists() and not path.is_symlink() and path.is_file()
+    return not path.is_symlink() and path.is_file()
 
 
-def _validate_root(root: Path) -> list[Problem]:
+def _validate_sources(root: Path) -> list[Problem]:
     problems: list[Problem] = []
-    for name in REQUIRED_ROOT_FILES:
+    for name in REQUIRED_SOURCE_FILES:
         path = root / name
         if path.is_symlink():
-            problems.append(Problem(path, "required root files must not be symlinks"))
-            continue
-        if not path.is_file():
-            problems.append(Problem(path, f"required root file {name} is missing"))
-            continue
-        try:
-            _read_text(path)
-        except ValidationFailure as exc:
-            problems.append(Problem(path, str(exc)))
+            problems.append(Problem(path, "required corpus files must not be symlinks"))
+        elif not path.is_file():
+            problems.append(Problem(path, f"required corpus file {name} is missing"))
+        else:
+            try:
+                _read_text(path)
+            except ValidationFailure as exc:
+                problems.append(Problem(path, str(exc)))
     return problems
 
 
@@ -220,73 +211,44 @@ def _list_packages(root: Path) -> tuple[list[Path], list[Problem]]:
     if not reports_root.is_dir():
         return [], [Problem(reports_root, "reports must be a directory")]
 
-    packages: list[Path] = []
-    problems: list[Problem] = []
     try:
         entries = sorted(os.scandir(reports_root), key=lambda entry: entry.name)
     except OSError as exc:
         return [], [Problem(reports_root, f"cannot enumerate reports: {exc}")]
 
+    packages: list[Path] = []
+    problems: list[Problem] = []
     for entry in entries:
         path = Path(entry.path)
         try:
             if entry.is_symlink():
-                problems.append(Problem(path, "entries directly under reports/ must not be symlinks"))
-            elif entry.is_dir(follow_symlinks=False):
-                if not PACKAGE_RE.fullmatch(entry.name):
-                    problems.append(
-                        Problem(
-                            path,
-                            "report package names must be lowercase ASCII words separated by single hyphens",
-                        )
-                    )
-                else:
-                    packages.append(path)
-            else:
+                problems.append(Problem(path, "report packages must not be symlinks"))
+            elif not entry.is_dir(follow_symlinks=False):
+                problems.append(Problem(path, "entries directly under reports/ must be directories"))
+            elif not PACKAGE_RE.fullmatch(entry.name):
                 problems.append(
-                    Problem(path, "entries directly under reports/ must be report directories")
+                    Problem(
+                        path,
+                        "report package names must be lowercase ASCII words separated by single hyphens",
+                    )
                 )
+            else:
+                packages.append(path)
         except OSError as exc:
             problems.append(Problem(path, f"cannot inspect reports entry: {exc}"))
     return packages, problems
 
 
 def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
-    problems: list[Problem] = []
-
     metadata_path = package / "REPORT.json"
     prose_path = package / "REPORT.md"
+    problems: list[Problem] = []
+
     for path in (metadata_path, prose_path):
         if path.is_symlink():
-            problems.append(Problem(path, "symlinks are not allowed under reports/"))
+            problems.append(Problem(path, f"{path.name} must not be a symlink"))
         elif not path.is_file():
             problems.append(Problem(path, f"report package requires ordinary file {path.name}"))
-
-    def onerror(exc: OSError) -> None:
-        path = Path(exc.filename) if exc.filename else package
-        problems.append(Problem(path, f"cannot enumerate report package: {exc}"))
-
-    for dirpath, dirnames, filenames in os.walk(
-        package,
-        topdown=True,
-        followlinks=False,
-        onerror=onerror,
-    ):
-        directory = Path(dirpath)
-        for name in (*dirnames, *filenames):
-            path = directory / name
-            try:
-                if path.is_symlink():
-                    problems.append(Problem(path, "symlinks are not allowed under reports/"))
-                elif name in filenames and not path.is_file():
-                    problems.append(
-                        Problem(
-                            path,
-                            "report packages may contain only regular files and directories",
-                        )
-                    )
-            except OSError as exc:
-                problems.append(Problem(path, f"cannot inspect report package entry: {exc}"))
 
     metadata: Any | None = None
     if _ordinary_file(metadata_path):
@@ -303,9 +265,9 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
         except ValidationFailure as exc:
             problems.append(Problem(prose_path, str(exc)))
 
-    if metadata is None:
+    if problems or metadata is None:
         return None, problems
-    return Report(directory=package, metadata=metadata), problems
+    return Report(directory=package, metadata=metadata), []
 
 
 def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
@@ -319,12 +281,7 @@ def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
     return reports, problems
 
 
-def generate_catalog(root: Path, reports: Sequence[Report] | None = None) -> str:
-    if reports is None:
-        reports, problems = load_reports(root)
-        if problems:
-            raise ValidationFailure("cannot generate catalog from invalid reports")
-
+def _catalog_text(reports: Sequence[Report]) -> str:
     entries = {
         report.directory.name: report.metadata
         for report in sorted(reports, key=lambda item: item.directory.name)
@@ -334,13 +291,17 @@ def generate_catalog(root: Path, reports: Sequence[Report] | None = None) -> str
 
 def check(root: Path) -> list[Problem]:
     root = root.resolve()
-    problems = _validate_root(root)
+    problems = _validate_sources(root)
     reports, report_problems = load_reports(root)
     problems.extend(report_problems)
 
     catalog_path = root / "CATALOG.json"
-    if _ordinary_file(catalog_path) and not report_problems:
-        expected = generate_catalog(root, reports)
+    if catalog_path.is_symlink():
+        problems.append(Problem(catalog_path, "generated catalog must not be a symlink"))
+    elif not catalog_path.is_file():
+        problems.append(Problem(catalog_path, "generated catalog is missing"))
+    elif not report_problems:
+        expected = _catalog_text(reports)
         try:
             actual = _read_text(catalog_path)
         except ValidationFailure as exc:
@@ -357,29 +318,6 @@ def check(root: Path) -> list[Problem]:
     return sorted(problems, key=lambda problem: (problem.path.as_posix(), problem.message))
 
 
-def _write_atomic(path: Path, content: str) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temporary: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w",
-            encoding="utf-8",
-            dir=path.parent,
-            prefix=f".{path.name}.",
-            delete=False,
-        ) as handle:
-            handle.write(content)
-            temporary = Path(handle.name)
-        os.replace(temporary, path)
-        temporary = None
-    finally:
-        if temporary is not None:
-            try:
-                temporary.unlink()
-            except FileNotFoundError:
-                pass
-
-
 def _default_root() -> Path:
     return Path(__file__).resolve().parents[1]
 
@@ -390,11 +328,11 @@ def _parser() -> argparse.ArgumentParser:
         "--root",
         type=Path,
         default=_default_root(),
-        help="reference corpus root (default: repository root containing this script)",
+        help="exact materialized candidate tree (default: repository root containing this script)",
     )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("check", help="validate corpus structure and generated catalog")
-    subparsers.add_parser("catalog", help="regenerate CATALOG.json from report metadata")
+    subparsers.add_parser("check", help="validate candidate structure and generated catalog")
+    subparsers.add_parser("catalog", help="regenerate CATALOG.json from valid report metadata")
     return parser
 
 
@@ -403,13 +341,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     root = args.root.resolve()
 
     if args.command == "catalog":
-        reports, problems = load_reports(root)
+        problems = _validate_sources(root)
+        reports, report_problems = load_reports(root)
+        problems.extend(report_problems)
+        catalog_path = root / "CATALOG.json"
+        if catalog_path.is_symlink():
+            problems.append(Problem(catalog_path, "generated catalog must not be a symlink"))
+        elif catalog_path.exists() and not catalog_path.is_file():
+            problems.append(Problem(catalog_path, "generated catalog path must be a regular file"))
         if problems:
             for problem in problems:
                 print(problem.render(root), file=sys.stderr)
             return 1
         try:
-            _write_atomic(root / "CATALOG.json", generate_catalog(root, reports))
+            catalog_path.write_text(_catalog_text(reports), encoding="utf-8")
         except OSError as exc:
             print(f"CATALOG.json: cannot write generated catalog: {exc}", file=sys.stderr)
             return 1

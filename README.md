@@ -7,8 +7,8 @@ other systems.
 
 ## Start here
 
-Agents must read [`AGENTS.md`](AGENTS.md) before using or changing the corpus. It
-defines branch authority, maintenance, validation, and publication.
+Read [`AGENTS.md`](AGENTS.md) before using or changing the corpus. It defines
+branch authority, candidate-tree validation, maintenance, and publication.
 
 Before authoring or revising a report, also read [`FORMAT.md`](FORMAT.md). It
 defines report package structure, metadata, evidence roles, applicability,
@@ -16,15 +16,15 @@ investigation boundaries, and revalidation expectations.
 
 [`CATALOG.json`](CATALOG.json) is the generated machine-readable report index.
 Each immediate child directory of `reports/` is one report package containing
-`REPORT.json`, `REPORT.md`, and any report-owned support material.
+`REPORT.json`, `REPORT.md`, and optional report-owned support material.
 
-Validate the current tree with:
+Validate an exact candidate tree with Python 3.10 or newer:
 
 ```console
 python3 tools/reference.py check
 ```
 
-After editing reports, regenerate the catalog and validate:
+After changing a package name or `REPORT.json`, regenerate the catalog first:
 
 ```console
 python3 tools/reference.py catalog
@@ -37,4 +37,4 @@ After changing the validation tool or tests, run:
 python3 -m unittest discover -s tests -v
 ```
 
-The validator and tests use only the Python standard library.
+The validator and tests otherwise use only the Python standard library.
