@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "aeneas",
+    "charon",
+    "aeneas/charon-compatibility",
+    "anneal/toolchain",
+    "anneal/llbc"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal configuration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "0eca5581c6d27aaeaba4c421f7bf2a26bdd50228"
+      }
+    },
+    {
+      "name": "Aeneas nightly-2026.06.03 release",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03",
+        "linux_x86_64_sha256": "00fb8ef427d4d06dcabd90f5196266e07731adf2a7466964ce6f4f6d1e8cbc11",
+        "linux_aarch64_sha256": "25402c4cbcb7da2d337cb168663542bc9c75ae9b10d2d2708f5289e8ca9d1902",
+        "macos_x86_64_sha256": "ba25ee857a76fa8f4c1022f6dff4072c9a01007453d67c61cfbaa1aa1c03e317",
+        "macos_aarch64_sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Charon consumed by Anneal charon_lib",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "tag": "nightly-2026.06.03",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-25"
+}
