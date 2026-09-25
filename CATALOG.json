@@ -284,6 +284,51 @@
         "charon/serialization"
       ]
     },
+    "end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean extraction selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 diagnostics and language server selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal design and V1 historical source-mapping implementation"
+        }
+      ],
+      "topics": [
+        "anneal/source-correspondence",
+        "charon/source-spans",
+        "aeneas/source-metadata",
+        "aeneas/lean",
+        "lean/diagnostics",
+        "lean/lsp",
+        "rust/generated-source"
+      ]
+    },
     "generated-rust-visibility-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
