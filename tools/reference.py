@@ -8,19 +8,14 @@ import datetime as _datetime
 import json
 import os
 import re
+import stat
 import sys
-import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
 
-REQUIRED_SOURCE_FILES = (
-    "AGENTS.md",
-    "FORMAT.md",
-    "README.md",
-    "tools/reference.py",
-    "tests/test_reference.py",
-)
+REQUIRED_ROOT_FILES = ("AGENTS.md", "FORMAT.md", "README.md")
+REQUIRED_ROOT_DIRS = ("tools", "tests")
 METADATA_KEYS = frozenset({"topics", "subjects", "observed_at"})
 SUBJECT_KEYS = frozenset({"name", "identity"})
 TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+-]*(?:/[a-z0-9][a-z0-9._+-]*)*$")
@@ -41,6 +36,12 @@ class Problem:
 
 
 @dataclass(frozen=True)
+class Entry:
+    path: Path
+    kind: str
+
+
+@dataclass(frozen=True)
 class Report:
     directory: Path
     metadata: dict[str, Any]
@@ -51,8 +52,7 @@ class ValidationFailure(Exception):
 
 
 def _candidate_root() -> Path:
-    # abspath normalizes a relative invocation without following symlinks. That
-    # keeps the running validator bound to the tree through which it was invoked.
+    # abspath keeps the invoked path lexical instead of resolving symlinks.
     return Path(os.path.abspath(__file__)).parent.parent
 
 
@@ -68,6 +68,56 @@ def _read_text(path: Path) -> str:
         return _read_bytes(path).decode("utf-8")
     except UnicodeDecodeError as exc:
         raise ValidationFailure(f"not valid UTF-8: {exc}") from exc
+
+
+def _directory_entries(path: Path) -> tuple[dict[str, Entry], list[Problem]]:
+    """Enumerate exact entry names and no-follow types for one structural directory."""
+    try:
+        mode = os.lstat(path).st_mode
+    except OSError as exc:
+        return {}, [Problem(path, f"cannot inspect directory: {exc}")]
+    if not stat.S_ISDIR(mode):
+        return {}, [Problem(path, "must be an ordinary directory")]
+
+    entries: dict[str, Entry] = {}
+    problems: list[Problem] = []
+    try:
+        with os.scandir(path) as iterator:
+            raw_entries = sorted(iterator, key=lambda entry: entry.name)
+    except OSError as exc:
+        return {}, [Problem(path, f"cannot enumerate directory: {exc}")]
+
+    for raw in raw_entries:
+        entry_path = Path(raw.path)
+        try:
+            if raw.is_symlink():
+                kind = "symlink"
+            elif raw.is_file(follow_symlinks=False):
+                kind = "file"
+            elif raw.is_dir(follow_symlinks=False):
+                kind = "directory"
+            else:
+                kind = "other"
+        except OSError as exc:
+            problems.append(Problem(entry_path, f"cannot inspect entry: {exc}"))
+            continue
+        entries[raw.name] = Entry(entry_path, kind)
+    return entries, problems
+
+
+def _require_entry(
+    entries: dict[str, Entry],
+    parent: Path,
+    name: str,
+    kind: str,
+) -> tuple[Path | None, list[Problem]]:
+    entry = entries.get(name)
+    path = parent / name
+    if entry is None:
+        return None, [Problem(path, f"required {kind} {name} is missing")]
+    if entry.kind != kind:
+        return None, [Problem(path, f"must be an ordinary {kind}; found {entry.kind}")]
+    return entry.path, []
 
 
 def _no_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -90,8 +140,6 @@ def _load_json(path: Path) -> Any:
             object_pairs_hook=_no_duplicate_keys,
             parse_constant=_reject_constant,
         )
-        # Python's JSON parser accepts escaped lone surrogates. Reject them at
-        # the JSON boundary by requiring the decoded value to encode as UTF-8.
         json.dumps(value, ensure_ascii=False).encode("utf-8")
     except UnicodeEncodeError as exc:
         raise ValidationFailure("JSON strings must contain valid Unicode scalar text") from exc
@@ -141,20 +189,14 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
             if not isinstance(subject, dict):
                 problems.append(Problem(path, f"{prefix} must be an object"))
                 continue
-
             unknown_subject = sorted(set(subject) - SUBJECT_KEYS)
             missing_subject = sorted(SUBJECT_KEYS - set(subject))
             if unknown_subject:
                 problems.append(
-                    Problem(
-                        path,
-                        f"{prefix} has unknown keys: {', '.join(map(repr, unknown_subject))}",
-                    )
+                    Problem(path, f"{prefix} has unknown keys: {', '.join(map(repr, unknown_subject))}")
                 )
             if missing_subject:
-                problems.append(
-                    Problem(path, f"{prefix} is missing keys: {', '.join(missing_subject)}")
-                )
+                problems.append(Problem(path, f"{prefix} is missing keys: {', '.join(missing_subject)}"))
 
             name = subject.get("name")
             if not isinstance(name, str) or not name.strip():
@@ -166,15 +208,10 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
                 continue
             for key, value in identity.items():
                 if not key.strip():
-                    problems.append(
-                        Problem(path, f"{prefix}.identity keys must be non-empty strings")
-                    )
+                    problems.append(Problem(path, f"{prefix}.identity keys must be non-empty strings"))
                 if not isinstance(value, str) or not value.strip():
                     problems.append(
-                        Problem(
-                            path,
-                            f"{prefix}.identity[{key!r}] must be a non-empty string",
-                        )
+                        Problem(path, f"{prefix}.identity[{key!r}] must be a non-empty string")
                     )
 
     observed_at = metadata.get("observed_at")
@@ -187,83 +224,55 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
             problems.append(Problem(path, "metadata 'observed_at' must be a valid YYYY-MM-DD date"))
         else:
             if parsed.isoformat() != observed_at:
-                problems.append(
-                    Problem(path, "metadata 'observed_at' must use canonical YYYY-MM-DD form")
-                )
-
+                problems.append(Problem(path, "metadata 'observed_at' must use canonical YYYY-MM-DD form"))
     return problems
 
 
-def _ordinary_file(path: Path) -> bool:
-    return not path.is_symlink() and path.is_file()
+def _root_structure(root: Path) -> tuple[dict[str, Entry], list[Problem]]:
+    entries, problems = _directory_entries(root)
+    if problems:
+        return entries, problems
 
-
-def _validate_sources(root: Path) -> list[Problem]:
-    problems: list[Problem] = []
-    for name in REQUIRED_SOURCE_FILES:
-        path = root / name
-        if path.is_symlink():
-            problems.append(Problem(path, "required corpus files must not be symlinks"))
-        elif not path.is_file():
-            problems.append(Problem(path, f"required corpus file {name} is missing"))
-        else:
+    for name in REQUIRED_ROOT_FILES:
+        path, entry_problems = _require_entry(entries, root, name, "file")
+        problems.extend(entry_problems)
+        if path is not None:
             try:
                 _read_text(path)
             except ValidationFailure as exc:
                 problems.append(Problem(path, str(exc)))
-    return problems
 
-
-def _list_packages(root: Path) -> tuple[list[Path], list[Problem]]:
-    reports_root = root / "reports"
-    if reports_root.is_symlink():
-        return [], [Problem(reports_root, "reports must not be a symlink")]
-    if not reports_root.exists():
-        return [], []
-    if not reports_root.is_dir():
-        return [], [Problem(reports_root, "reports must be a directory")]
-
-    try:
-        entries = sorted(os.scandir(reports_root), key=lambda entry: entry.name)
-    except OSError as exc:
-        return [], [Problem(reports_root, f"cannot enumerate reports: {exc}")]
-
-    packages: list[Path] = []
-    problems: list[Problem] = []
-    for entry in entries:
-        path = Path(entry.path)
-        try:
-            if entry.is_symlink():
-                problems.append(Problem(path, "report packages must not be symlinks"))
-            elif not entry.is_dir(follow_symlinks=False):
-                problems.append(Problem(path, "entries directly under reports/ must be directories"))
-            elif not PACKAGE_RE.fullmatch(entry.name):
-                problems.append(
-                    Problem(
-                        path,
-                        "report package names must be lowercase ASCII words separated by single hyphens",
-                    )
-                )
-            else:
-                packages.append(path)
-        except OSError as exc:
-            problems.append(Problem(path, f"cannot inspect reports entry: {exc}"))
-    return packages, problems
+    for directory_name, file_name in (("tools", "reference.py"), ("tests", "test_reference.py")):
+        directory, entry_problems = _require_entry(entries, root, directory_name, "directory")
+        problems.extend(entry_problems)
+        if directory is None:
+            continue
+        nested, nested_problems = _directory_entries(directory)
+        problems.extend(nested_problems)
+        if nested_problems:
+            continue
+        file_path, file_problems = _require_entry(nested, directory, file_name, "file")
+        problems.extend(file_problems)
+        if file_path is not None:
+            try:
+                _read_text(file_path)
+            except ValidationFailure as exc:
+                problems.append(Problem(file_path, str(exc)))
+    return entries, problems
 
 
 def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
-    metadata_path = package / "REPORT.json"
-    prose_path = package / "REPORT.md"
-    problems: list[Problem] = []
+    entries, problems = _directory_entries(package)
+    if problems:
+        return None, problems
 
-    for path in (metadata_path, prose_path):
-        if path.is_symlink():
-            problems.append(Problem(path, f"{path.name} must not be a symlink"))
-        elif not path.is_file():
-            problems.append(Problem(path, f"report package requires ordinary file {path.name}"))
+    metadata_path, metadata_problems = _require_entry(entries, package, "REPORT.json", "file")
+    prose_path, prose_problems = _require_entry(entries, package, "REPORT.md", "file")
+    problems.extend(metadata_problems)
+    problems.extend(prose_problems)
 
     metadata: Any | None = None
-    if _ordinary_file(metadata_path):
+    if metadata_path is not None:
         try:
             metadata = _load_json(metadata_path)
         except ValidationFailure as exc:
@@ -271,7 +280,7 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
         else:
             problems.extend(_validate_metadata(metadata, metadata_path))
 
-    if _ordinary_file(prose_path):
+    if prose_path is not None:
         try:
             _read_text(prose_path)
         except ValidationFailure as exc:
@@ -282,11 +291,28 @@ def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
     return Report(directory=package, metadata=metadata), []
 
 
-def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
-    packages, problems = _list_packages(root)
+def _load_reports(root: Path, root_entries: dict[str, Entry]) -> tuple[list[Report], list[Problem]]:
+    reports_entry = root_entries.get("reports")
+    if reports_entry is None:
+        return [], []
+    if reports_entry.kind != "directory":
+        return [], [Problem(reports_entry.path, f"reports must be an ordinary directory; found {reports_entry.kind}")]
+
+    entries, problems = _directory_entries(reports_entry.path)
     reports: list[Report] = []
-    for package in packages:
-        report, package_problems = _load_report(package)
+    if problems:
+        return reports, problems
+
+    for name, entry in entries.items():
+        if entry.kind != "directory":
+            problems.append(Problem(entry.path, "entries directly under reports/ must be directories"))
+            continue
+        if not PACKAGE_RE.fullmatch(name):
+            problems.append(
+                Problem(entry.path, "report package names must be lowercase ASCII words separated by single hyphens")
+            )
+            continue
+        report, package_problems = _load_report(entry.path)
         problems.extend(package_problems)
         if report is not None:
             reports.append(report)
@@ -295,32 +321,32 @@ def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
 
 def _catalog_bytes(reports: Sequence[Report]) -> bytes:
     entries = {report.directory.name: report.metadata for report in reports}
-    text = json.dumps({"reports": entries}, indent=2, ensure_ascii=True, sort_keys=True) + "\n"
-    return text.encode("ascii")
+    return (
+        json.dumps({"reports": entries}, indent=2, ensure_ascii=True, sort_keys=True) + "\n"
+    ).encode("ascii")
 
 
 def _check_root(root: Path) -> list[Problem]:
-    problems = _validate_sources(root)
-    reports, report_problems = load_reports(root)
+    root_entries, problems = _root_structure(root)
+    reports, report_problems = _load_reports(root, root_entries)
     problems.extend(report_problems)
 
+    catalog_entry = root_entries.get("CATALOG.json")
     catalog_path = root / "CATALOG.json"
-    if not catalog_path.is_file() or catalog_path.is_symlink():
-        problems.append(Problem(catalog_path, "generated catalog is missing or not a regular file"))
+    if catalog_entry is None:
+        problems.append(Problem(catalog_path, "generated catalog is missing"))
+    elif catalog_entry.kind != "file":
+        problems.append(Problem(catalog_entry.path, f"generated catalog must be an ordinary file; found {catalog_entry.kind}"))
     elif not report_problems:
         try:
-            actual = _read_bytes(catalog_path)
+            actual = _read_bytes(catalog_entry.path)
         except ValidationFailure as exc:
-            problems.append(Problem(catalog_path, str(exc)))
+            problems.append(Problem(catalog_entry.path, str(exc)))
         else:
             if actual != _catalog_bytes(reports):
                 problems.append(
-                    Problem(
-                        catalog_path,
-                        "generated catalog is stale; run 'tools/reference.py catalog'",
-                    )
+                    Problem(catalog_entry.path, "generated catalog is stale; run 'tools/reference.py catalog'")
                 )
-
     return sorted(problems, key=lambda problem: (problem.path.as_posix(), problem.message))
 
 
@@ -328,21 +354,12 @@ def check() -> list[Problem]:
     return _check_root(_candidate_root())
 
 
-def _replace_bytes(path: Path, content: bytes) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temporary_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
-    temporary = Path(temporary_name)
+def _replace_catalog(path: Path, content: bytes) -> None:
     try:
-        with os.fdopen(fd, "wb") as handle:
-            handle.write(content)
-        os.chmod(temporary, 0o644)
-        os.replace(temporary, path)
-    except BaseException:
-        try:
-            temporary.unlink()
-        except FileNotFoundError:
-            pass
-        raise
+        path.unlink()
+    except FileNotFoundError:
+        pass
+    path.write_bytes(content)
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -356,17 +373,17 @@ def _parser() -> argparse.ArgumentParser:
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     root = _candidate_root()
+    root_entries, source_problems = _root_structure(root)
 
     if args.command == "catalog":
-        problems = _validate_sources(root)
-        reports, report_problems = load_reports(root)
-        problems.extend(report_problems)
+        reports, report_problems = _load_reports(root, root_entries)
+        problems = source_problems + report_problems
         if problems:
-            for problem in problems:
+            for problem in sorted(problems, key=lambda p: (p.path.as_posix(), p.message)):
                 print(problem.render(root), file=sys.stderr)
             return 1
         try:
-            _replace_bytes(root / "CATALOG.json", _catalog_bytes(reports))
+            _replace_catalog(root / "CATALOG.json", _catalog_bytes(reports))
         except OSError as exc:
             print(f"CATALOG.json: cannot replace generated catalog: {exc}", file=sys.stderr)
             return 1
@@ -374,7 +391,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         return 0
 
     if args.command == "check":
-        problems = check()
+        problems = _check_root(root)
         if problems:
             for problem in problems:
                 print(problem.render(root), file=sys.stderr)

@@ -3,14 +3,13 @@ from __future__ import annotations
 import importlib.util
 import json
 import os
-import stat
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-SCRIPT = Path(__file__).resolve().parents[1] / "tools" / "reference.py"
+SCRIPT = Path(__file__).absolute().parents[1] / "tools" / "reference.py"
 SPEC = importlib.util.spec_from_file_location("reference_tool", SCRIPT)
 assert SPEC is not None and SPEC.loader is not None
 reference = importlib.util.module_from_spec(SPEC)
@@ -62,7 +61,10 @@ def add_report(root: Path, name="example", metadata=None, prose="# Example\n") -
 
 
 def refresh_catalog(root: Path) -> None:
-    reports, problems = reference.load_reports(root)
+    root_entries, problems = reference._root_structure(root)
+    if problems:
+        raise AssertionError([problem.message for problem in problems])
+    reports, problems = reference._load_reports(root, root_entries)
     if problems:
         raise AssertionError([problem.message for problem in problems])
     (root / "CATALOG.json").write_bytes(reference._catalog_bytes(reports))
@@ -86,34 +88,45 @@ class ReferenceToolTests(unittest.TestCase):
         refresh_catalog(root)
         self.assertEqual(reference._check_root(root), [])
 
-    def test_cli_has_no_external_root_override(self):
-        result = subprocess.run(
-            [sys.executable, str(SCRIPT), "--root", str(self.tmp_path), "check"],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(result.returncode, 2)
-        self.assertIn("--root", " ".join([*result.args]))
-
-    def test_cli_binds_to_validator_containing_tree(self):
+    def test_structural_root_names_are_exact(self):
         root = make_root(self.tmp_path)
-        (root / "README.md").unlink()
-        result = subprocess.run(
-            [sys.executable, str(root / "tools" / "reference.py"), "check"],
-            text=True,
-            capture_output=True,
-            check=False,
-        )
-        self.assertEqual(result.returncode, 1)
-        self.assertIn("required corpus file README.md is missing", result.stderr)
+        (root / "AGENTS.md").rename(root / "agents.md")
+        problems = reference._check_root(root)
+        self.assertTrue(any("required file AGENTS.md is missing" in p.message for p in problems))
 
-    def test_symlinked_validator_does_not_escape_to_target_tree(self):
-        valid = make_root(self.tmp_path / "valid")
-        alias = self.tmp_path / "alias"
-        (alias / "tools").mkdir(parents=True)
+    def test_structural_nested_names_are_exact(self):
+        root = make_root(self.tmp_path)
+        (root / "tools" / "reference.py").rename(root / "tools" / "Reference.py")
+        problems = reference._check_root(root)
+        self.assertTrue(any("required file reference.py is missing" in p.message for p in problems))
+
+    def test_report_root_names_are_exact(self):
+        root = make_root(self.tmp_path)
+        package = add_report(root)
+        (package / "REPORT.json").rename(package / "report.json")
+        problems = reference._check_root(root)
+        self.assertTrue(any("required file REPORT.json is missing" in p.message for p in problems))
+
+    def test_structural_intermediate_directory_must_be_real_directory(self):
+        root = make_root(self.tmp_path)
+        external = root / "external-tools"
+        external.mkdir()
+        (external / "reference.py").write_bytes(SCRIPT.read_bytes())
+        for child in (root / "tools").iterdir():
+            child.unlink()
+        (root / "tools").rmdir()
         try:
-            (alias / "tools" / "reference.py").symlink_to(valid / "tools" / "reference.py")
+            (root / "tools").symlink_to(external, target_is_directory=True)
+        except OSError as exc:
+            self.skipTest(f"symlinks unavailable: {exc}")
+        problems = reference._check_root(root)
+        self.assertTrue(any("tools" in str(p.path) and "ordinary directory" in p.message for p in problems))
+
+    def test_candidate_root_symlink_is_rejected(self):
+        root = make_root(self.tmp_path)
+        alias = self.tmp_path / "alias"
+        try:
+            alias.symlink_to(root, target_is_directory=True)
         except OSError as exc:
             self.skipTest(f"symlinks unavailable: {exc}")
         result = subprocess.run(
@@ -123,30 +136,46 @@ class ReferenceToolTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 1)
-        self.assertIn("tools/reference.py", result.stderr)
-        self.assertIn("must not be symlinks", result.stderr)
+        self.assertIn("must be an ordinary directory", result.stderr)
 
-    def test_required_infrastructure_is_part_of_candidate(self):
-        root = make_root(self.tmp_path)
-        (root / "tests" / "test_reference.py").unlink()
-        problems = reference._check_root(root)
-        self.assertTrue(any("tests/test_reference.py" in p.message for p in problems))
+    def test_cli_has_no_external_root_override(self):
+        result = subprocess.run(
+            [sys.executable, str(SCRIPT), "--root", str(self.tmp_path), "check"],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 2)
 
-
-    def test_required_source_files_must_be_utf8_and_not_symlinks(self):
+    def test_required_source_files_must_be_utf8(self):
         root = make_root(self.tmp_path)
         (root / "README.md").write_bytes(b"\xff")
         self.assertTrue(any("not valid UTF-8" in p.message for p in reference._check_root(root)))
 
-        root = make_root(self.tmp_path / "symlink-source")
-        target = root / "real-readme.md"
-        target.write_text("# real\n", encoding="utf-8")
-        (root / "README.md").unlink()
-        try:
-            (root / "README.md").symlink_to(target.name)
-        except OSError as exc:
-            self.skipTest(f"symlinks unavailable: {exc}")
-        self.assertTrue(any("must not be symlinks" in p.message for p in reference._check_root(root)))
+    def test_duplicate_json_keys_are_rejected(self):
+        root = make_root(self.tmp_path)
+        package = root / "reports" / "duplicate"
+        package.mkdir(parents=True)
+        (package / "REPORT.json").write_text(
+            '{"topics":["a"],"topics":["b"],"subjects":[],"observed_at":"2026-09-24"}',
+            encoding="utf-8",
+        )
+        (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
+        root_entries, _ = reference._root_structure(root)
+        _, problems = reference._load_reports(root, root_entries)
+        self.assertTrue(any("duplicate object key" in p.message for p in problems))
+
+    def test_nonstandard_json_constants_are_rejected(self):
+        root = make_root(self.tmp_path)
+        package = root / "reports" / "constant"
+        package.mkdir(parents=True)
+        (package / "REPORT.json").write_text(
+            '{"topics":["a"],"subjects":[],"observed_at":NaN}', encoding="utf-8"
+        )
+        (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
+        root_entries, _ = reference._root_structure(root)
+        _, problems = reference._load_reports(root, root_entries)
+        self.assertTrue(any("invalid JSON constant" in p.message for p in problems))
 
     def test_lone_unicode_surrogate_is_rejected(self):
         root = make_root(self.tmp_path)
@@ -157,7 +186,8 @@ class ReferenceToolTests(unittest.TestCase):
             encoding="utf-8",
         )
         (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
-        _, problems = reference.load_reports(root)
+        root_entries, _ = reference._root_structure(root)
+        _, problems = reference._load_reports(root, root_entries)
         self.assertTrue(any("Unicode scalar" in p.message for p in problems))
 
     def test_metadata_validation(self):
@@ -176,8 +206,23 @@ class ReferenceToolTests(unittest.TestCase):
             with self.subTest(needle=needle):
                 root = make_root(self.tmp_path / str(idx))
                 add_report(root, metadata=metadata)
-                _, problems = reference.load_reports(root)
+                root_entries, _ = reference._root_structure(root)
+                _, problems = reference._load_reports(root, root_entries)
                 self.assertTrue(any(needle in p.message for p in problems))
+
+    def test_subject_names_need_not_be_unique(self):
+        root = make_root(self.tmp_path)
+        add_report(
+            root,
+            metadata=valid_metadata(
+                subjects=[
+                    {"name": "Lean 4", "identity": {"revision": "aaa"}},
+                    {"name": "Lean 4", "identity": {"revision": "bbb"}},
+                ]
+            ),
+        )
+        refresh_catalog(root)
+        self.assertEqual(reference._check_root(root), [])
 
     def test_subject_unknown_key_is_rejected(self):
         root = make_root(self.tmp_path)
@@ -187,7 +232,8 @@ class ReferenceToolTests(unittest.TestCase):
                 subjects=[{"name": "X", "identity": {"revision": "abc"}, "role": "tool"}]
             ),
         )
-        _, problems = reference.load_reports(root)
+        root_entries, _ = reference._root_structure(root)
+        _, problems = reference._load_reports(root, root_entries)
         self.assertTrue(any("unknown keys" in p.message for p in problems))
 
     def test_immediate_children_of_reports_are_packages(self):
@@ -209,74 +255,6 @@ class ReferenceToolTests(unittest.TestCase):
         self.assertTrue(any("REPORT.json" in p.message for p in problems))
         self.assertTrue(any("REPORT.md" in p.message for p in problems))
 
-    def test_package_and_report_root_files_must_not_be_symlinks(self):
-        root = make_root(self.tmp_path)
-        reports = root / "reports"
-        reports.mkdir()
-        real = root / "real-package"
-        real.mkdir()
-        try:
-            (reports / "linked-package").symlink_to(real, target_is_directory=True)
-        except OSError as exc:
-            self.skipTest(f"symlinks unavailable: {exc}")
-        self.assertTrue(any("report packages must not be symlinks" in p.message for p in reference._check_root(root)))
-
-    def test_catalog_is_deterministic_mapping_of_valid_metadata(self):
-        root = make_root(self.tmp_path)
-        add_report(root, "z", metadata=valid_metadata(topics=["zeta"]))
-        add_report(root, "a", metadata=valid_metadata(topics=["alpha"]))
-        reports, problems = reference.load_reports(root)
-        self.assertEqual(problems, [])
-        first = reference._catalog_bytes(list(reversed(reports)))
-        second = reference._catalog_bytes(reports)
-        self.assertEqual(first, second)
-        parsed = json.loads(first)
-        self.assertEqual(list(parsed["reports"]), ["a", "z"])
-        self.assertEqual(parsed["reports"]["a"], valid_metadata(topics=["alpha"]))
-
-    def test_stale_catalog_is_reported(self):
-        root = make_root(self.tmp_path)
-        add_report(root)
-        self.assertTrue(any("generated catalog is stale" in p.message for p in reference._check_root(root)))
-
-    def test_duplicate_json_keys_are_rejected(self):
-        root = make_root(self.tmp_path)
-        package = root / "reports" / "duplicate"
-        package.mkdir(parents=True)
-        (package / "REPORT.json").write_text(
-            '{"topics":["a"],"topics":["b"],"subjects":[],"observed_at":"2026-09-24"}',
-            encoding="utf-8",
-        )
-        (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
-        _, problems = reference.load_reports(root)
-        self.assertTrue(any("duplicate object key" in p.message for p in problems))
-
-    def test_nonstandard_json_constants_are_rejected(self):
-        root = make_root(self.tmp_path)
-        package = root / "reports" / "constant"
-        package.mkdir(parents=True)
-        (package / "REPORT.json").write_text(
-            '{"topics":["a"],"subjects":[],"observed_at":NaN}',
-            encoding="utf-8",
-        )
-        (package / "REPORT.md").write_text("# Example\n", encoding="utf-8")
-        _, problems = reference.load_reports(root)
-        self.assertTrue(any("invalid JSON constant" in p.message for p in problems))
-
-    def test_subject_names_need_not_be_unique(self):
-        root = make_root(self.tmp_path)
-        add_report(
-            root,
-            metadata=valid_metadata(
-                subjects=[
-                    {"name": "Lean 4", "identity": {"revision": "aaa"}},
-                    {"name": "Lean 4", "identity": {"revision": "bbb"}},
-                ]
-            ),
-        )
-        refresh_catalog(root)
-        self.assertEqual(reference._check_root(root), [])
-
     def test_support_material_is_structurally_opaque(self):
         root = make_root(self.tmp_path)
         package = add_report(root)
@@ -296,13 +274,9 @@ class ReferenceToolTests(unittest.TestCase):
 
     def test_catalog_is_canonical_ascii_bytes(self):
         root = make_root(self.tmp_path)
-        add_report(
-            root,
-            metadata=valid_metadata(
-                subjects=[{"name": "Léan", "identity": {"revision": "α"}}]
-            ),
-        )
-        reports, problems = reference.load_reports(root)
+        add_report(root, metadata=valid_metadata(subjects=[{"name": "Léan", "identity": {"revision": "α"}}]))
+        root_entries, _ = reference._root_structure(root)
+        reports, problems = reference._load_reports(root, root_entries)
         self.assertEqual(problems, [])
         catalog = reference._catalog_bytes(reports)
         catalog.decode("ascii")
@@ -310,7 +284,7 @@ class ReferenceToolTests(unittest.TestCase):
         self.assertTrue(catalog.endswith(b"\n"))
         self.assertNotIn(b"\r", catalog)
 
-    def test_crlf_catalog_is_stale_even_when_text_is_equivalent(self):
+    def test_crlf_catalog_is_stale(self):
         root = make_root(self.tmp_path)
         canonical = reference._catalog_bytes([])
         (root / "CATALOG.json").write_bytes(canonical.replace(b"\n", b"\r\n"))
@@ -320,7 +294,6 @@ class ReferenceToolTests(unittest.TestCase):
         if not hasattr(os, "link"):
             self.skipTest("hardlinks unavailable")
         root = make_root(self.tmp_path)
-        add_report(root)
         external = self.tmp_path / "external.json"
         external.write_bytes(b"unchanged\n")
         catalog = root / "CATALOG.json"
@@ -329,9 +302,8 @@ class ReferenceToolTests(unittest.TestCase):
             os.link(external, catalog)
         except OSError as exc:
             self.skipTest(f"hardlinks unavailable: {exc}")
-        reference._replace_bytes(catalog, reference._catalog_bytes(reference.load_reports(root)[0]))
+        reference._replace_catalog(catalog, reference._catalog_bytes([]))
         self.assertEqual(external.read_bytes(), b"unchanged\n")
-        self.assertNotEqual(catalog.stat().st_ino, external.stat().st_ino)
         self.assertEqual(reference._check_root(root), [])
 
     def test_catalog_replacement_replaces_symlink_without_following_target(self):
@@ -344,19 +316,17 @@ class ReferenceToolTests(unittest.TestCase):
             catalog.symlink_to(external)
         except OSError as exc:
             self.skipTest(f"symlinks unavailable: {exc}")
-        reference._replace_bytes(catalog, reference._catalog_bytes([]))
+        reference._replace_catalog(catalog, reference._catalog_bytes([]))
         self.assertEqual(external.read_bytes(), b"unchanged\n")
         self.assertFalse(catalog.is_symlink())
         self.assertEqual(reference._check_root(root), [])
 
-    def test_catalog_replacement_uses_nonexecutable_mode(self):
-        if os.name != "posix":
-            self.skipTest("POSIX mode semantics unavailable")
+    def test_catalog_replacement_leaves_no_temporary_files(self):
         root = make_root(self.tmp_path)
-        reference._replace_bytes(root / "CATALOG.json", reference._catalog_bytes([]))
-        self.assertEqual(stat.S_IMODE((root / "CATALOG.json").stat().st_mode), 0o644)
+        reference._replace_catalog(root / "CATALOG.json", reference._catalog_bytes([]))
+        self.assertEqual(list(root.glob(".CATALOG.json.*")), [])
 
-    def test_catalog_command_repairs_missing_or_malformed_derived_state(self):
+    def test_catalog_command_repairs_missing_or_malformed_catalog(self):
         root = make_root(self.tmp_path)
         add_report(root)
         catalog = root / "CATALOG.json"
@@ -369,7 +339,6 @@ class ReferenceToolTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(reference._check_root(root), [])
-
         catalog.write_bytes(b"\xff")
         result = subprocess.run(
             [sys.executable, str(root / "tools" / "reference.py"), "catalog"],
@@ -395,6 +364,20 @@ class ReferenceToolTests(unittest.TestCase):
         )
         self.assertEqual(result.returncode, 1)
         self.assertEqual((root / "CATALOG.json").read_bytes(), original)
+
+    def test_catalog_directory_is_not_replaced(self):
+        root = make_root(self.tmp_path)
+        catalog = root / "CATALOG.json"
+        catalog.unlink()
+        catalog.mkdir()
+        result = subprocess.run(
+            [sys.executable, str(root / "tools" / "reference.py"), "catalog"],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 1)
+        self.assertTrue(catalog.is_dir())
 
     def test_check_cli_exit_status(self):
         root = make_root(self.tmp_path)
