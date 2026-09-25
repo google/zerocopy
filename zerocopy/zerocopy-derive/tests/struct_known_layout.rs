@@ -61,14 +61,13 @@ const _: () = {
     #[derive(imp::KnownLayout)]
     #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
-    struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
+    struct WithParams<'a: 'b, 'b, T: imp::KnownLayout, const N: usize>(
         [T; N],
         imp::PhantomData<&'a &'b ()>,
     )
     where
-        'a: 'b,
         'b: 'a,
-        T: 'a + 'b + imp::KnownLayout;
+        T: 'a + 'b;
 
     util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::KnownLayout);
 };
@@ -80,14 +79,13 @@ const _: () = {
     #[derive(imp::KnownLayout)]
     #[zerocopy(crate = "zerocopy_renamed")]
     #[repr(C)]
-    struct WithParams<'a: 'b, 'b: 'a, T: 'a + 'b + imp::KnownLayout, const N: usize>(
+    struct WithParams<'a: 'b, 'b, T: imp::KnownLayout, const N: usize>(
         &'a &'b [T; N],
         imp::PhantomData<&'static ()>,
     )
     where
-        'a: 'b,
         'b: 'a,
-        T: 'a + 'b + imp::KnownLayout;
+        T: 'a + 'b;
 
     util_assert_impl_all!(WithParams<'static, 'static, u8, 42>: imp::KnownLayout);
 };
