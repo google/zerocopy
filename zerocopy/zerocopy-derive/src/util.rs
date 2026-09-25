@@ -934,21 +934,7 @@ pub(crate) fn generated_code_lints() -> TokenStream {
             )]
         }
     } else {
-        quote! {
-            // Generated implementation details must not break downstream builds
-            // which opt into stricter Clippy lint groups. `clippy::all` does
-            // not include the allow-by-default groups, so list those as well.
-            // `clippy::cargo` does not normally apply to emitted Rust code, but
-            // including it makes this suppression exhaustive over Clippy's
-            // public lint groups.
-            #[allow(
-                clippy::all,
-                clippy::cargo,
-                clippy::pedantic,
-                clippy::nursery,
-                clippy::restriction,
-            )]
-        }
+        quote! {}
     };
 
     quote! {
@@ -965,15 +951,12 @@ pub(crate) fn generated_code_lints() -> TokenStream {
             non_upper_case_globals,
             non_snake_case,
             non_ascii_idents,
-            // This restriction lint predates the blanket generated-code policy
-            // above and remains explicit because zerocopy CI intentionally does
-            // not enable `clippy::restriction` wholesale.
+            // This restriction lint predates the generated-code Clippy pass.
             clippy::missing_inline_in_public_items,
         )]
         #clippy
     }
 }
-
 pub(crate) fn const_block(items: impl IntoIterator<Item = Option<TokenStream>>) -> TokenStream {
     let items = items.into_iter().flatten();
     let lint_policy = generated_code_lints();
@@ -1007,25 +990,10 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
         EnumRepr::Compound(c, _) => quote! { #c },
     };
 
-    let tag_lints = if lint_generated_code() {
-        quote! {
-            #[allow(dead_code)]
-            #[expect(
-                clippy::derive_partial_eq_without_eq,
-                reason = "`PartialEq` is used for tag comparisons; `Eq` would be unused"
-            )]
-        }
-    } else {
-        // This is the narrow suppression shipped in #3722. Keep the normal
-        // expansion unchanged so downstream users remain protected even if this
-        // helper is emitted in a mixed generated/caller-authored lint scope.
-        quote! { #[allow(dead_code, clippy::derive_partial_eq_without_eq)] }
-    };
-
     quote! {
         #repr
-        #tag_lints
-        #[derive(Copy, Clone, PartialEq)]
+        #[allow(dead_code)]
+        #[derive(Copy, Clone, PartialEq, Eq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
         }
