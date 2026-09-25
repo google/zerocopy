@@ -8,6 +8,9 @@
 
 #![deny(clippy::derive_partial_eq_without_eq)]
 
+// Regression test for https://github.com/google/zerocopy/issues/3721. The
+// `TryFromBytes` derive must not emit code that triggers
+// `clippy::derive_partial_eq_without_eq` in downstream crates.
 use zerocopy_renamed::{Immutable, TryFromBytes};
 
 #[derive(TryFromBytes, Immutable)]
