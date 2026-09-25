@@ -184,6 +184,49 @@
         "anneal/semantics"
       ]
     },
+    "rust-ub-and-operational-models-nightly-2026-05-31": {
+      "observed_at": "2026-09-25",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust source toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference"
+        },
+        {
+          "identity": {
+            "path": "src/tools/miri",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "Miri source bundled in Rust"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/unsafe-code-guidelines",
+            "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+          },
+          "name": "Unsafe Code Guidelines repository"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/undefined-behavior",
+        "rust/memory-model",
+        "rust/provenance",
+        "miri",
+        "miri/aliasing"
+      ]
+    },
     "rustc-mir-before-charon-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [

@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "rust",
+    "rust/undefined-behavior",
+    "rust/memory-model",
+    "rust/provenance",
+    "miri",
+    "miri/aliasing"
+  ],
+  "subjects": [
+    {
+      "name": "Rust source toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Miri source bundled in Rust",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "path": "src/tools/miri"
+      }
+    },
+    {
+      "name": "Unsafe Code Guidelines repository",
+      "identity": {
+        "repository": "rust-lang/unsafe-code-guidelines",
+        "revision": "d809f91e62968913d808e53397fbcf7cea762cce"
+      }
+    }
+  ],
+  "observed_at": "2026-09-25"
+}
