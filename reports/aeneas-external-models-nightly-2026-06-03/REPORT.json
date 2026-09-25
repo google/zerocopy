@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/external-models",
+    "aeneas/lean",
+    "aeneas/standard-library",
+    "aeneas/opaque-definitions",
+    "lean/models"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas Lean external and standard-library model registry selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    }
+  ],
+  "observed_at": "2026-09-25"
+}
