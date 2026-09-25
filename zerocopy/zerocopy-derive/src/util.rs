@@ -942,11 +942,19 @@ pub(crate) fn generated_code_lint_attrs() -> TokenStream {
 
     if lint_generated_code() {
         quote! {
-            #[allow(#rustc_lints)]
             #[deny(
                 clippy::all,
                 clippy::pedantic,
                 clippy::nursery,
+            )]
+            #[allow(
+                #rustc_lints
+                // These lints can diagnose duplicate bounds in caller-authored
+                // generics which the derive must reproduce verbatim. Keep them
+                // enabled on zerocopy-derive itself, but do not make generated
+                // code responsible for the caller's bound style.
+                clippy::trait_duplication_in_bounds,
+                clippy::type_repetition_in_bounds,
             )]
         }
     } else {
