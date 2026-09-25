@@ -8,201 +8,234 @@ those terms. -->
 
 # Anneal design contract
 
-This document derives durable design constraints from Anneal's
+This document derives semantic constraints from Anneal's
 [`PRINCIPLES.md`](PRINCIPLES.md). The principles define Anneal's promises,
-beliefs, and rules for making decisions. This document states properties that
-any Anneal design must preserve in order to uphold those principles.
+beliefs, and rules for making decisions. This document defines what Anneal's
+results must mean in order to uphold them.
 
-The principles are authoritative over this document. If the two conflict, the
-principles win and this document must be corrected. Lower-level architecture,
-implementation, and user-interface decisions must in turn be consistent with
-both.
+The principles are authoritative. If this document conflicts with them, this
+document must be corrected. It constrains semantics, not the mechanisms used to
+implement them.
 
-This document intentionally stops short of choosing mechanisms. It does not
-specify an annotation language, proof encoding, result schema, command-line
-interface, or division of responsibility among Rust, Charon, Aeneas, Lean, and
-Anneal.
+## What an Anneal claim means
 
-## Verification success has a precise meaning
+An Anneal claim identifies:
 
-Anneal's promise is conditional but precise: if the code in a result's TCB is
-correct, its trusted assumptions are valid, and Anneal emits no errors, then the
-covered program behaves as promised.
+- a **scope**: the program artifacts, configurations, and executions to which the
+  claim applies; and
+- one or more **guarantees**, each with any **requirements** under which that
+  guarantee applies.
 
-A successful verification result therefore needs enough identity and scope to
-make that implication meaningful. It must identify the program or behavior to
-which the result applies, the promises Anneal established, and the trusted code
-and assumptions on which those promises depend.
+A requirement is a condition on the program's inputs, callers, or environment.
+Different guarantees may have different requirements. A requirement for an
+additional functional guarantee therefore does not become a requirement for
+Anneal's baseline well-definedness guarantee.
 
-Anneal must never silently report a stronger promise than its evidence supports.
-Missing evidence, unsupported semantics, omitted coverage, or a failed tool
-cannot acquire the meaning of verification success merely because the pipeline
-continued running. Development and incremental-adoption modes may expose useful
-partial information, but their meaning must remain distinguishable from an
-ordinary successful verification result.
+For example, a safe binary-search function may guarantee correct membership
+results only when its input is sorted. Calling it with an unsorted slice makes
+that guarantee inapplicable; it does not invalidate Anneal's guarantee that the
+safe call is well-defined.
 
-This constraint does not decide the atomic unit of verification, the exact
-result format, or how command exit statuses represent incomplete work.
+The scope may describe one concrete build or a precisely defined family of
+artifacts and configurations. In either case, it must be precise enough to
+determine whether a particular artifact, configuration, and execution is covered.
 
-## Rust-level claims require justified Rust semantics
+Proving a developer-defined guarantee establishes the property that was
+specified. It does not establish that the specification captures what its author
+intended.
 
-A theorem about a mathematical model supports a claim about Rust only when the
-model is connected soundly to the Rust behavior being claimed.
+## What a successful result establishes
 
-This matters especially for undefined behavior. Anneal cannot simply assume the
-whole program is UB-free in order to obtain a faithful model and then cite a
-theorem about that model as proof that the program is UB-free. Whatever model
-and translation pipeline Anneal uses must provide a justified route from the
-Rust program to the proof obligations whose discharge rules out undefined
+An ordinary successful Anneal result fixes:
+
+- the exact **claim** Anneal established;
+- the complete **trusted computing base (TCB)** on which that claim depends; and
+- the exact **assurance policy** under which that TCB was accepted.
+
+These must have stable meaning. Everything whose identity can affect the claim or
+whether the result qualifies as successful must be contained in the result or
+immutably referenced by it.
+
+Mutable names such as branches, profiles, or named policies may be convenient
+inputs to verification. The result must bind the specific artifacts,
+specifications, configurations, policies, and other relevant inputs that were
+actually used. Later changes to those inputs must not change the meaning or
+success status of an existing result.
+
+### The TCB contains all unchecked trust
+
+Every fact Anneal needs in order to justify a claim must either be established by
+checked evidence or represented in the TCB.
+
+An unchecked assumption does not stop being trusted because it is encapsulated
+inside a translator, generated artifact, helper library, compiler, or another
+component.
+
+Every successful result must expose, or immutably reference, its complete TCB.
+Trusted code and assumptions must be identified precisely enough to determine
+what the result relies upon. The TCB may refer to other immutable, auditable
+manifests rather than duplicating their contents, but trust must not disappear
+behind an implementation boundary.
+
+At the logical level, trusted premises are simply premises. Why a premise is
+trusted does not change the conditional claim Anneal establishes, although its
+identity and provenance may matter when deciding whether that trust is acceptable.
+
+### The assurance policy constrains acceptable trust
+
+Recording every unchecked premise is not enough to make verification successful.
+Otherwise Anneal could fail to prove an obligation, add that obligation to the
+TCB, and report success.
+
+The assurance policy defines which unchecked premises may appear in the TCB while
+the result still counts as successful. It may identify trusted components,
+semantic boundaries, classes of assumptions, guarantees that must be established
+by checked evidence, or other principled trust boundaries.
+
+A successful result must contain or immutably reference the exact assurance
+policy against which its TCB was evaluated. A mutable policy name may select that
+policy before verification, but changing the name's definition later must not
+change an existing result.
+
+An unfinished proof, skipped analysis, unsupported operation, or failed tool does
+not itself authorize new trust. If the resulting unchecked premise is not
+permitted by the applicable assurance policy, Anneal has not produced a successful
+result.
+
+Anneal's principles also impose minimum assurance requirements that a policy
+cannot weaken. In particular, a required UB obligation cannot become ordinary
+verification success merely by moving it into the TCB.
+
+Anneal may provide development-only modes that bypass UB checks or turn them into
+warnings. Such outputs are not ordinary successful verification results and must
+clearly label both the result and its TCB audit log as tainted or irreparably
+untrustworthy, as required by [`PRINCIPLES.md`](PRINCIPLES.md).
+
+## Every successful result makes an end-to-end Rust claim
+
+Every ordinary successful result establishes at least that:
+
+1. the Rust executions within its scope are well-defined; and
+2. the behavior of the compiled artifact corresponds to the Rust source semantics
+   strongly enough to preserve every guarantee Anneal reports.
+
+The second guarantee does not require the source and compiled program to have
+literally identical sets of behaviors. Their relationship need only be strong
+enough to justify transferring the reported guarantees from source semantics to
+compiled behavior.
+
+A theorem about an intermediate model supports a Rust-level guarantee only when
+the connection between Rust and that model is itself checked or represented in
+the TCB.
+
+The claim's scope must cover the source and compiled artifacts, or precisely
+characterized families of artifacts, for which this end-to-end relationship was
+established. Verifying one source or build must not bless a different binary
+merely because both belong to the same nominal project or package.
+
+## Well-definedness depends on what is being verified
+
+Anneal's baseline well-definedness guarantee has the same purpose for closed
+programs and libraries, but their scopes differ.
+
+### Closed programs
+
+For a closed program, the guarantee applies to complete executions within the
+claim's scope.
+
+Anneal may establish this using local proofs, component contracts, whole-program
+reasoning, or another sound method. Regardless of proof strategy, those
+intermediate judgments must justify the whole-program guarantee. Showing that one
+function or thread is locally well-behaved is insufficient if another part of the
+same covered execution can exhibit undefined behavior.
+
+Developer-defined guarantees apply only at the scopes and under the requirements
+stated by the claim. Local facts must not be presented as whole-program guarantees
+unless they establish them.
+
+### Libraries
+
+A library cannot guarantee the behavior of an arbitrary surrounding program.
+Anneal therefore verifies a library relative to an API contract and quantifies
+its guarantees over **admissible contexts**.
+
+The API contract uses the same model as any other Anneal claim: its requirements
+are facts a caller must establish and the implementation may assume; its
+guarantees are facts the implementation must establish and a caller satisfying
+the corresponding requirements may rely upon.
+
+An admissible context must itself have well-defined Rust behavior when interacting
+with the abstract API contract. An API contract cannot make behavior defined that
+Rust semantics already makes undefined.
+
+Anneal's library guarantee is contextual: replacing the abstract API contract
+with the verified implementation in an admissible context must preserve
+well-definedness and every other guarantee whose requirements that context
+satisfies.
+
+The lower-level formal model may express this relationship in different ways, but
+it must not depend on an informal judgment that undefined behavior was "caused
+by" or "attributable to" the library.
+
+#### Safe and unsafe API conventions
+
+Well-defined Rust behavior alone does not capture every assumption that Rust
+convention permits an API implementation to make.
+
+Some APIs rely on **API or library invariants** stronger than Rust's requirements
+for well-defined execution. For example, Rust libraries may assume that a `str`
+contains valid UTF-8 even though constructing a non-UTF-8 `str` is not itself
+immediate undefined behavior.
+
+For a safe API, Anneal's baseline guarantee must hold for every well-defined,
+type-correct use that also satisfies the API or library invariants Rust convention
+permits the implementation to rely upon.
+
+A safe API may not impose any other hidden caller requirement needed for its
+baseline well-definedness guarantee. A caller satisfying the conditions above
+must not be able to trigger undefined behavior merely because some additional
+unstated condition was false.
+
+Other developer-defined guarantees may have additional requirements. Those
+requirements constrain only their corresponding guarantees; they cannot weaken
+the baseline guarantee of a safe API.
+
+For an unsafe API, admissible use additionally requires satisfying the API's
+explicit safety requirements. Anneal's baseline guarantee is conditional on those
+requirements.
+
+Because an admissible context must already be well-defined under Rust semantics,
+an unsafe API cannot relax a condition whose violation is itself undefined
 behavior.
 
-In particular, any sound design must ensure both that:
+Stronger API or library invariants are different. Some unsafe APIs may need to
+accept values that violate invariants normally associated with their types.
+Whether Anneal permits an unsafe API contract to relax such an invariant, and how
+that permission is expressed, remains unresolved.
 
-- the obligations Anneal requires are strong enough to establish the relevant
-  Rust validity conditions; and
-- every operation and behavior relevant to the reported promise is accounted
-  for rather than disappearing because a model, translator, or proof interface
-  did not represent it.
+## Anneal remains open-ended
 
-User-defined specifications cannot weaken or erase the Rust conditions needed
-for well-defined behavior. Conversely, Anneal cannot determine whether a
-user-defined property captures what its author intended; it can establish the
-property that was actually specified.
+Well-definedness is mandatory, but developers must also be able to state and prove
+additional correctness guarantees. Anneal must not fix today's anticipated
+guarantees as a closed universe.
 
-This document does not choose the proof of correspondence, the extraction point,
-the unit of coverage, or which parts of that connection are initially proved
-rather than trusted.
+Anneal likewise aims to support all program *behaviors*, not every Rust source
+program. It may reject particular language features or combinations of features
+when the same intended behavior can be expressed in a supported way. When
+practical, it should give the programmer actionable guidance toward such a form.
 
-## Verification composes through abstraction boundaries
-
-Anneal should let an implementation establish a promise once at an abstraction
-boundary and let clients rely on that promise without reopening the private
-implementation.
-
-For a safe Rust API, this includes Rust's existing soundness contract: no
-hidden, unchecked obligation of a type-correct safe caller may determine whether
-the implementation exhibits undefined behavior. An unsafe interface may place
-explicit soundness obligations on its caller, just as Rust does today.
-
-The same compositional idea applies to promises beyond soundness. A function,
-type, trait, module, crate, or other abstraction may expose requirements and
-guarantees that clients can use without depending on its private proof details.
-The exact set of useful abstraction boundaries remains a design question.
-
-An abstraction may hide implementation details only when doing so preserves all
-semantics relevant to the promise. A pure value-level contract is preferable
-when it is faithful. If ownership, provenance, initialization, concurrency,
-protocol state, I/O, nondeterminism, or another effect matters to the promise,
-the proof boundary must preserve enough of that structure to remain sound.
-Simplifying the proof interface must not change the claim being proved.
-
-## Anneal is general over promises and program behaviors
-
-UB-freedom is foundational and always on, but it is not the only property Anneal
-exists to prove. The architecture must allow developers to state and prove
-additional correctness properties without baking today's anticipated set of
-properties into a closed core.
-
-Different promises may require different semantic or proof machinery. Anneal
-should share general machinery when the underlying reasoning is genuinely the
-same, without forcing unrelated property domains into one representation that
-loses important distinctions.
-
-Anneal also aims to support all program *behaviors*, not every Rust source
-program. It is acceptable for Anneal to reject a dark corner of Rust syntax or a
-particular combination of features when the same intended behavior can be
-expressed through a supported form. When practical, Anneal should give the
-programmer actionable guidance for reaching that supported form.
-
-Supporting new properties and behaviors must not weaken the meaning of existing
-successful results.
+Adding support for new guarantees or behaviors must preserve the meaning of
+existing successful results.
 
 ## The ordinary interface is Rust-oriented
 
-Ordinary Rust programmers must be able to use Anneal effectively without
-learning Lean 4.
+Ordinary Rust programmers must be able to use Anneal effectively without learning
+Lean 4.
 
-Anneal should present unsatisfied obligations in terms that connect directly to
-the Rust program: what operation or promise generated the obligation, what must
-be true, and what Anneal could not establish. The normal workflow should feel
-like an extension of Rust's compiler-enforced reasoning rather than a demand
-that every Rust programmer become a formal-methods specialist.
+When Anneal cannot establish an obligation, its ordinary interface should connect
+the failure to the Rust program: what operation or guarantee generated the
+obligation, what must be true, and what Anneal could not establish.
 
-This does not require hiding Lean or other proof machinery. Specialists may need
-full access to Lean, Aeneas, resource logics, generated models, or other
-low-level interfaces in order to prove novel properties or extend Anneal.
-Those interfaces can coexist with a Rust-oriented ordinary path.
-
-Humans, coding agents, and other tools may also differ in how they author or
-repair proofs. They must nevertheless operate against the same program
-contracts, promises, trust model, and success semantics. A human explanation or
-an agent's confidence is not machine-checked evidence merely because it is
-persuasive; formal claims come from the accepted checking boundary.
-
-## Trust is explicit and replaceable by evidence
-
-Anneal cannot initially prove every fact on which an end-to-end result depends.
-Everything whose correctness the result relies on but Anneal has not established
-must remain visible as part of the relevant trusted computing base.
-
-Different kinds of missing evidence may have different consequences. A trusted
-external semantic assumption, an unfinished proof, unsupported source behavior,
-and a verifier failure need not be treated alike. The detailed taxonomy belongs
-in lower-level design documentation, but the distinctions required to interpret
-a result must not be erased by an implementation shortcut.
-
-Trust should also be shrinkable. A component or semantic assumption that is
-trusted today should be replaceable by stronger checked evidence tomorrow
-without requiring unrelated user contracts to be redesigned. Moving an
-assumption into another helper, generated artifact, or upstream component does
-not reduce trust unless the result no longer depends on its unchecked
-correctness.
-
-## Prefer general, minimally sufficient mechanisms
-
-Anneal should use the simplest model that faithfully supports the promises being
-made.
-
-When ordinary functional reasoning is sufficient, richer machinery should not
-be imposed merely because Anneal must support harder cases elsewhere. When a
-promise depends on ownership, effects, traces, concurrency, or other structure,
-that structure must not be discarded merely to preserve a simpler proof model.
-
-Likewise, a practical example should normally be treated as evidence about a
-broader class of problems. A one-off mechanism can be a useful experiment, but
-it should not become architecture merely because it solves the first known use
-case. Designs should leave room to increase expressive power and should prefer
-reusable abstractions once the underlying problem is understood.
-
-Existing Rust, Lean, Charon, Aeneas, and ecosystem mechanisms are useful when
-they solve the general problem faithfully. No particular ownership boundary or
-integration technique is itself a principle: downstream adapters, upstream
-changes, new libraries, and temporary experiments remain available when they
-better preserve Anneal's promises.
-
-## Deliberate non-decisions
-
-This document constrains later design work without deciding it. In particular,
-it does not currently determine:
-
-- the atomic subject of a verification result or how build matrices are handled;
-- how generated Rust and other generated artifacts participate in a result;
-- the taxonomy or selection model for properties and execution outcomes;
-- whether type invariants, trait invariants, or other contract forms are
-  first-class Anneal concepts;
-- the source syntax, location, or language used for specifications and proofs;
-- whether obligations are represented as arguments, sidecar theorems, weakest
-  preconditions, or another proof encoding;
-- the exact mechanism for prose-based or otherwise incremental adoption;
-- the detailed classification of axioms, incomplete proofs, unsupported
-  behavior, coverage gaps, and tool failures;
-- the contents or serialization of the TCB audit log;
-- the meaning of particular command names, profiles, warnings, or exit codes;
-- the boundary among Anneal, Rust, Charon, Aeneas, Lean, and reusable proof
-  libraries; or
-- the exact theorem or validation strategy used to justify source/model
-  correspondence and complete obligation coverage.
-
-Those questions should be settled by later design work using the principles and
-this contract as constraints. An implementation experiment may explore an
-answer without silently turning that answer into a project-wide commitment.
+The normal workflow should therefore feel like an extension of Rust's existing
+compiler-enforced reasoning rather than requiring every Rust programmer to become
+a formal-methods specialist.
