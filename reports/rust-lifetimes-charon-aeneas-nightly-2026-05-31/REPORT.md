@@ -100,6 +100,29 @@ adjacent Rust, Charon, or Aeneas revisions have the same boundaries.
 
 ## Findings
 
+### HIR still represents source lifetime syntax and binding
+
+Before MIR, rustc HIR retains lifetime information in a source-oriented form.
+`rustc_hir::Lifetime` records the lifetime's HIR ID, identifier, semantic
+`LifetimeKind`, source context, and whether the user wrote an explicit named
+lifetime, explicit anonymous `'_`, or implicit/elided syntax. `LifetimeKind`
+distinguishes parameter, inferred, static, implicit-object-default, and error
+cases.
+
+HIR generic parameter lists likewise contain
+`GenericParamKind::Lifetime`, and the HIR documentation distinguishes
+parameters declared on an item's generics from late-bound parameters introduced
+by a `for<...>` binder. HIR reference types contain the corresponding
+`Lifetime` alongside the referenced type and mutability.
+
+Thus lifetime names/elision and binder structure are still directly represented
+at HIR. The later rustc type representation converts these syntax-level forms
+into semantic region kinds such as early parameters, bound/late parameters,
+inference variables, `'static`, and erased regions.
+
+Basis: **source**, `compiler/rustc_hir/src/hir.rs` and
+`compiler/rustc_middle/src/ty/region.rs`.
+
 ### Rustc's type system retains several distinct kinds of region
 
 At the examined rustc revision, `rustc_middle::ty::RegionKind` supports the
@@ -170,6 +193,36 @@ interpreted as rustc's NLL `RegionVid`, nor as the set of MIR locations inferred
 for that `RegionVid`.
 
 Basis: **source** + **derived** comparison of the rustc and Charon call paths.
+
+### Post-borrow-check MIR does not retain the NLL working-copy solution
+
+Rustc's later MIR pipeline confirms that the NLL-renumbered body is not the body
+that proceeds to runtime MIR.
+
+`mir_drops_elaborated_and_const_checked` first forces `mir_borrowck` to run so
+borrow checking cannot lose access to the source MIR. It then retrieves
+`tcx.mir_promoted(def)` again, **steals that original promoted body**, and runs
+the analysis-to-runtime passes on it. The borrow checker's private
+`body_owned` clone and its solved `RegionInferenceContext` are not substituted
+back into this body.
+
+The first cleanup phase is documented in rustc source with the invariant:
+“After this series of passes, no lifetime analysis based on borrowing can be
+done.” `CleanupPostBorrowck` removes borrow-check-only statements such as fake
+borrows, fake reads, and user type ascriptions; later runtime lowering performs
+drop elaboration and other transformations. The canonical post-borrow-check MIR
+therefore carries forward the promoted-MIR type representation plus
+post-analysis cleanup, not the NLL solution as region annotations.
+
+This explains why downstream consumers must not expect optimized/elaborated MIR
+types to expose rustc's solved NLL region sets. Rustc uses that solution to
+accept/reject the program and produce diagnostics; it is not serialized into the
+ordinary MIR type graph for later code generation.
+
+Basis: **source**,
+`compiler/rustc_mir_transform/src/lib.rs` and
+`compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs`, together with the
+borrow-check sources above.
 
 ### Charon preserves declared lifetimes and invents existential body lifetimes
 
@@ -473,10 +526,11 @@ Basis: **derived** from the exact rustc, Charon, and Aeneas dataflow above.
   uses and erases region information; it does not prove that the resulting
   functionalization is semantically adequate for all Rust programs, especially
   unsafe Rust.
-- **Rustc region provenance before promoted MIR is not exhaustively cataloged.**
-  The report follows the representations relevant to Charon's selected query and
-  rustc borrow checking. It does not attempt a complete HIR/THIR lifetime-lowering
-  reference.
+- **HIR-to-rustc-type lowering is described at the representation boundary, not
+  as a complete elision/type-inference algorithm.** The report establishes which
+  lifetime forms HIR retains and the semantic region forms available downstream.
+  It does not catalog every rule that decides whether an elided source lifetime
+  becomes a particular early-, late-, bound-, inferred-, or erased region.
 - **Locally bound/higher-ranked lifetime support has explicit limitations.**
   Aeneas's region hierarchy says locally bound regions are not fully handled;
   `SymbolicToPureTypes.translate_region_binder` notes that dropping region
@@ -500,10 +554,25 @@ Basis: **derived** from the exact rustc, Charon, and Aeneas dataflow above.
 `anneal/flake.nix`: Rust date `2026-05-31`, Aeneas release
 `nightly-2026.06.03`.
 
+**Source — rustc HIR lifetime representation.**
+`rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`,
+`compiler/rustc_hir/src/hir.rs`: `Lifetime`, `LifetimeKind`,
+`GenericParamKind::Lifetime`, generic binder provenance, and reference-type
+lifetime syntax.
+
 **Source — rustc region forms.**
 `rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65`,
 `compiler/rustc_middle/src/ty/region.rs`: region constructors and predicates
 for early/bound/late/static/inference/placeholder/erased regions.
+
+**Source — rustc post-borrow-check MIR pipeline.**
+Same rustc revision:
+`compiler/rustc_mir_transform/src/lib.rs::mir_drops_elaborated_and_const_checked`
+and `run_analysis_cleanup_passes`, plus
+`compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs`.
+These establish that borrow checking is forced first, then the original promoted
+MIR is stolen for cleanup/runtime lowering, and that lifetime-based borrow
+analysis is no longer available after the cleanup phase.
 
 **Source — rustc NLL working copy and solution.**
 Same rustc revision:
@@ -572,23 +641,28 @@ erasure does not imply that lifetimes were irrelevant to translation.
 For a later Rust/Charon/Aeneas combination, the cheapest source-level
 revalidation is:
 
-1. In rustc, inspect the borrow-check entry point, `replace_regions_in_mir`,
+1. In rustc HIR, inspect `Lifetime`, `LifetimeKind`,
+   `GenericParamKind::Lifetime`, and reference-type representation for changes
+   to which source lifetime/binder distinctions survive lowering.
+2. Inspect the borrow-check entry point, `replace_regions_in_mir`,
    `renumber_mir`, `UniversalRegions`, and `RegionInferenceContext`.
    Confirm whether NLL still operates on a private MIR copy and where solved
-   region values live.
-2. In Charon, inspect its rustc callback timing, selected MIR query, `Region`
+   region values live. Then inspect `mir_drops_elaborated_and_const_checked`
+   and the analysis cleanup passes to confirm what body proceeds after borrow
+   checking and whether solved NLL data has become part of ordinary MIR.
+3. In Charon, inspect its rustc callback timing, selected MIR query, `Region`
    enum, `translate_region`, and `translate_erased_region`. Determine whether
    Charon has begun consuming borrow-check facts or still synthesizes body
    regions independently.
-3. Diff the Charon lifetime golden outputs for a signature lifetime, a body-local
+4. Diff the Charon lifetime golden outputs for a signature lifetime, a body-local
    borrow, a call-site lifetime argument, and ADT lifetime mutability.
-4. In Aeneas, inspect `erase_body_regions`,
+5. In Aeneas, inspect `erase_body_regions`,
    `RegionsHierarchy.compute_regions_hierarchy_for_sig`,
    symbolic signature instantiation, and `SymbolicToPureTypes`. Confirm which
    region information is consumed before pure erasure.
-5. Inspect the pure AST definition itself. A change that adds region/reference
+6. Inspect the pure AST definition itself. A change that adds region/reference
    constructors would materially change this report's erasure conclusion.
-6. Diff the generated `Paper.lean` `choose` specimen. Record whether the
+7. Diff the generated `Paper.lean` `choose` specimen. Record whether the
    source lifetime remains absent and how the backward interface represents the
    mutable-borrow effect.
 
