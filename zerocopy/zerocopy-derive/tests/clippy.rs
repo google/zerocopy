@@ -9,8 +9,10 @@
 #![deny(clippy::derive_partial_eq_without_eq)]
 
 // Regression test for https://github.com/google/zerocopy/issues/3721. The
-// `TryFromBytes` derive must not emit code that triggers
-// `clippy::derive_partial_eq_without_eq` in downstream crates.
+// dedicated downstream-mode Clippy CI step compiles this test without
+// zerocopy's internal generated-code lint mode, so this caller-level deny must
+// be suppressed by the derive's production lint policy. The ordinary
+// zerocopy-derive Clippy step compiles the same test in internal lint mode.
 use zerocopy_renamed::{Immutable, TryFromBytes};
 
 #[derive(TryFromBytes, Immutable)]

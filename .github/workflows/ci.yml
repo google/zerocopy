@@ -478,12 +478,39 @@ jobs:
       run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --verbose
       if: matrix.toolchain == 'nightly' && matrix.target == 'thumbv6m-none-eabi'
 
+    - name: Clippy downstream generated code
+      env:
+        TOOLCHAIN: ${{ matrix.toolchain }}
+        TARGET: ${{ matrix.target }}
+      run: |
+        ./cargo.sh +$TOOLCHAIN clippy \
+          --package zerocopy-derive \
+          --target $TARGET \
+          --test clippy \
+          --verbose
+      # Test the production policy separately from the internal lint mode below.
+      # One native target is sufficient for this downstream-facing regression.
+      if: matrix.toolchain == 'nightly' && matrix.crate == 'zerocopy-derive' && matrix.target == 'x86_64-unknown-linux-gnu'
+
     - name: Clippy tests
       env:
         TOOLCHAIN: ${{ matrix.toolchain }}
         CRATE: ${{ matrix.crate }}
         TARGET: ${{ matrix.target }}
-      run: ./cargo.sh +$TOOLCHAIN clippy --package $CRATE --target $TARGET $FEATURES --tests --verbose
+      run: |
+        set -euo pipefail
+        if [[ "$CRATE" == 'zerocopy-derive' ]]; then
+          # Make the proc macro lint its generated code while compiling every
+          # integration test. This is a proc-macro compile-time environment
+          # switch, so it does not leak a private cfg into downstream output.
+          export __ZEROCOPY_INTERNAL_USE_ONLY_LINT_GENERATED_CODE=1
+        fi
+        ./cargo.sh +$TOOLCHAIN clippy \
+          --package $CRATE \
+          --target $TARGET \
+          $FEATURES \
+          --tests \
+          --verbose
       # Clippy improves the accuracy of lints over time, and fixes bugs. Only
       # running Clippy on nightly allows us to avoid having to write code which
       # is compatible with older versions of Clippy, which sometimes requires

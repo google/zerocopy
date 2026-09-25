@@ -94,7 +94,7 @@ macro_rules! derive {
                 Err(e) => return e.into_compile_error().into(),
             };
             let ts = $inner(&ctx, Trait::$trait).into_ts();
-            // Apply generated-code lint allowances as a backstop, except
+            // Apply the generated-code lint policy as a backstop, except
             // around caller-authored invariant expressions.
             let ts = if matches!(Trait::$trait, Trait::TryFromBytes) {
                 ctx.const_block([Some(ts)])
