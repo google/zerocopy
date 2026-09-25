@@ -78,6 +78,36 @@
         "rust/borrows"
       ]
     },
+    "aeneas-wp-proof-tools-nightly-2026-06-03": {
+      "observed_at": "2026-09-25",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean WP and proof tooling selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Historical Anneal V1 WP adapter"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/lean",
+        "aeneas/wp",
+        "aeneas/specifications",
+        "aeneas/tactics",
+        "lean/tactics",
+        "anneal/history"
+      ]
+    },
     "cargo-compilation-subject-identity-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
