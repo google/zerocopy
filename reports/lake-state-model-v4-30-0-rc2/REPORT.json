@@ -1,0 +1,24 @@
+{
+  "topics": [
+    "lake",
+    "lake/workspace",
+    "lake/package",
+    "lake/manifest",
+    "lake/build",
+    "lake/targets",
+    "lake/facets",
+    "lake/jobs",
+    "lake/traces"
+  ],
+  "subjects": [
+    {
+      "name": "Lake implementation shipped with Lean v4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
