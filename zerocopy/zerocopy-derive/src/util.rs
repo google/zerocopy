@@ -925,6 +925,13 @@ pub(crate) fn generated_code_lints() -> TokenStream {
             // group is policy-specific and contains mutually incompatible
             // lints.
             #[deny(clippy::all, clippy::pedantic, clippy::nursery)]
+            // These diagnose duplicate bounds copied verbatim from caller
+            // syntax. Preserving those bounds in generated impls is intentional;
+            // linting the caller's declaration remains the caller's policy.
+            #[allow(
+                clippy::trait_duplication_in_bounds,
+                clippy::type_repetition_in_bounds,
+            )]
         }
     } else {
         quote! {
