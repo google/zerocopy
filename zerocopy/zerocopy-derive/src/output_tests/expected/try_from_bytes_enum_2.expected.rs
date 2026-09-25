@@ -33,7 +33,7 @@ const _: () = {
             ___ZcAlignment: ::zerocopy::invariant::Alignment,
         {
             #[repr(u32)]
-            #[allow(dead_code)]
+            #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
             #[derive(Copy, Clone, PartialEq)]
             pub enum ___ZerocopyTag {
                 UnitLike,
