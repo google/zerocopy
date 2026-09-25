@@ -1000,24 +1000,24 @@ pub(crate) fn generate_tag_enum(ctx: &Ctx, repr: &EnumRepr, data: &DataEnum) -> 
         EnumRepr::Compound(c, _) => quote! { #c },
     };
 
-    let clippy_partial_eq = if lint_generated_code() {
+    let tag_lints = if lint_generated_code() {
         quote! {
+            #[allow(dead_code)]
             #[expect(
                 clippy::derive_partial_eq_without_eq,
                 reason = "`PartialEq` is used for tag comparisons; `Eq` would be unused"
             )]
         }
     } else {
-        // This is the narrow suppression shipped in #3722. Keep it in normal
-        // output so downstream users remain protected even if this helper is
-        // emitted in a mixed generated/caller-authored lint scope.
-        quote! { #[allow(clippy::derive_partial_eq_without_eq)] }
+        // This is the narrow suppression shipped in #3722. Keep the normal
+        // expansion unchanged so downstream users remain protected even if this
+        // helper is emitted in a mixed generated/caller-authored lint scope.
+        quote! { #[allow(dead_code, clippy::derive_partial_eq_without_eq)] }
     };
 
     quote! {
         #repr
-        #[allow(dead_code)]
-        #clippy_partial_eq
+        #tag_lints
         #[derive(Copy, Clone, PartialEq)]
         pub enum ___ZerocopyTag {
             #(#variants,)*
