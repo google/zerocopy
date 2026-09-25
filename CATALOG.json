@@ -333,6 +333,28 @@
         "anneal/coverage"
       ]
     },
+    "lake-server-preparation-v4-30-0-rc2": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake and Lean language-server preparation at Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/server",
+        "lake/setup-file",
+        "lean/server",
+        "lean/lsp",
+        "lean/module-setup",
+        "lean/imports"
+      ]
+    },
     "lake-state-model-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
