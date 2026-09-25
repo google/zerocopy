@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and index an exact materialized reference-corpus candidate tree."""
+"""Validate and index the reference corpus containing this script."""
 
 from __future__ import annotations
 
@@ -9,6 +9,7 @@ import json
 import os
 import re
 import sys
+import tempfile
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Sequence
@@ -49,13 +50,24 @@ class ValidationFailure(Exception):
     """Raised when corpus machine data cannot be read or interpreted safely."""
 
 
-def _read_text(path: Path) -> str:
+def _candidate_root() -> Path:
+    # abspath normalizes a relative invocation without following symlinks. That
+    # keeps the running validator bound to the tree through which it was invoked.
+    return Path(os.path.abspath(__file__)).parent.parent
+
+
+def _read_bytes(path: Path) -> bytes:
     try:
-        return path.read_text(encoding="utf-8")
-    except UnicodeDecodeError as exc:
-        raise ValidationFailure(f"not valid UTF-8: {exc}") from exc
+        return path.read_bytes()
     except OSError as exc:
         raise ValidationFailure(f"cannot read file: {exc}") from exc
+
+
+def _read_text(path: Path) -> str:
+    try:
+        return _read_bytes(path).decode("utf-8")
+    except UnicodeDecodeError as exc:
+        raise ValidationFailure(f"not valid UTF-8: {exc}") from exc
 
 
 def _no_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
@@ -281,33 +293,27 @@ def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
     return reports, problems
 
 
-def _catalog_text(reports: Sequence[Report]) -> str:
-    entries = {
-        report.directory.name: report.metadata
-        for report in sorted(reports, key=lambda item: item.directory.name)
-    }
-    return json.dumps({"reports": entries}, indent=2, ensure_ascii=True, sort_keys=True) + "\n"
+def _catalog_bytes(reports: Sequence[Report]) -> bytes:
+    entries = {report.directory.name: report.metadata for report in reports}
+    text = json.dumps({"reports": entries}, indent=2, ensure_ascii=True, sort_keys=True) + "\n"
+    return text.encode("ascii")
 
 
-def check(root: Path) -> list[Problem]:
-    root = root.resolve()
+def _check_root(root: Path) -> list[Problem]:
     problems = _validate_sources(root)
     reports, report_problems = load_reports(root)
     problems.extend(report_problems)
 
     catalog_path = root / "CATALOG.json"
-    if catalog_path.is_symlink():
-        problems.append(Problem(catalog_path, "generated catalog must not be a symlink"))
-    elif not catalog_path.is_file():
-        problems.append(Problem(catalog_path, "generated catalog is missing"))
+    if not catalog_path.is_file() or catalog_path.is_symlink():
+        problems.append(Problem(catalog_path, "generated catalog is missing or not a regular file"))
     elif not report_problems:
-        expected = _catalog_text(reports)
         try:
-            actual = _read_text(catalog_path)
+            actual = _read_bytes(catalog_path)
         except ValidationFailure as exc:
             problems.append(Problem(catalog_path, str(exc)))
         else:
-            if actual != expected:
+            if actual != _catalog_bytes(reports):
                 problems.append(
                     Problem(
                         catalog_path,
@@ -318,51 +324,57 @@ def check(root: Path) -> list[Problem]:
     return sorted(problems, key=lambda problem: (problem.path.as_posix(), problem.message))
 
 
-def _default_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+def check() -> list[Problem]:
+    return _check_root(_candidate_root())
+
+
+def _replace_bytes(path: Path, content: bytes) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary_name = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.")
+    temporary = Path(temporary_name)
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            handle.write(content)
+        os.chmod(temporary, 0o644)
+        os.replace(temporary, path)
+    except BaseException:
+        try:
+            temporary.unlink()
+        except FileNotFoundError:
+            pass
+        raise
 
 
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--root",
-        type=Path,
-        default=_default_root(),
-        help="exact materialized candidate tree (default: repository root containing this script)",
-    )
     subparsers = parser.add_subparsers(dest="command", required=True)
-    subparsers.add_parser("check", help="validate candidate structure and generated catalog")
-    subparsers.add_parser("catalog", help="regenerate CATALOG.json from valid report metadata")
+    subparsers.add_parser("check", help="validate this candidate tree and generated catalog")
+    subparsers.add_parser("catalog", help="replace CATALOG.json from valid report metadata")
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
-    root = args.root.resolve()
+    root = _candidate_root()
 
     if args.command == "catalog":
         problems = _validate_sources(root)
         reports, report_problems = load_reports(root)
         problems.extend(report_problems)
-        catalog_path = root / "CATALOG.json"
-        if catalog_path.is_symlink():
-            problems.append(Problem(catalog_path, "generated catalog must not be a symlink"))
-        elif catalog_path.exists() and not catalog_path.is_file():
-            problems.append(Problem(catalog_path, "generated catalog path must be a regular file"))
         if problems:
             for problem in problems:
                 print(problem.render(root), file=sys.stderr)
             return 1
         try:
-            catalog_path.write_text(_catalog_text(reports), encoding="utf-8")
+            _replace_bytes(root / "CATALOG.json", _catalog_bytes(reports))
         except OSError as exc:
-            print(f"CATALOG.json: cannot write generated catalog: {exc}", file=sys.stderr)
+            print(f"CATALOG.json: cannot replace generated catalog: {exc}", file=sys.stderr)
             return 1
         print(f"wrote CATALOG.json ({len(reports)} reports)")
         return 0
 
     if args.command == "check":
-        problems = check(root)
+        problems = check()
         if problems:
             for problem in problems:
                 print(problem.render(root), file=sys.stderr)

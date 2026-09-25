@@ -8,7 +8,7 @@ other systems.
 ## Start here
 
 Read [`AGENTS.md`](AGENTS.md) before using or changing the corpus. It defines
-branch authority, candidate-tree validation, maintenance, and publication.
+branch authority, self-validating candidates, maintenance, and publication.
 
 Before authoring or revising a report, also read [`FORMAT.md`](FORMAT.md). It
 defines report package structure, metadata, evidence roles, applicability,
@@ -18,7 +18,7 @@ investigation boundaries, and revalidation expectations.
 Each immediate child directory of `reports/` is one report package containing
 `REPORT.json`, `REPORT.md`, and optional report-owned support material.
 
-Validate an exact candidate tree with Python 3.10 or newer:
+With Python 3.10 or newer, validate a candidate by running its own validator:
 
 ```console
 python3 tools/reference.py check
