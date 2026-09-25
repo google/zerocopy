@@ -48,6 +48,36 @@
         "anneal/llbc"
       ]
     },
+    "aeneas-rust-to-lean-translation-nightly-2026-06-03": {
+      "observed_at": "2026-09-25",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean translation selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Aeneas-paired Charon input producer"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/borrows",
+        "aeneas/functions",
+        "aeneas/lean",
+        "aeneas/translation",
+        "aeneas/types",
+        "rust/borrows"
+      ]
+    },
     "cargo-compilation-subject-identity-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
