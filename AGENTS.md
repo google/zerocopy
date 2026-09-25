@@ -16,8 +16,8 @@ maintenance. It is not authoritative about the systems it documents. Upstream
 source code, specifications, release artifacts, and other primary sources retain
 their own authority.
 
-All documentation required to interpret or maintain the corpus must live on this
-branch. Files elsewhere may point here, but they must not be required to determine
+All documentation needed to interpret or maintain the corpus must live on this
+branch. Files elsewhere may point here, but must not be required to determine
 what the corpus means or how it is maintained.
 
 `AGENTS.md` governs branch-wide behavior. `FORMAT.md` governs report semantics and
@@ -35,18 +35,19 @@ material, or unnecessary large source mirrors.
 
 ## Reports
 
-A report is the basic reference unit. Each report lives in its own directory
-under `reports/` and uses `REPORT.md` as its entry point. All other files in that
-directory are report-owned support material. Report directories must not contain
-other report directories.
+Each immediate child directory of `reports/` is one report package. A package
+contains `REPORT.json`, `REPORT.md`, and any additional report-owned files or
+directories. Package contents are otherwise ordinary files: names such as
+`evidence/`, `probes/`, `fixtures/`, or `scripts/` are conventions, not special
+corpus object types. Symlinks are not allowed anywhere under `reports/`.
 
-Before writing or revising a report, read `FORMAT.md`. In particular, reports must
-identify the subjects they actually examined, bound claims to the evidence that
-supports them, and preserve important investigation limits. The directory path is
-for navigation and does not carry technical applicability semantics.
+Before writing or revising a report, read `FORMAT.md`. Reports must identify the
+subjects actually examined, bound claims to the evidence supporting them, and
+preserve important investigation limits. Package paths are navigation handles and
+do not carry technical applicability semantics.
 
 When upstream software changes, an older report remains a report about the subject
-it identifies. Add another report when the newer behavior is worth preserving.
+it identifies. Add another report when preserving the newer behavior is useful.
 When the corpus's account of its identified subject is wrong, correct the current
 report; Git history preserves the earlier text as provenance.
 
@@ -57,8 +58,9 @@ can replace future rediscovery.
 
 ## Generated state and validation
 
-`CATALOG.json` is generated from report metadata and is navigation only. Do not
-edit it manually or treat it as independent technical evidence.
+`CATALOG.json` is generated from report package names and `REPORT.json` metadata.
+It is navigation only. Do not edit it manually or treat it as independent
+technical evidence.
 
 Before publication, run:
 
@@ -79,9 +81,9 @@ When changing `tools/reference.py` or its tests, also run:
 python3 -m unittest discover -s tests -v
 ```
 
-The validation tool and its tests use only the Python standard library. The
-validator checks machine-representable corpus invariants; passing it does not
-establish that a report's technical claims or prose satisfy `FORMAT.md`.
+The validator and its tests use only the Python standard library. The validator
+checks machine-representable corpus invariants; passing it does not establish that
+a report's prose or technical claims satisfy `FORMAT.md`.
 
 ## Publication
 
@@ -93,16 +95,15 @@ Treat publication as an atomic transition between coherent corpus trees:
 1. Read the current remote `reference` tip before writing.
 2. Construct the complete candidate from that tip.
 3. Regenerate derived state and run the applicable validation.
-4. Publish the complete candidate as commits descending from the observed tip.
+4. Publish commits descending from the observed tip.
 5. Advance `refs/heads/reference` only by fast-forward to the validated candidate.
 6. If another writer advanced the branch, fetch the new tip, reconcile the
    candidate, validate again, and retry.
 7. Read back the resulting remote state and verify the intended change.
 
 For a multi-file change, do not publish files one at a time to the canonical ref.
-Create the complete candidate tree/commit first and then move the branch ref once.
-The GitHub Contents API is therefore unsuitable as the publication mechanism for
-a multi-file candidate unless it can preserve this atomic-ref property.
+Create the complete candidate tree or commit first, then move the branch ref once.
+A sequential per-file API is unsuitable when it exposes intermediate trees.
 
 Do not force-push, rewrite published history, or delete the branch during normal
 operation. Keep commits coherent, but readers should not need to replay history

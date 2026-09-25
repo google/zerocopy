@@ -17,8 +17,8 @@ from typing import Any, Sequence
 REQUIRED_ROOT_FILES = ("AGENTS.md", "FORMAT.md", "README.md", "CATALOG.json")
 METADATA_KEYS = frozenset({"topics", "subjects", "observed_at"})
 SUBJECT_KEYS = frozenset({"name", "identity"})
-TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+\-]*(?:/[a-z0-9][a-z0-9._+\-]*)*$")
-METADATA_RE = re.compile(r"\A<!-- reference-metadata\n(?P<json>.*?)\n-->\n", re.DOTALL)
+TOPIC_RE = re.compile(r"^[a-z0-9][a-z0-9._+-]*(?:/[a-z0-9][a-z0-9._+-]*)*$")
+PACKAGE_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
 @dataclass(frozen=True)
@@ -36,12 +36,16 @@ class Problem:
 
 @dataclass(frozen=True)
 class Report:
-    path: Path
+    directory: Path
     metadata: dict[str, Any]
 
 
 class ValidationFailure(Exception):
     """Raised when a corpus file cannot be parsed or generated safely."""
+
+
+class DuplicateKeyError(ValueError):
+    pass
 
 
 def _read_text(path: Path) -> str:
@@ -53,15 +57,49 @@ def _read_text(path: Path) -> str:
         raise ValidationFailure(f"cannot read file: {exc}") from exc
 
 
+def _no_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise DuplicateKeyError(f"duplicate object key {key!r}")
+        result[key] = value
+    return result
+
+
+def _reject_constant(value: str) -> None:
+    raise ValueError(f"invalid JSON constant {value}")
+
+
+def _validate_unicode_scalars(value: Any) -> None:
+    try:
+        json.dumps(value, ensure_ascii=False).encode("utf-8")
+    except UnicodeEncodeError as exc:
+        raise ValidationFailure("JSON strings must contain valid Unicode scalar text") from exc
+
+
+def _load_json(path: Path) -> Any:
+    text = _read_text(path)
+    try:
+        value = json.loads(
+            text,
+            object_pairs_hook=_no_duplicate_keys,
+            parse_constant=_reject_constant,
+        )
+    except ValueError as exc:
+        raise ValidationFailure(f"invalid JSON: {exc}") from exc
+    _validate_unicode_scalars(value)
+    return value
+
+
 def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
     if not isinstance(metadata, dict):
-        return [Problem(path, "reference metadata must be a JSON object")]
+        return [Problem(path, "report metadata must be a JSON object")]
 
     problems: list[Problem] = []
     unknown = sorted(set(metadata) - METADATA_KEYS)
     missing = sorted(METADATA_KEYS - set(metadata))
     if unknown:
-        problems.append(Problem(path, f"unknown metadata keys: {', '.join(unknown)}"))
+        problems.append(Problem(path, f"unknown metadata keys: {', '.join(map(repr, unknown))}"))
     if missing:
         problems.append(Problem(path, f"missing metadata keys: {', '.join(missing)}"))
 
@@ -100,7 +138,10 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
             missing_subject = sorted(SUBJECT_KEYS - set(subject))
             if unknown_subject:
                 problems.append(
-                    Problem(path, f"{prefix} has unknown keys: {', '.join(unknown_subject)}")
+                    Problem(
+                        path,
+                        f"{prefix} has unknown keys: {', '.join(map(repr, unknown_subject))}",
+                    )
                 )
             if missing_subject:
                 problems.append(
@@ -119,12 +160,12 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
             if not isinstance(identity, dict) or not identity:
                 problems.append(Problem(path, f"{prefix}.identity must be a non-empty object"))
                 continue
-            for key, value in identity.items():
+            for key, item in identity.items():
                 if not isinstance(key, str) or not key.strip():
                     problems.append(
                         Problem(path, f"{prefix}.identity keys must be non-empty strings")
                     )
-                if not isinstance(value, str) or not value.strip():
+                if not isinstance(item, str) or not item.strip():
                     problems.append(
                         Problem(
                             path,
@@ -149,86 +190,130 @@ def _validate_metadata(metadata: Any, path: Path) -> list[Problem]:
     return problems
 
 
-def parse_report(path: Path) -> tuple[Report | None, list[Problem]]:
-    try:
-        text = _read_text(path)
-    except ValidationFailure as exc:
-        return None, [Problem(path, str(exc))]
-
-    match = METADATA_RE.match(text)
-    if not match:
-        return None, [Problem(path, "REPORT.md must begin with a reference-metadata JSON comment")]
-
-    try:
-        metadata = json.loads(match.group("json"))
-    except json.JSONDecodeError as exc:
-        return None, [Problem(path, f"invalid reference metadata JSON: {exc.msg} at line {exc.lineno}")]
-
-    problems = _validate_metadata(metadata, path)
-    return Report(path=path, metadata=metadata), problems
+def _ordinary_file(path: Path) -> bool:
+    return path.exists() and not path.is_symlink() and path.is_file()
 
 
-def _walk_reports_tree(root: Path) -> tuple[list[Path], list[Path], list[Problem]]:
+def _validate_root(root: Path) -> list[Problem]:
+    problems: list[Problem] = []
+    for name in REQUIRED_ROOT_FILES:
+        path = root / name
+        if path.is_symlink():
+            problems.append(Problem(path, "required root files must not be symlinks"))
+            continue
+        if not path.is_file():
+            problems.append(Problem(path, f"required root file {name} is missing"))
+            continue
+        try:
+            _read_text(path)
+        except ValidationFailure as exc:
+            problems.append(Problem(path, str(exc)))
+    return problems
+
+
+def _list_packages(root: Path) -> tuple[list[Path], list[Problem]]:
     reports_root = root / "reports"
-    if not reports_root.exists():
-        return [], [], []
     if reports_root.is_symlink():
-        return [], [], [Problem(reports_root, "symlinks are not allowed under reports/")]
+        return [], [Problem(reports_root, "reports must not be a symlink")]
+    if not reports_root.exists():
+        return [], []
     if not reports_root.is_dir():
-        return [], [], [Problem(reports_root, "reports must be a directory")]
+        return [], [Problem(reports_root, "reports must be a directory")]
 
-    files: list[Path] = []
-    symlinks: list[Path] = []
-    for dirpath, dirnames, filenames in os.walk(reports_root, topdown=True, followlinks=False):
+    packages: list[Path] = []
+    problems: list[Problem] = []
+    try:
+        entries = sorted(os.scandir(reports_root), key=lambda entry: entry.name)
+    except OSError as exc:
+        return [], [Problem(reports_root, f"cannot enumerate reports: {exc}")]
+
+    for entry in entries:
+        path = Path(entry.path)
+        try:
+            if entry.is_symlink():
+                problems.append(Problem(path, "entries directly under reports/ must not be symlinks"))
+            elif entry.is_dir(follow_symlinks=False):
+                if not PACKAGE_RE.fullmatch(entry.name):
+                    problems.append(
+                        Problem(
+                            path,
+                            "report package names must be lowercase ASCII words separated by single hyphens",
+                        )
+                    )
+                else:
+                    packages.append(path)
+            else:
+                problems.append(
+                    Problem(path, "entries directly under reports/ must be report directories")
+                )
+        except OSError as exc:
+            problems.append(Problem(path, f"cannot inspect reports entry: {exc}"))
+    return packages, problems
+
+
+def _load_report(package: Path) -> tuple[Report | None, list[Problem]]:
+    problems: list[Problem] = []
+
+    metadata_path = package / "REPORT.json"
+    prose_path = package / "REPORT.md"
+    for path in (metadata_path, prose_path):
+        if path.is_symlink():
+            problems.append(Problem(path, "symlinks are not allowed under reports/"))
+        elif not path.is_file():
+            problems.append(Problem(path, f"report package requires ordinary file {path.name}"))
+
+    def onerror(exc: OSError) -> None:
+        path = Path(exc.filename) if exc.filename else package
+        problems.append(Problem(path, f"cannot enumerate report package: {exc}"))
+
+    for dirpath, dirnames, filenames in os.walk(
+        package,
+        topdown=True,
+        followlinks=False,
+        onerror=onerror,
+    ):
         directory = Path(dirpath)
-        kept_dirs: list[str] = []
-        for name in sorted(dirnames):
+        for name in (*dirnames, *filenames):
             path = directory / name
-            if path.is_symlink():
-                symlinks.append(path)
-            else:
-                kept_dirs.append(name)
-        dirnames[:] = kept_dirs
-        for name in sorted(filenames):
-            path = directory / name
-            if path.is_symlink():
-                symlinks.append(path)
-            else:
-                files.append(path)
+            try:
+                if path.is_symlink():
+                    problems.append(Problem(path, "symlinks are not allowed under reports/"))
+                elif name in filenames and not path.is_file():
+                    problems.append(
+                        Problem(
+                            path,
+                            "report packages may contain only regular files and directories",
+                        )
+                    )
+            except OSError as exc:
+                problems.append(Problem(path, f"cannot inspect report package entry: {exc}"))
 
-    problems = [Problem(path, "symlinks are not allowed under reports/") for path in symlinks]
-    report_paths = sorted(
-        (path for path in files if path.name == "REPORT.md"),
-        key=lambda path: path.relative_to(root).as_posix(),
-    )
-    return report_paths, files, problems
+    metadata: Any | None = None
+    if _ordinary_file(metadata_path):
+        try:
+            metadata = _load_json(metadata_path)
+        except ValidationFailure as exc:
+            problems.append(Problem(metadata_path, str(exc)))
+        else:
+            problems.extend(_validate_metadata(metadata, metadata_path))
 
+    if _ordinary_file(prose_path):
+        try:
+            _read_text(prose_path)
+        except ValidationFailure as exc:
+            problems.append(Problem(prose_path, str(exc)))
 
-def _validate_report_tree(root: Path) -> tuple[list[Path], list[Problem]]:
-    report_paths, files, problems = _walk_reports_tree(root)
-    report_dirs = {path.parent.resolve() for path in report_paths}
-
-    for report_dir in sorted(report_dirs):
-        if any(parent.resolve() in report_dirs for parent in report_dir.parents):
-            problems.append(
-                Problem(report_dir, "report directories must not be nested inside other reports")
-            )
-
-    for path in files:
-        if not any(report_dir in path.resolve().parents for report_dir in report_dirs):
-            problems.append(
-                Problem(path, "files under reports/ must belong to a directory containing REPORT.md")
-            )
-
-    return report_paths, problems
+    if metadata is None:
+        return None, problems
+    return Report(directory=package, metadata=metadata), problems
 
 
 def load_reports(root: Path) -> tuple[list[Report], list[Problem]]:
-    report_paths, problems = _validate_report_tree(root)
+    packages, problems = _list_packages(root)
     reports: list[Report] = []
-    for path in report_paths:
-        report, report_problems = parse_report(path)
-        problems.extend(report_problems)
+    for package in packages:
+        report, package_problems = _load_report(package)
+        problems.extend(package_problems)
         if report is not None:
             reports.append(report)
     return reports, problems
@@ -240,34 +325,21 @@ def generate_catalog(root: Path, reports: Sequence[Report] | None = None) -> str
         if problems:
             raise ValidationFailure("cannot generate catalog from invalid reports")
 
-    entries = []
-    for report in sorted(reports, key=lambda item: item.path.relative_to(root).as_posix()):
-        entries.append(
-            {
-                "path": report.path.relative_to(root).as_posix(),
-                **report.metadata,
-            }
-        )
-    return json.dumps({"reports": entries}, indent=2, ensure_ascii=False, sort_keys=True) + "\n"
-
-
-def validate_root(root: Path) -> list[Problem]:
-    problems: list[Problem] = []
-    for name in REQUIRED_ROOT_FILES:
-        path = root / name
-        if not path.is_file():
-            problems.append(Problem(path, f"required root file {name} is missing"))
-    return problems
+    entries = {
+        report.directory.name: report.metadata
+        for report in sorted(reports, key=lambda item: item.directory.name)
+    }
+    return json.dumps({"reports": entries}, indent=2, ensure_ascii=True, sort_keys=True) + "\n"
 
 
 def check(root: Path) -> list[Problem]:
     root = root.resolve()
-    problems = validate_root(root)
+    problems = _validate_root(root)
     reports, report_problems = load_reports(root)
     problems.extend(report_problems)
 
     catalog_path = root / "CATALOG.json"
-    if catalog_path.is_file() and not report_problems:
+    if _ordinary_file(catalog_path) and not report_problems:
         expected = generate_catalog(root, reports)
         try:
             actual = _read_text(catalog_path)
@@ -276,7 +348,10 @@ def check(root: Path) -> list[Problem]:
         else:
             if actual != expected:
                 problems.append(
-                    Problem(catalog_path, "generated catalog is stale; run 'tools/reference.py catalog'")
+                    Problem(
+                        catalog_path,
+                        "generated catalog is stale; run 'tools/reference.py catalog'",
+                    )
                 )
 
     return sorted(problems, key=lambda problem: (problem.path.as_posix(), problem.message))
@@ -348,8 +423,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 print(problem.render(root), file=sys.stderr)
             print(f"reference check failed with {len(problems)} problem(s)", file=sys.stderr)
             return 1
-        reports = load_reports(root)[0]
-        print(f"reference check passed ({len(reports)} reports)")
+        print("reference check passed")
         return 0
 
     raise AssertionError(f"unhandled command {args.command!r}")

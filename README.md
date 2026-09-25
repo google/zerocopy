@@ -11,11 +11,12 @@ Agents must read [`AGENTS.md`](AGENTS.md) before using or changing the corpus. I
 defines branch authority, maintenance, validation, and publication.
 
 Before authoring or revising a report, also read [`FORMAT.md`](FORMAT.md). It
-defines report metadata, evidence roles, applicability, investigation boundaries,
-and revalidation expectations.
+defines report package structure, metadata, evidence roles, applicability,
+investigation boundaries, and revalidation expectations.
 
 [`CATALOG.json`](CATALOG.json) is the generated machine-readable report index.
-Technical reports themselves live under `reports/`.
+Each immediate child directory of `reports/` is one report package containing
+`REPORT.json`, `REPORT.md`, and any report-owned support material.
 
 Validate the current tree with:
 
