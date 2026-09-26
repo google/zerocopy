@@ -1,0 +1,8 @@
+{
+  "topics": ["rust", "rust/unsafe-fields", "rust/invariants", "rustc", "rustc/unsafety", "rustc/traits"],
+  "subjects": [
+    {"name": "Rust compiler behind Anneal-era nightly-2026-05-31", "identity": {"repository": "rust-lang/rust", "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65", "toolchain-date": "2026-05-31"}},
+    {"name": "Accepted unsafe-fields RFC", "identity": {"repository": "rust-lang/rfcs", "revision": "f5749baed7b7ecfe03d95dc9197d0c1344712f43", "rfc": "3458"}}
+  ],
+  "observed_at": "2026-09-26"
+}
