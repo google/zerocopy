@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "cargo/features",
+    "rust/cfg",
+    "rust/conditional-compilation",
+    "rust/modules",
+    "rustc/expansion"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler source",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    },
+    {
+      "name": "Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Cargo source",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
