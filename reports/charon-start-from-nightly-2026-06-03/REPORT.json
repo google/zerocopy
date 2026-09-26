@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "charon",
+    "charon/item-selection",
+    "charon/reachability",
+    "charon/opacity",
+    "charon/name-matching"
+  ],
+  "subjects": [
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}

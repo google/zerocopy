@@ -317,6 +317,27 @@
         "charon/item-identity"
       ]
     },
+    "charon-start-from-nightly-2026-06-03": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/item-selection",
+        "charon/reachability",
+        "charon/opacity",
+        "charon/name-matching"
+      ]
+    },
     "charon-support-and-unsoundness-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
