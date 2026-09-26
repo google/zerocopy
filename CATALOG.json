@@ -193,6 +193,23 @@
         "anneal/build-subject"
       ]
     },
+    "cargo-unit-graphs-rustc-invocations-2026-05-31": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+          },
+          "name": "Cargo source"
+        }
+      ],
+      "topics": [
+        "cargo",
+        "cargo/unit-graph",
+        "cargo/rustc-invocation"
+      ]
+    },
     "charon-item-identity-spans-comments-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [

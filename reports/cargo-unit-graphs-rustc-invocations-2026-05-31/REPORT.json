@@ -1,0 +1,17 @@
+{
+  "topics": [
+    "cargo",
+    "cargo/unit-graph",
+    "cargo/rustc-invocation"
+  ],
+  "subjects": [
+    {
+      "name": "Cargo source",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
