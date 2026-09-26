@@ -721,8 +721,9 @@ macro_rules! define_cast {
         $vis enum $name {}
 
         // SAFETY: The caller promises that `src as *mut $src` is a size-
-        // preserving or size-shrinking cast. All operations preserve
-        // provenance.
+        // preserving or size-shrinking cast. The pointer cast preserves the
+        // input's non-null address and provenance, including for zero-sized
+        // source or destination referents.
         unsafe impl $(<$tyvar $(: ?$optbound)?>)? $crate::pointer::cast::Project<$src, $dst> for $name {
             fn project(src: $crate::pointer::PtrInner<'_, $src>) -> *mut $dst {
                 #[allow(clippy::as_conversions)]
