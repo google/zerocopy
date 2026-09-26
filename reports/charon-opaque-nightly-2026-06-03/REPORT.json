@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "charon",
+    "charon/opacity",
+    "charon/item-selection",
+    "charon/ffi",
+    "aeneas/models"
+  ],
+  "subjects": [
+    {
+      "name": "Charon pinned by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Aeneas selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
