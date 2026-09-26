@@ -772,11 +772,14 @@ mod cast_from {
     {
     }
 
-    // SAFETY: The implementation of `Project::project` preserves the size of
-    // the referent (see inline comments for a more detailed proof of this).
+    // SAFETY: `Src: IntoBytes` guarantees that `Src` has no padding, so its
+    // unpadded size is a multiple of its alignment. `Project::project`
+    // preserves that size and requires `Src`'s alignment to be at least
+    // `Dst`'s. Thus `Dst` has no trailing padding and both referents have the
+    // same size.
     unsafe impl<Src, Dst> crate::pointer::cast::CastExact<Src, Dst> for CastFrom<Dst>
     where
-        Src: KnownLayout + ?Sized,
+        Src: IntoBytes + KnownLayout + ?Sized,
         Dst: KnownLayout + ?Sized,
     {
     }
@@ -1103,6 +1106,30 @@ mod cast_from {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{KnownLayout, PtrInner};
+
+    #[test]
+    fn test_cast_from_may_shrink_dynamic_padding() {
+        #[derive(KnownLayout)]
+        #[repr(C, align(8))]
+        struct Aligned<T: ?Sized> {
+            trailing: T,
+        }
+
+        let src = Aligned { trailing: [0u8] };
+        let src: &Aligned<[u8]> = &src;
+        let dst = PtrInner::from_ref(src).project::<[u8], CastFrom<[u8]>>();
+
+        assert_eq!(mem::size_of_val(src), 8);
+        assert_eq!(<[u8] as KnownLayout>::size_of_val_raw(dst.as_non_null()), Some(1));
+
+        static_assertions::assert_impl_all!(
+            CastFrom<[u8]>: crate::pointer::cast::Cast<Aligned<[u8]>, [u8]>
+        );
+        static_assertions::assert_not_impl_any!(
+            CastFrom<[u8]>: crate::pointer::cast::CastExact<Aligned<[u8]>, [u8]>
+        );
+    }
 
     #[test]
     fn test_dst_layout_for_slice() {
