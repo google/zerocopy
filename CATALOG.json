@@ -324,6 +324,26 @@
         "charon/unsoundness"
       ]
     },
+    "charon-toolchain-contract-0-1-210": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas"
+        }
+      ],
+      "topics": [
+        "charon/toolchain",
+        "charon/rustc",
+        "rust/rustup",
+        "rust/rustc-private",
+        "nix/toolchain"
+      ]
+    },
     "charon-ullbc-llbc-schema-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
