@@ -579,6 +579,32 @@
         "anneal/semantics"
       ]
     },
+    "rust-module-file-resolution-nightly-2026-05-31": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "Rust compiler source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference"
+        }
+      ],
+      "topics": [
+        "rust/generated-source",
+        "rust/modules",
+        "rust/paths",
+        "rust/source-files",
+        "rustc/source-map"
+      ]
+    },
     "rust-ub-and-operational-models-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
