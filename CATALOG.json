@@ -248,6 +248,28 @@
         "charon/options"
       ]
     },
+    "charon-dependency-and-source-coverage-nightly-2026-06-03": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon dependency extraction and source coverage"
+        }
+      ],
+      "topics": [
+        "charon/dependencies",
+        "charon/coverage",
+        "charon/foreign-items",
+        "charon/reachability",
+        "charon/mir",
+        "rustc/crates"
+      ]
+    },
     "charon-item-identity-spans-comments-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
