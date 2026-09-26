@@ -46,6 +46,8 @@ the source schema and transformation semantics; it does **not** establish
 cross-version serialization compatibility, which remains a separate #3720
 subject.
 
+This package also contains [`ARCHITECTURE.md`](ARCHITECTURE.md), which records the same pinned Charon revision's Cargo-wrapper/rustc-driver topology, compiler callback point, MIR acquisition rules, worklist extraction, and post-rustc transformation boundary. It covers the separate #3720 subject **Charon architecture and rustc integration** without treating that architecture as part of the LLBC schema itself.
+
 No fresh Charon execution was performed. The report is based on the exact pinned
 source and its checked-in documentation.
 
