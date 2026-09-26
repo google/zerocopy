@@ -1,0 +1,20 @@
+{
+  "topics": [
+    "charon/multi-target",
+    "charon/cargo",
+    "charon/target-dispatch",
+    "charon/output",
+    "charon/item-identity"
+  ],
+  "subjects": [
+    {
+      "name": "Charon multi-target translation and merge implementation",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
