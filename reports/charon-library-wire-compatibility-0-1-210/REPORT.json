@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "charon/serialization",
+    "charon/versioning",
+    "charon/charon-lib",
+    "charon/json",
+    "charon/postcard",
+    "charon/hash-consing"
+  ],
+  "subjects": [
+    {
+      "name": "Charon Rust library and serialized LLBC interface",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
