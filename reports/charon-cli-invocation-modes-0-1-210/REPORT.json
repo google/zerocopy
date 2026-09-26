@@ -1,0 +1,20 @@
+{
+  "topics": [
+    "charon/cli",
+    "charon/cargo",
+    "charon/rustc",
+    "charon/output",
+    "charon/options"
+  ],
+  "subjects": [
+    {
+      "name": "Charon command-line interface and driver wrapper",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}

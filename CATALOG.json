@@ -228,6 +228,26 @@
         "cargo/rustc-invocation"
       ]
     },
+    "charon-cli-invocation-modes-0-1-210": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon command-line interface and driver wrapper"
+        }
+      ],
+      "topics": [
+        "charon/cli",
+        "charon/cargo",
+        "charon/rustc",
+        "charon/output",
+        "charon/options"
+      ]
+    },
     "charon-item-identity-spans-comments-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
