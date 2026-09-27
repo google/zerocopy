@@ -1,0 +1,127 @@
+{
+  "observed_at": "2026-09-27",
+  "primary_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "sources": [
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/Anneal.lean",
+      "blob": "727199a54622d56dd429f2b3b178748f2cc5b7f1",
+      "regions": ["41-47", "78-109"],
+      "use": "Defines Anneal.IsValid, the generic True fallback, and default proof tactic."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "regions": ["703-740", "761-790", "946-1016", "1587-1602", "2100-2127", "2303-2326"],
+      "use": "Shows generated argument/return/&mut validity obligations and generated per-type IsValid instances."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/validate.rs",
+      "blob": "2259c939e4bba4b2c329b9751a2a3e86601c416c",
+      "regions": ["18-53"],
+      "use": "Rejects explicit isValid annotations unless unsound_allow_is_valid is enabled."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/resolve.rs",
+      "blob": "9a44f652961e0bfe62bc4c2efecd550dea361fab",
+      "regions": ["53-67"],
+      "use": "CLI documentation explains the mutation-boundary soundness hole and exposes --unsound-allow-is-valid."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/main.rs",
+      "blob": "3d363b977df790b266fe2a0635da1c294ec1b7c2",
+      "regions": ["165-183"],
+      "use": "Validation runs before Charon and Aeneas and receives the unsound opt-in flag."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/unsound_is_valid_error/anneal.toml",
+      "blob": "8804cb21908dfc53b9ef72795971f93f750ef4c5",
+      "use": "Checked-in test declares that isValid without the unsound opt-in must fail."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/unsound_is_valid_error/expected.stderr",
+      "blob": "862acc655de05edc81cdb4a1076e446911d1598b",
+      "use": "Checked-in expected diagnostic states that isValid annotations are unsound and require --unsound-allow-is-valid."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/is_valid_verification/anneal.toml",
+      "blob": "8827bcf333460ba98a9db75b2af8bee76b7d29b0",
+      "use": "End-to-end fixture explicitly enables --unsound-allow-is-valid."
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/is_valid_verification/expected.stderr",
+      "blob": "bd4f8b8c1a3e822eb9180f8d0d4fc14fc46e7b1e",
+      "use": "Checked-in expected output shows h_ret_is_valid proof synthesis at an annotated return boundary."
+    },
+    {
+      "role": "documentation",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/docs/design/design.md",
+      "blob": "f09bf3c9ecd828fb457006853632bc824b1218df",
+      "use": "Historical intended semantics for type invariants and generated pre/post conditions."
+    },
+    {
+      "role": "history",
+      "repository": "google/zerocopy",
+      "issue": "3087",
+      "url": "https://github.com/google/zerocopy/issues/3087",
+      "state_at_observation": "open",
+      "updated_at": "2026-03-08T01:30:19Z",
+      "use": "Records the known compound-type fallback hole."
+    },
+    {
+      "role": "history",
+      "repository": "google/zerocopy",
+      "issue": "3107",
+      "url": "https://github.com/google/zerocopy/issues/3107",
+      "state_at_observation": "open",
+      "updated_at": "2026-03-12T17:04:05Z",
+      "use": "Tracks the global mutation-boundary hole and unsafe-fields direction."
+    },
+    {
+      "role": "history",
+      "repository": "google/zerocopy",
+      "issue": "3088",
+      "url": "https://github.com/google/zerocopy/issues/3088",
+      "state_at_observation": "open",
+      "updated_at": "2026-03-12T16:07:19Z",
+      "use": "Discusses function-boundary versus construction/mutation-site invariant enforcement."
+    },
+    {
+      "role": "source+history",
+      "repository": "google/zerocopy",
+      "pull_request": "3179",
+      "url": "https://github.com/google/zerocopy/pull/3179",
+      "revision": "ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c",
+      "state_at_observation": "open-unmerged",
+      "use": "Draft repair adds recursive product/Option instances and tests; PR description says additional holes remain."
+    }
+  ]
+}

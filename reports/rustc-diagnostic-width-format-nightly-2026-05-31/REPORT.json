@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "rustc",
+    "rustc/diagnostics",
+    "rustc/diagnostics/json",
+    "rustc/diagnostics/rendering",
+    "rustc/diagnostics/reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "rustc diagnostics selected by Charon/Anneal toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "toolchain-date": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "zerocopy UI diagnostic harness",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "component": "tools/ui-runner"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

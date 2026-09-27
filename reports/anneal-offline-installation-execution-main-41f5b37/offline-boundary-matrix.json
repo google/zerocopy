@@ -1,0 +1,56 @@
+{
+  "schema": "anneal-reference/offline-boundary-matrix/v1",
+  "subject_revision": "google/zerocopy@41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "lake_revision": "leanprover/lean4@3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "cases": [
+    {
+      "phase": "installation",
+      "case": "fresh-default-remote",
+      "network_dependency": "required-by-code-path",
+      "mechanism": "exocrate Source::Remote calls ureq::get(url)",
+      "boundary": "current configured URLs are placeholders"
+    },
+    {
+      "phase": "installation",
+      "case": "fresh-local-archive",
+      "network_dependency": "none-in-exocrate-source-open-path",
+      "mechanism": "Source::Local opens caller-provided file",
+      "boundary": "no process-wide network sandbox; local trust/checksum semantics separate"
+    },
+    {
+      "phase": "installation",
+      "case": "existing-version-directory",
+      "network_dependency": "none-in-source-resolution-path",
+      "mechanism": "ManagedDirName existence fast path returns before source opening",
+      "boundary": "existence is not installed-tree integrity revalidation"
+    },
+    {
+      "phase": "lake-source-materialization",
+      "case": "current-packaged-graph",
+      "network_dependency": "git-clone-fetch-path-eliminated-by-design",
+      "mechanism": "vendored package declarations/manifests are rewritten to relative path dependencies; consumer rejects inherited non-path entries",
+      "boundary": "does not prohibit arbitrary package configuration or subprocess network access"
+    },
+    {
+      "phase": "lake-build-reuse",
+      "case": "prepared-artifacts",
+      "network_dependency": "intended-none-for-prepared-consumer",
+      "mechanism": "packaged build products plus --old and rewritten traces/mtimes support local reuse",
+      "boundary": "no fresh network-denied execution in this report; cache miss/rebuild is a separate dimension"
+    },
+    {
+      "phase": "policy-enforcement",
+      "case": "current-v2-archive-reuse-test",
+      "network_dependency": "not-hard-denied",
+      "mechanism": "env_clear removes ambient cache/package URL configuration; commands run from archived Lean root",
+      "boundary": "no network namespace/firewall/syscall trace; Lake --offline is not a comprehensive ordinary-build contract at the pinned revision"
+    },
+    {
+      "phase": "public-v2-product",
+      "case": "verification-command",
+      "network_dependency": "not-yet-defined",
+      "mechanism": "current V2 Commands enum exposes only setup",
+      "boundary": "archive execution path is test/packaging contract, not yet a complete public V2 verify path"
+    }
+  ]
+}

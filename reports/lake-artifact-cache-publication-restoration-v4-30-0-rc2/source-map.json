@@ -1,0 +1,50 @@
+{
+  "observed_at": "2026-09-27",
+  "repository": "leanprover/lean4",
+  "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "version": "v4.30.0-rc2",
+  "sources": [
+    {
+      "path": "src/lake/Lake/Build/Common.lean",
+      "blob": "c283fda65ba4d6e3138a0b4ab8252885bf78a014",
+      "ranges": [
+        {"lines": "176-188", "purpose": "trace and fetch-trace writes"},
+        {"lines": "206-286", "purpose": "up-to-date/cacheable classification and replay-or-fetch behavior"},
+        {"lines": "288-327", "purpose": "buildAction trace publication"},
+        {"lines": "440-496", "purpose": "Cache.saveArtifact publication mechanics"},
+        {"lines": "511-570", "purpose": "mapping lookup, trace recovery, and mapping backfill"},
+        {"lines": "632-655", "purpose": "restoreArtifact placement semantics"},
+        {"lines": "657-744", "purpose": "buildArtifactUnlessUpToDate publication/restoration control flow"}
+      ]
+    },
+    {
+      "path": "src/lake/Lake/Config/Cache.lean",
+      "blob": "607e6b92108f30e0a57d0de682f7faa283d7d470",
+      "ranges": [
+        {"lines": "387-465", "purpose": "artifact/mapping paths, direct mapping writes, malformed mapping behavior"}
+      ]
+    },
+    {
+      "path": "src/lake/Lake/Config/Monad.lean",
+      "blob": "59e032d7c516298a494c070abb948eafe2474184",
+      "ranges": [
+        {"lines": "175-203", "purpose": "restore, readable, and writable package policy defaults"}
+      ]
+    },
+    {
+      "path": "src/lake/Lake/Config/Artifact.lean",
+      "blob": "41d6af1a9aa52d6888d3f245df38b4cd76a4dd5d",
+      "ranges": [
+        {"lines": "15-94", "purpose": "content-addressed artifact identity and local-path projection"}
+      ]
+    },
+    {
+      "path": "src/lake/Lake/Util/IO.lean",
+      "blob": "35f92bf0053f3fca99f771f1b268f35760667d40",
+      "ranges": [
+        {"lines": "17-45", "purpose": "create-if-absent file writes"},
+        {"lines": "69-72", "purpose": "copy fallback primitive"}
+      ]
+    }
+  ]
+}

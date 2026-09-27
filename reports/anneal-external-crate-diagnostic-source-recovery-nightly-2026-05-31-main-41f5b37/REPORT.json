@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/diagnostics",
+    "anneal/source-maps",
+    "charon/source-maps",
+    "diagnostics/external-crates",
+    "rustc/source-map",
+    "source-correspondence"
+  ],
+  "subjects": [
+    {
+      "name": "External-crate source recovery for diagnostics across rustc and Charon/Aeneas",
+      "identity": {
+        "rust_repository": "rust-lang/rust",
+        "rust_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "rust_toolchain": "nightly-2026-05-31",
+        "charon_repository": "AeneasVerif/charon",
+        "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "charon_version": "0.1.210",
+        "aeneas_repository": "AeneasVerif/aeneas",
+        "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "aeneas_release": "nightly-2026.06.03",
+        "anneal_repository": "google/zerocopy",
+        "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

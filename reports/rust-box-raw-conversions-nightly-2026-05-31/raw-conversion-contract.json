@@ -1,0 +1,85 @@
+{
+  "schema": "anneal-reference/box-raw-conversion-contract/v1",
+  "rust_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+  "toolchain_date": "2026-05-31",
+  "operations": [
+    {
+      "operation": "Box::into_raw",
+      "stability": "stable",
+      "safety": "safe",
+      "input": "Box<T> where T: ?Sized",
+      "output": "*mut T",
+      "guarantees": [
+        "Consumes the Box without running its destructor.",
+        "Returned pointer is non-null and properly aligned.",
+        "For unsized T, the raw pointer carries the metadata needed to identify the pointee and its layout."
+      ],
+      "caller_obligations_after_return": [
+        "Retain enough information to eventually destroy T and release the allocation, or intentionally leak it.",
+        "If reconstructing Box<T>, preserve the allocation/layout/value-validity requirements of Box::from_raw.",
+        "Respect the raw pointer's provenance and aliasing constraints when accessing memory."
+      ]
+    },
+    {
+      "operation": "Box::from_raw",
+      "stability": "stable",
+      "safety": "unsafe",
+      "input": "*mut T where T: ?Sized",
+      "output": "Box<T>",
+      "ownership_transition": "The resulting Box takes ownership of the pointee/allocation and will drop T and release non-zero-sized storage through Global.",
+      "preconditions": [
+        "The pointer and metadata describe memory with the Box layout for T.",
+        "For non-zero-sized values, storage was allocated by Global with the matching layout.",
+        "The pointer denotes a valid value of T.",
+        "The pointer is non-null and sufficiently aligned; for zero-sized T an aligned dangling pointer is permitted.",
+        "No independently live owner may later destroy or deallocate the same allocation; reconstructing multiple owning Boxes from the same allocation can double free."
+      ]
+    },
+    {
+      "operation": "Box::into_raw_with_allocator",
+      "stability": "unstable allocator_api",
+      "safety": "safe",
+      "input": "Box<T, A> where T: ?Sized, A: Allocator",
+      "output": "(*mut T, A)",
+      "guarantees": [
+        "Consumes the Box and returns both the pointee pointer and the allocator value needed for matching cleanup.",
+        "Returned pointer is non-null and properly aligned."
+      ],
+      "caller_obligations_after_return": [
+        "Preserve the returned allocator together with the pointer, or otherwise perform cleanup through the allocator that actually owns the allocation.",
+        "Destroy T exactly once and deallocate non-zero-sized storage exactly once unless intentionally leaked."
+      ]
+    },
+    {
+      "operation": "Box::from_raw_in",
+      "stability": "unstable allocator_api",
+      "safety": "unsafe",
+      "input": "(*mut T, A) where T: ?Sized, A: Allocator",
+      "output": "Box<T, A>",
+      "preconditions": [
+        "The pointer was allocated by the supplied allocator A when allocation is required.",
+        "The pointer/metadata have the correct Box layout and denote a valid T.",
+        "The transfer creates exactly one owning Box for the allocation."
+      ]
+    },
+    {
+      "operation": "Box::into_non_null / Box::from_non_null",
+      "stability": "unstable box_vec_non_null",
+      "safety": "into is safe; from is unsafe",
+      "relationship": "Same ownership/layout contract as into_raw/from_raw, with NonNull encoding the non-null pointer invariant."
+    },
+    {
+      "operation": "Box::into_non_null_with_allocator / Box::from_non_null_in",
+      "stability": "unstable allocator_api",
+      "safety": "into is safe; from is unsafe",
+      "relationship": "Same allocator-carrying ownership transfer as the raw-pointer allocator variants, with NonNull encoding non-nullness."
+    }
+  ],
+  "cross_cutting": {
+    "zero_sized_types": "Box storage need not be allocated, but the Box pointer must still be non-null and sufficiently aligned. Box destruction skips deallocation when the computed layout size is zero.",
+    "dynamically_sized_types": "All raw-conversion impls are defined for T: ?Sized. Pointer metadata is therefore part of the ownership/layout identity for slices and trait objects; changing metadata can change Layout::for_value_raw and can invalidate reconstruction even when the data address is unchanged.",
+    "drop": "Box drop first drops T (compiler-managed) and then, for non-zero layout size, deallocates through the Box's stored allocator using Layout::for_value_raw.",
+    "aliasing": "The pinned Box documentation says, in an explicitly non-normative section, that Box<T> follows &mut T-style uniqueness and that derived raw pointers can be invalidated by later Box mutation/move/&mut borrowing. Raw conversion implementations contain aliasing-model-specific code to make the ownership handoff valid; consumers should rely on the API contract rather than generalizing implementation comments into a complete Rust aliasing model.",
+    "type_changing_roundtrip": "Casting an into_raw pointer before from_raw is justified only when the destination Box type has compatible layout, metadata, validity, and ownership/deallocation requirements. Address equality alone is not sufficient."
+  }
+}

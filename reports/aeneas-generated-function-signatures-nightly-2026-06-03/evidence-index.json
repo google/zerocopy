@@ -1,0 +1,97 @@
+{
+  "schema": "anneal-reference-report-evidence-index/v1",
+  "subject_revision": "AeneasVerif/aeneas@ac9f1bc5262a5e4ff1e24ca78617121382202727",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "role": "source",
+      "path": "src/extract/ExtractBase.ml",
+      "blob": "4fc8a3f35643ba66555f0889790d50993feef1b9",
+      "symbols": [
+        "opt_rename_llbc_name",
+        "default_fun_suffix",
+        "ctx_compute_fun_global_name_no_suffix",
+        "ctx_compute_fun_name",
+        "ctx_add_fun_decl"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/extract/Extract.ml",
+      "blob": "52754e4fdb25b50fce63abe2d2184751d69632e8",
+      "symbols": [
+        "extract_fun_decl_register_names",
+        "extract_fun_parameters",
+        "extract_fun_decl_gen"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/pure/Pure.ml",
+      "blob": "acde8579d6861a08efae086c72f3156283110342",
+      "symbols": [
+        "back_sg_info",
+        "decomposed_fun_type",
+        "decomposed_fun_sig",
+        "fun_sig"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob": "d35b6d67a65af220fdb56614ab1b51edc029b06f",
+      "symbols": [
+        "compute_back_tys_with_info",
+        "compute_output_ty_from_decomposed",
+        "translate_fun_sig_from_decomposed"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "blob": "018c456bcab5374de0b09b17eda0df1a48e2288b",
+      "symbols": [
+        "spec",
+        "uncurry'",
+        "spec_ok",
+        "spec_fail",
+        "spec_div"
+      ]
+    },
+    {
+      "role": "documentation",
+      "path": "documentation/tactics-reference.md",
+      "blob": "d09ac06bc02835e354a9fe7e6829762962439f2a",
+      "subjects": [
+        "step",
+        "@[step]"
+      ]
+    },
+    {
+      "role": "preserved-execution-artifact",
+      "path": "tests/lean/NoNestedBorrows.lean",
+      "blob": "e2a706b744e2e9a105e305cf8a2b353354209dae"
+    },
+    {
+      "role": "source-fixture",
+      "path": "tests/src/no_nested_borrows.rs",
+      "blob": "707f7d6e1201d1220380dd565a4178806cf3a9ec"
+    },
+    {
+      "role": "preserved-execution-artifact",
+      "path": "tests/lean/NestedBorrows.lean",
+      "blob": "61b3b2b31e50555182867a5b73fa510d05106e22"
+    },
+    {
+      "role": "preserved-execution-artifact",
+      "path": "tests/lean/Traits.lean",
+      "blob": "d234936b72231024fbccf0030a08023836e5eb6e"
+    },
+    {
+      "role": "preserved-proof-artifact",
+      "path": "tests/lean/BaseTutorial.lean",
+      "blob": "52a9947feab2f607729e23c10dfc9e12bba02d41"
+    }
+  ],
+  "fresh_execution_performed": false
+}

@@ -1,0 +1,61 @@
+{
+  "subject": {
+    "repository": "AeneasVerif/charon",
+    "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "version": "0.1.210"
+  },
+  "layers": [
+    {
+      "layer": "Charon root selection",
+      "mechanisms": ["--start-from", "--start-from-if-exists", "--start-from-attribute", "--start-from-pub", "--include", "--opaque", "--exclude"],
+      "scope": "one fresh extraction",
+      "reuse": "prunes reachable translation work",
+      "cross_run_incremental_contract": false
+    },
+    {
+      "layer": "Charon translation context",
+      "mechanisms": ["id_map", "reverse_id_map", "processed", "items_to_translate", "cached_names", "cached_item_metas", "method_status"],
+      "scope": "one TranslateCtx tied to one rustc TyCtxt",
+      "reuse": "deduplicates/discovers work within the run",
+      "cross_run_incremental_contract": false
+    },
+    {
+      "layer": "Hax translation caches",
+      "mechanisms": ["GlobalCache.per_item", "ItemCache.full_defs", "ItemCache.tys", "ItemCache.item_refs", "ItemCache.trait_proofs"],
+      "scope": "one Hax State created inside translate()",
+      "reuse": "memoizes conversion inside the compiler session",
+      "cross_run_incremental_contract": false
+    },
+    {
+      "layer": "rustc queries",
+      "mechanisms": ["TyCtxt queries", "query-provider overrides"],
+      "scope": "one rustc_driver::run_compiler session from Charon's interface",
+      "reuse": "compiler-internal; not exported as Charon state",
+      "cross_run_incremental_contract": false
+    },
+    {
+      "layer": "Cargo build reuse",
+      "mechanisms": ["ordinary cargo build", "RUSTC_WRAPPER=charon-driver"],
+      "scope": "external build-system behavior",
+      "reuse": "may avoid lower-layer compilation work subject to Cargo freshness rules",
+      "cross_run_incremental_contract": false,
+      "boundary": "0.1.210 source does not define a Charon snapshot/freshness protocol; later Charon main explicitly forces reruns with a fresh RUSTC_WORKSPACE_WRAPPER fingerprint"
+    },
+    {
+      "layer": "Serialized LLBC",
+      "mechanisms": ["CrateData::serialize_to_file", "CrateData::deserialize_from_file"],
+      "scope": "whole crate result",
+      "reuse": "consumer may reload/manipulate a complete representation",
+      "cross_run_incremental_contract": false,
+      "missing_delta_fields": ["base snapshot identity", "changed items", "tombstones", "generation", "invalidation graph"]
+    }
+  ],
+  "recommended_probe": [
+    "cold",
+    "unchanged-warm",
+    "leaf-body-edit",
+    "public-signature-edit",
+    "dependency-edit",
+    "start-from-rooted-edit"
+  ]
+}

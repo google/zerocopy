@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/v1",
+    "anneal/isvalid",
+    "anneal/type-invariants",
+    "anneal/soundness",
+    "lean/typeclasses",
+    "rust/unsafe-fields"
+  ],
+  "subjects": [
+    {
+      "name": "Historical Anneal V1 implementation retained on current zerocopy main",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Unmerged draft product/Option IsValid repair",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c",
+        "pull-request": "3179"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

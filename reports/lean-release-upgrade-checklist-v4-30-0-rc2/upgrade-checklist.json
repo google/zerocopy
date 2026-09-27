@@ -1,0 +1,133 @@
+{
+  "schema": "anneal-reference/lean-release-upgrade-checklist/v1",
+  "baseline": {
+    "lean_version": "v4.30.0-rc2",
+    "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+    "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "gates": [
+    {
+      "id": "identity-and-assets",
+      "question": "What exact Lean revision and platform artifacts will Anneal execute?",
+      "blocking_condition": "The proposed Lean release, archive bytes, or platform mapping cannot be pinned immutably.",
+      "minimum_evidence": [
+        "Resolve the Lean release/tag to an immutable revision.",
+        "Record every consumed platform archive and content digest.",
+        "Record the exact Anneal configuration change selecting the release."
+      ]
+    },
+    {
+      "id": "cross-project-pin-agreement",
+      "question": "Do Anneal and Aeneas intentionally select the same Lean/Lake proof environment?",
+      "blocking_condition": "Anneal's Lean toolchain differs from Aeneas' generated-code expectation without a reviewed compatibility argument.",
+      "minimum_evidence": [
+        "Read Aeneas backends/lean/lean-toolchain.",
+        "Read Anneal's independently selected Lean version and archive hashes.",
+        "Record any intentional divergence explicitly rather than inferring compatibility from adjacent versions."
+      ]
+    },
+    {
+      "id": "lake-dependency-closure",
+      "question": "Which Mathlib and transitive Lake package revisions accompany the new Lean release?",
+      "blocking_condition": "The generated/proof project is checked against an unreviewed dependency closure or an unlocked resolution result.",
+      "minimum_evidence": [
+        "Record Aeneas' exact lake-manifest.json closure, including Mathlib.",
+        "Diff package revisions and source kinds against the current baseline.",
+        "Materialize/load the locked dependency tree using the new Lean/Lake toolchain."
+      ]
+    },
+    {
+      "id": "kernel-and-trust",
+      "question": "Did the logical trust/admission boundary change?",
+      "blocking_condition": "A proof relied on by Anneal gains unexpected axioms/admissions or bypasses ordinary kernel checking.",
+      "minimum_evidence": [
+        "Revalidate axiom/sorry/unsafe and kernel-checking behavior relevant to Anneal.",
+        "For representative final theorems, compare transitive axiom dependencies with the accepted allowlist.",
+        "Audit any changed options or execution path that can skip ordinary checking."
+      ]
+    },
+    {
+      "id": "generated-code-elaboration",
+      "question": "Does Aeneas-generated Lean retain the syntax, elaboration, module, and name-resolution behavior Anneal relies on?",
+      "blocking_condition": "Previously accepted generated code or annotations require unreviewed syntax/elaboration/name-resolution changes.",
+      "minimum_evidence": [
+        "Elaborate a fixed generated-Lean corpus under the exact proposed toolchain and dependency closure.",
+        "Diff diagnostics and any source-level edits required for acceptance.",
+        "Review parser/elaborator, module/import, and name-resolution changes implicated by failures."
+      ]
+    },
+    {
+      "id": "proof-automation",
+      "question": "Did proof automation used by generated or user-authored proofs change materially?",
+      "blocking_condition": "The new toolchain changes proof success, failure, or dependency behavior in a way Anneal has not reviewed.",
+      "minimum_evidence": [
+        "Run representative proofs using simp/simp_all and any relied-on linter behavior.",
+        "Exercise grind and omega where Anneal or its proof library relies on them.",
+        "Treat proof-search success and failure as revision-sensitive; preserve proof terms/axiom dependencies rather than relying on tactic names alone."
+      ]
+    },
+    {
+      "id": "termination-and-partiality",
+      "question": "Did recursive-definition, partiality, or termination syntax/semantics change?",
+      "blocking_condition": "A translated or user-authored recursive definition changes totality assumptions or fails under the proposed Lean grammar/elaborator.",
+      "minimum_evidence": [
+        "Revalidate structural and well-founded termination paths used by the corpus.",
+        "Recheck partial/partial_fixpoint behavior and Aeneas-generated termination suffixes.",
+        "Run representative recursive and loop-generated Lean examples."
+      ]
+    },
+    {
+      "id": "module-artifact-compatibility",
+      "question": "Can existing or prepared .olean/.ilean/Lake state be reused safely after the upgrade?",
+      "blocking_condition": "Anneal reuses build artifacts without establishing compatibility and freshness for the exact new toolchain.",
+      "minimum_evidence": [
+        "Treat .olean as revision/build-sensitive native serialized state, not a portable interchange format.",
+        "Revalidate Lean Git/toolchain identity, Lake traces/hashes, module invalidation, and import-path resolution.",
+        "Prefer a clean rebuild unless a preserved cache-seeded equivalence probe establishes safe reuse for the exact artifact classes."
+      ]
+    },
+    {
+      "id": "server-diagnostics",
+      "question": "Did batch diagnostics, LSP/RPC tactic-state querying, or incremental invalidation behavior change?",
+      "blocking_condition": "Interactive or diagnostic consumers interpret stale state, changed coordinates/protocols, or changed severity/success semantics as equivalent behavior.",
+      "minimum_evidence": [
+        "Replay a preserved batch JSON diagnostic specimen and compare schema/severity/range behavior.",
+        "Replay tactic-state-at-position and edit/invalidation protocol transcripts against the proposed server.",
+        "Verify document-version, dependency-staleness, reconnect, and processing-barrier behavior used by Anneal tooling."
+      ]
+    },
+    {
+      "id": "native-and-platform-artifacts",
+      "question": "Are Lean/Lake native artifacts and the packaged toolchain valid on every supported host class?",
+      "blocking_condition": "Prepared native artifacts or helper binaries are reused across incompatible platform/toolchain boundaries, or archive relocation/linking fails.",
+      "minimum_evidence": [
+        "Inspect the exact release archive on each supported platform class.",
+        "Revalidate retained native objects/libraries/executables separately from .olean/.ilean artifacts.",
+        "Exercise the relocated/read-only packaged environment rather than only a development checkout."
+      ]
+    },
+    {
+      "id": "determinism-and-cache-equivalence",
+      "question": "Does the new Lean/Lake environment satisfy any determinism or cache-reuse property Anneal actually depends on?",
+      "blocking_condition": "Anneal relies on byte identity or clean/cache-seeded equivalence that has not been demonstrated for the proposed toolchain.",
+      "minimum_evidence": [
+        "Run repeated clean builds when byte identity matters and hash the exact artifact classes consumed by Anneal.",
+        "Run clean versus cache-seeded comparisons when prepared-cache equivalence matters.",
+        "Do not promote source-level determinism mechanisms into a whole-build reproducibility claim without execution evidence."
+      ]
+    },
+    {
+      "id": "end-to-end",
+      "question": "Does the proposed Lean release preserve Anneal's actual generated-code-to-proof integration?",
+      "blocking_condition": "Component checks pass but the exact packaged Rust→LLBC→Aeneas Lean→proof path fails or changes proof-relevant behavior unexpectedly.",
+      "minimum_evidence": [
+        "Run a compact generated-Lean corpus covering ordinary functions, borrows, loops/recursion, models/traits, diagnostics, and expected failures.",
+        "Use the exact packaged Lean/Lake environment and dependency closure Anneal will ship.",
+        "Require successful elaboration where expected and compare representative theorem axiom sets and diagnostics."
+      ]
+    }
+  ]
+}

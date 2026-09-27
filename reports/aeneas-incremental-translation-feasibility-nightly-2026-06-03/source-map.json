@@ -1,0 +1,84 @@
+{
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "sources": [
+    {
+      "path": "src/Translate.ml",
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "claims": [
+        "in-memory boundary",
+        "fresh whole-crate context",
+        "declaration translation stages",
+        "per-function parallelism",
+        "extraction boundary"
+      ]
+    },
+    {
+      "path": "src/interp/Interp.ml",
+      "blob": "7b06ee4d1bdd302d9cbd85fc2e822c1f5324c1e5",
+      "claims": [
+        "compute_contexts",
+        "fresh dependency graph",
+        "type/function analyses",
+        "selected declaration maps"
+      ]
+    },
+    {
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "e0662ab3153f3c401b44cbe6c0cad4e17157f063",
+      "claims": [
+        "per-function micro-pass context and parallelism",
+        "shared declaration maps",
+        "loop decomposition"
+      ]
+    },
+    {
+      "path": "src/PrePasses.ml",
+      "blob": "dc0ab803c26dafb14caf0da1bcc73e3499716835",
+      "claims": [
+        "crate-wide and per-function prepasses",
+        "normalization before translation"
+      ]
+    },
+    {
+      "path": "src/interp/InterpReduceCollapse.ml",
+      "blob": "379bcd2d4904abf5e76a2f28877b2e293cf5f4e3",
+      "claims": [
+        "internal interpreter incremental bookkeeping only"
+      ]
+    },
+    {
+      "path": "src/Parallel.ml",
+      "blob": "08f055cf2e87e0164bb3d02dc9f8dde2fc84034c",
+      "claims": [
+        "persistent process-local Domainslib pool"
+      ]
+    },
+    {
+      "path": "src/Errors.ml",
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "claims": [
+        "process-global error state"
+      ]
+    },
+    {
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "claims": [
+        "process-global configuration"
+      ]
+    },
+    {
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "claims": [
+        "normal prepass/translation lifecycle",
+        "one-input CLI",
+        "success/error boundary"
+      ]
+    }
+  ]
+}

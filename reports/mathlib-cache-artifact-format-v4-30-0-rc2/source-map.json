@@ -1,0 +1,21 @@
+{
+  "observed_at": "2026-09-27",
+  "mathlib": {
+    "repository": "leanprover-community/mathlib4",
+    "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+    "input_revision": "v4.30.0-rc2"
+  },
+  "sources": [
+    {"path":"Cache/Lean.lean","blob":"0934e22f2dc396411106b008016fba4569cf741d","symbols":["UInt64.asLTar"]},
+    {"path":"Cache/IO.lean","blob":"872ffe7ce8c608f6769e3e3cc5bb5dac8f9b001a","symbols":["rootHashGeneration","mkBuildPaths","allExist","packCache","readTraceHash","readLtarHash","needsDecompression","unpackCache","lookup"]},
+    {"path":"Cache/Main.lean","blob":"12f69c07522f61db89318bc8331b5eb395b45377","symbols":["main pack helper"]},
+    {"path":"Cache/README.md","blob":"2c25714653f41c9c378849abb8d59f92145fd9b3","roles":["upstream logical format documentation"]}
+  ],
+  "required_outputs": ["trace","olean","olean.hash","ilean","ilean.hash","c","c.hash"],
+  "optional_outputs": ["olean.server","olean.private","olean.server.hash","olean.private.hash","ir","ir.hash","extra"],
+  "hash_roles": {
+    "archive_filename": "Mathlib per-module cache hash via UInt64.asLTar",
+    "archive_header": "LTAR/LTR2/LTR3 magic plus 8-byte little-endian Lake depHash, compared with installed trace depHash"
+  },
+  "known_path_property": "Mathlib source explicitly states that dependency package-directory paths appear inside generated .ltar files; downstream unpack redirects Mathlib modules with a base path."
+}

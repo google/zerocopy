@@ -1,0 +1,40 @@
+{
+  "subject": "core::cell::UnsafeCell at rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rules": [
+    {
+      "operation_or_state": "shared &UnsafeCell<T>",
+      "changes": ["wrapped bytes are exempt from ordinary shared-reference immutability"],
+      "does_not_change": ["data-race prohibition", "validity/liveness requirements", "&mut uniqueness"]
+    },
+    {
+      "operation_or_state": "UnsafeCell::get(&self) -> *mut T",
+      "changes": ["exposes a mutable raw pointer to the wrapped storage"],
+      "does_not_change": ["raw-pointer dereference preconditions", "reference-formation aliasing requirements", "thread synchronization requirements"]
+    },
+    {
+      "operation_or_state": "UnsafeCell::raw_get(*const Self) -> *mut T",
+      "changes": ["avoids creating a temporary &UnsafeCell<T>, including during gradual initialization"],
+      "does_not_change": ["later dereference/reference preconditions", "pointee validity requirements when a T/reference is produced"]
+    },
+    {
+      "operation_or_state": "UnsafeCell::get_mut(&mut self) -> &mut T",
+      "changes": ["uses the exclusive receiver borrow to provide an ordinary exclusive reference safely"],
+      "does_not_change": ["ordinary uniqueness rule for the returned &mut T"]
+    },
+    {
+      "operation_or_state": "&T or &mut T created for UnsafeCell contents",
+      "changes": ["ordinary reference obligations become active for that reference's live interval"],
+      "does_not_change": ["the outer cell's shared-reference mutation exception outside the active content-reference obligations"]
+    },
+    {
+      "operation_or_state": "concurrent access",
+      "changes": [],
+      "does_not_change": ["data races are undefined behavior", "synchronization is required for conflicting accesses", "UnsafeCell<T> is !Sync"]
+    },
+    {
+      "operation_or_state": "layout of UnsafeCell<T>",
+      "changes": ["direct wrapper has the same in-memory representation as T", "niche optimizations are disabled through UnsafeCell"],
+      "does_not_change": ["arbitrary Outer<T> and Outer<UnsafeCell<T>> are not thereby representation-equivalent"]
+    }
+  ]
+}

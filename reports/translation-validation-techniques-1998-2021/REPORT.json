@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "verification",
+    "verification/translation-validation",
+    "semantics/refinement",
+    "compilers/correctness",
+    "verification/validators"
+  ],
+  "subjects": [
+    {
+      "name": "Translation Validation (TACAS 1998)",
+      "identity": {
+        "doi": "10.1007/BFb0054170",
+        "venue": "TACAS 1998",
+        "year": "1998"
+      }
+    },
+    {
+      "name": "Translation Validation for an Optimizing Compiler (PLDI 2000)",
+      "identity": {
+        "doi": "10.1145/349299.349314",
+        "venue": "PLDI 2000",
+        "year": "2000"
+      }
+    },
+    {
+      "name": "Formal Verification of Translation Validators (POPL 2008)",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "venue": "POPL 2008",
+        "year": "2008"
+      }
+    },
+    {
+      "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454030",
+        "venue": "PLDI 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "An SMT Encoding of LLVM's Memory Model for Bounded Translation Validation (CAV 2021)",
+      "identity": {
+        "doi": "10.1007/978-3-030-81688-9_35",
+        "venue": "CAV 2021",
+        "year": "2021"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

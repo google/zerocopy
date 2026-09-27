@@ -1,0 +1,51 @@
+{
+  "schema": "anneal-reference/external-source-recovery-matrix/v1",
+  "subjects": {
+    "rustc": {
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "toolchain": "nightly-2026-05-31"
+    },
+    "charon": {
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "version": "0.1.210"
+    },
+    "aeneas": {
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "release": "nightly-2026.06.03"
+    },
+    "anneal": {
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+    }
+  },
+  "cases": [
+    {
+      "case": "rustc local/current source",
+      "rustc_source_bytes": "SourceFile.src",
+      "integrity_evidence": "SourceFile.src_hash also exists",
+      "charon_contents": "copied from SourceFile.src",
+      "downstream_exact_excerpt": "possible from serialized contents when present"
+    },
+    {
+      "case": "rustc imported source, recoverable",
+      "rustc_source_bytes": "loaded lazily into external_src",
+      "integrity_evidence": "candidate source accepted only if src_hash matches",
+      "charon_contents": "None through register_file because source_file.src is None",
+      "downstream_exact_excerpt": "not justified from ordinary Charon File alone"
+    },
+    {
+      "case": "rustc imported source, unrecoverable",
+      "rustc_source_bytes": "absent",
+      "integrity_evidence": "src_hash retained inside rustc SourceFile",
+      "charon_contents": "None",
+      "downstream_exact_excerpt": "unavailable; preserve location metadata only"
+    },
+    {
+      "case": "historical Anneal V1 dependency/system path",
+      "rustc_source_bytes": "not directly consumed by DiagnosticMapper",
+      "integrity_evidence": "none added by V1 mapper",
+      "charon_contents": "not used for mapper source canvas",
+      "downstream_exact_excerpt": "intentionally rejected outside user_root; textual external diagnostic fallback"
+    }
+  ],
+  "required_distinction": "path/location metadata is not equivalent to verified source bytes"
+}

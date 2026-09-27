@@ -1,0 +1,64 @@
+{
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "78d7314c58110b49839894a0f69377f4ee0d1204",
+      "symbols": [
+        "transmute",
+        "transmute_unchecked"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+      "symbols": [
+        "transmute re-export",
+        "transmute_copy",
+        "transmute_prefix",
+        "transmute_neo"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/transmutability.rs",
+      "blob": "e26c1b8fa1e19b5c209aba1a0c45e179ffaf238f",
+      "symbols": [
+        "TransmuteFrom",
+        "Assume"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "anchors": [
+        "undefined.invalid",
+        "undefined.validity",
+        "undefined.validity.const-provenance",
+        "undefined.alias"
+      ],
+      "role": "normative"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "anchors": [
+        "memory",
+        "memory.bytes"
+      ],
+      "role": "normative"
+    }
+  ]
+}

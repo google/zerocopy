@@ -1,0 +1,112 @@
+{
+  "history": {
+    "commits": [
+      {
+        "message": "fix: deserialization bug",
+        "revision": "7f12e76ca0384d558f568e9df441b43a747601d8"
+      },
+      {
+        "message": "feat: write files atomically",
+        "revision": "6d1691e0a44be53e5cffbe113c6618207cfbf425"
+      },
+      {
+        "message": "fix: put temps in target dir",
+        "revision": "bc36c619c90ae72572daad8498631d02bf45e488"
+      }
+    ],
+    "compare": "d251df00e50c98347dea3c95b1ad39a9b0d8db55...bc36c619c90ae72572daad8498631d02bf45e488"
+  },
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "path": "anneal/flake.nix",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "symbols": [
+        "leantarPlatform",
+        "leantarSha256",
+        "fetchLeantar",
+        "packages.mathlib-cache-unpacked",
+        "packages.leantar"
+      ]
+    },
+    {
+      "blob": "6b6e05f0a3a81bee69555a8a1ad74a1e06a6f381",
+      "path": "src/ltar.rs",
+      "repository": "digama0/leangz",
+      "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+      "symbols": [
+        "LtarVersion",
+        "get_version",
+        "unpack",
+        "unpack_one",
+        "skip_one",
+        "pack",
+        "pack_zstd",
+        "comments"
+      ],
+      "version": "v0.1.16"
+    },
+    {
+      "blob": "866550bff26363763e1a670d1c6410d8868d5e16",
+      "path": "src/tar.rs",
+      "repository": "digama0/leangz",
+      "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+      "symbols": [
+        "main CLI parsing",
+        "JSON base overrides",
+        "UnexpectedEof handling"
+      ],
+      "version": "v0.1.16"
+    },
+    {
+      "blob": "fb220b788c9c9ca00440d7cea7a779355f318377",
+      "path": "src/ltar.rs",
+      "repository": "digama0/leangz",
+      "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+      "symbols": [
+        "unpack",
+        "unpack_one",
+        "pack"
+      ],
+      "version": "v0.1.19"
+    },
+    {
+      "blob": "7cebb1db5eb95ad95c38acf93eed11e1ac55bca7",
+      "path": "src/lib.rs",
+      "repository": "digama0/leangz",
+      "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+      "symbols": [
+        "TempFile"
+      ],
+      "version": "v0.1.19"
+    },
+    {
+      "blob": "3fa41c0cbc265ae4fba770b84d477b63372fa0af",
+      "path": "CMakeLists.txt",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "symbols": [
+        "LEANTAR_VERSION",
+        "LEANTAR_TARGET",
+        "download/extract"
+      ],
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "blob": "872ffe7ce8c608f6769e3e3cc5bb5dac8f9b001a",
+      "path": "Cache/IO.lean",
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "symbols": [
+        "getLeanTar",
+        "spawnLeanTarDecompress",
+        "packCache",
+        "readLtarHash",
+        "unpackCache"
+      ],
+      "version": "v4.30.0-rc2"
+    }
+  ]
+}

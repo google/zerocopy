@@ -1,0 +1,61 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "library/alloc/src/boxed.rs",
+      "blob": "bd3f10a16dd9b27870c28db0a34bc9b569a36634",
+      "ranges": [
+        {"lines": "54-69", "supports": "Global-allocation/layout requirements, ZST pointer rule, valid-T requirement"},
+        {"lines": "124-134", "supports": "explicitly non-normative Box aliasing/uniqueness summary"},
+        {"lines": "1274-1324", "supports": "from_raw ownership transfer, safety contract, stable status"},
+        {"lines": "1326-1380", "supports": "from_non_null ownership/safety contract and unstable status"},
+        {"lines": "1382-1442", "supports": "into_raw ownership handoff, cleanup responsibility, stable status, ManuallyDrop/aliasing implementation"},
+        {"lines": "1444-1502", "supports": "into_non_null handoff and unstable status"},
+        {"lines": "1505-1560", "supports": "from_raw_in allocator-specific reconstruction contract"},
+        {"lines": "1563-1618", "supports": "from_non_null_in allocator-specific reconstruction contract"},
+        {"lines": "1621-1680", "supports": "into_raw_with_allocator returns allocator and pointer and transfers cleanup responsibility"},
+        {"lines": "1682-1735", "supports": "into_non_null_with_allocator contract"},
+        {"lines": "1947-1961", "supports": "Box drop computes runtime pointee layout and deallocates non-ZST storage through the stored allocator"}
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "ranges": [
+        {"lines": "42-45", "supports": "Anneal Rust toolchain date is 2026-05-31"},
+        {"lines": "134-164", "supports": "Anneal obtains rustc/rust-std/rustc-dev/rust-src from the dated nightly distribution"}
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "b6c1ba9f891840fc95a1de167bc17ebc38f5cf07",
+      "path": "reports/rust-local-nested-items-nightly-2026-05-31/REPORT.md",
+      "blob": "ed4d22273dc4bedc73ddc4a8a14fcf3ae9e2602e",
+      "ranges": [
+        {"lines": "63-76", "supports": "current reference-corpus cross-check identifying rust-lang/rust f8a08b... as 1.98.0-nightly for this toolchain"}
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/lib.rs",
+      "blob": "944f177c0b0bf66ebd136e5f21ae1b4c2bde48b5",
+      "ranges": [
+        {"lines": "3860-3894", "supports": "current zerocopy constructs Box from aligned NonNull::dangling for ZST and from Global alloc_zeroed storage for non-ZST"}
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/impls.rs",
+      "blob": "4df786fd2104854e1fa259a63c29cd8781f8a404",
+      "ranges": [
+        {"lines": "1474-1484", "supports": "current zerocopy test helper performs Box::into_raw, pointer cast, Box::from_raw under an explicit layout-and-bit-validity justification"}
+      ]
+    }
+  ]
+}

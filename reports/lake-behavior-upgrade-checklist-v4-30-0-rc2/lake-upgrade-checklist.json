@@ -1,0 +1,132 @@
+{
+  "schema": "anneal-reference/lake-behavior-upgrade-checklist/v1",
+  "baseline": {
+    "lean_version": "v4.30.0-rc2",
+    "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "gates": [
+    {
+      "id": "implementation-identity",
+      "question": "Which exact Lake implementation is the proposed environment running?",
+      "blocking_condition": "Lake behavior is inferred from a Lean version label without pinning the actual Lean/Lake revision and executable environment.",
+      "minimum_evidence": [
+        "Resolve the Lean/Lake toolchain to an immutable revision and archive identity.",
+        "Record the Lake executable/environment actually invoked by Anneal.",
+        "Do not infer adjacent-version behavior from the current v4.30.0-rc2 reports."
+      ]
+    },
+    {
+      "id": "manifest-and-resolution",
+      "question": "Did manifest schema, locking, update, or dependency-resolution semantics change?",
+      "blocking_condition": "A prepared dependency graph can resolve to different packages/revisions or an incompatible manifest without review.",
+      "minimum_evidence": [
+        "Record the manifest schema/version accepted and emitted by the proposed Lake.",
+        "Diff Git/path/registry resolution and selective/full update semantics.",
+        "Load the exact locked Aeneas/Mathlib graph and verify the intended commits are materialized."
+      ]
+    },
+    {
+      "id": "configuration-state",
+      "question": "Where does package configuration state live and what invalidates it?",
+      "blocking_condition": "Read-only/shared dependency assumptions ignore changed package-local configuration writes or invalidation inputs.",
+      "minimum_evidence": [
+        "Revalidate Lean-authored versus TOML configuration paths.",
+        "Inspect .lake/config ownership, trace schema, compared invalidation fields, and lock behavior.",
+        "Test any shared/read-only package topology Anneal relies on."
+      ]
+    },
+    {
+      "id": "mutable-state-ownership",
+      "question": "Which workspace, package, and cache locations can Lake mutate?",
+      "blocking_condition": "Multiple jobs or prepared environments share state that the proposed Lake may write concurrently or unexpectedly.",
+      "minimum_evidence": [
+        "Map root-workspace, dependency-package, build, configuration, manifest, override, and cache state locations.",
+        "Revalidate path-dependency and Git-dependency ownership separately.",
+        "Keep shared immutable state distinct from per-job writable state."
+      ]
+    },
+    {
+      "id": "build-traces-and-invalidation",
+      "question": "What inputs determine whether module and target artifacts are reusable?",
+      "blocking_condition": "Anneal reuses stale artifacts because traced, weakly traced, or untraced inputs changed across the upgrade.",
+      "minimum_evidence": [
+        "Diff BuildTrace/BuildMetadata and module-input construction.",
+        "Revalidate Lean identity, source normalization, options, package/module identity, imports, plugins, and platform inputs relevant to Anneal.",
+        "Review old-mode or mtime fallback behavior separately from hash-mode reuse."
+      ]
+    },
+    {
+      "id": "artifact-cache",
+      "question": "Did local/remote artifact-cache keying, storage, restoration, or publication semantics change?",
+      "blocking_condition": "Cache hits can substitute incompatible bytes or unexpectedly require network/writable state.",
+      "minimum_evidence": [
+        "Diff input-hash to output-description mapping and content-addressed artifact storage.",
+        "Revalidate readable versus writable cache defaults and restoration behavior.",
+        "Audit remote-origin/download behavior and content verification if remote cache use is enabled."
+      ]
+    },
+    {
+      "id": "relocation-readonly-offline",
+      "question": "Can the prepared environment still be relocated, consumed read-only, and run without network access to the degree Anneal requires?",
+      "blocking_condition": "The proposed Lake can fetch, rewrite, or materialize state that the packaged environment does not provide or permit.",
+      "minimum_evidence": [
+        "Run a preserved relocation/read-only/offline matrix with a complete manifest and pre-materialized dependencies.",
+        "Observe actual network attempts rather than relying on CLI option names.",
+        "Verify any trace/path rewriting against the exact current trace schemas and operational fields."
+      ]
+    },
+    {
+      "id": "concurrency",
+      "question": "Which shared-state concurrency patterns are actually safe?",
+      "blocking_condition": "Anneal assumes a process-wide Lake lock or arbitrary shared-build safety that the proposed implementation does not provide.",
+      "minimum_evidence": [
+        "Re-audit subsystem locks/race handling and any global build serialization changes.",
+        "Stress the exact shared immutable versus writable topology Anneal intends to deploy.",
+        "Treat shared dependency sources, configuration caches, build directories, and artifact caches as separate concurrency subjects."
+      ]
+    },
+    {
+      "id": "server-preparation",
+      "question": "Did `lake serve` or per-file `lake setup-file` behavior change?",
+      "blocking_condition": "Interactive Lean workers receive stale, incomplete, differently keyed, or unexpectedly rebuilt import/setup state.",
+      "minimum_evidence": [
+        "Replay setup-file for representative generated documents and compare ModuleSetup semantics.",
+        "Exercise --no-build/--no-cache or equivalent failure behavior if Anneal relies on a prebuilt environment.",
+        "Verify imported artifacts, plugins, dynamic libraries, package/module identity, and server options."
+      ]
+    },
+    {
+      "id": "native-and-platform-artifacts",
+      "question": "Did Lake's handling of host-native build products change?",
+      "blocking_condition": "Prepared .o/.a/shared-library/plugin/executable artifacts are reused outside their supported host/toolchain identity or are pruned inconsistently.",
+      "minimum_evidence": [
+        "Inventory native facets and paths consumed by the prepared package tree.",
+        "Revalidate platform traces and restoration behavior on cache hits.",
+        "Run required platform-class smoke tests using the packaged tree."
+      ]
+    },
+    {
+      "id": "clean-cache-equivalence",
+      "question": "Does a cache-seeded/prepared build remain equivalent to a clean build for Anneal's consumers?",
+      "blocking_condition": "Anneal relies on equivalence stronger than Lake's same-input cache-substitution contract without direct evidence.",
+      "minimum_evidence": [
+        "Compare traced producer inputs and explicitly list weak/untraced inputs.",
+        "Cryptographically compare every output artifact relevant to later elaboration/linking/analysis.",
+        "Compare consumer behavior, including ordinary imports and setup-file/server preparation."
+      ]
+    },
+    {
+      "id": "behavior-probe-suite",
+      "question": "Does the proposed Lake satisfy the exact composition Anneal intends to ship?",
+      "blocking_condition": "Source-level component reviews pass but the integrated prepared-environment workflow regresses.",
+      "minimum_evidence": [
+        "Run a compact preserved matrix for dependency materialization, relocation, read-only use, offline operation, concurrency, ordinary build reuse, cache-seeded reuse, and server setup.",
+        "Use the exact packaged toolchain, dependency graph, paths, permissions, and cache policy Anneal will deploy.",
+        "Preserve commands, filesystem topology, network/write observations, artifact hashes, and diagnostics."
+      ]
+    }
+  ]
+}

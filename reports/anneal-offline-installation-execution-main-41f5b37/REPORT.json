@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/toolchain-packaging",
+    "exocrate",
+    "lake",
+    "lake/offline",
+    "lake/path-dependencies",
+    "reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal offline installation and prepared-toolchain execution contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Lake behavior selected by the Anneal toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

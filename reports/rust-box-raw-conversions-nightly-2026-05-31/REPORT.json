@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "rust/box",
+    "rust/ownership",
+    "rust/raw-pointers",
+    "rust/allocators",
+    "rust/dst",
+    "rust/unsafe"
+  ],
+  "subjects": [
+    {
+      "name": "Rust Box raw-conversion APIs behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "release": "1.98.0-nightly",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Current zerocopy Box raw-conversion call sites",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

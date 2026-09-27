@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "lean",
+    "lean/diagnostics",
+    "lean/pretty-printing",
+    "lean/options",
+    "lean/cli",
+    "lean/json"
+  ],
+  "subjects": [
+    {
+      "name": "Lean diagnostic rendering and width/format controls selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

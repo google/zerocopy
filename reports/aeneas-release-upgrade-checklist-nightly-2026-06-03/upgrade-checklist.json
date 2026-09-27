@@ -1,0 +1,124 @@
+{
+  "baseline": {
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "charon_version": "0.1.210",
+    "lean_toolchain": "leanprover/lean4:v4.30.0-rc2",
+    "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+    "rust_toolchain": "nightly-2026-05-31"
+  },
+  "gates": [
+    {
+      "blocking_condition": "Release/tag identity or an asset consumed by Anneal cannot be pinned immutably.",
+      "id": "identity",
+      "minimum_evidence": [
+        "Resolve the release tag to a commit.",
+        "Record every consumed platform asset and digest.",
+        "Record the exact Anneal configuration change selecting the release."
+      ],
+      "question": "What immutable Aeneas commit and release artifacts does the proposed release denote?"
+    },
+    {
+      "blocking_condition": "The executing Charon producer and Aeneas parser are not intentionally paired, or Anneal supplies a different rustc-private toolchain without a compatibility justification.",
+      "id": "charon-rust-coupling",
+      "minimum_evidence": [
+        "Read Aeneas charon-pin and its locked Charon input and require them to agree.",
+        "Read the pinned Charon rust-toolchain rather than inferring from release dates.",
+        "Verify Anneal supplies the same compiler/toolchain state to the Charon binary it actually invokes."
+      ],
+      "question": "Which Charon and Rust compiler state produces the LLBC consumed by this Aeneas release?"
+    },
+    {
+      "blocking_condition": "Generated Lean or proofs are checked under a different unreviewed Lean/Lake environment.",
+      "id": "lean-environment",
+      "minimum_evidence": [
+        "Read backends/lean/lean-toolchain.",
+        "Record the exact lake-manifest.json revisions, including Mathlib.",
+        "Verify Anneal packages/uses the same Lean version and compatible prepared dependency tree."
+      ],
+      "question": "Which Lean and Lake dependency closure checks the generated program and proofs?"
+    },
+    {
+      "blocking_condition": "A required platform/layout/runtime component is missing or only inferred from source without a sufficient release-artifact check.",
+      "id": "release-artifact",
+      "minimum_evidence": [
+        "Inspect the release workflow/packaging recipe and platform matrix.",
+        "Unpack each consumed platform archive or otherwise verify its exact layout.",
+        "Run more than the upstream aeneas --help smoke test: invoke bundled Charon and Aeneas and load the packaged Lean project."
+      ],
+      "question": "Does each platform archive still contain the binaries, Lean project, and prepared artifacts Anneal relies on?"
+    },
+    {
+      "blocking_condition": "Producer/consumer mismatch or unreviewed schema/semantic transformation change.",
+      "id": "llbc-contract",
+      "minimum_evidence": [
+        "Diff Charon serialization/version definitions and Aeneas LLBC reader wiring.",
+        "Preserve at least one exact LLBC specimen and verify the proposed Aeneas accepts the intended producer output.",
+        "Do not treat equal version strings or same-date tags as sufficient compatibility evidence."
+      ],
+      "question": "Has the Charon\u2192Aeneas LLBC boundary changed?"
+    },
+    {
+      "blocking_condition": "Promise-relevant unsupported/approximated constructs can reach accepted proof input without explicit exclusion.",
+      "id": "support-failure",
+      "minimum_evidence": [
+        "Diff support/limitation docs and translation/error paths.",
+        "Run a compact success/known-failure matrix under production flags.",
+        "Require nonzero failures and decide explicitly whether warnings must be promoted to errors."
+      ],
+      "question": "Did the accepted Rust subset, warning/error boundary, or fail-closed behavior change?"
+    },
+    {
+      "blocking_condition": "Existing annotations/proofs depend on changed generated interfaces without migration/revalidation.",
+      "id": "generated-interface",
+      "minimum_evidence": [
+        "Regenerate representative fixtures from identical Rust/LLBC inputs.",
+        "Diff filenames, declaration names/signatures/bodies, imports, and proof-library dependencies.",
+        "Separate textual drift from semantic drift and proof-environment drift."
+      ],
+      "question": "Did generated Lean names, signatures, file layout, or proof-facing support change?"
+    },
+    {
+      "blocking_condition": "Unexpected assumptions or changed model semantics enter a theorem used for a Rust-level claim.",
+      "id": "models-trust",
+      "minimum_evidence": [
+        "Diff the Lean model registry and opaque/external-definition handling.",
+        "Audit new/changed axioms, sorry/sorryAx paths, and model assumptions.",
+        "For representative final theorems, compare transitive axiom dependencies with the accepted allowlist."
+      ],
+      "question": "Did builtin/external models or theorem-specific trust assumptions change?"
+    },
+    {
+      "blocking_condition": "A proof silently changes totality/termination assumptions or relies on an unvalidated termination-generation path.",
+      "id": "termination-partiality",
+      "minimum_evidence": [
+        "Revalidate recursive/loop translation and Result.div/specification behavior.",
+        "Recheck decreases-clause generation against the selected Lean termination grammar.",
+        "Run representative recursive and loop proofs rather than inferring from source syntax alone."
+      ],
+      "question": "Did recursion, loops, divergence, partial_fixpoint, or extrinsic termination behavior change?"
+    },
+    {
+      "blocking_condition": "Anneal relies on byte identity or cache reuse that the production generation mode does not demonstrate.",
+      "id": "determinism",
+      "minimum_evidence": [
+        "Repeat generation from identical LLBC in fresh directories.",
+        "Hash complete generated trees under the exact production concurrency mode.",
+        "If output identity is a cache key, vary host/domain count and path spelling as appropriate."
+      ],
+      "question": "Can the production Aeneas invocation be treated as reproducible at the granularity Anneal needs?"
+    },
+    {
+      "blocking_condition": "The release passes component checks but fails the integrated path or changes proof-relevant output unexpectedly.",
+      "id": "end-to-end",
+      "minimum_evidence": [
+        "Preserve a compact discriminating golden corpus spanning ordinary data, borrows, loops/recursion, traits/models, and expected failures.",
+        "Run the actual Anneal environment/tool selection, not only upstream standalone commands.",
+        "Require Charon/Aeneas success, Lean elaboration, and theorem-level axiom checks for successful fixtures."
+      ],
+      "question": "Does the proposed release still satisfy Anneal's actual source\u2192LLBC\u2192Lean\u2192proof integration?"
+    }
+  ],
+  "schema": "anneal-reference/aeneas-release-upgrade-checklist/v1"
+}

@@ -1,0 +1,15 @@
+{
+  "primary_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+  "sources": [
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon/main.rs","blob":"b4460ce4cd3baa32308718e79b6e194860b042a6","role":"Cargo wrapper, target fanout, whole-result merge"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon-driver/driver.rs","blob":"3f90a7a31857aed462694066e5ffaa6e28b9dcfa","role":"rustc session and callbacks"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon-driver/main.rs","blob":"ab74f3f3d12a869bd8c3c94083b93b7dee1c2482","role":"driver lifecycle and final serialization"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon-driver/translate/translate_ctx.rs","blob":"e7e10ceb5c6d8ee1834ad2d11d021c92b1f5f6ec","role":"per-run translation state and caches"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon-driver/translate/translate_crate.rs","blob":"53536c6df6e241c9655840f6b1f8a4aca2113f90","role":"fresh context, root traversal, queue, item allocation"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/bin/charon-driver/hax/state.rs","blob":"63fc236effb5b581582a8bf10f3c5934d857d6eb","role":"Hax per-session caches"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/options.rs","blob":"f08f8bae08d7fb5f38773c0be038d925fe80cb4c","role":"root-selection and translation-scope options"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"charon/src/export.rs","blob":"d5428958eb870f9f8531a8d193385c6be782338a","role":"whole-CrateData serialization"},
+    {"repository":"AeneasVerif/charon","revision":"a535e914f74db4fd9e6be7048f4233270d8945c0","path":"rust-toolchain","blob":"4e348edab20d6bd5b195e758afe20f9d8258a3e1","role":"Rust nightly identity"},
+    {"repository":"AeneasVerif/charon","revision":"67da6d3b8f31dfb0d003aee1596040f9efd7d27f","path":"charon/src/bin/charon/main.rs","blob":"a5aa2c459ccde69502093dcf6988f2a5d314c7d3","role":"later non-authoritative cache-freshness comparison"}
+  ]
+}

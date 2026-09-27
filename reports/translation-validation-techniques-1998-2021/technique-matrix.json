@@ -1,0 +1,48 @@
+{
+  "schema": "anneal-reference/translation-validation-technique-matrix/v1",
+  "rows": [
+    {
+      "work": "Pnueli-Siegel-Singerman-1998",
+      "validation_granularity": "individual translator run",
+      "relation": "refinement in a common semantic framework",
+      "proof_method": "refinement mapping / simulation with automated proof construction",
+      "translator_must_be_verified": false,
+      "validator_verified_in_work": false,
+      "principal_boundary": "assurance depends on semantic framework, refinement relation, and analyzer correctness"
+    },
+    {
+      "work": "Necula-2000",
+      "validation_granularity": "individual optimization passes",
+      "relation": "semantic preservation between pre-pass and post-pass IR",
+      "proof_method": "symbolic execution plus heuristically recovered transformation correspondence",
+      "translator_must_be_verified": false,
+      "validator_verified_in_work": false,
+      "principal_boundary": "validator covers recognizable transformations and modeled operations"
+    },
+    {
+      "work": "Tristan-Leroy-2008",
+      "validation_granularity": "individual scheduling pass outputs",
+      "relation": "source-target semantic preservation relation",
+      "proof_method": "specialized symbolic execution and structural correspondence",
+      "translator_must_be_verified": false,
+      "validator_verified_in_work": true,
+      "principal_boundary": "sound acceptance can be incomplete; theorem is only the stated relation over modeled Mach semantics"
+    },
+    {
+      "work": "Alive2-2021",
+      "validation_granularity": "pairs of LLVM IR functions for intraprocedural optimizations",
+      "relation": "LLVM-specific refinement including definedness, UB, nondeterminism, values and memory",
+      "proof_method": "SMT encoding of source and target semantics",
+      "translator_must_be_verified": false,
+      "validator_verified_in_work": false,
+      "principal_boundary": "bounded loop/resource search and unsupported/over-approximated features can miss refinement failures"
+    }
+  ],
+  "cross_cutting": {
+    "soundness": "Acceptance is meaningful only relative to the validator's stated semantic relation and trust model.",
+    "completeness": "General semantic validation is undecidable; validators may reject correct translations or deliberately bound the search.",
+    "definedness": "Comparing successful result values alone is insufficient when the target can introduce new UB, failures, or effects.",
+    "composition": "Pass-local validation needs composable intermediate-language relations to support an end-to-end conclusion.",
+    "outcome_taxonomy": ["accepted", "counterexample/discrepancy", "unknown-or-unsupported-or-resource-limited"]
+  }
+}

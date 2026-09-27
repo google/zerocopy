@@ -1,0 +1,45 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "direct_sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lake-manifest.json",
+      "blob": "1a5af703163d8b39f4311aafe22ae171788179ee",
+      "role": "Current locked Aeneas/Mathlib Lake dependency graph"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lean-toolchain",
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+      "role": "Lean/Lake toolchain identity selected by Aeneas"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "role": "Anneal packaged Lean/Lake environment"
+    }
+  ],
+  "published_reference_evidence": [
+    {"path":"reports/lake-state-model-v4-30-0-rc2/REPORT.md","blob":"8acd526450edd54f7e1a15da0d799f6f2d89f68d"},
+    {"path":"reports/lake-dependency-resolution-v4-30-0-rc2/REPORT.md","blob":"a9b1cec3a81e3806b2dbdee8c72dbc0622c25e86"},
+    {"path":"reports/lake-configuration-ownership-v4-30-0-rc2/REPORT.md","blob":"2f36cf32e008648eba3bfba779a0d1ae7ece429a"},
+    {"path":"reports/lake-config-cache-contents-invalidation-v4-30-0-rc2/REPORT.md","blob":"e8cae1b63d2c429aec41f27b1b5b94e9ed40ddd7"},
+    {"path":"reports/lake-manifest-schema-locking-v4-30-0-rc2/REPORT.md","blob":"383fb2c4a5c18df5409066d0a3b13491f413b43e"},
+    {"path":"reports/lake-olean-invalidation-v4-30-0-rc2/REPORT.md","blob":"5d0eeaf9d30f0c6a18be58c7b14a7cfd11ca20f7"},
+    {"path":"reports/lake-artifact-cache-architecture-v4-30-0-rc2/REPORT.md","blob":"f236167f379302213b81c274efd64d10dff03ab3"},
+    {"path":"reports/lake-trace-relocation-rewrite-boundaries-v4-30-0-rc2/REPORT.md","blob":"96a177e6eccaedd37da4aecec5b8d008f0c312c5"},
+    {"path":"reports/lake-readonly-relocation-offline-concurrency-v4-30-0-rc2/REPORT.md","blob":"8939500f86c03c4da7d9339f8a02c12346267cf6"},
+    {"path":"reports/lake-server-preparation-v4-30-0-rc2/REPORT.md","blob":"589374b2335773dffdcd4702100f9edfd0479c2f"},
+    {"path":"reports/lake-clean-cache-seeded-equivalence-v4-30-0-rc2/REPORT.md","blob":"28e29b99b1642930d292c8b9f0c8e988b63e2d77"},
+    {"path":"reports/lake-workspace-package-mutable-state-v4-30-0-rc2/REPORT.md","blob":"681b090e26e8f040b4d7ad0f9e2a4bb07d161ce6"},
+    {"path":"reports/lean-package-native-artifacts-v4-30-0-rc2/REPORT.md","blob":"2bf92e4df20c54ea9069c27a231301d2d94fa132"}
+  ],
+  "reference_basis": {
+    "reference_commit": "b59ccc6a33c219354126ab524ad4c503ea0e8d0b",
+    "note": "The checklist composes exact-pin Lake findings already preserved in these immutable report blobs; empirical gates remain explicitly unproven by source synthesis alone."
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schema": "anneal-reference/rustc-diagnostic-controls/v1",
+  "rust_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+  "toolchain_date": "nightly-2026-05-31",
+  "controls": [
+    {
+      "control": "--diagnostic-width=N",
+      "registration": "stable",
+      "effect": "Explicit diagnostic width; precedes terminal discovery in Session and AnnotateSnippetEmitter. Also influences some diagnostic-construction heuristics.",
+      "golden_test_role": "Always pin when comparing human output, JSON rendered output, or structured diagnostics that may exercise width-dependent shortening/label placement."
+    },
+    {
+      "control": "--error-format=human",
+      "registration": "stable",
+      "effect": "Default multi-line human rendering.",
+      "golden_test_role": "Pair with fixed width and --color=never."
+    },
+    {
+      "control": "--error-format=short",
+      "registration": "stable",
+      "effect": "Short one-line human rendering.",
+      "golden_test_role": "Use only when short rendering is the intended specimen."
+    },
+    {
+      "control": "--error-format=json",
+      "registration": "stable",
+      "effect": "Structured JSON records; ordinary mode emits one JSON value per line to stderr.",
+      "golden_test_role": "Prefer structural parsing; schema remains revision-sensitive."
+    },
+    {
+      "control": "--color=never",
+      "registration": "stable",
+      "effect": "Suppresses ANSI in human output.",
+      "golden_test_role": "Pin for human-text fixtures; cannot be combined with --json."
+    },
+    {
+      "control": "--json=diagnostic-short",
+      "registration": "stable option surface; exact suboption behavior pinned here",
+      "effect": "Uses short human rendering in JSON rendered field.",
+      "golden_test_role": "Only if short embedded rendering is desired."
+    },
+    {
+      "control": "--json=diagnostic-rendered-ansi",
+      "registration": "stable option surface; exact suboption behavior pinned here",
+      "effect": "Opts JSON rendered field into ANSI color.",
+      "golden_test_role": "Omit for plain deterministic rendered text."
+    },
+    {
+      "control": "--error-format=pretty-json",
+      "registration": "recognized but gated unstable on non-nightly/non--Z",
+      "effect": "Pretty-serializes JSON instead of ordinary compact line-delimited records.",
+      "golden_test_role": "Avoid for stable streaming consumers."
+    },
+    {
+      "control": "--error-format=human-unicode",
+      "registration": "recognized but gated unstable on non-nightly/non--Z",
+      "effect": "Uses Unicode human rendering theme.",
+      "golden_test_role": "Do not treat as stable surface solely because the selected nightly accepts it."
+    }
+  ],
+  "protocol_boundary": "The JSON command-line mode is stable at this pin, but rustc source explicitly describes the JSON schema as unstable and rustc documentation requires forward-compatible parsing."
+}

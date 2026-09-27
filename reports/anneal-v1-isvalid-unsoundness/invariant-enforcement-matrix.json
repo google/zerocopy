@@ -1,0 +1,54 @@
+{
+  "subject_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "scope": "Anneal V1 isValid behavior",
+  "rows": [
+    {
+      "case": "explicit isValid annotation without opt-in",
+      "behavior": "rejected before Charon/Aeneas",
+      "mechanism": "validate_artifacts emits AnnealError::Unsoundness unless unsound_allow_is_valid is true",
+      "soundness_role": "default mitigation"
+    },
+    {
+      "case": "argument of an Anneal-annotated function",
+      "behavior": "Pre contains h_<arg>_is_valid",
+      "mechanism": "generated Anneal.IsValid.isValid obligation",
+      "soundness_role": "selected function-boundary check only"
+    },
+    {
+      "case": "non-unit return of an Anneal-annotated function",
+      "behavior": "Post contains h_ret_is_valid",
+      "mechanism": "generated Anneal.IsValid.isValid obligation",
+      "soundness_role": "selected function-boundary check only"
+    },
+    {
+      "case": "post-state of a direct &mut argument to an Anneal-annotated function",
+      "behavior": "Post contains h_<arg>'_is_valid",
+      "mechanism": "generated Anneal.IsValid.isValid obligation",
+      "soundness_role": "selected mutable function-boundary check only"
+    },
+    {
+      "case": "safe unannotated construction or mutation of invariant-carrying fields",
+      "behavior": "no Anneal isValid proof obligation is generated merely because the field changes",
+      "mechanism": "Anneal only sees/validates its annotated verification boundaries; Rust fields are not required to be unsafe",
+      "soundness_role": "known global-invariant hole"
+    },
+    {
+      "case": "type with no specific Anneal.IsValid instance",
+      "behavior": "isValid resolves to True",
+      "mechanism": "low-priority generic defaultIsValid",
+      "soundness_role": "intentional permissive fallback"
+    },
+    {
+      "case": "Option<T> or product containing a T with a nontrivial IsValid instance",
+      "behavior": "current V1 library provides no recursive Option/product instance; generic fallback can erase the component invariant",
+      "mechanism": "no Option/product-specific Anneal.IsValid instance in current Anneal.lean",
+      "soundness_role": "known compound-type hole"
+    },
+    {
+      "case": "draft PR #3179",
+      "behavior": "adds recursive Option and binary-product IsValid instances plus negative/positive tests",
+      "mechanism": "unmerged patch at ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c",
+      "soundness_role": "partial proposed repair, not current behavior"
+    }
+  ]
+}

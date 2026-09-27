@@ -1,0 +1,67 @@
+{
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain": "nightly-2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "core::mem::transmute<Src,Dst>",
+      "stability": "stable",
+      "size_rule": "size_of::<Src>() == size_of::<Dst>() is compiler-checked at the call site",
+      "source_state": "Src is consumed; original is forgotten rather than separately dropped",
+      "destination_rule": "result must be valid as Dst; external lifetime/aliasing/library invariants remain caller obligations",
+      "alignment_rule": "by-value Src/Dst slots are aligned by normal calling/value semantics; pointee/reference alignment obligations remain",
+      "padding_rule": "padding in Src or Dst is not guaranteed to be preserved",
+      "pointer_integer_rule": "const provenance restrictions apply; integer-to-pointer transmute is largely unspecified at this revision"
+    },
+    {
+      "operation": "core::mem::transmute_copy<Src,Dst>(&Src)",
+      "stability": "stable",
+      "size_rule": "public contract requires Dst not larger than Src; inspected implementation asserts size_of::<Src>() >= size_of::<Dst>()",
+      "source_state": "original Src remains logically present",
+      "destination_rule": "typed Dst is read from the source prefix and must be valid; caller must prevent duplicated ownership/resource misuse",
+      "alignment_rule": "implementation selects read_unaligned when align_of::<Dst>() > align_of::<Src>()",
+      "padding_rule": "typed read; no untyped padding-preservation guarantee is established"
+    },
+    {
+      "operation": "core::intrinsics::transmute_unchecked<Src,Dst>",
+      "stability": "internal unstable intrinsic",
+      "size_rule": "caller obligation; unequal sizes are UB",
+      "source_state": "same runtime operation as transmute when well formed",
+      "destination_rule": "caller must establish valid Dst and all other destination obligations",
+      "padding_rule": "inherits by-value transmutation boundary"
+    },
+    {
+      "operation": "core::mem::transmute_prefix<Src,Dst>",
+      "stability": "unstable, issue 155079",
+      "size_rule": "size mismatch is permitted",
+      "source_state": "Src is consumed",
+      "destination_rule": "common-prefix bytes plus any uninitialized suffix must be valid as Dst; Dst safety invariants must hold",
+      "padding_rule": "when Dst is larger, trailing bytes are uninitialized; sound only when Dst permits that state"
+    },
+    {
+      "operation": "core::mem::transmute_neo<Src,Dst>",
+      "stability": "unstable, issue 155079",
+      "size_rule": "const assertion requires equal size",
+      "source_state": "Src is consumed",
+      "destination_rule": "caller retains non-size safety obligations",
+      "implementation": "delegates to transmute_unchecked after size assertion"
+    },
+    {
+      "operation": "core::mem::TransmuteFrom<Src,ASSUME>",
+      "stability": "unstable, issue 99571",
+      "size_rule": "compiler proves union-transmutability modulo explicit assumptions; equal size is not universally required",
+      "source_state": "Src is consumed",
+      "destination_rule": "compiler proves unassumed dimensions; caller owns assumed alignment/lifetimes/library-safety/validity dimensions",
+      "portability_rule": "implementation existence is not a portability, cross-compilation, or SemVer-stability guarantee"
+    }
+  ],
+  "verification_invariants": [
+    "same size is neither destination validity nor semantic/library-invariant proof",
+    "transmute is a move; transmute_copy is a copy that can duplicate resource ownership",
+    "typed transmutation is not an untyped byte-copy padding guarantee",
+    "pointer provenance and const-evaluation provenance cannot be collapsed to integer bit patterns",
+    "reference lifetime/alignment/aliasing obligations follow the produced reference-like value"
+  ]
+}

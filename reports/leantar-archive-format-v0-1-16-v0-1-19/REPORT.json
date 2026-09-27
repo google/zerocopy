@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "lean/leantar",
+    "lean/artifacts",
+    "mathlib/cache",
+    "mathlib/ltar",
+    "anneal/offline-builds",
+    "anneal/toolchain-bundling"
+  ],
+  "subjects": [
+    {
+      "name": "leantar used directly by current Anneal Mathlib-cache unpacking",
+      "identity": {
+        "repository": "digama0/leangz",
+        "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+        "version": "v0.1.16",
+        "component": "leantar"
+      }
+    },
+    {
+      "name": "leantar selected by Lean v4.30.0-rc2 source and Mathlib sysroot lookup",
+      "identity": {
+        "repository": "digama0/leangz",
+        "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+        "version": "v0.1.19",
+        "component": "leantar"
+      }
+    },
+    {
+      "name": "Lean toolchain source selected by Aeneas",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Mathlib cache consumer selected by Aeneas",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "version": "v4.30.0-rc2",
+        "component": "Cache"
+      }
+    },
+    {
+      "name": "Current Anneal packaging and Mathlib-cache extraction",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/flake.nix"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

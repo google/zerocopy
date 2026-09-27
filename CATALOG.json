@@ -1,34 +1,34 @@
 {
   "reports": {
     "adjacent-version-non-generalization-examples-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "newer-release": "v4.31.0",
+            "newer-revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "older-release": "v4.30.0-rc2",
+            "older-revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "repository": "leanprover/lean4"
+          },
+          "name": "Lake configuration ownership across Lean v4.30.0-rc2 and v4.31.0"
+        },
+        {
+          "identity": {
+            "aeneas-pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "anneal-tag-resolution": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "package-version": "0.1.210",
+            "repository": "AeneasVerif/charon"
+          },
+          "name": "Charon same-version revisions selected by Aeneas and Anneal"
+        }
+      ],
       "topics": [
         "anneal/versioning",
         "charon/versioning",
         "lake/versioning",
         "verification/revalidation"
-      ],
-      "subjects": [
-        {
-          "name": "Lake configuration ownership across Lean v4.30.0-rc2 and v4.31.0",
-          "identity": {
-            "repository": "leanprover/lean4",
-            "older-revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
-            "older-release": "v4.30.0-rc2",
-            "newer-revision": "68218e876d2a38b1985b8590fff244a83c321783",
-            "newer-release": "v4.31.0"
-          }
-        },
-        {
-          "name": "Charon same-version revisions selected by Aeneas and Anneal",
-          "identity": {
-            "repository": "AeneasVerif/charon",
-            "aeneas-pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
-            "anneal-tag-resolution": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
-            "package-version": "0.1.210"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "aeneas-architecture-translation-pipeline-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
@@ -202,6 +202,27 @@
         "verification/literature"
       ]
     },
+    "aeneas-generated-function-signatures-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas generated Lean function interface selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/borrows",
+        "aeneas/functions",
+        "aeneas/lean",
+        "aeneas/signatures",
+        "aeneas/specifications"
+      ]
+    },
     "aeneas-generated-function-specifications-nightly-2026-06-03": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -308,6 +329,27 @@
         "aeneas/lean",
         "aeneas/parallelism",
         "anneal/reproducibility"
+      ]
+    },
+    "aeneas-incremental-translation-feasibility-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/architecture",
+        "aeneas/incremental",
+        "aeneas/translation",
+        "anneal/interactive",
+        "incremental-computation"
       ]
     },
     "aeneas-infinite-diverging-execution-nightly-2026-06-03": {
@@ -627,6 +669,51 @@
         "aeneas/release",
         "aeneas/toolchain",
         "toolchain/distribution"
+      ]
+    },
+    "aeneas-release-upgrade-checklist-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selected by current Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by the selected Aeneas release"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by the Aeneas Lean backend"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal configuration that consumes the release"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/release-upgrade",
+        "aeneas/revalidation",
+        "anneal/toolchain",
+        "charon/toolchain",
+        "lean/toolchain",
+        "verification/upgrade"
       ]
     },
     "aeneas-resource-semantics-nightly-2026-06-03": {
@@ -1128,6 +1215,35 @@
         "rustc/diagnostics"
       ]
     },
+    "anneal-external-crate-diagnostic-source-recovery-nightly-2026-05-31-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_release": "nightly-2026.06.03",
+            "aeneas_repository": "AeneasVerif/aeneas",
+            "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "anneal_repository": "google/zerocopy",
+            "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+            "charon_repository": "AeneasVerif/charon",
+            "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "charon_version": "0.1.210",
+            "rust_repository": "rust-lang/rust",
+            "rust_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rust_toolchain": "nightly-2026-05-31"
+          },
+          "name": "External-crate source recovery for diagnostics across rustc and Charon/Aeneas"
+        }
+      ],
+      "topics": [
+        "anneal/diagnostics",
+        "anneal/source-maps",
+        "charon/source-maps",
+        "diagnostics/external-crates",
+        "rustc/source-map",
+        "source-correspondence"
+      ]
+    },
     "anneal-host-platform-matrix-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1298,6 +1414,35 @@
         "toolchain/versioning"
       ]
     },
+    "anneal-offline-installation-execution-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal offline installation and prepared-toolchain execution contract"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake behavior selected by the Anneal toolchain"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain-packaging",
+        "exocrate",
+        "lake",
+        "lake/offline",
+        "lake/path-dependencies",
+        "reproducibility"
+      ]
+    },
     "anneal-omnibus-archive-byte-reproducibility-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1461,6 +1606,25 @@
       ]
     },
     "anneal-v1-end-to-end-pipeline-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 end-to-end verification implementation"
+        },
+        {
+          "identity": {
+            "pull_request": "3487",
+            "repository": "google/zerocopy",
+            "revision": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655"
+          },
+          "name": "Anneal V1/V2 reorganization boundary"
+        }
+      ],
       "topics": [
         "anneal",
         "anneal/v1",
@@ -1470,26 +1634,7 @@
         "lean/verification",
         "lake/build",
         "diagnostics/source-mapping"
-      ],
-      "subjects": [
-        {
-          "name": "Retained Anneal V1 end-to-end verification implementation",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
-            "path": "anneal/v1"
-          }
-        },
-        {
-          "name": "Anneal V1/V2 reorganization boundary",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655",
-            "pull_request": "3487"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "anneal-v1-integration-test-disk-amplification-f98458e": {
       "observed_at": "2026-09-27",
@@ -1528,7 +1673,55 @@
         "lake/concurrency"
       ]
     },
+    "anneal-v1-isvalid-unsoundness": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Historical Anneal V1 implementation retained on current zerocopy main"
+        },
+        {
+          "identity": {
+            "pull-request": "3179",
+            "repository": "google/zerocopy",
+            "revision": "ef0b8ebe7011311bce0e8fa2fe4a3aa5d95c1e6c"
+          },
+          "name": "Unmerged draft product/Option IsValid repair"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/isvalid",
+        "anneal/type-invariants",
+        "anneal/soundness",
+        "lean/typeclasses",
+        "rust/unsafe-fields"
+      ]
+    },
     "anneal-v1-unsafe-axiom-semantics-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Historical Anneal V1 unsafe(axiom) pipeline"
+        },
+        {
+          "identity": {
+            "path": "backends/lean/Aeneas/Std",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas WP/Result semantics used by historical Anneal V1"
+        }
+      ],
       "topics": [
         "anneal/v1",
         "anneal/v1/unsafe-axiom",
@@ -1536,28 +1729,34 @@
         "charon/opaque",
         "lean/axiom",
         "verification/trust-boundary"
-      ],
-      "subjects": [
-        {
-          "name": "Historical Anneal V1 unsafe(axiom) pipeline",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
-            "path": "anneal/v1"
-          }
-        },
-        {
-          "name": "Aeneas WP/Result semantics used by historical Anneal V1",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
-            "path": "backends/lean/Aeneas/Std"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "assembly-isa-proof-boundaries-2013-2026": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 compilation boundary"
+        },
+        {
+          "identity": {
+            "publication": "PLDI 2013",
+            "year": "2013"
+          },
+          "name": "Translation Validation for a Verified OS Kernel"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314622",
+            "publication": "PLDI 2019"
+          },
+          "name": "Verified Compilation on a Verified Processor"
+        }
+      ],
       "topics": [
         "verification",
         "verification/assembly",
@@ -1568,32 +1767,7 @@
         "compcert",
         "sel4",
         "cakeml"
-      ],
-      "subjects": [
-        {
-          "name": "CompCert 3.18 compilation boundary",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "Translation Validation for a Verified OS Kernel",
-          "identity": {
-            "publication": "PLDI 2013",
-            "year": "2013"
-          }
-        },
-        {
-          "name": "Verified Compilation on a Verified Processor",
-          "identity": {
-            "doi": "10.1145/3314221.3314622",
-            "publication": "PLDI 2019"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "cargo-compilation-subject-identity-2026-05-31": {
       "observed_at": "2026-09-25",
@@ -1714,6 +1888,27 @@
         "charon/options"
       ]
     },
+    "charon-closures-0-1-210": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon closure representation"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/closures",
+        "charon/traits",
+        "charon/lifetimes",
+        "rust/closures"
+      ]
+    },
     "charon-closures-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1802,6 +1997,26 @@
         "charon/llbc"
       ]
     },
+    "charon-entry-selection-opacity-0-1-210": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon selected by Aeneas nightly-2026.06.03"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/start-from",
+        "charon/opacity",
+        "charon/name-matcher",
+        "charon/reachability"
+      ]
+    },
     "charon-enum-layout-0-1-210": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1822,6 +2037,28 @@
         "charon/layout",
         "charon/niches",
         "rust/layout"
+      ]
+    },
+    "charon-incremental-capabilities-0-1-210": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust_toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon incremental capabilities pinned by Aeneas nightly-2026.06.03"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/incremental",
+        "charon/rustc-driver",
+        "charon/translation",
+        "interactive/invalidation",
+        "rustc/incremental"
       ]
     },
     "charon-intrinsics-0-1-210": {
@@ -1987,6 +2224,32 @@
       ]
     },
     "charon-release-upgrade-checklist-0-1-210": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas nightly-2026.06.03"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selecting the Charon baseline"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal authority instantiating the checklist"
+        }
+      ],
       "topics": [
         "charon/release-upgrade",
         "charon/revalidation",
@@ -1995,33 +2258,7 @@
         "charon/transforms",
         "aeneas/charon",
         "anneal/toolchain"
-      ],
-      "subjects": [
-        {
-          "name": "Charon pinned by Aeneas nightly-2026.06.03",
-          "identity": {
-            "repository": "AeneasVerif/charon",
-            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
-            "version": "0.1.210"
-          }
-        },
-        {
-          "name": "Aeneas release selecting the Charon baseline",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Anneal authority instantiating the checklist",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "charon-serialization-compatibility-api-0-1-210": {
       "observed_at": "2026-09-26",
@@ -2252,6 +2489,50 @@
       ]
     },
     "concurrency-memory-model-verification-approaches-2013-2026": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "library/core/src/sync/atomic.rs",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust atomics memory model selected by the Anneal-era toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2509136.2509532",
+            "publication": "OOPSLA 2013",
+            "year": "2013"
+          },
+          "name": "Relaxed Separation Logic"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+            "publication": "ECOOP 2017",
+            "year": "2017"
+          },
+          "name": "Strong Logic for Weak Memory"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-81685-8_20",
+            "publication": "CAV 2021",
+            "year": "2021"
+          },
+          "name": "GenMC: A Model Checker for Weak Memory Models"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-032-28187-6_14",
+            "publication": "FORTE 2026",
+            "year": "2026"
+          },
+          "name": "RustMC: Automated Verification of Real-World Concurrent Rust"
+        }
+      ],
       "topics": [
         "verification/concurrency",
         "verification/weak-memory",
@@ -2259,51 +2540,7 @@
         "verification/model-checking",
         "rust/concurrency",
         "rust/atomics"
-      ],
-      "subjects": [
-        {
-          "name": "Rust atomics memory model selected by the Anneal-era toolchain",
-          "identity": {
-            "repository": "rust-lang/rust",
-            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
-            "path": "library/core/src/sync/atomic.rs",
-            "toolchain-date": "2026-05-31"
-          }
-        },
-        {
-          "name": "Relaxed Separation Logic",
-          "identity": {
-            "doi": "10.1145/2509136.2509532",
-            "publication": "OOPSLA 2013",
-            "year": "2013"
-          }
-        },
-        {
-          "name": "Strong Logic for Weak Memory",
-          "identity": {
-            "doi": "10.4230/LIPIcs.ECOOP.2017.17",
-            "publication": "ECOOP 2017",
-            "year": "2017"
-          }
-        },
-        {
-          "name": "GenMC: A Model Checker for Weak Memory Models",
-          "identity": {
-            "doi": "10.1007/978-3-030-81685-8_20",
-            "publication": "CAV 2021",
-            "year": "2021"
-          }
-        },
-        {
-          "name": "RustMC: Automated Verification of Real-World Concurrent Rust",
-          "identity": {
-            "doi": "10.1007/978-3-032-28187-6_14",
-            "publication": "FORTE 2026",
-            "year": "2026"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
       "observed_at": "2026-09-27",
@@ -2639,6 +2876,33 @@
       ]
     },
     "ffi-specification-trust-patterns-2019-2026": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+            "toolchain-context": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65 (nightly-2026-05-31)"
+          },
+          "name": "Rust foreign-function interface selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert external-call specification pattern"
+        },
+        {
+          "identity": {
+            "publication": "Verified Compilation on a Verified Processor, PLDI 2019, DOI 10.1145/3314221.3314622",
+            "repository": "CakeML/cakeml",
+            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
+          },
+          "name": "CakeML FFI/oracle specification and refinement pattern"
+        }
+      ],
       "topics": [
         "verification/ffi",
         "verification/trust-boundary",
@@ -2647,34 +2911,7 @@
         "rust/ffi",
         "compcert",
         "cakeml"
-      ],
-      "subjects": [
-        {
-          "name": "Rust foreign-function interface selected by Anneal",
-          "identity": {
-            "repository": "rust-lang/reference",
-            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
-            "toolchain-context": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65 (nightly-2026-05-31)"
-          }
-        },
-        {
-          "name": "CompCert external-call specification pattern",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "CakeML FFI/oracle specification and refinement pattern",
-          "identity": {
-            "repository": "CakeML/cakeml",
-            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
-            "publication": "Verified Compilation on a Verified Processor, PLDI 2019, DOI 10.1145/3314221.3314622"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "generated-rust-visibility-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
@@ -2833,6 +3070,63 @@
         "lake/build",
         "lake/package-cache",
         "lake/reproducibility"
+      ]
+    },
+    "lake-artifact-cache-publication-restoration-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake artifact-cache publication and restoration semantics selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/artifact-cache",
+        "lake/artifact-publication",
+        "lake/artifact-restoration",
+        "lake/build",
+        "lake/traces"
+      ]
+    },
+    "lake-behavior-upgrade-checklist-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "lean_version": "v4.30.0-rc2",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lake implementation shipped with Anneal's current Lean toolchain"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean workspace consumed by current Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current Anneal authority used to instantiate the checklist"
+        }
+      ],
+      "topics": [
+        "anneal/cache",
+        "anneal/toolchain",
+        "lake",
+        "lake/revalidation",
+        "lake/toolchain",
+        "verification/upgrade"
       ]
     },
     "lake-clean-cache-seeded-equivalence-v4-30-0-rc2": {
@@ -3414,6 +3708,27 @@
         "lean/parallelism"
       ]
     },
+    "lean-diagnostic-format-controls-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean diagnostic rendering and width/format controls selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/diagnostics",
+        "lean/pretty-printing",
+        "lean/options",
+        "lean/cli",
+        "lean/json"
+      ]
+    },
     "lean-diagnostic-objects-severity-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -3432,6 +3747,26 @@
         "lean/messages",
         "lean/lsp",
         "lean/severity"
+      ]
+    },
+    "lean-environment-hashing-invalidation-v4-30-0-rc2": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean environment identity and invalidation selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/environment",
+        "lean/incremental-elaboration",
+        "lean/invalidation",
+        "lean/server"
       ]
     },
     "lean-environment-invalidation-v4-30-0-rc2": {
@@ -3462,6 +3797,33 @@
       ]
     },
     "lean-generated-file-interactive-workflows-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server selected by Anneal"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean generator selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+            "version": "3.18"
+          },
+          "name": "Language Server Protocol 3.18 specification"
+        }
+      ],
       "topics": [
         "aeneas/generated-lean",
         "lean/lsp",
@@ -3469,34 +3831,7 @@
         "lean/incremental",
         "lean/dependencies",
         "lsp/document-sync"
-      ],
-      "subjects": [
-        {
-          "name": "Lean 4 language server selected by Anneal",
-          "identity": {
-            "repository": "leanprover/lean4",
-            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
-            "version": "v4.30.0-rc2"
-          }
-        },
-        {
-          "name": "Aeneas Lean generator selected by Anneal",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Language Server Protocol 3.18 specification",
-          "identity": {
-            "repository": "microsoft/language-server-protocol",
-            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
-            "version": "3.18"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "lean-grind-behavior-extensibility-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
@@ -3793,6 +4128,25 @@
         "lean/tactics"
       ]
     },
+    "lean-omega-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean `omega` tactic"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/arithmetic",
+        "lean/omega",
+        "lean/tactics"
+      ]
+    },
     "lean-package-native-artifacts-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3889,6 +4243,43 @@
         "lean/pretty-printing",
         "lean/roundtrip",
         "lean/syntax"
+      ]
+    },
+    "lean-release-upgrade-checklist-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean release selected by current Anneal"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean environment selected by current Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current Anneal authority used to instantiate the checklist"
+        }
+      ],
+      "topics": [
+        "anneal/toolchain",
+        "lake/toolchain",
+        "lean",
+        "lean/release-upgrade",
+        "lean/revalidation",
+        "lean/toolchain",
+        "verification/upgrade"
       ]
     },
     "lean-server-multi-workspace-isolation-v4-30-0-rc2": {
@@ -4062,7 +4453,95 @@
         "lake/build-failure"
       ]
     },
+    "leantar-archive-format-v0-1-16-v0-1-19": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "component": "leantar",
+            "repository": "digama0/leangz",
+            "revision": "d251df00e50c98347dea3c95b1ad39a9b0d8db55",
+            "version": "v0.1.16"
+          },
+          "name": "leantar used directly by current Anneal Mathlib-cache unpacking"
+        },
+        {
+          "identity": {
+            "component": "leantar",
+            "repository": "digama0/leangz",
+            "revision": "bc36c619c90ae72572daad8498631d02bf45e488",
+            "version": "v0.1.19"
+          },
+          "name": "leantar selected by Lean v4.30.0-rc2 source and Mathlib sysroot lookup"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean toolchain source selected by Aeneas"
+        },
+        {
+          "identity": {
+            "component": "Cache",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Mathlib cache consumer selected by Aeneas"
+        },
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current Anneal packaging and Mathlib-cache extraction"
+        }
+      ],
+      "topics": [
+        "lean/leantar",
+        "lean/artifacts",
+        "mathlib/cache",
+        "mathlib/ltar",
+        "anneal/offline-builds",
+        "anneal/toolchain-bundling"
+      ]
+    },
     "library-versus-closed-program-verification-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "POPL 2018"
+          },
+          "name": "RustBelt unsafe-library and safe-client composition model"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 whole-program semantic-preservation development"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2676985",
+            "publication": "POPL 2015"
+          },
+          "name": "Compositional CompCert"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.12990",
+            "year": "2023"
+          },
+          "name": "Fully Composable and Adequate Verified Compilation with Direct Refinements between Open Modules"
+        }
+      ],
       "topics": [
         "verification",
         "verification/library",
@@ -4072,41 +4551,28 @@
         "verification/specifications",
         "rustbelt",
         "compcert"
-      ],
-      "subjects": [
-        {
-          "name": "RustBelt unsafe-library and safe-client composition model",
-          "identity": {
-            "doi": "10.1145/3158154",
-            "publication": "POPL 2018"
-          }
-        },
-        {
-          "name": "CompCert 3.18 whole-program semantic-preservation development",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "Compositional CompCert",
-          "identity": {
-            "doi": "10.1145/2676726.2676985",
-            "publication": "POPL 2015"
-          }
-        },
-        {
-          "name": "Fully Composable and Adequate Verified Compilation with Direct Refinements between Open Modules",
-          "identity": {
-            "arxiv": "2302.12990",
-            "year": "2023"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "lsp-proof-assistant-architecture-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+            "specification": "3.18"
+          },
+          "name": "Language Server Protocol 3.18 specification source"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server selected by Anneal"
+        }
+      ],
       "topics": [
         "lsp",
         "lsp/architecture",
@@ -4115,26 +4581,35 @@
         "lsp/workspaces",
         "proof-assistants",
         "lean/server"
-      ],
+      ]
+    },
+    "mathlib-cache-artifact-format-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
       "subjects": [
         {
-          "name": "Language Server Protocol 3.18 specification source",
           "identity": {
-            "repository": "microsoft/language-server-protocol",
-            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
-            "specification": "3.18"
-          }
+            "input-revision": "v4.30.0-rc2",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+          },
+          "name": "Mathlib cache artifact construction selected through Aeneas"
         },
         {
-          "name": "Lean 4 language server selected by Anneal",
           "identity": {
-            "repository": "leanprover/lean4",
-            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
-            "version": "v4.30.0-rc2"
-          }
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean dependency graph selected by Anneal"
         }
       ],
-      "observed_at": "2026-09-27"
+      "topics": [
+        "mathlib",
+        "mathlib/cache",
+        "mathlib/cache-artifacts",
+        "lean/build-artifacts",
+        "leantar"
+      ]
     },
     "mathlib-dependency-closure-pruning-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
@@ -4196,6 +4671,32 @@
       ]
     },
     "mathlib-release-cache-upgrade-checklist-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "inputRev": "v4.30.0-rc2",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+          },
+          "name": "Mathlib revision selected by Aeneas nightly-2026.06.03"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean dependency graph selecting Mathlib"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal authority consuming the prepared Mathlib cache"
+        }
+      ],
       "topics": [
         "mathlib/release-upgrade",
         "mathlib/cache",
@@ -4204,33 +4705,7 @@
         "lake/artifacts",
         "anneal/toolchain",
         "anneal/cache"
-      ],
-      "subjects": [
-        {
-          "name": "Mathlib revision selected by Aeneas nightly-2026.06.03",
-          "identity": {
-            "repository": "leanprover-community/mathlib4",
-            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
-            "inputRev": "v4.30.0-rc2"
-          }
-        },
-        {
-          "name": "Aeneas Lean dependency graph selecting Mathlib",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Anneal authority consuming the prepared Mathlib cache",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "mcp-proof-assistant-architecture-2026-07-28": {
       "observed_at": "2026-09-27",
@@ -4258,6 +4733,33 @@
       ]
     },
     "operational-semantics-versus-functional-translation-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3547647",
+            "publication": "PACMPL 6 (ICFP 2022), Article 116",
+            "year": "2022"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674640",
+            "publication": "PACMPL 8 (ICFP 2024)",
+            "year": "2024"
+          },
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 operational semantics and semantic-preservation development"
+        }
+      ],
       "topics": [
         "verification/operational-semantics",
         "verification/functional-translation",
@@ -4265,76 +4767,76 @@
         "verification/simulation",
         "aeneas",
         "compcert"
-      ],
-      "subjects": [
-        {
-          "name": "Aeneas: Rust Verification by Functional Translation",
-          "identity": {
-            "doi": "10.1145/3547647",
-            "publication": "PACMPL 6 (ICFP 2022), Article 116",
-            "year": "2022"
-          }
-        },
-        {
-          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
-          "identity": {
-            "doi": "10.1145/3674640",
-            "publication": "PACMPL 8 (ICFP 2024)",
-            "year": "2024"
-          }
-        },
-        {
-          "name": "CompCert 3.18 operational semantics and semantic-preservation development",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "proof-producing-versus-validating-translations-1997-2022": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/263699.263712",
+            "publication": "POPL 1997"
+          },
+          "name": "Proof-Carrying Code"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2007.09.008",
+            "publication": "ENTCS 190(4), 2007"
+          },
+          "name": "A Certifying Code Generation Phase"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          },
+          "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-99461-7_6",
+            "publication": "FLOPS 2022"
+          },
+          "name": "Translation Certification for Smart Contracts"
+        }
+      ],
       "topics": [
         "compiler-verification/certification",
         "proof-carrying-code",
         "translation-validation/verified-validator",
         "translation-certification",
         "verification/proof-artifacts"
-      ],
-      "subjects": [
-        {
-          "name": "Proof-Carrying Code",
-          "identity": {
-            "doi": "10.1145/263699.263712",
-            "publication": "POPL 1997"
-          }
-        },
-        {
-          "name": "A Certifying Code Generation Phase",
-          "identity": {
-            "doi": "10.1016/j.entcs.2007.09.008",
-            "publication": "ENTCS 190(4), 2007"
-          }
-        },
-        {
-          "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
-          "identity": {
-            "doi": "10.1145/1328438.1328444",
-            "publication": "POPL 2008"
-          }
-        },
-        {
-          "name": "Translation Certification for Smart Contracts",
-          "identity": {
-            "doi": "10.1007/978-3-030-99461-7_6",
-            "publication": "FLOPS 2022"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "reasoning-about-nontermination-compcert-aeneas-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 whole-program behavior and simulation semantics"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas divergence and partial-function model selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+            "rust-toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust termination terminology at the Anneal Rust pin"
+        }
+      ],
       "topics": [
         "verification/nontermination",
         "verification/divergence",
@@ -4343,34 +4845,7 @@
         "verification/total-correctness",
         "compcert",
         "aeneas/termination"
-      ],
-      "subjects": [
-        {
-          "name": "CompCert 3.18 whole-program behavior and simulation semantics",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "Aeneas divergence and partial-function model selected by Anneal",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Rust termination terminology at the Anneal Rust pin",
-          "identity": {
-            "repository": "rust-lang/reference",
-            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
-            "rust-toolchain": "nightly-2026-05-31"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "rust-aggregate-layout-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
@@ -4402,6 +4877,17 @@
       ]
     },
     "rust-allocation-deallocation-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31"
+        }
+      ],
       "topics": [
         "rust",
         "rust/allocation",
@@ -4409,20 +4895,27 @@
         "rust/layout",
         "rust/memory",
         "rust/unsafe"
-      ],
+      ]
+    },
+    "rust-atomics-memory-orderings-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
       "subjects": [
         {
-          "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
           "identity": {
             "repository": "rust-lang/rust",
             "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
             "toolchain-date": "2026-05-31"
-          }
+          },
+          "name": "Rust atomic library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
         }
       ],
-      "observed_at": "2026-09-27"
-    },
-    "rust-atomics-memory-orderings-nightly-2026-05-31": {
       "topics": [
         "rust",
         "rust/atomics",
@@ -4430,25 +4923,7 @@
         "rust/data-races",
         "rust/memory-ordering",
         "rust/unsafe"
-      ],
-      "subjects": [
-        {
-          "name": "Rust atomic library behind Anneal-era nightly-2026-05-31",
-          "identity": {
-            "repository": "rust-lang/rust",
-            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
-            "toolchain-date": "2026-05-31"
-          }
-        },
-        {
-          "name": "Rust Reference bundled by the compiler revision",
-          "identity": {
-            "repository": "rust-lang/reference",
-            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
@@ -4476,6 +4951,35 @@
         "rust/send-sync",
         "rustc/trait-solver",
         "rustc/coinduction"
+      ]
+    },
+    "rust-box-raw-conversions-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust Box raw-conversion APIs behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current zerocopy Box raw-conversion call sites"
+        }
+      ],
+      "topics": [
+        "rust/box",
+        "rust/ownership",
+        "rust/raw-pointers",
+        "rust/allocators",
+        "rust/dst",
+        "rust/unsafe"
       ]
     },
     "rust-conditional-compilation-nightly-2026-05-31": {
@@ -4969,6 +5473,40 @@
       ]
     },
     "rust-nightly-upgrade-checklist-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal toolchain configuration"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by the selected Aeneas release"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler source behind Anneal-era nightly-2026-05-31"
+        }
+      ],
       "topics": [
         "anneal/toolchain",
         "anneal/revalidation",
@@ -4976,41 +5514,7 @@
         "rust/toolchain",
         "rustc",
         "charon/toolchain"
-      ],
-      "subjects": [
-        {
-          "name": "Anneal toolchain configuration",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
-          }
-        },
-        {
-          "name": "Aeneas release selected by Anneal",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Charon pinned by the selected Aeneas release",
-          "identity": {
-            "repository": "AeneasVerif/charon",
-            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
-            "version": "0.1.210"
-          }
-        },
-        {
-          "name": "Rust compiler source behind Anneal-era nightly-2026-05-31",
-          "identity": {
-            "repository": "rust-lang/rust",
-            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
-            "toolchain-date": "2026-05-31"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "rust-nonnull-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
@@ -5378,6 +5882,34 @@
         "charon/source-spans"
       ]
     },
+    "rust-transmute-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/transmute",
+        "rust/validity",
+        "rust/initialization",
+        "rust/provenance",
+        "rust/unsafe"
+      ]
+    },
     "rust-type-alias-lowering-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -5507,6 +6039,24 @@
       ]
     },
     "rust-unsafe-trait-invariants-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler behind nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference used for exact unsafe-trait language rules"
+        }
+      ],
       "topics": [
         "rust/unsafe-traits",
         "rust/unsafe",
@@ -5515,25 +6065,35 @@
         "rust/send-sync",
         "rust/safety-invariants",
         "anneal/verification-surface"
-      ],
+      ]
+    },
+    "rust-unsafecell-interior-mutability-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
       "subjects": [
         {
-          "name": "Rust compiler behind nightly-2026-05-31",
           "identity": {
             "repository": "rust-lang/rust",
             "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
-            "toolchain": "nightly-2026-05-31"
-          }
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
         },
         {
-          "name": "Rust Reference used for exact unsafe-trait language rules",
           "identity": {
             "repository": "rust-lang/reference",
             "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
-          }
+          },
+          "name": "Rust Reference bundled with the selected compiler revision"
         }
       ],
-      "observed_at": "2026-09-27"
+      "topics": [
+        "rust",
+        "rust/unsafecell",
+        "rust/interior-mutability",
+        "rust/aliasing",
+        "rust/concurrency",
+        "rust/layout"
+      ]
     },
     "rust-validity-well-defined-execution-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
@@ -5641,6 +6201,34 @@
         "separation-logic"
       ]
     },
+    "rustc-diagnostic-width-format-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          },
+          "name": "rustc diagnostics selected by Charon/Anneal toolchain"
+        },
+        {
+          "identity": {
+            "component": "tools/ui-runner",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "zerocopy UI diagnostic harness"
+        }
+      ],
+      "topics": [
+        "rustc",
+        "rustc/diagnostics",
+        "rustc/diagnostics/json",
+        "rustc/diagnostics/rendering",
+        "rustc/diagnostics/reproducibility"
+      ]
+    },
     "rustc-mir-before-charon-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -5732,6 +6320,32 @@
       ]
     },
     "semantic-preservation-unsupported-opaque-operations-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 external-call and semantic-preservation model"
+        },
+        {
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
+          },
+          "name": "CakeML FFI/oracle semantics examined for opaque environmental effects"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3314221.3314622",
+            "publication": "PLDI 2019",
+            "year": "2019"
+          },
+          "name": "Verified Compilation on a Verified Processor"
+        }
+      ],
       "topics": [
         "verification/semantic-preservation",
         "verification/opaque-operations",
@@ -5740,35 +6354,42 @@
         "verified-compilation",
         "compcert",
         "cakeml"
-      ],
-      "subjects": [
-        {
-          "name": "CompCert 3.18 external-call and semantic-preservation model",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "CakeML FFI/oracle semantics examined for opaque environmental effects",
-          "identity": {
-            "repository": "CakeML/cakeml",
-            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
-          }
-        },
-        {
-          "name": "Verified Compilation on a Verified Processor",
-          "identity": {
-            "doi": "10.1145/3314221.3314622",
-            "publication": "PLDI 2019",
-            "year": "2019"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "tcb-accounting-patterns-verification-systems-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "documentation": "8.20.1",
+            "project": "Rocq/Coq"
+          },
+          "name": "Rocq kernel and assumption accounting"
+        },
+        {
+          "identity": {
+            "project": "CompCert",
+            "released": "2026-08-31",
+            "version": "3.18"
+          },
+          "name": "CompCert verified compiler and verified-verifier methodology"
+        },
+        {
+          "identity": {
+            "binary_validation_publication": "PLDI 2013",
+            "functional_correctness_publication": "SOSP 2009",
+            "project": "seL4"
+          },
+          "name": "seL4 functional and binary verification trust boundary"
+        },
+        {
+          "identity": {
+            "assurance_model": "HOL4-to-machine-code verified pipeline",
+            "project": "CakeML"
+          },
+          "name": "CakeML end-to-end verified compilation and proof checking"
+        }
+      ],
       "topics": [
         "verification/trusted-computing-base",
         "verification/assumptions",
@@ -5777,42 +6398,88 @@
         "verification/translation-validation",
         "verification/end-to-end-assurance",
         "anneal/trust-model"
-      ],
+      ]
+    },
+    "translation-validation-techniques-1998-2021": {
+      "observed_at": "2026-09-27",
       "subjects": [
         {
-          "name": "Rocq kernel and assumption accounting",
           "identity": {
-            "project": "Rocq/Coq",
-            "documentation": "8.20.1"
-          }
+            "doi": "10.1007/BFb0054170",
+            "venue": "TACAS 1998",
+            "year": "1998"
+          },
+          "name": "Translation Validation (TACAS 1998)"
         },
         {
-          "name": "CompCert verified compiler and verified-verifier methodology",
           "identity": {
-            "project": "CompCert",
-            "version": "3.18",
-            "released": "2026-08-31"
-          }
+            "doi": "10.1145/349299.349314",
+            "venue": "PLDI 2000",
+            "year": "2000"
+          },
+          "name": "Translation Validation for an Optimizing Compiler (PLDI 2000)"
         },
         {
-          "name": "seL4 functional and binary verification trust boundary",
           "identity": {
-            "project": "seL4",
-            "functional_correctness_publication": "SOSP 2009",
-            "binary_validation_publication": "PLDI 2013"
-          }
+            "doi": "10.1145/1328438.1328444",
+            "venue": "POPL 2008",
+            "year": "2008"
+          },
+          "name": "Formal Verification of Translation Validators (POPL 2008)"
         },
         {
-          "name": "CakeML end-to-end verified compilation and proof checking",
           "identity": {
-            "project": "CakeML",
-            "assurance_model": "HOL4-to-machine-code verified pipeline"
-          }
+            "doi": "10.1145/3453483.3454030",
+            "venue": "PLDI 2021",
+            "year": "2021"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-81688-9_35",
+            "venue": "CAV 2021",
+            "year": "2021"
+          },
+          "name": "An SMT Encoding of LLVM's Memory Model for Bounded Translation Validation (CAV 2021)"
         }
       ],
-      "observed_at": "2026-09-27"
+      "topics": [
+        "verification",
+        "verification/translation-validation",
+        "semantics/refinement",
+        "compilers/correctness",
+        "verification/validators"
+      ]
     },
     "verification-nondeterminism-environmental-effects-2020-2026": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          },
+          "name": "CompCert 3.18 behavior and external-world semantics"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371119",
+            "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51",
+            "year": "2020"
+          },
+          "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571254",
+            "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800",
+            "year": "2023"
+          },
+          "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq"
+        }
+      ],
       "topics": [
         "verification",
         "semantics/nondeterminism",
@@ -5822,61 +6489,34 @@
         "compcert",
         "interaction-trees",
         "choice-trees"
-      ],
+      ]
+    },
+    "verified-compiler-pass-composition-compcert-3-18-popl-2008": {
+      "observed_at": "2026-09-27",
       "subjects": [
         {
-          "name": "CompCert 3.18 behavior and external-world semantics",
           "identity": {
             "repository": "AbsInt/CompCert",
             "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
             "version": "3.18"
-          }
+          },
+          "name": "CompCert 3.18 verified compiler"
         },
         {
-          "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq",
           "identity": {
-            "doi": "10.1145/3371119",
-            "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51",
-            "year": "2020"
-          }
-        },
-        {
-          "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq",
-          "identity": {
-            "doi": "10.1145/3571254",
-            "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800",
-            "year": "2023"
-          }
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          },
+          "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations"
         }
       ],
-      "observed_at": "2026-09-27"
-    },
-    "verified-compiler-pass-composition-compcert-3-18-popl-2008": {
       "topics": [
         "compiler-verification/composition",
         "compcert/semantic-preservation",
         "compcert/simulation",
         "translation-validation/verified-validator",
         "verification/refinement"
-      ],
-      "subjects": [
-        {
-          "name": "CompCert 3.18 verified compiler",
-          "identity": {
-            "repository": "AbsInt/CompCert",
-            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
-            "version": "3.18"
-          }
-        },
-        {
-          "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
-          "identity": {
-            "doi": "10.1145/1328438.1328444",
-            "publication": "POPL 2008"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "zerocopy-rust-intrinsics-nightly-2026-05-31": {
       "observed_at": "2026-09-27",

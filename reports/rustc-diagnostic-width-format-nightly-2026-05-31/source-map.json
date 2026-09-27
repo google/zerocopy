@@ -1,0 +1,102 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "sources": [
+        {
+          "path": "src/doc/rustc/src/command-line-arguments.md",
+          "blob": "b6ee6c3f5fa79a2a98e43951658bd958e96dabd3",
+          "role": "documentation",
+          "focus": "error-format/color/diagnostic-width/json CLI"
+        },
+        {
+          "path": "src/doc/rustc/src/json.md",
+          "blob": "7421dd6210806f8e3a9b310f8f72578830309abe",
+          "role": "documentation",
+          "focus": "JSON framing, schema and forward compatibility"
+        },
+        {
+          "path": "compiler/rustc_session/src/config.rs",
+          "blob": "e82f67eac5e9f7d0b089727e6317d77242ba3b1c",
+          "role": "source",
+          "focus": "option stability, parsing and gating"
+        },
+        {
+          "path": "compiler/rustc_session/src/session.rs",
+          "blob": "c83bb62324e76a0686515782d3290961d655dd3d",
+          "role": "source",
+          "focus": "Session::diagnostic_width"
+        },
+        {
+          "path": "compiler/rustc_session/src/options.rs",
+          "blob": "de606458d048e93b4bb97b0b5cdc6d70f9cee6a4",
+          "role": "source",
+          "focus": "UNTRACKED diagnostic options"
+        },
+        {
+          "path": "compiler/rustc_errors/src/annotate_snippet_emitter_writer.rs",
+          "blob": "c3c9f26c31571596875822ae7227d51dfb34f16b",
+          "role": "source",
+          "focus": "renderer width precedence"
+        },
+        {
+          "path": "compiler/rustc_errors/src/json.rs",
+          "blob": "04ac140f332618d6fa81254e9a16bc27c729eef5",
+          "role": "source",
+          "focus": "JSON emitter, rendered field, schema warning"
+        },
+        {
+          "path": "compiler/rustc_middle/src/ty/error.rs",
+          "blob": "81cd3efffc9d4fb110bbc736f21024b3dc1a607f",
+          "role": "source",
+          "focus": "width-dependent type shortening"
+        },
+        {
+          "path": "compiler/rustc_trait_selection/src/error_reporting/infer/mod.rs",
+          "blob": "c9e2312895820e0cd480eace6b4a32c12aeea3c3",
+          "role": "source",
+          "focus": "expected/found type shortening"
+        },
+        {
+          "path": "compiler/rustc_trait_selection/src/error_reporting/traits/fulfillment_errors.rs",
+          "blob": "4d051a370c06570d2511a0b49b6137b6b99baab9",
+          "role": "source",
+          "focus": "width-dependent label/help structure"
+        },
+        {
+          "path": "tests/ui/diagnostic-width/flag-json.rs",
+          "blob": "edc7d2e2a4255429405ee2a0a45fac414424ccd6",
+          "role": "checked-in-test",
+          "focus": "fixed-width JSON fixture"
+        },
+        {
+          "path": "tests/ui/diagnostic-width/flag-json.stderr",
+          "blob": "cfc0364be76dee749b2baab13d4ee4f6d4e58ede",
+          "role": "checked-in-test-output",
+          "focus": "fixed-width JSON specimen"
+        },
+        {
+          "path": "tests/ui/diagnostic-width/flag-human.rs",
+          "blob": "8e656293b41025febe2236c13bb5e4d6e39670c4",
+          "role": "checked-in-test",
+          "focus": "fixed-width human fixture"
+        }
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "sources": [
+        {
+          "path": "tools/ui-runner/src/main.rs",
+          "blob": "933bef1b3a41fb11978247ef2a185c3e289257f4",
+          "role": "source",
+          "focus": "downstream fixed-width diagnostic harness"
+        }
+      ]
+    }
+  ],
+  "execution_evidence": "none; checked-in rustc UI outputs were inspected but not rerun"
+}

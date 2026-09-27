@@ -1,0 +1,46 @@
+{
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/cell.rs",
+      "blob": "1c79cf6bfcb36c2a814155bce8f8ea32afb2c191",
+      "focus": ["UnsafeCell type docs", "aliasing rules", "memory layout", "get", "get_mut", "raw_get", "as_ref_unchecked", "as_mut_unchecked"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/marker.rs",
+      "blob": "53141aabacc453e3781bbe9593618e26c06ca732",
+      "focus": ["Sync documentation", "Freeze lang item", "!Freeze for UnsafeCell"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "focus": ["raw pointer to reference requirements", "UnsafeCell exception for shared-reference mutation"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_lint/src/reference_casting.rs",
+      "blob": "6052a16a7f117a302f6f76143b1d6020f406d2f6",
+      "focus": ["invalid reference casting", "interior-mutability boundary"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "src/tools/miri/tests/pass/both_borrows/interior_mutability.rs",
+      "blob": "b7dbd3ff172938860782bcf804031d66d42dafc2",
+      "focus": ["checked-in implementation tests for interior mutability; inspected, not executed"]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "focus": ["aliasing", "immutable bytes", "reference liveness", "validity boundary"]
+    }
+  ]
+}

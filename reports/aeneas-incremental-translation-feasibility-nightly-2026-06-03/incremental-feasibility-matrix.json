@@ -1,0 +1,55 @@
+{
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "capabilities": [
+    {
+      "capability": "retain in-memory translated crate",
+      "status": "available",
+      "basis": "translate_crate_to_pure returns trans_ctx * translated_crate"
+    },
+    {
+      "capability": "parallel per-function translation",
+      "status": "available within one request",
+      "basis": "Translate.ml partitions and parallel_filter_map translates functions"
+    },
+    {
+      "capability": "parallel per-function pure micro-passes",
+      "status": "available within one request",
+      "basis": "PureMicroPasses.apply_passes_to_pure_fun_translations uses Parallel.parallel_map"
+    },
+    {
+      "capability": "persistent worker-pool reuse",
+      "status": "available within one process",
+      "basis": "Parallel.Pool lazy Domainslib pool"
+    },
+    {
+      "capability": "reuse prior trans_ctx on edited crate",
+      "status": "not exposed",
+      "basis": "translate_crate_to_pure always calls fresh compute_contexts"
+    },
+    {
+      "capability": "changed/deleted declaration protocol",
+      "status": "not exposed",
+      "basis": "no inspected public entrypoint accepts an edit set or tombstones"
+    },
+    {
+      "capability": "transitive invalidation computation",
+      "status": "not exposed as cross-request protocol",
+      "basis": "compute_contexts recomputes a fresh crate use graph; no old/new update API"
+    },
+    {
+      "capability": "patch prior translated_crate",
+      "status": "not exposed",
+      "basis": "translation returns a newly assembled translated_crate"
+    },
+    {
+      "capability": "incremental final extraction",
+      "status": "not exposed",
+      "basis": "extraction registers global names and computes dependency/SCC structure from the current full translated result"
+    }
+  ],
+  "recommended_baseline": "persistent process if desired for runtime reuse, but whole normalized LLBC crate as semantic recomputation/invalidation unit until finer-grained equivalence is established"
+}

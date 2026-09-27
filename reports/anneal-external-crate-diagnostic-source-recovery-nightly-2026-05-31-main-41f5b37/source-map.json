@@ -1,0 +1,76 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/source_map.rs",
+      "blob": "47c933e245d4942a81f48dc8bcd6b15ba9c39ea7",
+      "focus": "imported SourceFile construction, external source loading, reverse remap"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/lib.rs",
+      "blob": "2371bf15756dac74f5488d5d0b069ed6673014a5",
+      "focus": "SourceFile, source hashes, ExternalSource, add_external_src"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_errors/src/emitter.rs",
+      "blob": "fa3ff21b2726ff400e378d8ef6f888156829d980",
+      "focus": "source excerpt availability gate"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "focus": "nightly-2026-05-31 selection"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/translate/translate_meta.rs",
+      "blob": "187a703dff83687f369f1903c6646aabdff259d3",
+      "focus": "register_file and filename normalization"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/ast/meta.rs",
+      "blob": "7a80a92ea1b3f3eaff1758554001e32019473237",
+      "focus": "serialized File/FileName/SpanData schema"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Errors.ml",
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "focus": "source location rendering"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/diagnostics.rs",
+      "blob": "cd27b771e2f22bdb104c5335a70cfde3207e8fdb",
+      "focus": "historical workspace-only source renderer"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/PRINCIPLES.md",
+      "blob": "d5339a95254eae14ac201139d07d9d36d48a19fb",
+      "focus": "current design authority"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/DESIGN.md",
+      "blob": "0e8170979f3a466f2460c0ef7ec6d9a6b92650b8",
+      "focus": "current diagnostic/design boundary"
+    }
+  ],
+  "fresh_execution": "none"
+}

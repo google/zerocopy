@@ -1,0 +1,106 @@
+{
+  "direct_sources": [
+    {
+      "blob": "06dbe0dbf1d5b7f1e6f2a21889ab6bf770e89de6",
+      "path": "charon-pin",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "role": "Charon source pin"
+    },
+    {
+      "blob": "d6862b6ef779bf72dd7ec5b787f4e3b97b472a6d",
+      "path": "flake.lock",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "role": "locked Charon input"
+    },
+    {
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+      "path": "backends/lean/lean-toolchain",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "role": "Lean toolchain pin"
+    },
+    {
+      "blob": "1a5af703163d8b39f4311aafe22ae171788179ee",
+      "path": "backends/lean/lake-manifest.json",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "role": "Lean/Lake dependency closure"
+    },
+    {
+      "blob": "e248e9fdbecb3809f54ef58456db3faee448175f",
+      "path": ".github/workflows/release.yml",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "role": "release platform/build/smoke-test workflow"
+    },
+    {
+      "blob": "3c98116ae62afb83263fa1654037badaf569e1c1",
+      "path": "charon/rust-toolchain",
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "role": "Rust compiler/toolchain pin"
+    },
+    {
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "path": "anneal/flake.nix",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "role": "Anneal toolchain packaging and selected release/Rust/Lean versions"
+    }
+  ],
+  "published_reference_evidence": [
+    {
+      "blob": "5691d44c19c00a51ec7fcc3ef550d356c6759525",
+      "path": "reports/aeneas-charon-compatibility-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "d00c655ce0e9c2e79b83099ca5d86cc7e36f58ea",
+      "path": "reports/aeneas-generated-lean-stability-near-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "615717924f2a503c0ca0b5f37ff0ef38d3a032e5",
+      "path": "reports/aeneas-rust-support-failure-matrix-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "7bc93243eb37307fdb4e355491815f1135568ee8",
+      "path": "reports/aeneas-translation-correctness-obligations-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "bf265e9d02cfe13c1bea4cdd3e9f1a5b84f8e13d",
+      "path": "reports/aeneas-trusted-base-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "d7ddaba493222f81f8d63a2737017aed70a1a8ef",
+      "path": "reports/aeneas-generated-source-determinism-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "748de38b4e84f2e14a30bdcd4845d53e63154e0b",
+      "path": "reports/aeneas-extrinsic-termination-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "cfc981a9430447e51cefb2fc57dbe30738ec5def",
+      "path": "reports/aeneas-external-models-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "407e8d2891a3d0e9c1232be4bd1e009aa4da5849",
+      "path": "reports/aeneas-architecture-translation-pipeline-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    },
+    {
+      "blob": "12246cc76f67981f1024a4186c03b800509ee029",
+      "path": "reports/aeneas-loops-nightly-2026-06-03/REPORT.md",
+      "reference_commit": "06fd273adf6ebcf860466cb0a1d50e26e6729cfe"
+    }
+  ],
+  "schema": "anneal-reference/source-map/v1"
+}

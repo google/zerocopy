@@ -1,0 +1,48 @@
+{
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "writable_path": [
+    "derive inputHash from current dependency trace",
+    "try input-to-output mapping, then compatible saved-trace outputs",
+    "on cache hit, restore only when explicit restore or restoreAllArtifacts requests it",
+    "otherwise accept/build local output according to saved-trace status",
+    "when status is cacheable, publish content-addressed artifact",
+    "write package-scoped input-to-output mapping",
+    "publish current artifact trace to caller"
+  ],
+  "readonly_path": [
+    "first accept an up-to-date local output",
+    "if local output is not reusable and cache reads are enabled, resolve cache/trace output",
+    "restore a cache hit into the conventional local target path",
+    "otherwise build locally without artifact-cache publication"
+  ],
+  "artifact_publication": {
+    "text": "normalize CRLF to LF, hash normalized text, create-if-absent cache file",
+    "binary": "hash bytes, prefer hard link, otherwise create-if-absent byte write",
+    "existing_path": "accepted without rehash in the inspected local path",
+    "race_property": "same-path artifact creation explicitly tolerates another creator winning"
+  },
+  "mapping_publication": {
+    "path": "outputs/<package-scope>/<input-hash>.json",
+    "primitive": "direct IO.FS.writeFile overwrite",
+    "source_established_atomic_replace": false,
+    "source_established_compare_and_swap": false,
+    "source_established_fsync": false,
+    "invalid_json_read_behavior": "warn and treat as no mapping"
+  },
+  "restoration": {
+    "existing_destination": "leave it in place and return it as preferred artifact path",
+    "missing_destination": "hard-link cached artifact; copy on hard-link failure; write local hash sidecar",
+    "writable_default": "cache-resident path unless restoration requested",
+    "nonwritable_readable_default": "restore cache hit to local target path"
+  },
+  "partial_state_recovery": {
+    "saved_trace_can_supply_outputs_when_mapping_missing": true,
+    "writable_trace_recovery_attempts_mapping_backfill": true,
+    "trace_backfill_failure": "warning, artifact remains usable",
+    "direct_mapping_write_failure": "propagates as error after artifact may already be published"
+  }
+}

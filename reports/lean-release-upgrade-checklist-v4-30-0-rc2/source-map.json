@@ -1,0 +1,46 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "direct_sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lean-toolchain",
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+      "role": "Aeneas Lean toolchain pin"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lake-manifest.json",
+      "blob": "1a5af703163d8b39f4311aafe22ae171788179ee",
+      "role": "Aeneas Lean/Lake dependency closure, including Mathlib"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "role": "Anneal Lean version, per-platform archive hashes, and toolchain packaging"
+    }
+  ],
+  "published_reference_evidence": [
+    {"path":"reports/lean-lake-trace-hash-artifacts-v4-30-0-rc2/REPORT.md","blob":"0711960b59e1366dcbecdda7764be16bf50501c5"},
+    {"path":"reports/lean-olean-format-identity-v4-30-0-rc2/REPORT.md","blob":"cd5b8d2da578f08b5540d097c20c3e5ff96e408e"},
+    {"path":"reports/lean-trust-admissions-v4-30-0-rc2/REPORT.md","blob":"bd22eef3c5f4a5fdc349ada2a8150753a53cede1"},
+    {"path":"reports/lean-server-tactic-state-v4-30-0-rc2/REPORT.md","blob":"4dde5c36102ffe7794c2cb90310186a6934aec63"},
+    {"path":"reports/lean-environment-invalidation-v4-30-0-rc2/REPORT.md","blob":"40ca8a2f99cc57c0b15ec0eb6067276b9516dd73"},
+    {"path":"reports/lean-termination-checking-v4-30-0-rc2/REPORT.md","blob":"27bb6f19a1ac649fccc13aa1720449bea15f3864"},
+    {"path":"reports/lean-simp-simp-all-v4-30-0-rc2/REPORT.md","blob":"d1d36218609444cdb330a3a5efb08cec922944c2"},
+    {"path":"reports/lean-grind-behavior-extensibility-v4-30-0-rc2/REPORT.md","blob":"506fd1fdfe97d7123ffb258f1a3d02547566b077"},
+    {"path":"reports/lean-omega-behavior-v4-30-0-rc2/REPORT.md","blob":"534872fed7cf1ebd68506d4e2a3f1d3edbd13b53"},
+    {"path":"reports/lake-dependency-resolution-v4-30-0-rc2/REPORT.md","blob":"a9b1cec3a81e3806b2dbdee8c72dbc0622c25e86"},
+    {"path":"reports/lean-package-native-artifacts-v4-30-0-rc2/REPORT.md","blob":"2bf92e4df20c54ea9069c27a231301d2d94fa132"},
+    {"path":"reports/lean-compilation-determinism-v4-30-0-rc2/REPORT.md","blob":"23a10780e9577fad4c906a0597cbefb3185f1230"},
+    {"path":"reports/lean-cli-entry-points-v4-30-0-rc2/REPORT.md","blob":"a4dcc40d4ba961fbe06b1d6ffc98ecb9ad2d8f59"},
+    {"path":"reports/lean-diagnostic-objects-severity-v4-30-0-rc2/REPORT.md","blob":"2f544d9a67186787f54ae363025ed48a003e51a2"}
+  ],
+  "reference_basis": {
+    "reference_commit": "cd752204337905e7c9430ea6cba573cbaa49b4a9",
+    "note": "Published-report blobs above were read from this reference state. Their exact blobs remain the evidence identity if reference later advances elsewhere."
+  }
+}
