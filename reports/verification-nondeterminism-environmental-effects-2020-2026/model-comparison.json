@@ -1,0 +1,46 @@
+{
+  "schema": "anneal-reference/model-comparison/v1",
+  "subject": "nondeterminism-and-environmental-effects",
+  "models": [
+    {
+      "name": "CompCert 3.18",
+      "identity": "AbsInt/CompCert@74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "computation_style": "relational operational semantics",
+      "environment_boundary": "external calls and volatile accesses emit observable events; external-call semantics is relational",
+      "environment_instantiation": "coinductive deterministic world constrains I/O and volatile responses",
+      "nondeterminism_representation": "multiple derivable program behaviors; environment responses are one explicitly identified source",
+      "observations": "finite/infinite traces plus termination, silent divergence, reactive divergence, or going wrong",
+      "comparison_relation": "forward/backward simulation over behaviors; behavior_improves accounts for source going-wrong prefixes",
+      "key_distinction": "a deterministic external world is an additional assumption, not the general external-call semantics"
+    },
+    {
+      "name": "Interaction Trees",
+      "identity": "DOI 10.1145/3371119",
+      "computation_style": "coinductive denotational semantics",
+      "environment_boundary": "uninterpreted visible events with response-dependent continuations",
+      "environment_instantiation": "event handlers interpret events as monadic actions",
+      "nondeterminism_representation": "not the paper's dedicated internal-choice primitive; effects remain abstract until interpretation",
+      "observations": "event structure, return values, and potentially nonterminating interaction",
+      "comparison_relation": "equational theory up to weak bisimulation",
+      "key_distinction": "effect signature and handler separate computation from environment semantics"
+    },
+    {
+      "name": "Choice Trees",
+      "identity": "DOI 10.1145/3571254",
+      "computation_style": "coinductive tree / LTS-oriented denotational semantics",
+      "environment_boundary": "external-event nodes",
+      "environment_instantiation": "event interpretation compatible with ITree-style infrastructure",
+      "nondeterminism_representation": "explicit internal nondeterministic branching distinct from external events",
+      "observations": "transition/tree behavior and traces",
+      "comparison_relation": "simulation, bisimulation, trace equivalence, and related refinement tools",
+      "key_distinction": "internal choice and environment interaction are represented separately"
+    }
+  ],
+  "anneal_design_questions": [
+    "Who owns each choice: program semantics, environment, or both?",
+    "Which traces/state changes/errors/divergence modes are observable to the theorem?",
+    "What relation, handler, protocol, or assumption defines admissible outcomes?",
+    "Which refinement direction is required across Rust, LLBC, generated Lean, and proof semantics?",
+    "Are unsupported effects rejected or preserved as explicit assumptions/effects rather than silently determinized?"
+  ]
+}

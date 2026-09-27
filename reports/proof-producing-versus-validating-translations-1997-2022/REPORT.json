@@ -1,0 +1,40 @@
+{
+  "topics": [
+    "compiler-verification/certification",
+    "proof-carrying-code",
+    "translation-validation/verified-validator",
+    "translation-certification",
+    "verification/proof-artifacts"
+  ],
+  "subjects": [
+    {
+      "name": "Proof-Carrying Code",
+      "identity": {
+        "doi": "10.1145/263699.263712",
+        "publication": "POPL 1997"
+      }
+    },
+    {
+      "name": "A Certifying Code Generation Phase",
+      "identity": {
+        "doi": "10.1016/j.entcs.2007.09.008",
+        "publication": "ENTCS 190(4), 2007"
+      }
+    },
+    {
+      "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008"
+      }
+    },
+    {
+      "name": "Translation Certification for Smart Contracts",
+      "identity": {
+        "doi": "10.1007/978-3-030-99461-7_6",
+        "publication": "FLOPS 2022"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

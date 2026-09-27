@@ -1,0 +1,157 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/parse/attr.rs",
+      "blob": "9f352d511ca964e8c58d24206a3088608cb8aaf6",
+      "role": "source",
+      "claims": [
+        "unsafe(axiom) token and AST state",
+        "proof/proof-context rejection",
+        "requires-on-safe-function gate"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/parse/mod.rs",
+      "blob": "5f630310199c6abaafa6eee5ea674730bffd773f",
+      "role": "source",
+      "claims": [
+        "Rust unsafety flag passed to function annotation parser"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/validate.rs",
+      "blob": "2259c939e4bba4b2c329b9751a2a3e86601c416c",
+      "role": "source",
+      "claims": [
+        "proof-mode validation",
+        "allow-sorry separation"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/charon.rs",
+      "blob": "7e33bda392770d04397f7172296d9a7f25c6e180",
+      "role": "source",
+      "claims": [
+        "Axiom functions passed to Charon with --opaque"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "role": "source+checked-in-test",
+      "claims": [
+        "Axiom generates Lean axiom",
+        "generated proposition is Aeneas.Std.WP.spec",
+        "no proof block"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "role": "source",
+      "claims": [
+        "external template copy/import",
+        "noncomputable wrapper",
+        "allow-sorry controls"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/main.rs",
+      "blob": "3d363b977df790b266fe2a0635da1c294ec1b7c2",
+      "role": "source",
+      "claims": [
+        "V1 pipeline order"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/README.md",
+      "blob": "2bfda6336f87bf3cd785a19286363ab13423bd7d",
+      "role": "documentation",
+      "claims": [
+        "historical status",
+        "TCB framing for outside-Rust-AM behavior"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/docs/agent/01_philosophy_and_pipeline.md",
+      "blob": "39f0e1569e6c9f7d74722c78bdcae550e31bdb9c",
+      "role": "documentation",
+      "claims": [
+        "unsafe-leaf axiom architecture"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/docs/agent/04_specifications_and_syntax.md",
+      "blob": "1b5a7a8c9f7cc25b6549bc4f2697040c72e14f71",
+      "role": "documentation",
+      "claims": [
+        "proof-versus-axiom mode",
+        "body proof skipped"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/docs/agent/05_proof_architecture.md",
+      "blob": "8f7f589c629876a4696ed86f215ba1c050a4ba36",
+      "role": "documentation",
+      "claims": [
+        "allow-sorry semantics"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/Cargo.toml",
+      "blob": "f545b31c8e15a3cc5b5bbaf277abb9e56afc2e33",
+      "role": "source",
+      "claims": [
+        "V1 pins Aeneas revision 42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/Primitives.lean",
+      "blob": "5a73ea5bfae575baf2f26e1d86ea00768d1bccea",
+      "role": "source",
+      "claims": [
+        "Result outcomes ok/fail/div"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "blob": "a599b2b6632fbfdfadbe3dcfb68ee17a6048be5d",
+      "role": "source",
+      "claims": [
+        "WP.spec total-success semantics",
+        "spec_fail/spec_div false",
+        "spec_equiv_exists implies ok result and postcondition"
+      ]
+    }
+  ]
+}

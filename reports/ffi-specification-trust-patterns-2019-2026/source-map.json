@@ -1,0 +1,59 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/items/external-blocks.md",
+      "blob": "e1704556b5f000c019cd04df63e7e04692454c42",
+      "role": "normative Rust FFI declaration, safety, ABI, link-name/ordinal boundary"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/items/functions.md",
+      "blob": "362b39b5733c385a18e20a928d75f960f1cd427e",
+      "role": "normative Rust foreign-call and unwind boundary"
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "version": "3.18",
+      "path": "common/Events.v",
+      "blob": "ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564",
+      "role": "external-call relation and required extcall properties"
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+      "path": "semantics/ffi/ffiScript.sml",
+      "blob": "b40698d34360646ffb56e098e15571f99b99d9f4",
+      "role": "FFI state, oracle-driven call semantics, observable I/O behavior"
+    },
+    {
+      "repository": "CakeML/cakeml",
+      "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+      "path": "basis/basis_ffiScript.sml",
+      "blob": "4b98525f4f628392a0ec8710a1d4d1394acbffe9",
+      "role": "basis FFI oracle and parameterized extension environment"
+    },
+    {
+      "title": "Verified Compilation on a Verified Processor",
+      "authors": ["Andreas Lööw", "Ramana Kumar", "Yong Kiam Tan", "Magnus O. Myreen", "Michael Norrish", "Oskar Abrahamsson", "Anthony Fox"],
+      "publication": "PLDI 2019",
+      "doi": "10.1145/3314221.3314622",
+      "url": "https://cakeml.org/pldi19.pdf",
+      "role": "concrete refinement/discharge of FFI execution-environment assumptions"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/rust-extern-foreign-items-nightly-2026-05-31/REPORT.md",
+      "role": "adjacent native reference identifying the exact Rust/Charon extern representation boundary; reused as corpus context rather than upstream authority"
+    },
+    {
+      "library_record_id": "8e5525f7-b5c0-458a-94da-3159ba703c77",
+      "role": "adjacent uncommitted current-profile candidate on unsupported/opaque-operation semantic preservation; used to avoid duplicating its fail-closed/opaque-operation analysis"
+    }
+  ]
+}

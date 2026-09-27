@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "aeneas/generated-lean",
+    "lean/lsp",
+    "lean/generated-files",
+    "lean/incremental",
+    "lean/dependencies",
+    "lsp/document-sync"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 language server selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Aeneas Lean generator selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Language Server Protocol 3.18 specification",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+        "version": "3.18"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

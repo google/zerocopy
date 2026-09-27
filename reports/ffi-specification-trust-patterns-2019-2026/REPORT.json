@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "verification/ffi",
+    "verification/trust-boundary",
+    "verification/external-calls",
+    "verification/assumptions",
+    "rust/ffi",
+    "compcert",
+    "cakeml"
+  ],
+  "subjects": [
+    {
+      "name": "Rust foreign-function interface selected by Anneal",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+        "toolchain-context": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65 (nightly-2026-05-31)"
+      }
+    },
+    {
+      "name": "CompCert external-call specification pattern",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CakeML FFI/oracle specification and refinement pattern",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+        "publication": "Verified Compilation on a Verified Processor, PLDI 2019, DOI 10.1145/3314221.3314622"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

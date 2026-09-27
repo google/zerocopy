@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "verification",
+    "semantics/nondeterminism",
+    "semantics/environmental-effects",
+    "semantics/traces",
+    "semantics/refinement",
+    "compcert",
+    "interaction-trees",
+    "choice-trees"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 behavior and external-world semantics",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq",
+      "identity": {
+        "doi": "10.1145/3371119",
+        "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq",
+      "identity": {
+        "doi": "10.1145/3571254",
+        "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

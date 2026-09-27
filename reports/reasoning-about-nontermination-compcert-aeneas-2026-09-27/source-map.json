@@ -1,0 +1,53 @@
+{
+  "sources": [
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Behaviors.v",
+      "blob": "822b08832f491e82fefc5b60251c13a63ef71301",
+      "role": "whole-program behaviors, silent/reactive divergence, simulation preservation"
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "driver/Complements.v",
+      "blob": "d3974c2f7c2e5d04f2a3293fa6cfdb1215e5a217",
+      "role": "compiler semantic-preservation corollaries and behavior-level specifications"
+    },
+    {
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Events.v",
+      "blob": "ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564",
+      "role": "event traces and external-call semantic context"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/aeneas-infinite-diverging-execution-nightly-2026-06-03/REPORT.md",
+      "blob": "1213aeed36bf66dee315521d8df35ab75b6edbe3",
+      "role": "current exact-pin Aeneas infinite-execution coverage and unsupported NoBreak boundary"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/aeneas-partial-functions-nightly-2026-06-03/REPORT.md",
+      "blob": "0e26ea4d4efb818f7d6cd037dd35bf9fd12b4df3",
+      "role": "Aeneas partial_fixpoint / Result.div semantic boundary"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/aeneas-recursion-termination-nightly-2026-06-03/REPORT.md",
+      "blob": "b220c5537bff84096b0f2d00972576f9f4eb4507",
+      "role": "Aeneas recursion, WP.spec, and proof-level termination boundary"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/rust-correctness-termination-terminology-nightly-2026-05-31/REPORT.md",
+      "blob": "7fed0a82cd0a6d6dd807a44e6b5bc299714bd8eb",
+      "role": "Rust divergence/nontermination and partial/total correctness terminology"
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain_date": "2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/sync/atomic.rs",
+      "blob": "4f2faa7e5fbd6bd7aa7377118b2e2dc1849243c5",
+      "symbols": [
+        "module memory model",
+        "Ordering",
+        "AtomicBool::load",
+        "AtomicBool::store",
+        "compare_exchange",
+        "compare_exchange_weak",
+        "fence",
+        "compiler_fence"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "symbols": [
+        "undefined.race"
+      ],
+      "role": "normative"
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

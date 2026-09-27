@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "compiler-verification/composition",
+    "compcert/semantic-preservation",
+    "compcert/simulation",
+    "translation-validation/verified-validator",
+    "verification/refinement"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 verified compiler",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+      "identity": {
+        "doi": "10.1145/1328438.1328444",
+        "publication": "POPL 2008"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

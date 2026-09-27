@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "verification/operational-semantics",
+    "verification/functional-translation",
+    "verification/semantic-preservation",
+    "verification/simulation",
+    "aeneas",
+    "compcert"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "publication": "PACMPL 6 (ICFP 2022), Article 116",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "publication": "PACMPL 8 (ICFP 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "CompCert 3.18 operational semantics and semantic-preservation development",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

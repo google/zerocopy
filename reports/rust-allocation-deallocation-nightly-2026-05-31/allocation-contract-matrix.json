@@ -1,0 +1,71 @@
+{
+  "subject_revision": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "operations": [
+    {
+      "api": "GlobalAlloc::alloc / alloc",
+      "zero_size": "undefined behavior",
+      "success": "non-null block meeting layout",
+      "failure": "null or stronger allocator-specific failure such as abort",
+      "ownership": "new live allocation"
+    },
+    {
+      "api": "GlobalAlloc::alloc_zeroed / alloc_zeroed",
+      "zero_size": "undefined behavior",
+      "success": "as alloc, with returned bytes zero-initialized",
+      "failure": "null or stronger allocator-specific failure",
+      "ownership": "new live allocation"
+    },
+    {
+      "api": "GlobalAlloc::dealloc / dealloc",
+      "preconditions": [
+        "block currently allocated by same allocator",
+        "layout exactly equals allocation layout"
+      ],
+      "success": "block deallocated",
+      "ownership": "old allocation no longer live"
+    },
+    {
+      "api": "GlobalAlloc::realloc / realloc",
+      "preconditions": [
+        "block allocated by same allocator",
+        "old layout exactly equals allocation layout",
+        "new_size > 0",
+        "rounded new size <= isize::MAX"
+      ],
+      "success": "old ownership transferred; old pointer unusable even if same address; prefix min(old,new) preserved",
+      "failure": "null; old allocation and contents remain",
+      "result_layout": "old alignment + new_size"
+    },
+    {
+      "api": "Allocator::allocate",
+      "zero_size": "supported",
+      "success": "NonNull<[u8]>; actual length may exceed requested size",
+      "failure": "Err or permitted stronger failure"
+    },
+    {
+      "api": "Allocator::deallocate",
+      "preconditions": [
+        "block currently allocated by same allocator",
+        "layout fits block"
+      ],
+      "success": "block deallocated"
+    },
+    {
+      "api": "Allocator::grow / shrink",
+      "preconditions": [
+        "block currently allocated by same allocator",
+        "old layout fits block",
+        "requested size direction respected"
+      ],
+      "success": "old ownership transferred; old pointer unusable even if same address",
+      "failure": "Err; old block remains unaltered",
+      "alignment": "new layout may change alignment"
+    }
+  ],
+  "layout_invariants": [
+    "alignment is non-zero",
+    "alignment is power of two",
+    "size rounded up to alignment <= isize::MAX",
+    "size may be zero"
+  ]
+}

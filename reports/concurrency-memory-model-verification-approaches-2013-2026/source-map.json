@@ -1,0 +1,78 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "id": "rust-atomic-source",
+      "role": "source",
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/sync/atomic.rs",
+      "blob": "4f2faa7e5fbd6bd7aa7377118b2e2dc1849243c5",
+      "high_signal_regions": [
+        "module docs: Memory model for atomic accesses",
+        "module docs: Portability",
+        "Ordering enum documentation"
+      ]
+    },
+    {
+      "id": "rsl",
+      "role": "source/documentation",
+      "title": "Relaxed Separation Logic: A Program Logic for C11 Concurrency",
+      "doi": "10.1145/2509136.2509532",
+      "project_url": "https://people.mpi-sws.org/~viktor/rsl/",
+      "high_signal_regions": [
+        "project summary",
+        "ownership-transfer description",
+        "published erratum"
+      ]
+    },
+    {
+      "id": "strong-logic",
+      "role": "source/documentation",
+      "title": "Strong Logic for Weak Memory: Reasoning About Release-Acquire Consistency in Iris",
+      "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+      "project_url": "https://plv.mpi-sws.org/igps/",
+      "high_signal_regions": [
+        "axiomatic-versus-operational mismatch",
+        "RA+NA operational characterization",
+        "Iris/GPS/RSL mechanized proof description"
+      ]
+    },
+    {
+      "id": "iris",
+      "role": "documentation",
+      "title": "Iris Project",
+      "url": "https://iris-project.org/",
+      "high_signal_regions": [
+        "framework description",
+        "concurrent separation logic and Rocq implementation"
+      ]
+    },
+    {
+      "id": "genmc",
+      "role": "source/documentation",
+      "title": "GenMC: A Model Checker for Weak Memory Models",
+      "doi": "10.1007/978-3-030-81685-8_20",
+      "project_url": "https://plv.mpi-sws.org/genmc/",
+      "high_signal_regions": [
+        "supported RC11/IMM/LKMM models",
+        "stateless model-checking algorithm claims",
+        "partial-order and spin-loop optimizations"
+      ]
+    },
+    {
+      "id": "rustmc",
+      "role": "source/documentation",
+      "title": "RustMC: Automated Verification of Real-World Concurrent Rust",
+      "doi": "10.1007/978-3-032-28187-6_14",
+      "publication_url": "https://pure.royalholloway.ac.uk/en/publications/rustmc-automated-verification-of-real-world-concurrent-rust/",
+      "high_signal_regions": [
+        "LLVM/GenMC architecture",
+        "Rust-specific lowering challenges",
+        "unsafe Rust, FFI, atomic case studies",
+        "Loom and production-structure evaluation"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "id": "compcert-events",
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Events.v",
+      "blob": "ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564",
+      "symbols": [
+        "event",
+        "trace",
+        "traceinf",
+        "extcall_sem",
+        "extcall_properties",
+        "ec_receptive",
+        "ec_determ"
+      ],
+      "supports": [
+        "observable-event model",
+        "external-call relation",
+        "receptiveness and determinism constraints"
+      ],
+      "version": "3.18"
+    },
+    {
+      "id": "compcert-determinism",
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Determinism.v",
+      "blob": "7c2f99cb801bacd9432c94494edb0c538a61a2f7",
+      "symbols": [
+        "world",
+        "possible_event",
+        "possible_trace",
+        "possible_traceinf",
+        "possible_behavior",
+        "sem_deterministic"
+      ],
+      "supports": [
+        "external responses as a source of nondeterminism",
+        "deterministic-world parameterization"
+      ],
+      "version": "3.18"
+    },
+    {
+      "id": "compcert-behaviors",
+      "role": "source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Behaviors.v",
+      "blob": "822b08832f491e82fefc5b60251c13a63ef71301",
+      "symbols": [
+        "program_behavior",
+        "program_behaves",
+        "behavior_improves",
+        "forward_simulation_behavior_improves",
+        "forward_simulation_same_safe_behavior"
+      ],
+      "supports": [
+        "whole-program behavior categories",
+        "relational behavior semantics",
+        "behavior-level refinement"
+      ],
+      "version": "3.18"
+    },
+    {
+      "id": "itrees-popl-2020",
+      "role": "source",
+      "title": "Interaction Trees: Representing Recursive and Impure Programs in Coq",
+      "doi": "10.1145/3371119",
+      "arxiv": "1906.00046",
+      "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51 (2020)",
+      "urls": [
+        "https://doi.org/10.1145/3371119",
+        "https://arxiv.org/abs/1906.00046"
+      ],
+      "supports": [
+        "uninterpreted events and continuations",
+        "event handlers",
+        "recursive/nonterminating effectful programs",
+        "weak-bisimulation reasoning"
+      ]
+    },
+    {
+      "id": "ctrees-popl-2023",
+      "role": "source",
+      "title": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq",
+      "doi": "10.1145/3571254",
+      "arxiv": "2211.06863",
+      "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800 (2023)",
+      "urls": [
+        "https://doi.org/10.1145/3571254",
+        "https://arxiv.org/abs/2211.06863"
+      ],
+      "supports": [
+        "explicit nondeterministic branching",
+        "separation of external events from internal choice",
+        "simulation/bisimulation/refinement tools",
+        "connection to ITree infrastructure"
+      ]
+    }
+  ],
+  "execution_evidence": "none"
+}

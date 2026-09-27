@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "verification/semantic-preservation",
+    "verification/opaque-operations",
+    "verification/unsupported-operations",
+    "verification/external-calls",
+    "verified-compilation",
+    "compcert",
+    "cakeml"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 external-call and semantic-preservation model",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "CakeML FFI/oracle semantics examined for opaque environmental effects",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
+      }
+    },
+    {
+      "name": "Verified Compilation on a Verified Processor",
+      "identity": {
+        "doi": "10.1145/3314221.3314622",
+        "publication": "PLDI 2019",
+        "year": "2019"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

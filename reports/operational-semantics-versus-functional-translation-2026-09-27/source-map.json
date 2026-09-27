@@ -1,0 +1,57 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "kind": "publication",
+      "title": "Aeneas: Rust Verification by Functional Translation",
+      "doi": "10.1145/3547647",
+      "arxiv": "2206.07185",
+      "role": "Defines Aeneas's ownership-centric functional LLBC semantics and LLBC-to-pure-lambda-calculus translation; motivates backward functions and the proof-ergonomics tradeoff."
+    },
+    {
+      "kind": "publication",
+      "title": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "doi": "10.1145/3674640",
+      "arxiv": "2404.02680",
+      "role": "Provides the operational/simulation side of the Aeneas story: LLBC as a correct view of a lower-level pointer model, symbolic semantics as an abstraction, and borrow-checking/non-stuckness results."
+    },
+    {
+      "kind": "repository-source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "driver/Compiler.v",
+      "role": "Composes pass simulations and states whole-compiler backward semantic simulation."
+    },
+    {
+      "kind": "repository-source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "driver/Complements.v",
+      "blob": "d3974c2f7c2e5d04f2a3293fa6cfdb1215e5a217",
+      "role": "States behavior preservation/refinement consequences from source C semantics to generated assembly semantics."
+    },
+    {
+      "kind": "repository-source",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Events.v",
+      "blob": "ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564",
+      "role": "Defines traces and external-call semantics used by CompCert languages, illustrating that operational semantics can retain nondeterministic environmental behavior."
+    },
+    {
+      "kind": "reference-corpus",
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/aeneas-formal-results-literature-2026-09-27/REPORT.md",
+      "role": "Current corpus authority for the precise scope and trust boundary of the 2022 and 2024 Aeneas formal results."
+    },
+    {
+      "kind": "reference-corpus",
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/aeneas-rust-to-lean-translation-nightly-2026-06-03/REPORT.md",
+      "role": "Current corpus authority for the concrete generated Lean interface of the Aeneas revision selected by Anneal."
+    }
+  ]
+}

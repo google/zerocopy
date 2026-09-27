@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "verification",
+    "verification/library",
+    "verification/closed-program",
+    "verification/compositionality",
+    "verification/linking",
+    "verification/specifications",
+    "rustbelt",
+    "compcert"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt unsafe-library and safe-client composition model",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "POPL 2018"
+      }
+    },
+    {
+      "name": "CompCert 3.18 whole-program semantic-preservation development",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Compositional CompCert",
+      "identity": {
+        "doi": "10.1145/2676726.2676985",
+        "publication": "POPL 2015"
+      }
+    },
+    {
+      "name": "Fully Composable and Adequate Verified Compilation with Direct Refinements between Open Modules",
+      "identity": {
+        "arxiv": "2302.12990",
+        "year": "2023"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

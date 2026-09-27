@@ -1,0 +1,62 @@
+{
+  "schema": "anneal-reference/proof-producing-vs-validating/v1",
+  "axes": [
+    {
+      "architecture": "directly verified compiler/pass",
+      "per_run_evidence_artifact": "not required",
+      "main_reusable_proof": "compiler/pass implementation preserves semantics",
+      "acceptance_check": "successful execution of implementation covered by theorem",
+      "producer_may_be_untrusted": false,
+      "principal_tcb": "proof assistant/kernel, formal semantics/specification, verified implementation deployment/extraction path",
+      "failure_rule": "compiler Error has no successful target-correctness obligation"
+    },
+    {
+      "architecture": "unverified translation validator",
+      "per_run_evidence_artifact": "usually decision/counterexample, proof artifact optional",
+      "main_reusable_proof": "none necessarily",
+      "acceptance_check": "validator says relation holds for concrete source/target pair",
+      "producer_may_be_untrusted": true,
+      "principal_tcb": "validator implementation, semantic model/relation, deployed checker stack",
+      "failure_rule": "reject/unknown must not become ordinary verified success"
+    },
+    {
+      "architecture": "verified validator",
+      "per_run_evidence_artifact": "not required outside validator",
+      "main_reusable_proof": "validator acceptance implies required semantic relation",
+      "acceptance_check": "run proved/covered validator on concrete pair",
+      "producer_may_be_untrusted": true,
+      "principal_tcb": "soundness theorem, kernel, semantic relation, execution/extraction path of validator",
+      "failure_rule": "false or inability to validate becomes Error"
+    },
+    {
+      "architecture": "proof-producing or certifying translation",
+      "per_run_evidence_artifact": "yes: proof/certificate/derivation bound to concrete translation",
+      "main_reusable_proof": "checker/kernel correctness and often semantic theorem about certificate relation",
+      "acceptance_check": "independently check certificate against concrete artifacts and policy/relation",
+      "producer_may_be_untrusted": true,
+      "principal_tcb": "checker/kernel, proposition/relation/semantics, artifact parsing and identity binding",
+      "failure_rule": "missing or rejected certificate prevents certified success"
+    },
+    {
+      "architecture": "proof-carrying target safety",
+      "per_run_evidence_artifact": "yes",
+      "main_reusable_proof": "adequacy of safety policy/proof system",
+      "acceptance_check": "consumer checks target artifact satisfies safety policy",
+      "producer_may_be_untrusted": true,
+      "principal_tcb": "policy, checker/kernel, artifact binding",
+      "failure_rule": "unproved target is not accepted",
+      "important_non_equivalence": "target safety is not by itself source-to-target translation correctness"
+    }
+  ],
+  "translation_certificate_layers": [
+    "artifact identity/binding",
+    "proof that adjacent concrete artifacts satisfy declared translation relations",
+    "semantic theorem that those relations preserve the intended observations",
+    "composition across every in-scope pipeline boundary"
+  ],
+  "anneal_boundary_test": [
+    "A target Lean proof proves the encoded Lean proposition.",
+    "A source-to-model claim additionally needs evidence relating the exact source/LLBC/generated-Lean artifacts.",
+    "If that evidence is absent, keep translator trust separate from target proof validity."
+  ]
+}

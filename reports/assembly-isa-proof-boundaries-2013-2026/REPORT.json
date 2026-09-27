@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "verification",
+    "verification/assembly",
+    "verification/isa",
+    "verification/binary",
+    "verification/hardware",
+    "compiler-verification",
+    "compcert",
+    "sel4",
+    "cakeml"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 compilation boundary",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Translation Validation for a Verified OS Kernel",
+      "identity": {
+        "publication": "PLDI 2013",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Verified Compilation on a Verified Processor",
+      "identity": {
+        "doi": "10.1145/3314221.3314622",
+        "publication": "PLDI 2019"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

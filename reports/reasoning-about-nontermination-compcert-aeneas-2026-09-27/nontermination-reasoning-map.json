@@ -1,0 +1,54 @@
+{
+  "semantic_distinctions": [
+    {
+      "name": "finite termination",
+      "meaning": "Execution reaches a finite terminal outcome; normal return is one possible subcase depending on the source semantics."
+    },
+    {
+      "name": "silent nontermination",
+      "meaning": "Execution continues indefinitely after a finite observable prefix without producing further observable events.",
+      "compcert_constructor": "Diverges"
+    },
+    {
+      "name": "reactive nontermination",
+      "meaning": "Execution continues indefinitely while producing an infinite observable trace.",
+      "compcert_constructor": "Reacts"
+    },
+    {
+      "name": "going wrong / undefined behavior boundary",
+      "meaning": "An erroneous or semantically undefined execution class; must not be conflated with valid nontermination.",
+      "compcert_constructor": "Goes_wrong"
+    },
+    {
+      "name": "partial correctness",
+      "meaning": "A postcondition conditional on the relevant return outcome; does not by itself exclude nontermination."
+    },
+    {
+      "name": "termination / total correctness",
+      "meaning": "Requires an additional finite-progress or normal-return obligation beyond partial correctness."
+    }
+  ],
+  "techniques": [
+    {
+      "system": "CompCert 3.18",
+      "mechanism": "coinductive-style infinite execution relations plus forward/backward simulation lemmas",
+      "preserved_observations": "finite traces for silent divergence and infinite traces for reactive divergence",
+      "boundary": "sequential trace semantics; no general scheduler-fairness or Rust-specific UB model"
+    },
+    {
+      "system": "Aeneas nightly-2026.06.03",
+      "mechanism": "Lean partial_fixpoint over Result with Result.div as bottom",
+      "proof_of_success": "standard WP.spec excludes fail and div for the proved invocation",
+      "boundary": "frontend does not map every infinite Rust source shape into Result.div; NoBreak loops are rejected at this pin"
+    }
+  ],
+  "anti_inferences": [
+    "surface recursion implies actual nontermination",
+    "absence of recursion proves termination",
+    "can_diverge=true proves divergence on a particular input",
+    "can_diverge=false proves termination",
+    "target final-value agreement covers nonterminating source executions",
+    "a target bottom/divergence value implies complete source-language nontermination coverage",
+    "Rust diverging expression means semantic infinite execution"
+  ]
+}

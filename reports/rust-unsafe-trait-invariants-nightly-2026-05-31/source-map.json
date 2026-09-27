@@ -1,0 +1,51 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/unsafe-keyword.md",
+      "blob": "7658c1f5c5425d03e2183e89b55260e5e9fd889b",
+      "supports": ["unsafe trait defines implementation obligation", "unsafe impl asserts discharge", "trait versus function obligation separation"]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/items/traits.md",
+      "blob": "fe1a985f5390b0b7edf15db28cd717ce44c3945b",
+      "supports": ["correctly implemented unsafe trait is safe to use", "supertrait propagation", "dyn compatibility context"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_hir_analysis/src/coherence/unsafety.rs",
+      "blob": "8114106a2a4117a1e8e1d706afff753ff834f263",
+      "supports": ["E0199 unsafe impl of safe trait rejection", "E0200 safe impl of unsafe trait rejection", "compiler cannot check documented invariant"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/marker.rs",
+      "blob": "53141aabacc453e3781bbe9593618e26c06ca732",
+      "supports": ["Send unsafe auto trait", "Sync unsafe auto trait", "negative raw-pointer impls", "explicit Send for shared references"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/iter/traits/marker.rs",
+      "blob": "542d283fe95abab901534fd21e38bddaa6a28823",
+      "supports": ["TrustedLen safety contract", "unsafe consumers may rely on trusted-trait invariants"]
+    },
+    {
+      "url": "https://doc.rust-lang.org/nomicon/safe-unsafe-meaning.html",
+      "kind": "non-normative-rationale",
+      "supports": ["unsafe code relying on unsafe-trait contract", "Send/Sync/allocator motivation"]
+    },
+    {
+      "url": "https://doc.rust-lang.org/nomicon/send-and-sync.html",
+      "kind": "non-normative-rationale",
+      "supports": ["incorrect Send/Sync impl can cause undefined behavior", "manual unsafe impl examples"]
+    }
+  ]
+}

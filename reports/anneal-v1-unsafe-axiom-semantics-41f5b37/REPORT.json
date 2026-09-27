@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/v1",
+    "anneal/v1/unsafe-axiom",
+    "aeneas/external-models",
+    "charon/opaque",
+    "lean/axiom",
+    "verification/trust-boundary"
+  ],
+  "subjects": [
+    {
+      "name": "Historical Anneal V1 unsafe(axiom) pipeline",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Aeneas WP/Result semantics used by historical Anneal V1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+        "path": "backends/lean/Aeneas/Std"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

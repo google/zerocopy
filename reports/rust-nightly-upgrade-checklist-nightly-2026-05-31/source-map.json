@@ -1,0 +1,78 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "roles": ["rustDate", "Rust distribution components", "per-platform fixed-output hashes", "hard-coded Rust metadata", "omnibus composition"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/setup.rs",
+      "blob": "9e17911f4d1e7695cc63fe9f8b2b20b2f0322f00",
+      "roles": ["Exocrate versioned files", "runtime Charon path", "CHARON_TOOLCHAIN_IS_IN_PATH", "PATH and dynamic-library environment"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.toml",
+      "blob": "9edee13427fd5e3699abd3709cc9f33d7652873e",
+      "roles": ["remote archive metadata", "Exocrate installation identity input", "independent charon_lib dependency"]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "charon-pin",
+      "blob": "06dbe0dbf1d5b7f1e6f2a21889ab6bf770e89de6",
+      "roles": ["Aeneas-to-Charon revision coupling"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/rust-toolchain",
+      "blob": "3c98116ae62afb83263fa1654037badaf569e1c1",
+      "roles": ["Rust channel", "components", "target list"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon/toolchain.rs",
+      "blob": "b35d1d0236cd7e1c5f68ad5b80b3371b82f2e784",
+      "roles": ["embedded toolchain", "rustup selection", "trusted-PATH bypass", "toolchain-path"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/main.rs",
+      "blob": "ab74f3f3d12a869bd8c3c94083b93b7dee1c2482",
+      "roles": ["rustc_private", "rustc internal crate dependencies", "driver failure surface"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/Cargo.toml",
+      "blob": "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+      "roles": ["dynamic rustc dylib linkage", "driver/wrapper contract"]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "src/ci/channel",
+      "blob": "bf867e0ae5b6c08df1118a2ece970677bc479f1b",
+      "roles": ["nightly-channel source identity"]
+    }
+  ],
+  "reference_snapshot": {
+    "reference_head": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+    "catalog_blob": "4f12c8e2bb294d910ad85338477c7673bb4dfcf0",
+    "exact_subject_identity_counts": {
+      "rust_lang_rust_14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": 42,
+      "rust_lang_reference_ad35aca481751a06afeb23820a672b0f3b11a476": 32,
+      "aeneasverif_charon_a535e914f74db4fd9e6be7048f4233270d8945c0": 57
+    }
+  }
+}

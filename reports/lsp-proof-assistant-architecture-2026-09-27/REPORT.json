@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lsp",
+    "lsp/architecture",
+    "lsp/document-synchronization",
+    "lsp/cancellation",
+    "lsp/workspaces",
+    "proof-assistants",
+    "lean/server"
+  ],
+  "subjects": [
+    {
+      "name": "Language Server Protocol 3.18 specification source",
+      "identity": {
+        "repository": "microsoft/language-server-protocol",
+        "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+        "specification": "3.18"
+      }
+    },
+    {
+      "name": "Lean 4 language server selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

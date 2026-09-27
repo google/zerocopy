@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-reference/rust-nightly-upgrade-checklist/v1",
+  "baseline": {
+    "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "charon_version": "0.1.210",
+    "rust_channel": "nightly-2026-05-31",
+    "rust_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  "gates": [
+    {
+      "id": "resolve-charon-rust-coupling",
+      "category": "identity",
+      "requirement": "Resolve the exact runtime Charon revision and derive its required Rust channel from that revision's toolchain source.",
+      "failure_condition": "Anneal's proposed Rust channel differs from the runtime Charon requirement without an explicitly scoped compatibility experiment."
+    },
+    {
+      "id": "package-required-components",
+      "category": "distribution",
+      "requirement": "For every supported host, fetch and merge cargo, rustc, host rust-std, rustc-dev, llvm-tools, miri, and rust-src for the selected date, and update fixed-output hashes.",
+      "failure_condition": "Any required component is unavailable, mismatched, or not represented in the packaged sysroot."
+    },
+    {
+      "id": "verify-trusted-path-runtime",
+      "category": "runtime",
+      "requirement": "From the installed archive, verify rustc/cargo identity, Charon's effective sysroot, rustc dynamic-library resolution, and one complete Charon extraction.",
+      "failure_condition": "The packaged compiler differs from the intended channel, Charon cannot load/use rustc-private libraries, or extraction fails."
+    },
+    {
+      "id": "verify-aeneas-input-compatibility",
+      "category": "runtime",
+      "requirement": "Feed representative LLBC produced by the upgraded rustc/Charon pair to the selected Aeneas revision and generate Lean successfully.",
+      "failure_condition": "Aeneas rejects or misinterprets the new Charon output."
+    },
+    {
+      "id": "diff-mir-llbc-semantics",
+      "category": "semantic",
+      "requirement": "Run preserved old-versus-new MIR/ULLBC/LLBC fixtures over control flow, unsafe operations, layout, drop/unwind, generics/traits, generated code, dependencies, and source identity; classify material deltas.",
+      "failure_condition": "A material semantic delta is unexplained or invalidates Anneal's source/model assumptions."
+    },
+    {
+      "id": "triage-revision-bound-reference-reports",
+      "category": "corpus",
+      "requirement": "Query current CATALOG.json for reports bound to the old rustc, Rust Reference, and Charon identities; revalidate material claims affected by changed source or probe output.",
+      "failure_condition": "Anneal adopts the new baseline while relying on unreviewed revision-sensitive facts known to bind the old toolchain."
+    },
+    {
+      "id": "verify-installation-identity",
+      "category": "installation",
+      "requirement": "Ensure release metadata or an isolated development namespace makes Exocrate select the newly built archive rather than an existing installation.",
+      "failure_condition": "Testing can resolve to a prior installation because flake-only changes did not change Cargo.toml/Cargo.lock-derived identity."
+    },
+    {
+      "id": "verify-supported-platforms",
+      "category": "platform",
+      "requirement": "Build and smoke-test the omnibus archive on Linux/macOS x86_64/aarch64, including dynamic-link and relocation/fixup behavior relevant to the platform.",
+      "failure_condition": "The upgrade succeeds only on a subset of Anneal's declared archive platforms without explicitly narrowing support."
+    },
+    {
+      "id": "preserve-new-baseline-evidence",
+      "category": "publication",
+      "requirement": "Record immutable toolchain identities, hashes, fixture outputs, and materially changed reference findings for the new baseline.",
+      "failure_condition": "The new baseline cannot be revalidated without rediscovering its compiler/Charon relationship or semantic deltas."
+    }
+  ]
+}

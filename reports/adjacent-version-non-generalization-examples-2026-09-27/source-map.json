@@ -1,0 +1,105 @@
+{
+  "sources": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Config.lean",
+      "blob": "f1fe9b199f41e00d3cf10725b4dfc6b2d3623ec2",
+      "supports": ["v4.30.0-rc2 package-local Lake directory"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Lean/Elab.lean",
+      "blob": "c72b295cb0b9d7365d21cf2ebd323a3cc4068eab",
+      "supports": ["v4.30.0-rc2 compiled configuration path and trace ownership"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+      "path": "src/lake/Lake/Load/Config.lean",
+      "blob": "afdb0a19d9f5443f3cd6081014601744e538c523",
+      "supports": ["v4.31.0 workspace-owned configDir and still-package-local lakeDir"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+      "path": "src/lake/Lake/Load/Lean/Elab.lean",
+      "blob": "b3908d0cebb44cac15e48baa41cb439f6f94eaa5",
+      "supports": ["v4.31.0 importConfigFile configDir use and residual package-local createDirAll"]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "41ecccec6d1244c5f89be2fc76638f22ba37cbc6",
+      "kind": "commit",
+      "title": "feat: lake: hoist compiled configurations (#13683)",
+      "supports": ["intentional cross-workspace contention fix", "regression assertions for workspace-local numeric slots"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/rust-toolchain",
+      "blob": "3c98116ae62afb83263fa1654037badaf569e1c1",
+      "supports": ["Rust nightly-2026-05-31 at Aeneas-selected Charon revision"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "path": "charon/rust-toolchain",
+      "blob": "3760bb48e9650e0c5d57c27a4ee5d5d358e59a3e",
+      "supports": ["Rust nightly-2026-06-01 at later Charon same-version revision"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/Cargo.toml",
+      "blob": "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+      "supports": ["Charon package version 0.1.210", "rustc-private/default feature boundary"]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "path": "charon/Cargo.toml",
+      "blob": "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+      "supports": ["Charon package version remains 0.1.210"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/lake-configuration-ownership-v4-30-0-rc2/REPORT.md",
+      "blob": "2f36cf32e008648eba3bfba779a0d1ae7ece429a",
+      "supports": ["native exact-pin Lake 4.30 ownership synthesis"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/lake-configuration-ownership-v4-31-0/REPORT.md",
+      "blob": "c44bc91468f3e9e177b035b6ca453ebc8d6642d2",
+      "supports": ["native exact-release Lake 4.31 ownership synthesis"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/anneal-toolchain-version-coupling-main-41f5b37/REPORT.md",
+      "blob": "91ac8612cc400e531363fde5c870abaded6b7eb7",
+      "supports": ["Aeneas versus Anneal Charon selection graph and current execution-boundary qualification"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+      "path": "reports/charon-toolchain-requirements-nightly-2026-06-03/REPORT.md",
+      "blob": "dc5195288dc334255fb970b89f67f926b051de8d",
+      "supports": ["exact Aeneas-selected Charon Rust-toolchain coupling"]
+    }
+  ],
+  "git_relationships": [
+    {
+      "repository": "AeneasVerif/charon",
+      "base": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "head": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "status": "ahead",
+      "ahead_by": 15,
+      "behind_by": 0
+    }
+  ]
+}

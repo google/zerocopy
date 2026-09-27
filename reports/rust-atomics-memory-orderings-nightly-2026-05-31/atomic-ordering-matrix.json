@@ -1,0 +1,73 @@
+{
+  "subject_revision": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "orderings": {
+    "Relaxed": "atomic access only; no additional cross-location synchronization",
+    "Acquire": "load side acquires; on RMW the store side is Relaxed",
+    "Release": "store side releases; on RMW the load side is Relaxed",
+    "AcqRel": "Acquire load side + Release store side for RMW",
+    "SeqCst": "applicable acquire/release behavior plus participation in a single order of SeqCst operations"
+  },
+  "operation_constraints": [
+    {
+      "operation": "load",
+      "allowed": [
+        "Relaxed",
+        "Acquire",
+        "SeqCst"
+      ],
+      "rejected": [
+        "Release",
+        "AcqRel"
+      ]
+    },
+    {
+      "operation": "store",
+      "allowed": [
+        "Relaxed",
+        "Release",
+        "SeqCst"
+      ],
+      "rejected": [
+        "Acquire",
+        "AcqRel"
+      ]
+    },
+    {
+      "operation": "read-modify-write",
+      "allowed": [
+        "Relaxed",
+        "Acquire",
+        "Release",
+        "AcqRel",
+        "SeqCst"
+      ],
+      "note": "Acquire weakens store half; Release weakens load half"
+    },
+    {
+      "operation": "compare_exchange failure",
+      "allowed": [
+        "Relaxed",
+        "Acquire",
+        "SeqCst"
+      ],
+      "note": "failure is only a load"
+    },
+    {
+      "operation": "fence/compiler_fence",
+      "allowed": [
+        "Acquire",
+        "Release",
+        "AcqRel",
+        "SeqCst"
+      ],
+      "rejected": [
+        "Relaxed"
+      ]
+    }
+  ],
+  "race_rules": [
+    "data race = conflicting non-synchronized accesses with at least one non-atomic access",
+    "failed compare_exchange is not a write",
+    "non-synchronized conflicting atomic accesses must be disjoint, exact-same-range/same-size, or both reads"
+  ]
+}

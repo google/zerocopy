@@ -1,0 +1,99 @@
+{
+  "schema": "anneal-reference/assembly-isa-boundary-matrix/v1",
+  "layers": [
+    {
+      "layer": "source semantics",
+      "possible_evidence": [
+        "program proof",
+        "language semantics"
+      ],
+      "question": "What source behavior is being preserved?"
+    },
+    {
+      "layer": "verified compiler target",
+      "possible_evidence": [
+        "verified transformation",
+        "translation validation"
+      ],
+      "question": "Does the theorem end at assembly AST, encoded bytes, object code, or another IR?"
+    },
+    {
+      "layer": "encoding/assembly",
+      "possible_evidence": [
+        "verified encoder",
+        "validated output",
+        "unverified assembler"
+      ],
+      "question": "Who proves that formal instructions become the intended bytes?"
+    },
+    {
+      "layer": "linking",
+      "possible_evidence": [
+        "verified linker",
+        "binary translation validation",
+        "unverified system linker"
+      ],
+      "question": "Who proves symbol resolution, relocation, and final layout?"
+    },
+    {
+      "layer": "loader/runtime",
+      "possible_evidence": [
+        "verified loader",
+        "platform assumptions"
+      ],
+      "question": "How is the executable image mapped and initialized?"
+    },
+    {
+      "layer": "ISA semantics",
+      "possible_evidence": [
+        "mechanized ISA model"
+      ],
+      "question": "Which architectural version/extensions and effects are modeled?"
+    },
+    {
+      "layer": "hardware implementation",
+      "possible_evidence": [
+        "processor refinement proof",
+        "conformance assumption"
+      ],
+      "question": "Why should the concrete processor implement the formal ISA semantics?"
+    },
+    {
+      "layer": "devices/privileged environment",
+      "possible_evidence": [
+        "device models",
+        "external specifications",
+        "assumptions"
+      ],
+      "question": "How are volatile I/O, interrupts, firmware, and devices connected to the proof?"
+    }
+  ],
+  "examined_examples": [
+    {
+      "system": "CompCert 3.18",
+      "endpoint": "formal target assembly before unverified system assembler/linker",
+      "remaining_suffix": [
+        "assembly printing/encoding toolchain",
+        "assembler",
+        "linker",
+        "runtime/hardware conformance"
+      ]
+    },
+    {
+      "system": "seL4 PLDI 2013 binary validation",
+      "endpoint": "validated generated binary for covered C functions",
+      "remaining_suffix": [
+        "omitted assembly routines",
+        "omitted volatile hardware-control accesses",
+        "hardware/ISA conformance outside stated binary refinement"
+      ]
+    },
+    {
+      "system": "CakeML + Silver PLDI 2019",
+      "endpoint": "hardware-level theorem for verified Silver processor",
+      "remaining_suffix": [
+        "subject-specific assumptions and any peripherals/environment not modeled by the theorem"
+      ]
+    }
+  ]
+}

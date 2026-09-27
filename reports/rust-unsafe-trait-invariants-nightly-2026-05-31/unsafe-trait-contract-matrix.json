@@ -1,0 +1,53 @@
+{
+  "schema": "anneal-reference/rust-unsafe-trait-contract-matrix/v1",
+  "observed_at": "2026-09-27",
+  "toolchain": {
+    "date": "2026-05-31",
+    "rust_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "reference_revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+  },
+  "boundaries": [
+    {
+      "construct": "unsafe trait",
+      "role": "defines implementation-side extra safety conditions",
+      "compiler_checks": ["trait safety classification", "requires unsafe impl for positive/reservation implementation"],
+      "compiler_does_not_check": ["arbitrary semantic safety contract in documentation"]
+    },
+    {
+      "construct": "unsafe impl",
+      "role": "programmer assertion that unsafe-trait obligations are discharged",
+      "compiler_checks": ["unsafe is required for unsafe trait", "unsafe is rejected for ordinary safe trait except other special unsafe-impl cases"],
+      "semantic_evidence_needed": ["proof or accepted argument that implementation satisfies trait contract"]
+    },
+    {
+      "construct": "unsafe fn in trait",
+      "role": "caller-side proof obligation independent of trait safety",
+      "semantic_evidence_needed": ["per-call discharge of function preconditions"]
+    },
+    {
+      "construct": "safe method in unsafe trait",
+      "role": "safe call assumes selected implementation already satisfies trait contract",
+      "semantic_evidence_needed": ["implementation contract at trait boundary, not unsafe call-site proof"]
+    },
+    {
+      "construct": "unsafe auto trait",
+      "examples": ["Send", "Sync"],
+      "role": "semantic marker whose implementation may be compiler-derived or manually asserted",
+      "provenance_classes": ["compiler structural derivation", "explicit standard-library implementation", "user unsafe impl", "negative impl exclusion"]
+    },
+    {
+      "construct": "TrustedLen",
+      "role": "library-defined unsafe trait whose contract can justify unsafe consumer behavior",
+      "contract_summary": "size_hint must describe exact remaining length, with specified usize::MAX saturation case, or iterator diverges before end"
+    }
+  ],
+  "verification_fields": [
+    "trait_identity",
+    "trait_is_unsafe",
+    "contract_identity_or_text_reference",
+    "selected_impl_identity",
+    "impl_provenance",
+    "contract_evidence_or_assumption",
+    "unsafe_consumers_depending_on_contract"
+  ]
+}

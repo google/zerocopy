@@ -1,0 +1,44 @@
+{
+  "topics": [
+    "verification/trusted-computing-base",
+    "verification/assumptions",
+    "verification/proof-checkers",
+    "verification/verified-compilation",
+    "verification/translation-validation",
+    "verification/end-to-end-assurance",
+    "anneal/trust-model"
+  ],
+  "subjects": [
+    {
+      "name": "Rocq kernel and assumption accounting",
+      "identity": {
+        "project": "Rocq/Coq",
+        "documentation": "8.20.1"
+      }
+    },
+    {
+      "name": "CompCert verified compiler and verified-verifier methodology",
+      "identity": {
+        "project": "CompCert",
+        "version": "3.18",
+        "released": "2026-08-31"
+      }
+    },
+    {
+      "name": "seL4 functional and binary verification trust boundary",
+      "identity": {
+        "project": "seL4",
+        "functional_correctness_publication": "SOSP 2009",
+        "binary_validation_publication": "PLDI 2013"
+      }
+    },
+    {
+      "name": "CakeML end-to-end verified compilation and proof checking",
+      "identity": {
+        "project": "CakeML",
+        "assurance_model": "HOL4-to-machine-code verified pipeline"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

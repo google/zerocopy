@@ -1,0 +1,19 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/main.rs","blob":"3d363b977df790b266fe2a0635da1c294ec1b7c2","symbols":["main","prepare_and_run"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/resolve.rs","blob":"9a44f652961e0bfe62bc4c2efecd550dea361fab","symbols":["Roots","LockedRoots","resolve_roots","resolve_run_roots","resolve_targets"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/scanner.rs","blob":"44b66417a827192b87d4cad3e62421e8ca497d28","symbols":["AnnealArtifact","artifact_slug","scan_workspace","process_file_recursive"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/charon.rs","blob":"7e33bda392770d04397f7172296d9a7f25c6e180","symbols":["run_charon"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/aeneas.rs","blob":"9b4618a20938315afc290744bbdfa498848620f4","symbols":["run_aeneas","generate_lean_workspace","verify_lean_workspace","run_lake","generated_lake_manifest","patch_funs","patch_discriminants","resolve_mapping"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/generate.rs","blob":"f087023d08011a90d56bcbdc759e6cbc90c344b5","symbols":["LeanBuilder","generate_artifact"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/diagnostics.rs","blob":"cd27b771e2f22bdb104c5335a70cfde3207e8fdb","symbols":["DiagnosticMapper"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/src/setup.rs","blob":"32216cedf11c5d6d4b5a4618d8d7bf2578e44b4d","symbols":["Toolchain","run_setup"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/Cargo.toml","blob":"f545b31c8e15a3cc5b5bbaf277abb9e56afc2e33","symbols":["package","package.metadata.build_rs"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/README.md","blob":"2bfda6336f87bf3cd785a19286363ab13423bd7d","symbols":["Historical V1 documentation","Usage & Commands"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/v1/docs/agent/01_philosophy_and_pipeline.md","blob":"39f0e1569e6c9f7d74722c78bdcae550e31bdb9c","symbols":["The Verification Pipeline"]},
+    {"repository":"google/zerocopy","revision":"dbb81cc7759bb6b21b82a1ca98bb32e9676f8655","path":"commit","role":"V1/V2 reorganization boundary"},
+    {"repository":"google/zerocopy","revision":"7e9de53b88121c58588984437ac500a2d1449080","path":"commit","role":"explicit historical-V1 status marker"}
+  ]
+}

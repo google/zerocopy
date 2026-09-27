@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/semantic-preservation-opaque-patterns/v1",
+  "observed_at": "2026-09-27",
+  "patterns": [
+    {
+      "pattern": "reject",
+      "description": "Reject translation/verification when no adequate semantics is available.",
+      "soundness_condition": "No success result may be produced for the unsupported source behavior.",
+      "proof_effect": "Narrows the accepted source-language subset; preserves theorem validity for accepted inputs.",
+      "example_basis": "CompCert semantic-preservation theorem is conditional on successful compilation.",
+      "anneal_use": "Default fail-closed handling when Charon/Aeneas/Lean correspondence is not justified."
+    },
+    {
+      "pattern": "relational-opaque",
+      "description": "Represent the operation by a relation over arguments, state, observations, result, and post-state.",
+      "soundness_condition": "The actual operation refines/is included in the formal relation, and the relation satisfies the simulation/frame laws required by surrounding transformations.",
+      "proof_effect": "Compiler/translator correctness can be parametric in the operation while leaving its implementation outside the verified component.",
+      "example_basis": "CompCert external_functions_sem/extcall_properties.",
+      "anneal_use": "Appropriate for modeled externals, intrinsics, or other effects whose implementation is intentionally outside the translator."
+    },
+    {
+      "pattern": "environment-oracle-assumption",
+      "description": "Make environmental behavior an explicit semantic oracle/specification and state a premise connecting concrete execution to it.",
+      "soundness_condition": "Concrete external code and calling convention satisfy the modeled oracle/specification.",
+      "proof_effect": "End-to-end theorem is conditional on an explicit environment premise.",
+      "example_basis": "CakeML FFI oracle and PLDI 2019 verified-processor result.",
+      "anneal_use": "Appropriate where a Rust-level theorem intentionally trusts an external API/model."
+    },
+    {
+      "pattern": "overapproximate-havoc",
+      "description": "Permit a superset of real behaviors in the formal model.",
+      "soundness_condition": "All real behaviors are included; state/effect/termination dimensions are overapproximated too, not only return values.",
+      "proof_effect": "Safety proofs become stronger/harder but can soundly cover the real operation after inclusion is justified.",
+      "example_basis": "Derived refinement principle illustrated by relational external-call models.",
+      "anneal_use": "Useful for intentionally conservative modeling when exact semantics is unnecessary."
+    },
+    {
+      "pattern": "erase-or-weaken",
+      "description": "Remove the operation or replace it with a semantics that admits fewer or different behaviors.",
+      "soundness_condition": "Requires a separate proof that erased behavior is irrelevant/equivalent for the claimed property.",
+      "proof_effect": "Without such a proof, target correctness does not imply source correctness.",
+      "example_basis": "CompCert inline-assembly warning illustrates the danger of a formal placeholder that does not match concrete behavior.",
+      "anneal_use": "Do not use merely because the translator cannot model the source operation."
+    }
+  ],
+  "representation_warnings": [
+    {
+      "term": "uninterpreted function",
+      "warning": "Usually still implies functional/pure behavior unless state, effects, partiality, and nondeterminism are explicit."
+    },
+    {
+      "term": "opaque",
+      "warning": "Means implementation is hidden; it does not by itself determine whether semantics is pure, deterministic, total, stateful, or effectful."
+    },
+    {
+      "term": "unsupported",
+      "warning": "Representation or parsing success is not semantic support for the intended theorem."
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain_date": "2026-05-31"
+  },
+  "sources": [
+    {
+      "path": "library/core/src/alloc/layout.rs",
+      "blob": "66f5310db83102e28535faf0e4586ba447b4d7a6",
+      "symbols": [
+        "Layout",
+        "Layout::from_size_align",
+        "Layout::from_size_align_unchecked"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "path": "library/core/src/alloc/global.rs",
+      "blob": "e97398aa5dc4a3f923d014cecc3734906121d0a9",
+      "symbols": [
+        "GlobalAlloc",
+        "GlobalAlloc::alloc",
+        "GlobalAlloc::dealloc",
+        "GlobalAlloc::alloc_zeroed",
+        "GlobalAlloc::realloc"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "path": "library/core/src/alloc/mod.rs",
+      "blob": "102fb19efc8eabbe32ddb9a5d3a2f7e0ac186b16",
+      "symbols": [
+        "Allocator",
+        "Allocator::allocate",
+        "Allocator::deallocate",
+        "Allocator::grow",
+        "Allocator::grow_zeroed",
+        "Allocator::shrink"
+      ],
+      "role": "documentation/source"
+    },
+    {
+      "path": "library/alloc/src/alloc.rs",
+      "blob": "8729e98278a82c17cf5a6b201246ca04db17dcf6",
+      "symbols": [
+        "alloc",
+        "dealloc",
+        "realloc",
+        "alloc_zeroed",
+        "Global",
+        "handle_alloc_error"
+      ],
+      "role": "documentation/source"
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

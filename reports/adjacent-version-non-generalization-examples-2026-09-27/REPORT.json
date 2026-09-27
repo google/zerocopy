@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "anneal/versioning",
+    "charon/versioning",
+    "lake/versioning",
+    "verification/revalidation"
+  ],
+  "subjects": [
+    {
+      "name": "Lake configuration ownership across Lean v4.30.0-rc2 and v4.31.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "older-revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "older-release": "v4.30.0-rc2",
+        "newer-revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "newer-release": "v4.31.0"
+      }
+    },
+    {
+      "name": "Charon same-version revisions selected by Aeneas and Anneal",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "aeneas-pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "anneal-tag-resolution": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "package-version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

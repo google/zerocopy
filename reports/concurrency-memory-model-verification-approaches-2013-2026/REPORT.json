@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "verification/concurrency",
+    "verification/weak-memory",
+    "verification/separation-logic",
+    "verification/model-checking",
+    "rust/concurrency",
+    "rust/atomics"
+  ],
+  "subjects": [
+    {
+      "name": "Rust atomics memory model selected by the Anneal-era toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "path": "library/core/src/sync/atomic.rs",
+        "toolchain-date": "2026-05-31"
+      }
+    },
+    {
+      "name": "Relaxed Separation Logic",
+      "identity": {
+        "doi": "10.1145/2509136.2509532",
+        "publication": "OOPSLA 2013",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Strong Logic for Weak Memory",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+        "publication": "ECOOP 2017",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "GenMC: A Model Checker for Weak Memory Models",
+      "identity": {
+        "doi": "10.1007/978-3-030-81685-8_20",
+        "publication": "CAV 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "RustMC: Automated Verification of Real-World Concurrent Rust",
+      "identity": {
+        "doi": "10.1007/978-3-032-28187-6_14",
+        "publication": "FORTE 2026",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

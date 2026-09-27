@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "verification/nontermination",
+    "verification/divergence",
+    "verification/coinduction",
+    "verification/simulation",
+    "verification/total-correctness",
+    "compcert",
+    "aeneas/termination"
+  ],
+  "subjects": [
+    {
+      "name": "CompCert 3.18 whole-program behavior and simulation semantics",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+        "version": "3.18"
+      }
+    },
+    {
+      "name": "Aeneas divergence and partial-function model selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Rust termination terminology at the Anneal Rust pin",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

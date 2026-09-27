@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "rust",
+    "rust/allocation",
+    "rust/allocators",
+    "rust/layout",
+    "rust/memory",
+    "rust/unsafe"
+  ],
+  "subjects": [
+    {
+      "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

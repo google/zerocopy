@@ -1,0 +1,113 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "role": "source",
+      "subject": "CompCert 3.18",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "VERSION",
+      "blob": "5fd2882f6f042e89ce617586ce5041f5762c1766",
+      "supports": [
+        "version identity"
+      ]
+    },
+    {
+      "role": "source",
+      "subject": "CompCert 3.18",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/Events.v",
+      "blob": "ac8d1bb42e4e9d2e04bc6d7c1c27ea87fbc95564",
+      "supports": [
+        "observable events and traces",
+        "extcall_sem",
+        "extcall_properties",
+        "external_functions_sem",
+        "inline_assembly_sem",
+        "shared external_call interface"
+      ]
+    },
+    {
+      "role": "source",
+      "subject": "CompCert 3.18",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "common/AST.v",
+      "blob": "007d44afdb4f3262dc147865ed82721f1494d4a4",
+      "supports": [
+        "external-function categories",
+        "inline assembly semantic-preservation warning"
+      ]
+    },
+    {
+      "role": "source",
+      "subject": "CompCert 3.18",
+      "repository": "AbsInt/CompCert",
+      "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+      "path": "driver/Complements.v",
+      "blob": "d3974c2f7c2e5d04f2a3293fa6cfdb1215e5a217",
+      "supports": [
+        "whole-program behavior preservation",
+        "safe-source refinement corollary"
+      ]
+    },
+    {
+      "role": "documentation",
+      "subject": "CompCert 3.18",
+      "url": "https://compcert.org/man/manual001.html",
+      "observed_at": "2026-09-27",
+      "supports": [
+        "high-level semantic-preservation theorem",
+        "successful-compilation precondition"
+      ]
+    },
+    {
+      "role": "source",
+      "subject": "CakeML FFI",
+      "repository": "CakeML/cakeml",
+      "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+      "path": "semantics/ffi/ffiScript.sml",
+      "blob": "b40698d34360646ffb56e098e15571f99b99d9f4",
+      "supports": [
+        "FFI oracle datatype",
+        "FFI state",
+        "I/O events",
+        "call_FFI behavior"
+      ]
+    },
+    {
+      "role": "source",
+      "subject": "CakeML basis FFI",
+      "repository": "CakeML/cakeml",
+      "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+      "path": "basis/basis_ffiScript.sml",
+      "blob": "4b98525f4f628392a0ec8710a1d4d1394acbffe9",
+      "supports": [
+        "basis_ffi_oracle",
+        "basis FFI state",
+        "connection between FFI calls and modeled filesystem/command-line state"
+      ]
+    },
+    {
+      "role": "documentation",
+      "subject": "Verified Compilation on a Verified Processor",
+      "doi": "10.1145/3314221.3314622",
+      "publication": "PLDI 2019",
+      "authors": [
+        "Andreas Lööw",
+        "Ramana Kumar",
+        "Yong Kiam Tan",
+        "Magnus O. Myreen",
+        "Michael Norrish",
+        "Oskar Abrahamsson",
+        "Anthony Fox"
+      ],
+      "supports": [
+        "end-to-end FFI/calling-convention assumption",
+        "interference-oracle boundary"
+      ]
+    }
+  ]
+}

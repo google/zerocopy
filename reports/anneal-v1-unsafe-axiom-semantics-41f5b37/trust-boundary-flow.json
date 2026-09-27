@@ -1,0 +1,63 @@
+{
+  "schema": "anneal-reference/trust-boundary-flow/v1",
+  "subject": "historical Anneal V1 unsafe(axiom)",
+  "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "stages": [
+    {
+      "stage": 1,
+      "component": "Anneal parser",
+      "input": "function documentation block tagged unsafe(axiom)",
+      "output": "FunctionBlockInner::Axiom",
+      "proof_body": "forbidden",
+      "trust_effect": "selects explicit axiom path"
+    },
+    {
+      "stage": 2,
+      "component": "Anneal -> Charon",
+      "input": "Axiom function identity",
+      "output": "--opaque <module-qualified-name>",
+      "proof_body": "Rust body intentionally not used for behavioral proof",
+      "trust_effect": "implementation semantics becomes external/opaque"
+    },
+    {
+      "stage": 3,
+      "component": "Aeneas external translation",
+      "input": "opaque Charon item",
+      "output": "FunsExternal_Template.lean / FunsExternal.lean declaration",
+      "proof_body": "none for the external body",
+      "trust_effect": "Lean receives uninterpreted external function/model"
+    },
+    {
+      "stage": 4,
+      "component": "Anneal generator",
+      "input": "requires/ensures plus external function",
+      "output": "Lean axiom asserting Aeneas.Std.WP.spec",
+      "proof_body": "none",
+      "trust_effect": "user-written behavioral contract is accepted as a premise"
+    },
+    {
+      "stage": 5,
+      "component": "verified client",
+      "input": "axiomatic specification theorem",
+      "output": "downstream proof may rely on contract",
+      "proof_body": "client proof may be checked",
+      "trust_effect": "client theorem is conditional on correctness of the opaque implementation/model and asserted contract"
+    }
+  ],
+  "separate_mechanisms": {
+    "allow_sorry": "Development-time proof-hole path for spec-mode obligations; distinct from explicit unsafe(axiom).",
+    "noncomputable_section": "Allows generated Lean definitions depending on opaque axioms to avoid bytecode-computability errors; does not discharge the axiom.",
+    "rust_unsafe_gate": "At this revision, parser uses Rust unsafety to reject requires clauses on safe functions, but no inspected branch rejects unsafe(axiom) mode itself on a safe function."
+  },
+  "modeled_progress": {
+    "aeneas_revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+    "result_outcomes": [
+      "ok",
+      "fail",
+      "div"
+    ],
+    "wp_spec_semantics": "spec m P iff there exists y with m = ok y and P y",
+    "consequence": "Under the generated precondition, unsafe(axiom) asserts modeled successful return and postcondition; fail and div are excluded.",
+    "trust_boundary": "Because the Rust body is opaque, real progress/termination is assumed by the axiom rather than proved."
+  }
+}

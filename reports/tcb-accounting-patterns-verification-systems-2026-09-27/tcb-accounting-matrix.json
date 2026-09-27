@@ -1,0 +1,59 @@
+{
+  "schema": "anneal-reference/tcb-accounting-matrix/v1",
+  "observed_at": "2026-09-27",
+  "patterns": [
+    {
+      "pattern": "small-kernel-proof-checking",
+      "exemplar": "Rocq/Coq",
+      "claim": "logical theorem validity relative to assumptions",
+      "can_move_out_of_tcb": ["tactics", "proof search", "most plugins and elaboration that only construct checked proof terms"],
+      "remains_trusted": ["kernel/type checker", "logic and trusted primitives", "theorem-specific axioms/assumptions"],
+      "audit_mechanism": "Print Assumptions"
+    },
+    {
+      "pattern": "verified-transformation",
+      "exemplar": "CompCert",
+      "claim": "semantic preservation from source semantics to target semantics",
+      "can_move_out_of_tcb": ["proved compiler-pass implementation"],
+      "remains_trusted": ["proof checker", "formal source/target semantics", "theorem assumptions", "unverified executable/extraction/runtime boundaries not covered by proof"]
+    },
+    {
+      "pattern": "verified-verifier-or-certificate-checking",
+      "exemplar": "CompCert verified-verifier methodology",
+      "claim": "accepted concrete transformation satisfies preservation relation",
+      "can_move_out_of_tcb": ["optimizer/generator that proposes candidate result"],
+      "remains_trusted": ["proved verifier", "input/result decoding", "semantic relation and models"],
+      "failure_mode_outside_tcb": "rejection or lost optimization rather than silent acceptance, assuming verifier soundness"
+    },
+    {
+      "pattern": "binary-refinement-extension",
+      "exemplar": "seL4 binary verification",
+      "claim": "concrete kernel binary implements verified C behavior",
+      "can_move_out_of_tcb": ["compiler", "linker", "for covered configuration/artifact"],
+      "remains_trusted": ["handwritten assembly outside validation", "hardware and machine-interface assumptions", "boot code", "proof toolchain/specification assumptions"],
+      "scope_rule": "per covered architecture/configuration and concrete binary pipeline"
+    },
+    {
+      "pattern": "end-to-end-verified-checker",
+      "exemplar": "CakeML verified proof checkers",
+      "claim": "machine-code checker acceptance implies formal proof-system/problem result",
+      "can_move_out_of_tcb": ["unverified solver/generator producing certificate", "compiler implementation covered by verified CakeML pipeline"],
+      "remains_trusted": ["formal parser/problem semantics", "HOL4 logic/kernel/execution environment", "formal ISA/FFI/memory model and correspondence to real machine"]
+    },
+    {
+      "pattern": "verified-bootstrapping",
+      "exemplar": "CakeML compiler bootstrap",
+      "claim": "bootstrap binary implements the verified compiler",
+      "can_move_out_of_tcb": ["external host compiler used merely to establish a compiler binary, when covered by in-logic bootstrap theorem"],
+      "remains_trusted": ["theorem prover", "compiler/specification theorem", "binary extraction/output path", "machine/environment correspondence"]
+    }
+  ],
+  "anneal_layers": [
+    "logical-checker",
+    "theorem-specific-assumptions",
+    "source-model-correspondence",
+    "transformation-validation",
+    "execution-correspondence",
+    "artifact-identity"
+  ]
+}

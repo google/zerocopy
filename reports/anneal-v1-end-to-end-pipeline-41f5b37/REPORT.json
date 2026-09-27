@@ -1,0 +1,31 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/v1",
+    "anneal/pipeline",
+    "charon/llbc",
+    "aeneas/lean",
+    "lean/verification",
+    "lake/build",
+    "diagnostics/source-mapping"
+  ],
+  "subjects": [
+    {
+      "name": "Retained Anneal V1 end-to-end verification implementation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Anneal V1/V2 reorganization boundary",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655",
+        "pull_request": "3487"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

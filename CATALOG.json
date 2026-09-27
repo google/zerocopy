@@ -1,5 +1,35 @@
 {
   "reports": {
+    "adjacent-version-non-generalization-examples-2026-09-27": {
+      "topics": [
+        "anneal/versioning",
+        "charon/versioning",
+        "lake/versioning",
+        "verification/revalidation"
+      ],
+      "subjects": [
+        {
+          "name": "Lake configuration ownership across Lean v4.30.0-rc2 and v4.31.0",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "older-revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "older-release": "v4.30.0-rc2",
+            "newer-revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "newer-release": "v4.31.0"
+          }
+        },
+        {
+          "name": "Charon same-version revisions selected by Aeneas and Anneal",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "aeneas-pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "anneal-tag-resolution": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "package-version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "aeneas-architecture-translation-pipeline-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1430,6 +1460,37 @@
         "lake/cache-reuse"
       ]
     },
+    "anneal-v1-end-to-end-pipeline-41f5b37": {
+      "topics": [
+        "anneal",
+        "anneal/v1",
+        "anneal/pipeline",
+        "charon/llbc",
+        "aeneas/lean",
+        "lean/verification",
+        "lake/build",
+        "diagnostics/source-mapping"
+      ],
+      "subjects": [
+        {
+          "name": "Retained Anneal V1 end-to-end verification implementation",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+            "path": "anneal/v1"
+          }
+        },
+        {
+          "name": "Anneal V1/V2 reorganization boundary",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "dbb81cc7759bb6b21b82a1ca98bb32e9676f8655",
+            "pull_request": "3487"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "anneal-v1-integration-test-disk-amplification-f98458e": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1466,6 +1527,73 @@
         "lake/cache",
         "lake/concurrency"
       ]
+    },
+    "anneal-v1-unsafe-axiom-semantics-41f5b37": {
+      "topics": [
+        "anneal/v1",
+        "anneal/v1/unsafe-axiom",
+        "aeneas/external-models",
+        "charon/opaque",
+        "lean/axiom",
+        "verification/trust-boundary"
+      ],
+      "subjects": [
+        {
+          "name": "Historical Anneal V1 unsafe(axiom) pipeline",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+            "path": "anneal/v1"
+          }
+        },
+        {
+          "name": "Aeneas WP/Result semantics used by historical Anneal V1",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+            "path": "backends/lean/Aeneas/Std"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "assembly-isa-proof-boundaries-2013-2026": {
+      "topics": [
+        "verification",
+        "verification/assembly",
+        "verification/isa",
+        "verification/binary",
+        "verification/hardware",
+        "compiler-verification",
+        "compcert",
+        "sel4",
+        "cakeml"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert 3.18 compilation boundary",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Translation Validation for a Verified OS Kernel",
+          "identity": {
+            "publication": "PLDI 2013",
+            "year": "2013"
+          }
+        },
+        {
+          "name": "Verified Compilation on a Verified Processor",
+          "identity": {
+            "doi": "10.1145/3314221.3314622",
+            "publication": "PLDI 2019"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "cargo-compilation-subject-identity-2026-05-31": {
       "observed_at": "2026-09-25",
@@ -1858,6 +1986,43 @@
         "rust/unsafe"
       ]
     },
+    "charon-release-upgrade-checklist-0-1-210": {
+      "topics": [
+        "charon/release-upgrade",
+        "charon/revalidation",
+        "charon/toolchain",
+        "charon/serialization",
+        "charon/transforms",
+        "aeneas/charon",
+        "anneal/toolchain"
+      ],
+      "subjects": [
+        {
+          "name": "Charon pinned by Aeneas nightly-2026.06.03",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Aeneas release selecting the Charon baseline",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Anneal authority instantiating the checklist",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "charon-serialization-compatibility-api-0-1-210": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -2085,6 +2250,60 @@
         "rust/unions",
         "rust/layout"
       ]
+    },
+    "concurrency-memory-model-verification-approaches-2013-2026": {
+      "topics": [
+        "verification/concurrency",
+        "verification/weak-memory",
+        "verification/separation-logic",
+        "verification/model-checking",
+        "rust/concurrency",
+        "rust/atomics"
+      ],
+      "subjects": [
+        {
+          "name": "Rust atomics memory model selected by the Anneal-era toolchain",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "path": "library/core/src/sync/atomic.rs",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Relaxed Separation Logic",
+          "identity": {
+            "doi": "10.1145/2509136.2509532",
+            "publication": "OOPSLA 2013",
+            "year": "2013"
+          }
+        },
+        {
+          "name": "Strong Logic for Weak Memory",
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECOOP.2017.17",
+            "publication": "ECOOP 2017",
+            "year": "2017"
+          }
+        },
+        {
+          "name": "GenMC: A Model Checker for Weak Memory Models",
+          "identity": {
+            "doi": "10.1007/978-3-030-81685-8_20",
+            "publication": "CAV 2021",
+            "year": "2021"
+          }
+        },
+        {
+          "name": "RustMC: Automated Verification of Real-World Concurrent Rust",
+          "identity": {
+            "doi": "10.1007/978-3-032-28187-6_14",
+            "publication": "FORTE 2026",
+            "year": "2026"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "cross-tool-diagnostic-path-normalization-2026-09-27": {
       "observed_at": "2026-09-27",
@@ -2418,6 +2637,44 @@
         "exocrate/install",
         "exocrate/remote"
       ]
+    },
+    "ffi-specification-trust-patterns-2019-2026": {
+      "topics": [
+        "verification/ffi",
+        "verification/trust-boundary",
+        "verification/external-calls",
+        "verification/assumptions",
+        "rust/ffi",
+        "compcert",
+        "cakeml"
+      ],
+      "subjects": [
+        {
+          "name": "Rust foreign-function interface selected by Anneal",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+            "toolchain-context": "rust-lang/rust@14210df0e27ccd7d9e6a05b8085cbd438e4bbc65 (nightly-2026-05-31)"
+          }
+        },
+        {
+          "name": "CompCert external-call specification pattern",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "CakeML FFI/oracle specification and refinement pattern",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec",
+            "publication": "Verified Compilation on a Verified Processor, PLDI 2019, DOI 10.1145/3314221.3314622"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "generated-rust-visibility-nightly-2026-05-31": {
       "observed_at": "2026-09-25",
@@ -3204,6 +3461,43 @@
         "lean/server"
       ]
     },
+    "lean-generated-file-interactive-workflows-v4-30-0-rc2": {
+      "topics": [
+        "aeneas/generated-lean",
+        "lean/lsp",
+        "lean/generated-files",
+        "lean/incremental",
+        "lean/dependencies",
+        "lsp/document-sync"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 language server selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Aeneas Lean generator selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Language Server Protocol 3.18 specification",
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+            "version": "3.18"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lean-grind-behavior-extensibility-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3768,6 +4062,80 @@
         "lake/build-failure"
       ]
     },
+    "library-versus-closed-program-verification-2026-09-27": {
+      "topics": [
+        "verification",
+        "verification/library",
+        "verification/closed-program",
+        "verification/compositionality",
+        "verification/linking",
+        "verification/specifications",
+        "rustbelt",
+        "compcert"
+      ],
+      "subjects": [
+        {
+          "name": "RustBelt unsafe-library and safe-client composition model",
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "POPL 2018"
+          }
+        },
+        {
+          "name": "CompCert 3.18 whole-program semantic-preservation development",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Compositional CompCert",
+          "identity": {
+            "doi": "10.1145/2676726.2676985",
+            "publication": "POPL 2015"
+          }
+        },
+        {
+          "name": "Fully Composable and Adequate Verified Compilation with Direct Refinements between Open Modules",
+          "identity": {
+            "arxiv": "2302.12990",
+            "year": "2023"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lsp-proof-assistant-architecture-2026-09-27": {
+      "topics": [
+        "lsp",
+        "lsp/architecture",
+        "lsp/document-synchronization",
+        "lsp/cancellation",
+        "lsp/workspaces",
+        "proof-assistants",
+        "lean/server"
+      ],
+      "subjects": [
+        {
+          "name": "Language Server Protocol 3.18 specification source",
+          "identity": {
+            "repository": "microsoft/language-server-protocol",
+            "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+            "specification": "3.18"
+          }
+        },
+        {
+          "name": "Lean 4 language server selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "mathlib-dependency-closure-pruning-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3852,6 +4220,121 @@
         "proof-assistants"
       ]
     },
+    "operational-semantics-versus-functional-translation-2026-09-27": {
+      "topics": [
+        "verification/operational-semantics",
+        "verification/functional-translation",
+        "verification/semantic-preservation",
+        "verification/simulation",
+        "aeneas",
+        "compcert"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas: Rust Verification by Functional Translation",
+          "identity": {
+            "doi": "10.1145/3547647",
+            "publication": "PACMPL 6 (ICFP 2022), Article 116",
+            "year": "2022"
+          }
+        },
+        {
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+          "identity": {
+            "doi": "10.1145/3674640",
+            "publication": "PACMPL 8 (ICFP 2024)",
+            "year": "2024"
+          }
+        },
+        {
+          "name": "CompCert 3.18 operational semantics and semantic-preservation development",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "proof-producing-versus-validating-translations-1997-2022": {
+      "topics": [
+        "compiler-verification/certification",
+        "proof-carrying-code",
+        "translation-validation/verified-validator",
+        "translation-certification",
+        "verification/proof-artifacts"
+      ],
+      "subjects": [
+        {
+          "name": "Proof-Carrying Code",
+          "identity": {
+            "doi": "10.1145/263699.263712",
+            "publication": "POPL 1997"
+          }
+        },
+        {
+          "name": "A Certifying Code Generation Phase",
+          "identity": {
+            "doi": "10.1016/j.entcs.2007.09.008",
+            "publication": "ENTCS 190(4), 2007"
+          }
+        },
+        {
+          "name": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+          "identity": {
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          }
+        },
+        {
+          "name": "Translation Certification for Smart Contracts",
+          "identity": {
+            "doi": "10.1007/978-3-030-99461-7_6",
+            "publication": "FLOPS 2022"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "reasoning-about-nontermination-compcert-aeneas-2026-09-27": {
+      "topics": [
+        "verification/nontermination",
+        "verification/divergence",
+        "verification/coinduction",
+        "verification/simulation",
+        "verification/total-correctness",
+        "compcert",
+        "aeneas/termination"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert 3.18 whole-program behavior and simulation semantics",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Aeneas divergence and partial-function model selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Rust termination terminology at the Anneal Rust pin",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "rust-aggregate-layout-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3880,6 +4363,55 @@
         "rust/unions",
         "rust/unsafe"
       ]
+    },
+    "rust-allocation-deallocation-nightly-2026-05-31": {
+      "topics": [
+        "rust",
+        "rust/allocation",
+        "rust/allocators",
+        "rust/layout",
+        "rust/memory",
+        "rust/unsafe"
+      ],
+      "subjects": [
+        {
+          "name": "Rust allocation APIs behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "rust-atomics-memory-orderings-nightly-2026-05-31": {
+      "topics": [
+        "rust",
+        "rust/atomics",
+        "rust/concurrency",
+        "rust/data-races",
+        "rust/memory-ordering",
+        "rust/unsafe"
+      ],
+      "subjects": [
+        {
+          "name": "Rust atomic library behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference bundled by the compiler revision",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
@@ -4399,6 +4931,50 @@
         "rustc/source-map"
       ]
     },
+    "rust-nightly-upgrade-checklist-nightly-2026-05-31": {
+      "topics": [
+        "anneal/toolchain",
+        "anneal/revalidation",
+        "rust/nightly",
+        "rust/toolchain",
+        "rustc",
+        "charon/toolchain"
+      ],
+      "subjects": [
+        {
+          "name": "Anneal toolchain configuration",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        },
+        {
+          "name": "Aeneas release selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon pinned by the selected Aeneas release",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Rust compiler source behind Anneal-era nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "rust-nonnull-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -4893,6 +5469,35 @@
         "rustc/traits"
       ]
     },
+    "rust-unsafe-trait-invariants-nightly-2026-05-31": {
+      "topics": [
+        "rust/unsafe-traits",
+        "rust/unsafe",
+        "rust/traits",
+        "rust/auto-traits",
+        "rust/send-sync",
+        "rust/safety-invariants",
+        "anneal/verification-surface"
+      ],
+      "subjects": [
+        {
+          "name": "Rust compiler behind nightly-2026-05-31",
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          }
+        },
+        {
+          "name": "Rust Reference used for exact unsafe-trait language rules",
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "rust-validity-well-defined-execution-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -5088,6 +5693,153 @@
         "rustc/def-path-hash",
         "rustc/hir"
       ]
+    },
+    "semantic-preservation-unsupported-opaque-operations-2026-09-27": {
+      "topics": [
+        "verification/semantic-preservation",
+        "verification/opaque-operations",
+        "verification/unsupported-operations",
+        "verification/external-calls",
+        "verified-compilation",
+        "compcert",
+        "cakeml"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert 3.18 external-call and semantic-preservation model",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "CakeML FFI/oracle semantics examined for opaque environmental effects",
+          "identity": {
+            "repository": "CakeML/cakeml",
+            "revision": "31b72d0003620a2ee8c4374caa00a483e1e450ec"
+          }
+        },
+        {
+          "name": "Verified Compilation on a Verified Processor",
+          "identity": {
+            "doi": "10.1145/3314221.3314622",
+            "publication": "PLDI 2019",
+            "year": "2019"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "tcb-accounting-patterns-verification-systems-2026-09-27": {
+      "topics": [
+        "verification/trusted-computing-base",
+        "verification/assumptions",
+        "verification/proof-checkers",
+        "verification/verified-compilation",
+        "verification/translation-validation",
+        "verification/end-to-end-assurance",
+        "anneal/trust-model"
+      ],
+      "subjects": [
+        {
+          "name": "Rocq kernel and assumption accounting",
+          "identity": {
+            "project": "Rocq/Coq",
+            "documentation": "8.20.1"
+          }
+        },
+        {
+          "name": "CompCert verified compiler and verified-verifier methodology",
+          "identity": {
+            "project": "CompCert",
+            "version": "3.18",
+            "released": "2026-08-31"
+          }
+        },
+        {
+          "name": "seL4 functional and binary verification trust boundary",
+          "identity": {
+            "project": "seL4",
+            "functional_correctness_publication": "SOSP 2009",
+            "binary_validation_publication": "PLDI 2013"
+          }
+        },
+        {
+          "name": "CakeML end-to-end verified compilation and proof checking",
+          "identity": {
+            "project": "CakeML",
+            "assurance_model": "HOL4-to-machine-code verified pipeline"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "verification-nondeterminism-environmental-effects-2020-2026": {
+      "topics": [
+        "verification",
+        "semantics/nondeterminism",
+        "semantics/environmental-effects",
+        "semantics/traces",
+        "semantics/refinement",
+        "compcert",
+        "interaction-trees",
+        "choice-trees"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert 3.18 behavior and external-world semantics",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Interaction Trees: Representing Recursive and Impure Programs in Coq",
+          "identity": {
+            "doi": "10.1145/3371119",
+            "publication": "Proc. ACM Program. Lang. 4 (POPL), Article 51",
+            "year": "2020"
+          }
+        },
+        {
+          "name": "Choice Trees: Representing Nondeterministic, Recursive, and Impure Programs in Coq",
+          "identity": {
+            "doi": "10.1145/3571254",
+            "publication": "Proc. ACM Program. Lang. 7 (POPL), 1770-1800",
+            "year": "2023"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "verified-compiler-pass-composition-compcert-3-18-popl-2008": {
+      "topics": [
+        "compiler-verification/composition",
+        "compcert/semantic-preservation",
+        "compcert/simulation",
+        "translation-validation/verified-validator",
+        "verification/refinement"
+      ],
+      "subjects": [
+        {
+          "name": "CompCert 3.18 verified compiler",
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "74cbdbf0e86ecbfa39a5ca8f248f77fb2f974cb6",
+            "version": "3.18"
+          }
+        },
+        {
+          "name": "Formal verification of translation validators: a case study on instruction scheduling optimizations",
+          "identity": {
+            "doi": "10.1145/1328438.1328444",
+            "publication": "POPL 2008"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "zerocopy-rust-intrinsics-nightly-2026-05-31": {
       "observed_at": "2026-09-27",

@@ -1,0 +1,190 @@
+{
+  "schema": "anneal-reference/charon-release-upgrade-checklist/v1",
+  "baseline": {
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "charon_revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "charon_package_version": "0.1.210",
+    "charon_rust_toolchain": "nightly-2026-05-31",
+    "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "policy": {
+    "decision_unit": "exact Charon source identity plus its compiler, configuration, serialized/API, consumer, and packaged-runtime evidence",
+    "version_string_is_not_commit_identity": true,
+    "same_date_tag_is_not_transitive_identity": true,
+    "passing_process_status_is_not_completeness_evidence": true,
+    "source_review_and_execution_are_complementary": true
+  },
+  "gates": [
+    {
+      "id": "identity",
+      "title": "Resolve the exact producer identity",
+      "required": [
+        "Resolve the proposed Aeneas revision/release first, then read its charon-pin and locked Charon input.",
+        "Record the exact Charon commit, package version, and any Charon release/tag label separately.",
+        "Verify that the Charon binaries actually packaged with Aeneas are built from the intended locked input.",
+        "Record hashes of the concrete Aeneas/Charon artifacts Anneal will consume."
+      ],
+      "reject_if": [
+        "charon-pin and the locked Charon input disagree",
+        "the proposed Charon identity is inferred only from a date tag or 0.1.x package version",
+        "the packaged Charon provenance cannot be tied to the reviewed source"
+      ]
+    },
+    {
+      "id": "rustc-coupling",
+      "title": "Revalidate the rustc-private toolchain contract",
+      "required": [
+        "Read the proposed Charon rust-toolchain and record the channel, components, and targets.",
+        "Verify the compiler actually supplied by Anneal matches the toolchain required by Charon's rustc-private driver.",
+        "Exercise the production provisioning path, including CHARON_TOOLCHAIN_IS_IN_PATH or rustup behavior as applicable.",
+        "Record rustc -vV identity from the packaged runtime."
+      ],
+      "reject_if": [
+        "the packaged/runtime rustc differs from the reviewed Charon toolchain without an explicit compatibility justification",
+        "required rustc-private components or dynamic libraries are absent",
+        "a host succeeds only by accidentally finding an ambient toolchain"
+      ]
+    },
+    {
+      "id": "invocation-and-preset",
+      "title": "Freeze and compare the invocation and Aeneas preset contract",
+      "required": [
+        "Diff CliOpts, Preset::Aeneas, default MIR level, start/opacity rules, error-policy options, and serialization defaults.",
+        "Record the exact Charon command/configuration Anneal uses and whether Cargo or direct-rustc mode owns compilation context.",
+        "Check internal wrapper-to-driver option transport and target-selection behavior for changes relevant to orchestration.",
+        "Preserve a machine-readable snapshot of the production-effective option set."
+      ],
+      "reject_if": [
+        "the production path silently stops applying the Aeneas preset",
+        "a preset/default change alters proof-relevant transformations without review",
+        "the new invocation reaches a different compilation subject than the reviewed one"
+      ]
+    },
+    {
+      "id": "wire-and-api",
+      "title": "Revalidate serialized LLBC and charon_lib as separate interfaces",
+      "required": [
+        "Diff CrateData, AST/schema definitions, generated OCaml readers, serialization formats, and Charon version machinery.",
+        "Confirm the Aeneas reader accepts the intended producer and rejects mismatched supported versions as expected.",
+        "If Anneal uses charon_lib in process, separately compile/review that exact Rust API boundary rather than treating LLBC compatibility as sufficient.",
+        "Preserve representative JSON or Postcard specimens from fixed Rust inputs for structural comparison."
+      ],
+      "reject_if": [
+        "the producer/consumer pair is selected only because package version strings match",
+        "a schema/API change is unreviewed",
+        "a serialized specimen no longer decodes under the intended consumer"
+      ]
+    },
+    {
+      "id": "transform-pipeline",
+      "title": "Diff the semantic transformation pipeline",
+      "required": [
+        "Diff pass ordering, should_run predicates, Aeneas-preset-controlled passes, MIR level, resugaring, normalization, and output simplification.",
+        "Review changes to passes that reconstruct assertions/fallible operations, indexing, associated types, trait structure, drops, constants, intrinsics, and control flow when relevant to Anneal's supported corpus.",
+        "Regenerate fixed-input LLBC specimens and review semantic as well as textual changes."
+      ],
+      "reject_if": [
+        "a proof-relevant transformation changes without a corresponding semantic review",
+        "a new pass depends on rustc MIR shape that changed with the selected nightly and no discriminating test covers it"
+      ]
+    },
+    {
+      "id": "support-and-failure",
+      "title": "Rebuild the support and fail-closed boundary",
+      "required": [
+        "Diff explicit unsupported/error/panic paths, known unsoundness trackers, and the Aeneas-preset support surface.",
+        "Recheck ErrorCtx continuation, CrateData.has_errors, serialization-before-final-error-policy behavior, and process exit classes.",
+        "Verify Anneal treats any promise-relevant Charon error/partial result as failure even if the default Charon process can serialize partial output.",
+        "Run positive, warning/partial, hard-error, panic/ICE, and timeout discriminators where the execution surface permits."
+      ],
+      "reject_if": [
+        "partial LLBC can enter Aeneas/Anneal as complete proof input",
+        "a formerly rejected construct becomes accepted without semantic review",
+        "a known unsound transformation remains enabled for Anneal without an explicit decision"
+      ]
+    },
+    {
+      "id": "coverage-and-source-identity",
+      "title": "Revalidate what program is translated and how it maps back to source",
+      "required": [
+        "Diff start-root, include/opaque/exclude, dependency/body-availability, cfg/target, and foreign-item coverage behavior.",
+        "Diff item identity, names, file/span/location structures, comment/source-content handling, and any metadata used by diagnostics or proof provenance.",
+        "Verify fixed fixtures still map the same semantic items and user-source ranges when Anneal relies on stable correspondence."
+      ],
+      "reject_if": [
+        "the translated semantic closure narrows or widens without review",
+        "item/span identity changes invalidate diagnostics or source-correspondence assumptions without migration evidence"
+      ]
+    },
+    {
+      "id": "multi-unit-and-target",
+      "title": "Revalidate multi-target and multi-primary Cargo behavior",
+      "required": [
+        "If production uses multiple targets, exercise the exact --targets fan-out/merge path and inspect target-dispatch results.",
+        "If one Cargo invocation can contain multiple primary target units, ensure outputs cannot collide or overwrite each other under Anneal's chosen destination policy.",
+        "Review target classification, CARGO_PRIMARY_PACKAGE handling, crate-name-derived output naming, and merge semantics."
+      ],
+      "reject_if": [
+        "concurrent/serial primary compiler units can write the same intended artifact without an explicit aggregation/staging policy",
+        "cross-target semantic differences are silently deduplicated or merged contrary to the reviewed behavior"
+      ]
+    },
+    {
+      "id": "consumer-compatibility",
+      "title": "Revalidate the exact Aeneas consumer boundary",
+      "required": [
+        "Use the Aeneas revision that selects the proposed Charon, not a same-date Charon tag or nearby Aeneas release.",
+        "Check the Aeneas LLBC reader/generated Charon-ML definitions against the proposed producer.",
+        "Run fixed LLBC specimens and a small Rust-to-LLBC-to-Aeneas translation corpus through the exact producer/consumer pair.",
+        "If Anneal separately carries a different charon_lib revision, prove it is unused or validate any active cross-revision edge explicitly."
+      ],
+      "reject_if": [
+        "Aeneas and Charon source identities are paired by naming/date convention instead of the locked dependency graph",
+        "an active cross-revision LLBC or in-memory API edge lacks direct compatibility evidence"
+      ]
+    },
+    {
+      "id": "determinism-and-goldens",
+      "title": "Separate same-revision determinism from cross-revision drift",
+      "required": [
+        "Repeat production-mode Charon extraction from identical clean inputs and compare normalized and raw artifacts where byte identity matters.",
+        "Compare old-versus-new LLBC for fixed fixtures separately from same-revision repetition.",
+        "Preserve commands, environment, compiler/Charon identities, output hashes, and any order-sensitive diffs.",
+        "Treat deterministic but intentionally changed output as a migration question rather than a determinism failure."
+      ],
+      "reject_if": [
+        "cache/reuse correctness assumes deterministic bytes that were not established in the production mode",
+        "cross-revision output changes are dismissed solely because each revision is internally deterministic"
+      ]
+    },
+    {
+      "id": "packaged-runtime",
+      "title": "Validate the packaged Charon runtime on every supported Anneal host",
+      "required": [
+        "Test the exact Aeneas archive/Anneal toolchain artifact rather than only a development checkout.",
+        "On each supported host, verify charon, charon-driver, the pinned Rust sysroot, required dynamic libraries, Cargo, and path/runtime environment cooperate after installation/relocation.",
+        "Run a real translation rather than only --help or version output.",
+        "Record artifact hashes and host triple with the result."
+      ],
+      "reject_if": [
+        "a supported host lacks a working compiler/runtime dependency",
+        "the artifact succeeds only before relocation or only in the upstream build environment",
+        "the test exercises a different Charon binary than the one Anneal will invoke"
+      ]
+    },
+    {
+      "id": "integrated-corpus",
+      "title": "Finish with a discriminating end-to-end corpus",
+      "required": [
+        "Exercise ordinary ADTs/control flow, shared and mutable borrows, raw-pointer/unsafe cases in scope, loops/recursion, traits, foreign/dependency references, and at least one expected failure.",
+        "Preserve the Rust inputs, exact rustc/Charon/Aeneas identities, effective Charon options, LLBC, downstream generated artifacts, diagnostics, and hashes.",
+        "Review changed LLBC semantically and confirm Anneal's proof/source-correspondence invariants remain justified."
+      ],
+      "reject_if": [
+        "component checks pass but the exact packaged Rust-to-Charon-to-Aeneas composition fails",
+        "the corpus no longer distinguishes a promise-relevant failure mode exposed by source review"
+      ]
+    }
+  ]
+}

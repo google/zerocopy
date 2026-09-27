@@ -1,0 +1,151 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "role": "normative",
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "version": "3.18",
+      "path": "_specifications/lsp/3.18/textDocument/didOpen.md",
+      "blob": "f2bc2141ca7b4efdc1521493470cc631cf083d99",
+      "supports": [
+        "client owns open document content",
+        "server must not reread URI for open document"
+      ]
+    },
+    {
+      "role": "normative",
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "version": "3.18",
+      "path": "_specifications/lsp/3.18/textDocument/didChange.md",
+      "blob": "81e7475181818d44229c10dbcc25de7f3de83c69",
+      "supports": [
+        "versioned document transitions",
+        "ordered content changes",
+        "sync before reliable query"
+      ]
+    },
+    {
+      "role": "normative",
+      "repository": "microsoft/language-server-protocol",
+      "revision": "de9a671ae6ba374cc748a29c1c620cbc536302ff",
+      "version": "3.18",
+      "path": "_specifications/lsp/3.18/textDocument/didClose.md",
+      "blob": "e8c956a6402a8a7ff031839fa58fba5d39c11f6d",
+      "supports": [
+        "URI/disk becomes master after close"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/Watchdog.lean",
+      "blob": "68ed22f9178c9ae917c595c364d23df902d9478f",
+      "supports": [
+        "retained document text/version",
+        "worker restart from retained state",
+        "didChange forwarding",
+        "dependency staleness"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/FileWorker.lean",
+      "blob": "c803034ed8810f13a5ef38a603a21e610efca2bc",
+      "supports": [
+        "incremental edit processing",
+        "pending-request cancellation on edits",
+        "worker initialization from didOpen"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/RequestCancellation.lean",
+      "blob": "7d310d0cd941641334a799828d4746c08e6a89d1",
+      "supports": [
+        "distinct edit and explicit cancellation"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Language/Lean.lean",
+      "blob": "124d4739bc910eb30ec35844348c785bf9f6c70a",
+      "supports": [
+        "incremental parser/elaborator reuse and invalidation"
+      ]
+    },
+    {
+      "role": "documentation",
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/README.md",
+      "blob": "4bac3026e17b604888324821f5725e0338f802e3",
+      "supports": [
+        "per-file worker architecture",
+        "compiled dependency refresh/restart model"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Translate.ml",
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "supports": [
+        "direct generated-file writes",
+        "split module paths",
+        "generated entry module"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "supports": [
+        "dest/subdir/split CLI controls"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "supports": [
+        "split-file configuration"
+      ]
+    },
+    {
+      "role": "documentation",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "documentation/aeneas-overview.md",
+      "blob": "439076012c1ba93c7ec1bf25aca42e0f1ec14756",
+      "supports": [
+        "Lean project setup",
+        "Aeneas generator invocation"
+      ]
+    },
+    {
+      "role": "documentation",
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "documentation/getting-started.md",
+      "blob": "a0756980fb4d5be4d002f45c3181e5b16ee6a47c",
+      "supports": [
+        "split generated layout",
+        "build workflow"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "key": "necula-pcc-1997",
+      "authors": [
+        "George C. Necula"
+      ],
+      "title": "Proof-Carrying Code",
+      "publication": "POPL 1997",
+      "doi": "10.1145/263699.263712",
+      "primary_url": "https://doi.org/10.1145/263699.263712",
+      "used_for": [
+        "producer/checker split",
+        "proof attached to target code",
+        "consumer-defined safety policy"
+      ]
+    },
+    {
+      "key": "blech-poetzsch-heffter-2007",
+      "authors": [
+        "Jan Olaf Blech",
+        "Arnd Poetzsch-Heffter"
+      ],
+      "title": "A Certifying Code Generation Phase",
+      "publication": "ENTCS 190(4), 2007",
+      "doi": "10.1016/j.entcs.2007.09.008",
+      "author_copy": "https://jblech.net/wp-content/uploads/2013/07/BlechPoetzsch-HeffterCOCV07.pdf",
+      "used_for": [
+        "per-run compiler correctness proof",
+        "separate theorem-prover checking",
+        "certificate-checking performance boundary"
+      ]
+    },
+    {
+      "key": "tristan-leroy-2008",
+      "authors": [
+        "Jean-Baptiste Tristan",
+        "Xavier Leroy"
+      ],
+      "title": "Formal Verification of Translation Validators: A Case Study on Instruction Scheduling Optimizations",
+      "publication": "POPL 2008",
+      "doi": "10.1145/1328438.1328444",
+      "author_copy": "https://xavierleroy.org/publi/validation-scheduling.pdf",
+      "used_for": [
+        "verified-validator theorem",
+        "fail-closed wrapper",
+        "validator incompleteness"
+      ]
+    },
+    {
+      "key": "krijnen-et-al-2022",
+      "authors": [
+        "Jacco O. G. Krijnen",
+        "Manuel M. T. Chakravarty",
+        "Gabriele Keller",
+        "Wouter Swierstra"
+      ],
+      "title": "Translation Certification for Smart Contracts",
+      "publication": "FLOPS 2022, LNCS 13215, pp. 94-111",
+      "doi": "10.1007/978-3-030-99461-7_6",
+      "publisher_version": "https://research-portal.uu.nl/ws/files/121604772/Krijnen2022_Chapter_TranslationCertificationForSma.pdf",
+      "used_for": [
+        "translation relations as pass specifications",
+        "direct proof-producing decision procedures versus boolean reflected checkers",
+        "separate semantic-preservation layer",
+        "whole-compilation certificate containing intermediate ASTs and relation proofs"
+      ]
+    }
+  ]
+}

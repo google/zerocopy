@@ -1,0 +1,41 @@
+{
+  "schema": "anneal-reference/v1-pipeline-flow/v1",
+  "subject_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "commands": {
+    "verify": {
+      "shared_prefix": ["resolve", "scan", "lock", "validate", "charon", "aeneas"],
+      "tail": ["generate_anneal_specs_and_maps", "lake_build_generated_and_anneal", "lean_json_check_each_spec", "map_diagnostics_to_rust"]
+    },
+    "generate": {
+      "shared_prefix": ["resolve", "scan", "lock", "validate", "charon", "aeneas"],
+      "tail": ["generate_anneal_specs_and_maps", "print_workspace_and_manual_build_command"]
+    },
+    "expand": {
+      "shared_prefix": ["resolve", "scan", "lock", "validate", "charon", "aeneas"],
+      "tail": ["print_selected_aeneas_output", "generate_and_print_anneal_output"]
+    },
+    "setup": {
+      "shared_prefix": [],
+      "tail": ["resolve_or_install_exocrate_toolchain"]
+    }
+  },
+  "artifacts": [
+    {"producer": "scanner", "artifact": "AnnealArtifact", "consumers": ["validator", "charon", "anneal_generator"]},
+    {"producer": "charon", "artifact": "llbc/<Slug>.llbc", "consumers": ["aeneas"]},
+    {"producer": "aeneas", "artifact": "lean/generated/<Slug>/Funs.lean", "consumers": ["anneal_generated_spec", "lake", "lean"]},
+    {"producer": "aeneas", "artifact": "lean/generated/<Slug>/Types.lean", "consumers": ["anneal_generated_spec", "lake", "lean"]},
+    {"producer": "aeneas", "artifact": "lean/generated/<Slug>/{Funs,Types}External.lean", "consumers": ["lake", "lean"], "conditional": true},
+    {"producer": "anneal_generator", "artifact": "lean/generated/<Slug>/<Slug>.lean", "consumers": ["lean_json_check"]},
+    {"producer": "anneal_generator", "artifact": "lean/generated/<Slug>/<Slug>.lean.map", "consumers": ["diagnostic_mapper"]},
+    {"producer": "aeneas_workspace_builder", "artifact": "lean/lakefile.lean", "consumers": ["lake"]},
+    {"producer": "aeneas_workspace_builder", "artifact": "lean/lake-manifest.json", "consumers": ["lake"]},
+    {"producer": "anneal_generator", "artifact": "lean/generated/Generated.lean", "consumers": ["lake"]}
+  ],
+  "critical_boundaries": [
+    "source scanner versus compiler-derived Charon extraction",
+    "LLBC-to-Lean translation trust",
+    "Anneal-generated specification correspondence with Aeneas definitions",
+    "generated Lean proof checking versus actual Rust execution",
+    "diagnostic-source mapping versus semantic source identity"
+  ]
+}

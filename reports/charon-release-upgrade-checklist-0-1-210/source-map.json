@@ -1,0 +1,159 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "direct_sources": [
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "role": "Rust nightly/components/targets coupled to the rustc-private driver"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/Cargo.toml",
+      "blob": "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+      "role": "Charon package version, library/binary split, rustc feature boundary"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/export.rs",
+      "blob": "d5428958eb870f9f8531a8d193385c6be782338a",
+      "role": "CrateData envelope, exact package-version check, has_errors, JSON/Postcard serialization"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/options.rs",
+      "blob": "f08f8bae08d7fb5f38773c0be038d925fe80cb4c",
+      "role": "CliOpts, Aeneas preset, MIR/selection/error/serialization configuration"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/transform/mod.rs",
+      "blob": "8d9ec016c3b6e42ba0cbac180546551d4a52587a",
+      "role": "Ordered transformation pipeline and pass predicates"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/lib.rs",
+      "blob": "a5530a1778d231297d8e480cf11531b141125a4f",
+      "role": "charon_lib public surface and VERSION = CARGO_PKG_VERSION"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/main.rs",
+      "blob": "ab74f3f3d12a869bd8c3c94083b93b7dee1c2482",
+      "role": "transform/serialize/error-policy ordering and process result"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "charon-pin",
+      "blob": "06dbe0dbf1d5b7f1e6f2a21889ab6bf770e89de6",
+      "role": "authoritative source-level Charon pin for the selected Aeneas release"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "flake.lock",
+      "blob": "d6862b6ef779bf72dd7ec5b787f4e3b97b472a6d",
+      "role": "locked Charon input, independently agreeing with charon-pin"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "scripts/check-charon-install.sh",
+      "blob": "59507e544a01c8337cd13330f78037495d9d67e6",
+      "role": "upstream exact-revision installation check"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "flake.nix",
+      "blob": "05e71549416ac622d6f12edc1fc7c74e338949ba",
+      "role": "Aeneas release packaging copies charon/charon-driver and Charon rust-toolchain from the locked input"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "role": "Aeneas LLBC consumer/configuration boundary"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "role": "current Anneal Aeneas/Rust/Lean packaging and host-artifact selection"
+    }
+  ],
+  "published_reference_reports": [
+    {
+      "path": "reports/charon-toolchain-contract-0-1-210/REPORT.md",
+      "blob": "4db4b9582e87101d78f5f967e963ab8b9857da98",
+      "role": "rustc-private/toolchain provisioning contract"
+    },
+    {
+      "path": "reports/charon-serialization-compatibility-api-0-1-210/REPORT.md",
+      "blob": "ee6615fb06d56646161d0355800659038f02d81d",
+      "role": "LLBC versioning and charon_lib versus wire compatibility"
+    },
+    {
+      "path": "reports/charon-cli-invocation-modes-0-1-210/REPORT.md",
+      "blob": "e4c73a43447e8561b1c62f6ef2d1be26b2bb67ab",
+      "role": "CLI routing, option transport, Cargo/direct-rustc behavior, serialization destinations"
+    },
+    {
+      "path": "reports/charon-library-process-server-0-1-210/REPORT.md",
+      "blob": "e3aa3a6133dd6fb3bf1ab56f394a74dba7bae661",
+      "role": "library/process/extraction integration boundaries"
+    },
+    {
+      "path": "reports/aeneas-charon-compatibility-nightly-2026-06-03/REPORT.md",
+      "blob": "5691d44c19c00a51ec7fcc3ef550d356c6759525",
+      "role": "exact Aeneas-to-Charon pin, same-date/nonidentity example, current active/unused edges"
+    },
+    {
+      "path": "reports/charon-support-and-unsoundness-nightly-2026-06-03/REPORT.md",
+      "blob": "e517b0bce9df6a5f93a4a11a2682a6110924a620",
+      "role": "support/failure/partial-output and known-unsoundness boundaries"
+    },
+    {
+      "path": "reports/charon-item-identity-spans-comments-nightly-2026-06-03/REPORT.md",
+      "blob": "9462a08a1671d756a2417b002d6df6134ec332da",
+      "role": "item/source identity, spans, names, comments and provenance"
+    },
+    {
+      "path": "reports/charon-dependency-and-source-coverage-nightly-2026-06-03/REPORT.md",
+      "blob": "c613bc4828bfa769a49f806848ca33028a503abc",
+      "role": "semantic reachability, foreign opacity, dependency/sysroot body availability"
+    },
+    {
+      "path": "reports/charon-multi-target-cargo-behavior-0-1-210/REPORT.md",
+      "blob": "872e5a32cdcd3274791b5a26634f6c4411725141",
+      "role": "multi-target fan-out/merge and multiple-primary-output collision boundary"
+    },
+    {
+      "path": "reports/charon-library-wire-compatibility-0-1-210/REPORT.md",
+      "blob": "057aa12d8f772c1115841688aedeb5300acbbbcb",
+      "role": "separate in-memory API and serialized wire compatibility obligations"
+    },
+    {
+      "path": "reports/charon-start-from-nightly-2026-06-03/REPORT.md",
+      "blob": "43784ad56ed31f5cc57081598205057c27663875",
+      "role": "entry-root selection, opacity and transformed dependency closure"
+    }
+  ],
+  "reference_basis": {
+    "repository": "google/zerocopy",
+    "reference_revision": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10",
+    "catalog_blob": "4f12c8e2bb294d910ad85338477c7673bb4dfcf0"
+  }
+}

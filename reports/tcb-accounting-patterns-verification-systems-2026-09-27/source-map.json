@@ -1,0 +1,81 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "id": "rocq-core-8.19.2",
+      "kind": "versioned-official-documentation",
+      "url": "https://rocq-prover.org/doc/V8.19.2/refman/language/core/index.html",
+      "supports": ["small-kernel proof checking", "de Bruijn criterion", "tactics construct proof terms checked by kernel"]
+    },
+    {
+      "id": "rocq-commands-8.20.1",
+      "kind": "versioned-official-documentation",
+      "url": "https://rocq-prover.org/doc/v8.20/refman/proof-engine/vernacular-commands.html",
+      "supports": ["Print Assumptions", "theorem-specific assumption dependencies", "typing-check bypasses reported as assumptions"]
+    },
+    {
+      "id": "rocq-primitives-8.20.0",
+      "kind": "versioned-official-documentation",
+      "url": "https://rocq-prover.org/doc/V8.20.0/refman/language/core/primitive.html",
+      "supports": ["primitive declarations are axioms", "primitive assumptions appear in Print Assumptions"]
+    },
+    {
+      "id": "compcert-doc-3.18",
+      "kind": "versioned-official-project-documentation",
+      "url": "https://compcert.org/doc/",
+      "identity": {"version": "3.18", "date": "2026-08-31"},
+      "supports": ["compiler largely written in Coq", "compiler correctness proved in Coq", "semantic preservation framing"]
+    },
+    {
+      "id": "compcert-research-2026-08-30",
+      "kind": "official-project-documentation",
+      "url": "https://compcert.org/research.html",
+      "supports": ["verified-verifier pattern", "untrusted optimizer with proved checker", "Coq extraction execution path", "verified/per-run extraction validation", "unverified runtime-system example"]
+    },
+    {
+      "id": "sel4-sosp-2009",
+      "kind": "publication-record",
+      "url": "https://trustworthy.systems/publications/papers/Klein_EHACDEEKNSTW_09.abstract",
+      "identity": {"venue": "SOSP 2009"},
+      "supports": ["C-level refinement proof", "compiler/assembly/hardware assumptions in original proof boundary"]
+    },
+    {
+      "id": "sel4-pldi-2013-binary-validation",
+      "kind": "publication-record",
+      "url": "https://trustworthy.systems/publications/nictaabstracts/Sewell_MK_13.abstract",
+      "identity": {"venue": "PLDI 2013"},
+      "supports": ["C-to-binary translation validation", "compilation/linking validation", "assembly/volatile omissions"]
+    },
+    {
+      "id": "sel4-assumptions-current",
+      "kind": "official-project-documentation",
+      "url": "https://sel4.systems/Verification/assumptions.html",
+      "supports": ["current assumption inventory", "compiler/linker removed from TCB where binary verification applies", "assembly/hardware/hardware-management/boot/model boundaries"]
+    },
+    {
+      "id": "sel4-verified-configurations-current",
+      "kind": "official-project-documentation",
+      "url": "https://docs.sel4.systems/projects/sel4/verified-configurations.html",
+      "supports": ["verification is architecture/configuration specific", "binary correctness availability", "explicit unverified features"]
+    },
+    {
+      "id": "cakeml-project-current",
+      "kind": "official-project-documentation",
+      "url": "https://www.cakeml.org/",
+      "supports": ["verified compiler backend", "proof-producing frontend", "compiler bootstrapping inside HOL", "verified compiler binary"]
+    },
+    {
+      "id": "cakeml-checkers-current",
+      "kind": "official-project-documentation",
+      "url": "https://cakeml.org/checkers.html",
+      "supports": ["explicit end-to-end checker TCB", "formal parser/problem semantics", "machine/FFI/memory correspondence", "HOL4 logic/kernel/execution environment"]
+    },
+    {
+      "id": "cakeml-itp18-tcb",
+      "kind": "publication",
+      "url": "https://cakeml.org/itp18-short.pdf",
+      "supports": ["binary-extraction TCB analysis", "theorem-prover trust", "specification trust", "extraction/execution boundary"]
+    }
+  ]
+}
