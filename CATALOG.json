@@ -706,6 +706,35 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "aeneas-type-alias-handling-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/type-aliases",
+        "aeneas/lean",
+        "charon/type-aliases",
+        "rust/type-aliases",
+        "source-correspondence"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Lean translation selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas-paired Charon input producer",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "aeneas-wp-proof-tools-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -879,6 +908,26 @@
         "charon/mir",
         "rustc/crates"
       ]
+    },
+    "charon-drop-destructor-semantics-0-1-210": {
+      "topics": [
+        "charon",
+        "charon/drops",
+        "charon/destructors",
+        "charon/ullbc",
+        "charon/llbc"
+      ],
+      "subjects": [
+        {
+          "name": "Charon",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "charon-enum-layout-0-1-210": {
       "topics": [
@@ -1304,6 +1353,68 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "lake-git-path-dependencies-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/dependencies",
+        "lake/git",
+        "lake/path-dependencies",
+        "lake/manifest",
+        "lake/relocation"
+      ],
+      "subjects": [
+        {
+          "name": "Lake Git versus path dependency semantics selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lake-manifest-schema-locking-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/manifest",
+        "lake/dependencies",
+        "lake/locking",
+        "lake/configuration"
+      ],
+      "subjects": [
+        {
+          "name": "Lake manifest representation and locking semantics selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lake-olean-invalidation-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/invalidation",
+        "lake/olean",
+        "lake/build",
+        "lake/traces",
+        "lake/configuration"
+      ],
+      "subjects": [
+        {
+          "name": "Lake module `.olean` invalidation selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lake-package-identity-after-vendoring-v4-30-0-rc2": {
       "topics": [
         "lake",
@@ -1481,6 +1592,74 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "lean-cli-entry-points-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/cli",
+        "lean/frontend",
+        "lean/environment",
+        "lean/server",
+        "lake/environment"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 command-line shell and Lake execution environment selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lean-diagnostic-objects-severity-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/diagnostics",
+        "lean/messages",
+        "lean/lsp",
+        "lean/severity"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 diagnostic object and severity model selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "lean-environment-invalidation-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/environment",
+        "lean/incremental-elaboration",
+        "lean/invalidation",
+        "lean/server"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 environment and incremental processor selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal Lean toolchain selection",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "lean-grind-behavior-extensibility-v4-30-0-rc2": {
       "topics": [
         "lean",
@@ -1562,6 +1741,27 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "lean-lake-trace-hash-artifacts-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/toolchain-identity",
+        "lake",
+        "lake/traces",
+        "lake/hashes",
+        "lake/module-artifacts"
+      ],
+      "subjects": [
+        {
+          "name": "Lean/Lake toolchain and module-artifact tracing selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "lean-macro-hygiene-v4-30-0-rc2": {
       "topics": [
         "lean",
@@ -1625,6 +1825,47 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "lean-olean-format-identity-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/olean",
+        "lean/serialization",
+        "lean/modules",
+        "lean/invalidation"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 `.olean` format and identity selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lean-parser-elaborator-source-positions-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/parser",
+        "lean/elaboration",
+        "lean/source-positions",
+        "lean/syntax",
+        "lean/diagnostics"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 parser and elaborator source-position model selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "lean-partial-definitions-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1666,6 +1907,27 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "lean-server-multi-workspace-isolation-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/lsp",
+        "lean/workspaces",
+        "lean/environment",
+        "lake/workspaces"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 language-server workspace/project isolation selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lean-server-tactic-state-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1687,6 +1949,46 @@
         "lean/infoview",
         "lean/incremental-elaboration"
       ]
+    },
+    "lean-simp-simp-all-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/simp",
+        "lean/tactics",
+        "lean/proof-automation",
+        "lean/generated-proofs"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 simplifier selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lean-tactic-extension-apis-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/tactics",
+        "lean/elaboration",
+        "lean/metaprogramming",
+        "lean/extensions"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 tactic extension APIs selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "lean-termination-checking-v4-30-0-rc2": {
       "topics": [
