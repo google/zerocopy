@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "charon/toolchain",
+    "charon/rustc",
+    "rust/toolchain",
+    "anneal/toolchain"
+  ],
+  "subjects": [
+    {
+      "name": "Charon pinned by Aeneas nightly-2026.06.03",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210",
+        "rust-toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Charon nightly-2026.06.03 tag",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "version": "0.1.210",
+        "rust-toolchain": "nightly-2026-06-01"
+      }
+    },
+    {
+      "name": "Aeneas nightly-2026.06.03",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Anneal source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Rust compiler behind nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "nightly-2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
