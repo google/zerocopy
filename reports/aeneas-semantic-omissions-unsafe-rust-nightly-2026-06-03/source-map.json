@@ -1,0 +1,117 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "README.md",
+      "blob": "f331650bd4291d27ba6cee736ce51cf31da9cac1",
+      "role": "documentation",
+      "focus": "safe-functional-subset and unsafe/concurrency boundary"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/pure/Pure.ml",
+      "blob": "acde8579d6861a08efae086c72f3156283110342",
+      "role": "source",
+      "focus": "pure AST, raw-pointer marker, GetTarget, final effect info"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob": "d35b6d67a65af220fdb56614ab1b51edc029b06f",
+      "role": "source",
+      "focus": "reference/Box/resource functionalization"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/llbc/FunsAnalysis.ml",
+      "blob": "a2678ba12e8baaaf14fc99c3f061b10edae2da86",
+      "role": "source",
+      "focus": "coarse failure/stateful/divergence analysis"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "role": "source",
+      "focus": "default drop_as_no_op"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/interp/InterpStatements.ml",
+      "blob": "97452f658bbd773c16386592d31b0bf61da8891f",
+      "role": "source",
+      "focus": "Drop no-op and alternate symbolic drop path"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/interp/InterpPaths.ml",
+      "blob": "ec23375a5ca0680500daea0248d2372c9901156e",
+      "role": "source",
+      "focus": "raw-pointer execution and borrow/path state"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/Aeneas/Std/Std/Io.lean",
+      "blob": "c32f89b32297e472aa0128509b572e76cf72a523",
+      "role": "source",
+      "focus": "stdout print no-op model"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/Aeneas/Std/Core/Atomic.lean",
+      "blob": "d686f3154fe6da9c2b4c1d6694764a1005332958",
+      "role": "source",
+      "focus": "axiomatic atomic type models"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/Aeneas/Std/Slice.lean",
+      "blob": "cab42e4f6ab768e97df8f5d3d9a5de73079a785c",
+      "role": "source",
+      "focus": "raw-pointer unsafe slice models fail pending more stateful semantics"
+    }
+  ],
+  "current_reference_reports": [
+    {
+      "package": "reports/aeneas-resource-semantics-nightly-2026-06-03",
+      "report_blob": "95614a518815fdba251e948aca90cce7dca0d154"
+    },
+    {
+      "package": "reports/aeneas-raw-pointers-nightly-2026-06-03",
+      "report_blob": "62e9779e7c7d206ae648386286efd1e776c112c8"
+    },
+    {
+      "package": "reports/aeneas-rust-support-failure-matrix-nightly-2026-06-03",
+      "report_blob": "615717924f2a503c0ca0b5f37ff0ef38d3a032e5"
+    },
+    {
+      "package": "reports/aeneas-external-models-nightly-2026-06-03",
+      "report_blob": "cfc981a9430447e51cefb2fc57dbe30738ec5def"
+    },
+    {
+      "package": "reports/aeneas-rust-to-lean-translation-nightly-2026-06-03",
+      "report_blob": "ca377b8322f33f2ded9c23b0cfbaacdba28ebd"
+    },
+    {
+      "package": "reports/aeneas-separation-logic-status-2026-09-26",
+      "role": "boundary-status"
+    }
+  ],
+  "execution_evidence": "none; report is source/model/corpus grounded"
+}

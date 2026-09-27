@@ -1,0 +1,67 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "sources": [
+    {
+      "path": "anneal/v1/tests/integration.rs",
+      "blob": "8fc6f6b9b4d4785e532e0647466a2e2373fe709a",
+      "role": "source",
+      "focus": "fresh archive-reuse workspace, read-only Aeneas assertion, complete relative manifest, Lake/Lean commands"
+    },
+    {
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "role": "source",
+      "focus": "production workspace generation, relative root manifest, --old build, lake env lean checking"
+    },
+    {
+      "path": "anneal/v1/src/setup.rs",
+      "blob": "32216cedf11c5d6d4b5a4618d8d7bf2578e44b4d",
+      "role": "source",
+      "focus": "Exocrate-installed omnibus toolchain ownership/layout"
+    },
+    {
+      "kind": "pull_request",
+      "number": 3438,
+      "head_revision": "47d907d6fa27610a0900f075c0bec879777107a9",
+      "role": "documentation",
+      "focus": "move V1/V2 setup onto Nix-built omnibus archive"
+    },
+    {
+      "kind": "pull_request",
+      "number": 3443,
+      "head_revision": "11bf7f723639c90d6fa88b5dfd9333ec89c5f763",
+      "role": "documentation",
+      "focus": "old-mode timestamp requirement for reuse of prepared archive artifacts"
+    },
+    {
+      "kind": "pull_request",
+      "number": 3450,
+      "head_revision": "f6aeb9bd14ee0196635f7e1e46bf0641b16950b6",
+      "role": "documentation",
+      "focus": "complete relative root manifest and removal of generated-workspace dependency symlinks"
+    },
+    {
+      "kind": "pull_request",
+      "number": 3453,
+      "head_revision": "93cab05584dc15cf9f12236ec0ef24becd21beb0",
+      "role": "documentation",
+      "focus": "fresh-workspace/read-only-archive regression contract"
+    },
+    {
+      "kind": "issue",
+      "number": 3668,
+      "observed_at": "2026-09-27",
+      "role": "documentation",
+      "focus": "retrospective Lake integration architecture and producer/consumer separation"
+    }
+  ],
+  "not_executed": [
+    "current archive-reuse integration test",
+    "current V1 verification against a freshly installed archive",
+    "network-isolated or filesystem-write traced clean-workspace probe"
+  ]
+}

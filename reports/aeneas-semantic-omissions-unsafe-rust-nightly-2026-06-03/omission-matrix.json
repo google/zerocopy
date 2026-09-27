@@ -1,0 +1,72 @@
+{
+  "schema": "anneal-reference/aeneas-semantic-omissions-matrix/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "dimensions": [
+    {
+      "dimension": "allocation identity",
+      "status": "erased/absent from ordinary proof-facing pure model",
+      "evidence": [
+        "Box<T> functionalized to T",
+        "ordinary references become values/backward functions"
+      ],
+      "anneal_consequence": "Allocation-sensitive Rust claims require additional semantics/correspondence."
+    },
+    {
+      "dimension": "pointer provenance",
+      "status": "not modeled as Rust pointer provenance",
+      "evidence": [
+        "TRawPtr is a marker boundary",
+        "mplace provenance is source/value-origin naming metadata",
+        "raw-pointer dereference rejected"
+      ],
+      "anneal_consequence": "Provenance-sensitive pointer claims are outside ordinary pure semantics."
+    },
+    {
+      "dimension": "initialization",
+      "status": "no general proof-facing byte/heap initialization state",
+      "evidence": [
+        "ordinary pure model has no general heap",
+        "unsupported raw-pointer memory execution"
+      ],
+      "anneal_consequence": "Partial-initialization/validity claims require stronger memory semantics or explicit models."
+    },
+    {
+      "dimension": "resource/effect state",
+      "status": "coarsely summarized, not a general operational effect system",
+      "evidence": [
+        "Pure.fun_effect_info = can_fail/can_diverge/is_rec",
+        "default Drop is no-op"
+      ],
+      "anneal_consequence": "Destructor/external-resource effects are not implied by proof success."
+    },
+    {
+      "dimension": "concurrency",
+      "status": "outside advertised functional subset",
+      "evidence": [
+        "README limitation",
+        "selected AtomicBool/AtomicU32 models are axiomatic TODO types"
+      ],
+      "anneal_consequence": "No scheduler/happens-before/memory-order theorem follows from ordinary output."
+    },
+    {
+      "dimension": "I/O",
+      "status": "at least selected output behavior is intentionally erased",
+      "evidence": [
+        "std::io::stdio::_print model ignores arguments and returns ok ()"
+      ],
+      "anneal_consequence": "I/O trace/device-failure claims require an explicit faithful model."
+    },
+    {
+      "dimension": "nondeterminism/environment",
+      "status": "no generic nondeterministic transition model",
+      "evidence": [
+        "GetTarget is special fallible axiomatized unknown; final effect summary has no random/scheduler/environment trace"
+      ],
+      "anneal_consequence": "Per-operation model/assumption is required for environmental or nondeterministic behavior."
+    }
+  ]
+}

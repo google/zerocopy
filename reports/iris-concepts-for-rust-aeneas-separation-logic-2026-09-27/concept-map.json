@@ -1,0 +1,76 @@
+{
+  "schema": "anneal-reference/iris-concept-map/v1",
+  "subject": "Iris concepts needed to understand current Rust/Aeneas separation-logic work",
+  "concepts": [
+    {
+      "concept": "ownership/separating conjunction/points-to",
+      "iris_role": "disjoint resource ownership and local reasoning",
+      "rustbelt_role": "semantic ownership/sharing predicates use Iris resources",
+      "aeneas_pr1352": "direct typed-heap splitting and singleton points-to",
+      "priority_for_anneal": "immediate"
+    },
+    {
+      "concept": "affinity",
+      "iris_role": "owned resources may be discarded in affine instances",
+      "rustbelt_role": "supports resource models where obligations need not all be linear forever",
+      "aeneas_pr1352": "built into upward-closed IProp; every assertion entails emp",
+      "priority_for_anneal": "immediate"
+    },
+    {
+      "concept": "persistence",
+      "iris_role": "duplicable assertions",
+      "rustbelt_role": "sharing predicates, dead lifetime tokens, inclusion facts",
+      "aeneas_pr1352": "no full Iris persistence modality in inspected core",
+      "priority_for_anneal": "shared abstractions"
+    },
+    {
+      "concept": "cameras/resource algebras",
+      "iris_role": "generic composition/validity of physical and ghost resources",
+      "rustbelt_role": "tokens, protocols, lifetime bookkeeping and other ghost state",
+      "aeneas_pr1352": "no generic camera layer; concrete Heap is the separation algebra",
+      "priority_for_anneal": "future richer protocols"
+    },
+    {
+      "concept": "frame-preserving update",
+      "iris_role": "resource transition compatible with any possible frame",
+      "rustbelt_role": "sound ghost/lifetime protocol transitions",
+      "aeneas_pr1352": "program specs explicitly preserve arbitrary compatible heap frames",
+      "priority_for_anneal": "immediate principle"
+    },
+    {
+      "concept": "invariants/fancy updates/masks",
+      "iris_role": "persistent shared-state protocols with controlled temporary access",
+      "rustbelt_role": "interior mutability, shared protocols, concurrency",
+      "aeneas_pr1352": "not part of inspected first-order sequential core",
+      "priority_for_anneal": "required for richer shared/concurrent reasoning"
+    },
+    {
+      "concept": "later/step-indexing",
+      "iris_role": "guarded recursive predicates, higher-order ghost state, invariant soundness",
+      "rustbelt_role": "recursive type semantics and borrow/lifetime model",
+      "aeneas_pr1352": "not Iris step-indexed IProp; coinductive Result semantics is distinct",
+      "priority_for_anneal": "required for RustBelt-style semantic recursion"
+    },
+    {
+      "concept": "weakest precondition/adequacy",
+      "iris_role": "connect logical proof to operational execution and prove safety/postcondition consequence",
+      "rustbelt_role": "foundation for semantic Rust safety claims",
+      "aeneas_pr1352": "custom ITree total/partial specs; source-Rust correspondence remains separate",
+      "priority_for_anneal": "critical"
+    },
+    {
+      "concept": "lifetime logic",
+      "iris_role": "derived domain-specific logic built from general Iris mechanisms",
+      "rustbelt_role": "alive/dead tokens, full/fractured/persistent borrows, lifetime inclusion",
+      "aeneas_pr1352": "not inherited by similar notation",
+      "priority_for_anneal": "critical for Rust-level borrow semantics"
+    },
+    {
+      "concept": "proof mode",
+      "iris_role": "structured tactics for spatial contexts",
+      "rustbelt_role": "machine-checked proof ergonomics",
+      "aeneas_pr1352": "Iris/Iris-Lean-inspired iframe/iintro/irewrite surface",
+      "priority_for_anneal": "ergonomic, not semantic evidence"
+    }
+  ]
+}

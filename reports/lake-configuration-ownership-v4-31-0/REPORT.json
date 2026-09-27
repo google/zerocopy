@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "lake",
+    "lake/configuration",
+    "lake/config-cache",
+    "lake/workspace",
+    "lake/state-ownership",
+    "lean/version-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Lake configuration ownership after the Lean 4.31 hoisting change",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+        "version": "v4.31.0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

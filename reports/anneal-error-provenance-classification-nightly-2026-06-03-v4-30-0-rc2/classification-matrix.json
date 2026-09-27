@@ -1,0 +1,79 @@
+{
+  "schema": "anneal-reference/error-provenance-classification-matrix/v1",
+  "subjects": {
+    "rustc": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "charon": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "aeneas": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "lean": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+  },
+  "observations": [
+    {
+      "observation": "rustc JSON level = error: internal compiler error",
+      "stage": "rustc",
+      "supported_class": "tool-internal",
+      "limits": "Does not classify every rustc failure; ordinary/fatal errors use other levels."
+    },
+    {
+      "observation": "Charon exit 101",
+      "stage": "charon",
+      "supported_class": "tool-internal",
+      "limits": "Caught panic class; preserve panic/log evidence."
+    },
+    {
+      "observation": "Charon exit 2",
+      "stage": "rustc/charon-driver",
+      "supported_class": "rustc-side-failure",
+      "limits": "Not equivalent to user source error; rustc fatal/config/I/O/internal paths exist."
+    },
+    {
+      "observation": "Charon exit 1",
+      "stage": "charon",
+      "supported_class": "charon-side-failure",
+      "limits": "Conflates CharonError and Serialize at process-code level."
+    },
+    {
+      "observation": "Charon exit 0 with warnings/partial marker",
+      "stage": "charon",
+      "supported_class": "non-strict-completion",
+      "limits": "Not evidence of complete supported translation."
+    },
+    {
+      "observation": "Aeneas exit 1",
+      "stage": "aeneas",
+      "supported_class": "aeneas-side-failure",
+      "limits": "Conflates CLI/config/input/translation/internal classes."
+    },
+    {
+      "observation": "Aeneas diagnostic = Internal error, please file an issue",
+      "stage": "aeneas",
+      "supported_class": "tool-internal-evidence",
+      "limits": "Pinned textual convention, not a stable typed protocol."
+    },
+    {
+      "observation": "Aeneas generated sorry/admit plus registered error",
+      "stage": "aeneas",
+      "supported_class": "failed-recovered-extraction",
+      "limits": "Generated artifact is not successful verification evidence."
+    },
+    {
+      "observation": "Lean JSON severity = error",
+      "stage": "lean",
+      "supported_class": "lean-error",
+      "limits": "Does not distinguish proof/source, generated-code, config, or tool-origin by itself."
+    },
+    {
+      "observation": "Lean exit 1 without normal JSON diagnostic",
+      "stage": "lean",
+      "supported_class": "lean-shell-or-frontend-failure",
+      "limits": "Preserve stderr/invocation context; do not infer proof failure."
+    }
+  ],
+  "recommended_record_axes": [
+    "stage",
+    "failure_class",
+    "source_responsibility",
+    "structured_diagnostics",
+    "process_status",
+    "partial_artifact_state"
+  ]
+}

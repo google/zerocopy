@@ -1,0 +1,77 @@
+{
+  "schema": "anneal-reference/toolchain-version-coupling/v1",
+  "anneal": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "runtime_archive": {
+      "aeneas_release": "nightly-2026.06.03",
+      "rust": "nightly-2026-05-31",
+      "lean": "v4.30.0-rc2",
+      "leantar": "0.1.16",
+      "selection_model": "Aeneas, Rust, and Lean are independently selected in anneal/flake.nix; ordinary production packages do not derive Rust/Lean versions from Aeneas metadata."
+    },
+    "cargo_charon_lib": {
+      "tag": "nightly-2026.06.03",
+      "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "version": "0.1.210",
+      "default_features": false
+    },
+    "nixpkgs_revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1"
+  },
+  "aeneas": {
+    "release": "nightly-2026.06.03",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "charon": {
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "version": "0.1.210",
+      "rust_toolchain": "nightly-2026-05-31"
+    },
+    "lean": {
+      "version": "v4.30.0-rc2",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+    },
+    "lake_manifest": {
+      "mathlib": {
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "inputRev": "v4.30.0-rc2"
+      },
+      "transitive": {
+        "plausible": "86210d4ad1b08b086d0bd638637a75246523dbb8",
+        "LeanSearchClient": "c5d5b8fe6e5158def25cd28eb94e4141ad97c843",
+        "importGraph": "cdab3938ccabbdb044be6896e251b5814bec932e",
+        "proofwidgets": "2db6054a44326f8c0230ee0570e2ddb894816511",
+        "aesop": "f0c6e183ea26531e82773feb4b73ab6595ca17a5",
+        "Qq": "1cc7e819b9b9bc1e87c9edcccb62e0269e00a809",
+        "batteries": "5c57f3857ba81924a88b2cdf4f062e34ec04ff11",
+        "Cli": "13567aed1ac4f12aea9484178e07e51f8c9f7658"
+      }
+    }
+  },
+  "current_duplicate_invariants": [
+    {
+      "left": "Anneal rustDate",
+      "right": "Aeneas-pinned Charon rust-toolchain",
+      "value": "nightly-2026-05-31",
+      "mechanically_unified_in_normal_path": false
+    },
+    {
+      "left": "Anneal leanVersion",
+      "right": "Aeneas backends/lean/lean-toolchain",
+      "value": "v4.30.0-rc2",
+      "mechanically_unified_in_normal_path": false
+    }
+  ],
+  "important_non_equivalence": {
+    "aeneas_pinned_charon": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "anneal_cargo_charon_lib": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+    "commits_apart": 15,
+    "same_declared_charon_version": "0.1.210",
+    "conclusion": "Release-label date and semantic version are not sufficient cross-repository identities."
+  },
+  "ifd_experiment": {
+    "lean_version": "derived from unpacked Aeneas backends/lean/lean-toolchain",
+    "rust_version": "round-tripped from Anneal static rustDate, not discovered from Aeneas/Charon",
+    "hashes": "reused from ordinary statically declared toolchain derivations",
+    "production_authority": false
+  }
+}

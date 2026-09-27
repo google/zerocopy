@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal/diagnostics",
+    "charon/diagnostics",
+    "charon/rustc",
+    "lean/diagnostics",
+    "lean/formatting",
+    "lean/json",
+    "rustc/diagnostics",
+    "rustc/json"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler selected by Anneal-era Charon",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain-date": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Charon pinned by Aeneas nightly-2026.06.03",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "version": "0.1.210"
+      }
+    },
+    {
+      "name": "Lean selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Current Anneal authority used for applicability",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

@@ -1,0 +1,97 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_errors/src/lib.rs",
+      "blob": "55f10867c932167cdb1a5142f7ca3855deb9bf72",
+      "focus": "diagnostic Level semantic classes and serialized strings"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_errors/src/json.rs",
+      "blob": "04ac140f332618d6fa81254e9a16bc27c729eef5",
+      "focus": "JSON diagnostic level and structured fields"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/main.rs",
+      "blob": "ab74f3f3d12a869bd8c3c94083b93b7dee1c2482",
+      "focus": "CharonFailure variants and exit codes"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/driver.rs",
+      "blob": "3f90a7a31857aed462694066e5ffaa6e28b9dcfa",
+      "focus": "rustc failure mapping and callbacks"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/errors.rs",
+      "blob": "e4107c6deb5741d523d2220820d1ee0355adb3c0",
+      "focus": "registered errors and source spans"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/options.rs",
+      "blob": "f08f8bae08d7fb5f38773c0be038d925fe80cb4c",
+      "focus": "strictness options"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Errors.ml",
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "focus": "error list, CFailure, internal-error convention, spans and warnings"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "focus": "CLI/input failures and final exit policy"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/extract/ExtractErrors.ml",
+      "blob": "9169ab076be376ee6150ef7f04b298b92a840965",
+      "focus": "error recovery with sorry/admit placeholders"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Message.lean",
+      "blob": "a7f76198c582d1d2032bb24d13ad4cb7a272fa57",
+      "focus": "severity, kind and serialization"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Shell.lean",
+      "blob": "2ff5c4b0c82f876ddd4384c9c20dcaefebc1b90e",
+      "focus": "frontend and shell exit paths"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "focus": "current V2 surface and Lean archive test"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/diagnostics.rs",
+      "blob": "cd27b771e2f22bdb104c5335a70cfde3207e8fdb",
+      "focus": "historical diagnostic mapping, non-current evidence"
+    }
+  ],
+  "fresh_execution": "none"
+}

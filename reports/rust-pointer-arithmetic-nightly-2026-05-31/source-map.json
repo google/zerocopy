@@ -1,0 +1,41 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "sources": [
+    {
+      "path": "library/core/src/ptr/const_ptr.rs",
+      "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+      "role": "library contract/source",
+      "focus": "const raw-pointer arithmetic implementations, wrapping semantics, byte variants"
+    },
+    {
+      "path": "library/core/src/ptr/mut_ptr.rs",
+      "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+      "role": "library contract/source",
+      "focus": "mutable raw-pointer mirrored arithmetic families"
+    },
+    {
+      "path": "library/core/src/ptr/docs/offset.md",
+      "blob": "f04f5606ab297a8e62e9215064ee839148197c64",
+      "role": "library contract",
+      "focus": "signed offset safety requirements and half-open in-allocation range"
+    },
+    {
+      "path": "library/core/src/ptr/docs/add.md",
+      "blob": "6e2e87f5f811b5d26f25e331346e8d545ebb4e7d",
+      "role": "library contract",
+      "focus": "unsigned forward arithmetic safety requirements"
+    },
+    {
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "library documentation",
+      "focus": "valid-for-access distinction, alignment, allocation, provenance, Strict Provenance context"
+    }
+  ],
+  "execution_evidence": "none"
+}

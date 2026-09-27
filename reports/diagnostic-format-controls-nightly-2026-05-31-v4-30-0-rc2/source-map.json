@@ -1,0 +1,125 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_session/src/config.rs",
+      "blob": "e82f67eac5e9f7d0b089727e6317d77242ba3b1c",
+      "role": "source"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_session/src/session.rs",
+      "blob": "c83bb62324e76a0686515782d3290961d655dd3d",
+      "role": "source"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_errors/src/json.rs",
+      "blob": "04ac140f332618d6fa81254e9a16bc27c729eef5",
+      "role": "source"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_errors/src/annotate_snippet_emitter_writer.rs",
+      "blob": "c3c9f26c31571596875822ae7227d51dfb34f16b",
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/options.rs",
+      "blob": "f08f8bae08d7fb5f38773c0be038d925fe80cb4c",
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/driver.rs",
+      "blob": "3f90a7a31857aed462694066e5ffaa6e28b9dcfa",
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/errors.rs",
+      "blob": "e4107c6deb5741d523d2220820d1ee0355adb3c0",
+      "role": "source"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/Cargo.lock",
+      "blob": "b623c6c4c3558f441ec2bc5281cec61080126c0c",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Init/Data/Format/Basic.lean",
+      "blob": "e0dbb5fa8be5578f8904e0e5a36decbcdf3fbec4",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Init/Data/ToString/Basic.lean",
+      "blob": "505aa15ca363d66f70f850134b008d98c93df184",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Data/Format.lean",
+      "blob": "9bcb44e2ce7c6848dd1f1d7a3f2801ccc54b4f42",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Message.lean",
+      "blob": "a7f76198c582d1d2032bb24d13ad4cb7a272fa57",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Language/Basic.lean",
+      "blob": "08f9b688fc869224c316175220403c2aeb5eb415",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Shell.lean",
+      "blob": "2ff5c4b0c82f876ddd4384c9c20dcaefebc1b90e",
+      "role": "source"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Meta/TryThis.lean",
+      "blob": "b54e1160df2aa69c282941fbc673d99e5eef708d",
+      "role": "source"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "role": "source"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/diagnostics.rs",
+      "blob": "cd27b771e2f22bdb104c5335a70cfde3207e8fdb",
+      "role": "historical-source"
+    }
+  ],
+  "execution_evidence": "none; exact-pin runtime golden probes remain a revalidation step"
+}

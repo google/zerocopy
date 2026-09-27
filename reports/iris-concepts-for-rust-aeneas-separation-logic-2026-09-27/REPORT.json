@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "iris",
+    "iris/adequacy",
+    "iris/ghost-state",
+    "iris/invariants",
+    "iris/resource-algebras",
+    "iris/step-indexing",
+    "rustbelt",
+    "aeneas/separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "Iris 3.1 conceptual foundation",
+      "identity": {
+        "publication": "Iris from the Ground Up",
+        "doi": "10.1017/S0956796818000151",
+        "version": "Iris 3.1"
+      }
+    },
+    {
+      "name": "RustBelt use of Iris for Rust ownership and borrowing",
+      "identity": {
+        "publication": "RustBelt: Securing the Foundations of the Rust Programming Language",
+        "doi": "10.1145/3158154",
+        "venue": "POPL 2018"
+      }
+    },
+    {
+      "name": "Aeneas draft first-order sequential separation logic",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "pull_request": "1352",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      }
+    },
+    {
+      "name": "Iris-Lean implementation status",
+      "identity": {
+        "repository": "leanprover-community/iris-lean",
+        "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

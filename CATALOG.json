@@ -764,6 +764,30 @@
         "rust/types"
       ]
     },
+    "aeneas-semantic-omissions-unsafe-rust-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas ordinary functional semantics selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/concurrency",
+        "aeneas/effects",
+        "aeneas/io",
+        "aeneas/models",
+        "aeneas/nondeterminism",
+        "aeneas/semantics",
+        "aeneas/unsafe-rust",
+        "rust/provenance"
+      ]
+    },
     "aeneas-separation-logic-status-2026-09-26": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1020,6 +1044,105 @@
         "archive/reproducibility"
       ]
     },
+    "anneal-error-provenance-classification-nightly-2026-06-03-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "nightly-2026-05-31"
+          },
+          "name": "rustc diagnostic failure classes selected by Charon"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon process and translation failure channels selected by Aeneas"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas translation and extraction failure channels selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean batch diagnostic failure channel selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current Anneal authority"
+        }
+      ],
+      "topics": [
+        "aeneas/errors",
+        "aeneas/failure-modes",
+        "anneal/diagnostics",
+        "anneal/failure-classification",
+        "charon/errors",
+        "charon/failure-modes",
+        "lean/diagnostics",
+        "rustc/diagnostics"
+      ]
+    },
+    "anneal-host-platform-matrix-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal current host-platform selection"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon packaged by the selected Aeneas release"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/platforms",
+        "anneal/toolchain",
+        "aeneas/release",
+        "charon/platforms",
+        "lean/platforms",
+        "rust/toolchain"
+      ]
+    },
     "anneal-nix-fixed-output-downloads-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1122,6 +1245,107 @@
         "anneal/v1",
         "lean/generated-code",
         "source-correspondence"
+      ]
+    },
+    "anneal-toolchain-version-coupling-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal current toolchain configuration"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by the selected Aeneas release"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "tag": "nightly-2026.06.03",
+            "version": "0.1.210"
+          },
+          "name": "Independent Charon library locked by Anneal Cargo"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by Anneal and Aeneas"
+        },
+        {
+          "identity": {
+            "inputRev": "v4.30.0-rc2",
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+          },
+          "name": "Mathlib revision resolved by the Aeneas Lean manifest"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "anneal/version-coupling",
+        "aeneas/toolchain",
+        "charon/toolchain",
+        "lean/toolchain",
+        "lake/dependencies"
+      ]
+    },
+    "anneal-v1-clean-workspace-prebuilt-archive-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal V1 clean-workspace/prebuilt-archive contract"
+        },
+        {
+          "identity": {
+            "pull_request": "3450",
+            "repository": "google/zerocopy",
+            "revision": "f6aeb9bd14ee0196635f7e1e46bf0641b16950b6"
+          },
+          "name": "Anneal V1 symlink-free archive transition"
+        },
+        {
+          "identity": {
+            "pull_request": "3453",
+            "repository": "google/zerocopy",
+            "revision": "93cab05584dc15cf9f12236ec0ef24becd21beb0"
+          },
+          "name": "Anneal archive-reuse regression test introduction"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/v1",
+        "anneal/toolchain",
+        "lake",
+        "lake/read-only",
+        "lake/manifest",
+        "lake/cache-reuse"
       ]
     },
     "anneal-v1-integration-test-disk-amplification-f98458e": {
@@ -1780,6 +2004,144 @@
         "rust/layout"
       ]
     },
+    "cross-tool-diagnostic-path-normalization-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler selected by Charon nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon selected by Aeneas nightly-2026.06.03"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas/diagnostics",
+        "charon/diagnostics",
+        "diagnostics/path-identity",
+        "diagnostics/relocation",
+        "lean/diagnostics",
+        "rustc/diagnostics"
+      ]
+    },
+    "cross-tool-utf8-span-columns-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler selected by Charon 0.1.210"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon selected by Aeneas nightly-2026.06.03"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by Aeneas"
+        }
+      ],
+      "topics": [
+        "diagnostics",
+        "diagnostics/source-spans",
+        "diagnostics/unicode",
+        "rustc/spans",
+        "charon/spans",
+        "aeneas/diagnostics",
+        "lean/positions",
+        "lean/lsp"
+      ]
+    },
+    "diagnostic-format-controls-nightly-2026-05-31-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler selected by Anneal-era Charon"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas nightly-2026.06.03"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current Anneal authority used for applicability"
+        }
+      ],
+      "topics": [
+        "anneal/diagnostics",
+        "charon/diagnostics",
+        "charon/rustc",
+        "lean/diagnostics",
+        "lean/formatting",
+        "lean/json",
+        "rustc/diagnostics",
+        "rustc/json"
+      ]
+    },
     "end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1872,6 +2234,52 @@
         "charon/generated-source",
         "charon/spans",
         "anneal/coverage"
+      ]
+    },
+    "iris-concepts-for-rust-aeneas-separation-logic-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "publication": "Iris from the Ground Up",
+            "version": "Iris 3.1"
+          },
+          "name": "Iris 3.1 conceptual foundation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "RustBelt: Securing the Foundations of the Rust Programming Language",
+            "venue": "POPL 2018"
+          },
+          "name": "RustBelt use of Iris for Rust ownership and borrowing"
+        },
+        {
+          "identity": {
+            "pull_request": "1352",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+          },
+          "name": "Aeneas draft first-order sequential separation logic"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/iris-lean",
+            "revision": "04b7689c294bb1dd6401e2dd53b337871934ea47"
+          },
+          "name": "Iris-Lean implementation status"
+        }
+      ],
+      "topics": [
+        "iris",
+        "iris/adequacy",
+        "iris/ghost-state",
+        "iris/invariants",
+        "iris/resource-algebras",
+        "iris/step-indexing",
+        "rustbelt",
+        "aeneas/separation-logic"
       ]
     },
     "lake-artifact-cache-architecture-v4-30-0-rc2": {
@@ -2026,6 +2434,27 @@
         "lake/package",
         "lake/workspace",
         "lake/state-ownership"
+      ]
+    },
+    "lake-configuration-ownership-v4-31-0": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+            "version": "v4.31.0"
+          },
+          "name": "Lake configuration ownership after the Lean 4.31 hoisting change"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/configuration",
+        "lake/config-cache",
+        "lake/workspace",
+        "lake/state-ownership",
+        "lean/version-boundaries"
       ]
     },
     "lake-dependency-resolution-v4-30-0-rc2": {
@@ -3629,6 +4058,54 @@
         "rust/divergence",
         "rust/mir",
         "charon/control-flow"
+      ]
+    },
+    "rust-pointer-arithmetic-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust core raw-pointer arithmetic behind Anneal-era nightly-2026-05-31"
+        }
+      ],
+      "topics": [
+        "rust/pointers",
+        "rust/pointer-arithmetic",
+        "rust/provenance",
+        "rust/unsafe",
+        "rust/byte-pointers"
+      ]
+    },
+    "rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust/raw-pointers",
+        "rust/validity",
+        "rust/provenance",
+        "rust/alignment",
+        "rust/undefined-behavior",
+        "rust/strict-provenance"
       ]
     },
     "rust-safety-boundary-completeness-nightly-2026-05-31": {

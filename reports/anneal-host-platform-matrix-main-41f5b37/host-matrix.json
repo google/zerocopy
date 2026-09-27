@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/host-platform-matrix/v1",
+  "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "rows": [
+    {
+      "nix_system": "x86_64-linux",
+      "aeneas_asset": "aeneas-linux-x86_64.tar.gz",
+      "rust_host": "x86_64-unknown-linux-gnu",
+      "lean_platform": "linux",
+      "leantar_platform": "x86_64-unknown-linux-musl",
+      "linux_interpreter": "/lib64/ld-linux-x86-64.so.2",
+      "anneal_mapped": true,
+      "aeneas_release_matrix": true,
+      "aeneas_smoke": "./aeneas --help",
+      "fresh_final_archive_execution": false
+    },
+    {
+      "nix_system": "aarch64-linux",
+      "aeneas_asset": "aeneas-linux-aarch64.tar.gz",
+      "rust_host": "aarch64-unknown-linux-gnu",
+      "lean_platform": "linux_aarch64",
+      "leantar_platform": "aarch64-unknown-linux-musl",
+      "linux_interpreter": "/lib/ld-linux-aarch64.so.1",
+      "anneal_mapped": true,
+      "aeneas_release_matrix": true,
+      "aeneas_smoke": "./aeneas --help",
+      "fresh_final_archive_execution": false,
+      "caveats": [
+        "upstream Charon charon-portable source attempts x86_64 interpreter for all Linux; final Anneal staging has host-specific repair",
+        "Lean v4.30.0-rc2 linux_aarch64 bundled leantar is bypassed in favor of separately fetched native leantar"
+      ]
+    },
+    {
+      "nix_system": "x86_64-darwin",
+      "aeneas_asset": "aeneas-macos-x86_64.tar.gz",
+      "rust_host": "x86_64-apple-darwin",
+      "lean_platform": "darwin",
+      "leantar_platform": "x86_64-apple-darwin",
+      "anneal_mapped": true,
+      "aeneas_release_matrix": true,
+      "aeneas_smoke": "./aeneas --help",
+      "fresh_final_archive_execution": false
+    },
+    {
+      "nix_system": "aarch64-darwin",
+      "aeneas_asset": "aeneas-macos-aarch64.tar.gz",
+      "rust_host": "aarch64-apple-darwin",
+      "lean_platform": "darwin_aarch64",
+      "leantar_platform": "aarch64-apple-darwin",
+      "anneal_mapped": true,
+      "aeneas_release_matrix": true,
+      "aeneas_smoke": "./aeneas --help",
+      "fresh_final_archive_execution": false
+    }
+  ],
+  "non_hosts": {
+    "windows": "Charon rust-toolchain includes a Windows compilation target, but current Anneal has no Windows Aeneas/Lean/archive mapping.",
+    "other_nix_systems": "Current Anneal platform mappings throw Unsupported system."
+  }
+}

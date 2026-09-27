@@ -1,0 +1,38 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/v1",
+    "anneal/toolchain",
+    "lake",
+    "lake/read-only",
+    "lake/manifest",
+    "lake/cache-reuse"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal V1 clean-workspace/prebuilt-archive contract",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Anneal V1 symlink-free archive transition",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "f6aeb9bd14ee0196635f7e1e46bf0641b16950b6",
+        "pull_request": "3450"
+      }
+    },
+    {
+      "name": "Anneal archive-reuse regression test introduction",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "93cab05584dc15cf9f12236ec0ef24becd21beb0",
+        "pull_request": "3453"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

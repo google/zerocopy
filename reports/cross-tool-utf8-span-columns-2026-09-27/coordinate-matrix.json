@@ -1,0 +1,83 @@
+{
+  "schema": "anneal-reference/cross-tool-source-coordinate-matrix/v1",
+  "subjects": {
+    "rustc": "rust-lang/rust@f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "charon": "AeneasVerif/charon@a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "aeneas": "AeneasVerif/aeneas@ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "lean": "leanprover/lean4@3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+  },
+  "coordinates": [
+    {
+      "surface": "rustc JSON diagnostic column_start/column_end",
+      "line_base": 1,
+      "column_base": 1,
+      "unit": "Unicode scalar values (CharPos)",
+      "byte_coordinates_available_separately": true
+    },
+    {
+      "surface": "Charon serialized Loc",
+      "line_base": 1,
+      "column_base": 0,
+      "unit": "rustc display width (col_display)",
+      "byte_coordinates_available_separately": false,
+      "warning": "Selected Charon later adds this numeric column to a line-start UTF-8 byte index in Loc::to_byte."
+    },
+    {
+      "surface": "Aeneas textual source location",
+      "line_base": 1,
+      "column_base": 0,
+      "unit": "inherited Charon display width",
+      "conversion": "none in src/Errors.ml loc_to_string"
+    },
+    {
+      "surface": "Lean batch JSON Position",
+      "line_base": 1,
+      "column_base": 0,
+      "unit": "Unicode scalar values"
+    },
+    {
+      "surface": "Lean LSP Position",
+      "line_base": 0,
+      "column_base": 0,
+      "unit": "UTF-16 code units"
+    }
+  ],
+  "derived_examples": [
+    {
+      "prefix": "é",
+      "utf8_bytes": 2,
+      "codepoints": 1,
+      "typical_rustc_display_width_at_selected_revision": 1,
+      "utf16_code_units": 1,
+      "charon_to_byte_result": 1,
+      "intended_byte_boundary": 2
+    },
+    {
+      "prefix": "界",
+      "utf8_bytes": 3,
+      "codepoints": 1,
+      "typical_rustc_display_width_at_selected_revision": 2,
+      "utf16_code_units": 1,
+      "charon_to_byte_result": 2,
+      "intended_byte_boundary": 3
+    },
+    {
+      "prefix": "😀",
+      "utf8_bytes": 4,
+      "codepoints": 1,
+      "typical_rustc_display_width_at_selected_revision": 2,
+      "utf16_code_units": 2,
+      "charon_to_byte_result": 2,
+      "intended_byte_boundary": 4
+    },
+    {
+      "prefix": "\t",
+      "utf8_bytes": 1,
+      "codepoints": 1,
+      "rustc_display_width_at_selected_revision": 4,
+      "utf16_code_units": 1,
+      "charon_to_byte_result": 4,
+      "intended_byte_boundary": 1
+    }
+  ]
+}

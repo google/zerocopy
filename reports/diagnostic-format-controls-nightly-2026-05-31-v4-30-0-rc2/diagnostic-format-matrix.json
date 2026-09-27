@@ -1,0 +1,45 @@
+{
+  "schema": "anneal-reference/diagnostic-format-controls/v1",
+  "subjects": {
+    "rustc": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "charon": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "lean": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+  },
+  "surfaces": [
+    {
+      "surface": "rustc human diagnostics",
+      "default_width": "explicit --diagnostic-width if present; else 140 in UI-testing mode; else terminal width with 140 fallback",
+      "explicit_control": "--diagnostic-width <N>",
+      "machine_fields": false,
+      "notes": "Width can affect message-content choices as well as layout."
+    },
+    {
+      "surface": "rustc JSON diagnostics",
+      "default_width": "structured fields are not line-wrapped; rendered human copy uses rustc diagnostic width",
+      "explicit_control": "--error-format=json plus --diagnostic-width <N>; --json suboptions configure rendered copy",
+      "machine_fields": true,
+      "notes": "Source labels JSON format unstable; exact revision is part of contract."
+    },
+    {
+      "surface": "Charon-native diagnostics",
+      "default_width": "Renderer::styled() path; no Charon-native width knob established",
+      "explicit_control": null,
+      "machine_fields": false,
+      "notes": "--rustc-arg can control rustc-originated diagnostics, not Charon-native ErrorCtx rendering."
+    },
+    {
+      "surface": "Lean batch Message / lean --json data",
+      "default_width": "Std.Format.defWidth = 120 through MessageData.toString -> ToString Format -> Format.pretty",
+      "explicit_control": null,
+      "machine_fields": true,
+      "notes": "JSON envelope is structured, but data is rendered prose. Registered format.width is not used by the final ordinary Message.serialize layout path."
+    },
+    {
+      "surface": "Lean suggestion/edit text",
+      "default_width": "format.inputWidth = 100",
+      "explicit_control": "format.inputWidth or explicit Suggestion.pretty width",
+      "machine_fields": "higher-level diagnostic/editor structures",
+      "notes": "Separate surface from batch Message serialization."
+    }
+  ]
+}

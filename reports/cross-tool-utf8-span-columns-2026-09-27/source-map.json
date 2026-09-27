@@ -1,0 +1,118 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/lib.rs",
+      "blob": "2371bf15756dac74f5488d5d0b069ed6673014a5",
+      "role": "source",
+      "focus": "CharPos, col_display, lookup_file_pos_with_col_display, char_width"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_span/src/source_map.rs",
+      "blob": "47c933e245d4942a81f48dc8bcd6b15ba9c39ea7",
+      "role": "source",
+      "focus": "lookup_char_pos"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "compiler/rustc_errors/src/json.rs",
+      "blob": "04ac140f332618d6fa81254e9a16bc27c729eef5",
+      "role": "source",
+      "focus": "JSON byte and character coordinates"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "path": "src/doc/rustc/src/json.md",
+      "blob": "7421dd6210806f8e3a9b310f8f72578830309abe",
+      "role": "documentation",
+      "focus": "JSON column contract"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "role": "source",
+      "focus": "nightly-2026-05-31 selection"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/ast/meta.rs",
+      "blob": "7a80a92ea1b3f3eaff1758554001e32019473237",
+      "role": "source",
+      "focus": "Loc/Span representation"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/translate/translate_meta.rs",
+      "blob": "187a703dff83687f369f1903c6646aabdff259d3",
+      "role": "source",
+      "focus": "rustc col_display -> Charon Loc.col"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/ast/meta_utils.rs",
+      "blob": "795723c998cf03c930d7c88200577786297f79e6",
+      "role": "source",
+      "focus": "Loc::to_byte and SpanData::to_byte_range"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/errors.rs",
+      "blob": "e4107c6deb5741d523d2220820d1ee0355adb3c0",
+      "role": "source",
+      "focus": "diagnostic byte-range consumption"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Errors.ml",
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "role": "source",
+      "focus": "direct printing of Charon Meta.loc"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Data/Position.lean",
+      "blob": "f5eae212ed37f753a495437dc7b0c7f6cfeaa945",
+      "role": "source",
+      "focus": "Lean Position codepoint semantics"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Data/Lsp/Utf16.lean",
+      "blob": "a779f34edfaf80f50c389599b5cd3c67ffcc38b0",
+      "role": "source",
+      "focus": "LSP UTF-16 conversion"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Message.lean",
+      "blob": "a7f76198c582d1d2032bb24d13ad4cb7a272fa57",
+      "role": "source",
+      "focus": "Message position serialization"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Language/Basic.lean",
+      "blob": "08f9b688fc869224c316175220403c2aeb5eb415",
+      "role": "source",
+      "focus": "batch JSON message reporting"
+    }
+  ],
+  "execution_evidence": "none; report contains a minimal revalidation fixture matrix"
+}

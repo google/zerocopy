@@ -1,0 +1,91 @@
+{
+  "schema": "anneal-reference/rust-pointer-arithmetic-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "families": [
+    {
+      "methods": [
+        "offset",
+        "add",
+        "sub"
+      ],
+      "receiver": [
+        "*const T",
+        "*mut T"
+      ],
+      "unit": "T elements",
+      "requires_sized": true,
+      "call_safety": "unsafe",
+      "immediate_contract": [
+        "mathematical byte offset fits isize",
+        "nonzero displacement remains within one source allocation over the full traversed half-open range"
+      ],
+      "provenance": "derived from and retained from source pointer"
+    },
+    {
+      "methods": [
+        "byte_offset",
+        "byte_add",
+        "byte_sub"
+      ],
+      "receiver": [
+        "*const T",
+        "*mut T"
+      ],
+      "unit": "bytes",
+      "requires_sized": false,
+      "call_safety": "unsafe",
+      "immediate_contract": [
+        "corresponding u8 offset/add/sub contract"
+      ],
+      "wide_pointer_rule": "change data pointer only; preserve original metadata"
+    },
+    {
+      "methods": [
+        "wrapping_offset",
+        "wrapping_add",
+        "wrapping_sub"
+      ],
+      "receiver": [
+        "*const T",
+        "*mut T"
+      ],
+      "unit": "T elements",
+      "requires_sized": true,
+      "call_safety": "safe to form pointer",
+      "immediate_contract": [
+        "may leave allocation and later re-enter"
+      ],
+      "later_use_contract": [
+        "must not access another allocation",
+        "out-of-bounds dereference remains UB"
+      ],
+      "provenance": "remembers source allocation"
+    },
+    {
+      "methods": [
+        "wrapping_byte_offset",
+        "wrapping_byte_add",
+        "wrapping_byte_sub"
+      ],
+      "receiver": [
+        "*const T",
+        "*mut T"
+      ],
+      "unit": "bytes",
+      "requires_sized": false,
+      "call_safety": "safe to form pointer",
+      "wide_pointer_rule": "change data pointer only; preserve original metadata",
+      "provenance": "same wrapping provenance model as source pointer"
+    }
+  ],
+  "boundaries": [
+    "alignment/read/write validity are separate from pointer formation",
+    "offset_from/distance APIs are excluded",
+    "address/provenance conversion APIs are excluded",
+    "complete provenance and aliasing models remain unspecified at this revision"
+  ]
+}

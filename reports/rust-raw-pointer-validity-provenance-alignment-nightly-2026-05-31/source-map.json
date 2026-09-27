@@ -1,0 +1,67 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "sources": [
+        {
+          "path": "src/types/pointer.md",
+          "blob": "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1",
+          "role": "normative",
+          "focus": "raw pointer values, bit validity, wide metadata"
+        },
+        {
+          "path": "src/behavior-considered-undefined.md",
+          "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+          "role": "normative",
+          "focus": "pointer access UB, dangling, misalignment, value validity, const provenance"
+        },
+        {
+          "path": "src/unsafe-keyword.md",
+          "blob": "7658c1f5c5425d03e2183e89b55260e5e9fd889b",
+          "role": "normative",
+          "focus": "unsafe proof-obligation model"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain_date": "2026-05-31",
+      "sources": [
+        {
+          "path": "library/core/src/ptr/mod.rs",
+          "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+          "role": "documentation/source",
+          "focus": "access validity, allocation, alignment, provenance, reference conversion, read/write contracts"
+        },
+        {
+          "path": "library/core/src/ptr/const_ptr.rs",
+          "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+          "role": "documentation/source",
+          "focus": "raw-pointer methods including provenance/alignment/arithmetic"
+        },
+        {
+          "path": "library/core/src/ptr/docs/addr.md",
+          "blob": "785b88a9987090d4d04ebe614fee3fc0d89794ec",
+          "role": "documentation",
+          "focus": "Strict Provenance address extraction"
+        },
+        {
+          "path": "library/core/src/ptr/docs/as_ref.md",
+          "blob": "2c7d6e149b76a5ec0f58677eaa51925d57aac041",
+          "role": "documentation",
+          "focus": "raw-pointer to reference conversion"
+        },
+        {
+          "path": "library/core/src/ptr/docs/offset.md",
+          "blob": "f04f5606ab297a8e62e9215064ee839148197c64",
+          "role": "documentation",
+          "focus": "offset provenance and bounds"
+        }
+      ]
+    }
+  ],
+  "execution_evidence": "none"
+}

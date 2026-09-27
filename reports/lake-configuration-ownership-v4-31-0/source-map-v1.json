@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "68218e876d2a38b1985b8590fff244a83c321783",
+    "version": "v4.31.0"
+  },
+  "sources": [
+    {
+      "path": "src/lake/Lake/Load/Config.lean",
+      "blob": "afdb0a19d9f5443f3cd6081014601744e538c523",
+      "role": "source",
+      "focus": "package-local lakeDir and workspace-owned configDir"
+    },
+    {
+      "path": "src/lake/Lake/Load/Lean/Elab.lean",
+      "blob": "b3908d0cebb44cac15e48baa41cb439f6f94eaa5",
+      "role": "source",
+      "focus": "compiled configuration paths, trace/locking, residual package-local createDirAll"
+    },
+    {
+      "path": "src/lake/Lake/Load/Resolve.lean",
+      "blob": "a316c67740973fd737e25eb351bea8249ffd64a6",
+      "role": "source",
+      "focus": "dependency wsDir/pkgDir/pkgIdx/pkgName assignment"
+    },
+    {
+      "path": "src/lake/Lake/Load/Toml.lean",
+      "blob": "271d8c427a3beb1f6d4dcd90123e85e5fb3e8326",
+      "role": "source",
+      "focus": "direct TOML configuration loading"
+    },
+    {
+      "path": "src/lake/Lake/Config/Package.lean",
+      "blob": "b9f5c489126703625009077caaeda05d3688e06f",
+      "role": "source",
+      "focus": "package-local Lake/build paths"
+    },
+    {
+      "path": "src/lake/Lake/Config/Workspace.lean",
+      "blob": "5879e80f28e4679d164becc331db462b0995c635",
+      "role": "source",
+      "focus": "workspace/root ownership"
+    },
+    {
+      "path": "tests/lake/examples/deps/test.sh",
+      "blob": "d526c2852d68a6df92cdd00acba30772983a8de8",
+      "role": "checked-in-test",
+      "focus": "numeric workspace configuration directories and TOML root behavior"
+    }
+  ],
+  "history": [
+    {
+      "commit": "41ecccec6d1244c5f89be2fc76638f22ba37cbc6",
+      "date": "2026-05-08",
+      "pull_request": 13683,
+      "focus": "hoist compiled configurations to workspace to remove cross-workspace dependency contention"
+    }
+  ],
+  "comparison": {
+    "v4.30.0-rc2": {
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "config_blob": "f1fe9b199f41e00d3cf10725b4dfc6b2d3623ec2",
+      "elab_blob": "c72b295cb0b9d7365d21cf2ebd323a3cc4068eab"
+    }
+  },
+  "execution_evidence": "none; see REPORT.md Revalidation"
+}

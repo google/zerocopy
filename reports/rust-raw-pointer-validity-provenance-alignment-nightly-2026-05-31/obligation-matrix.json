@@ -1,0 +1,113 @@
+{
+  "schema": "anneal-reference/rust-raw-pointer-obligation-matrix/v1",
+  "subject": {
+    "rust_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "reference_revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+    "toolchain_date": "2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "exist/copy a thin raw pointer value",
+      "requires": [
+        "pointer value is initialized"
+      ],
+      "does_not_require_merely_for_value_existence": [
+        "non-null address",
+        "pointee alignment",
+        "live allocation",
+        "dereferenceable provenance"
+      ],
+      "notes": "The Reference separately warns that a thin pointer obtained by integer/byte transmutation is not thereby dereferenceable, even for a ZST."
+    },
+    {
+      "operation": "ordinary non-zero-sized typed read",
+      "requires": [
+        "valid-for-read range in a live allocation",
+        "provenance authorizing that range",
+        "operation-compatible aliasing/concurrency",
+        "alignment for T",
+        "properly initialized valid T"
+      ]
+    },
+    {
+      "operation": "read_unaligned<T>",
+      "requires": [
+        "valid-for-read range in a live allocation",
+        "provenance authorizing that range",
+        "operation-compatible aliasing/concurrency",
+        "properly initialized valid T"
+      ],
+      "removed_requirement": "alignment for T"
+    },
+    {
+      "operation": "ordinary typed write",
+      "requires": [
+        "valid-for-write range in a live allocation",
+        "provenance authorizing write",
+        "operation-compatible aliasing/concurrency",
+        "alignment for T"
+      ],
+      "notes": "The written bytes must leave later typed uses valid; write itself is also subject to its ownership semantics."
+    },
+    {
+      "operation": "write_unaligned<T>",
+      "requires": [
+        "valid-for-write range in a live allocation",
+        "provenance authorizing write",
+        "operation-compatible aliasing/concurrency"
+      ],
+      "removed_requirement": "alignment for T"
+    },
+    {
+      "operation": "form &T or &mut T from raw pointer",
+      "requires": [
+        "non-null",
+        "properly aligned",
+        "dereferenceable pointee range",
+        "valid pointee T",
+        "reference-specific aliasing requirements"
+      ],
+      "notes": "Requirements apply even if the reference is immediately cast away or otherwise unused."
+    },
+    {
+      "operation": "addr()/address comparison",
+      "requires": [],
+      "establishes": [
+        "numerical address information"
+      ],
+      "does_not_establish": [
+        "dereferenceability",
+        "provenance authority",
+        "liveness",
+        "alignment unless separately checked"
+      ]
+    },
+    {
+      "operation": "with_addr/map_addr",
+      "requires": [
+        "an existing pointer whose provenance is intentionally retained"
+      ],
+      "establishes": [
+        "new address with provenance derived from the source pointer"
+      ],
+      "does_not_establish": [
+        "that the new address lies within authorized memory for a later access"
+      ]
+    },
+    {
+      "operation": "offset(nonzero)",
+      "requires": [
+        "byte offset fits isize",
+        "source derived from an allocation",
+        "entire traversed range remains in that allocation"
+      ],
+      "notes": "Detailed pointer-arithmetic semantics are delegated to the separate inventory subject."
+    }
+  ],
+  "global_boundaries": [
+    "Exact provenance structure and exact aliasing rules remain unsettled.",
+    "Zero-sized operations have operation-specific exceptions; do not infer them from the non-zero matrix.",
+    "Volatile/MMIO access has separate contracts.",
+    "Wide raw-pointer metadata adds representation validity constraints."
+  ]
+}
