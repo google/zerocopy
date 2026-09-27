@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-reference/lean-lake-portability-matrix/v1",
+  "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "artifact_classes": [
+    {
+      "class": "lean-module-artifacts",
+      "examples": [".olean", ".olean.server", ".olean.private", ".ilean", ".ir", ".c", ".bc"],
+      "lake_platform_policy": "Module setup traces use the tri-state platformIndependent policy. With none, platform-dependent library/plugin traces propagate naturally; false also forces System.Platform.target; true suppresses those platform-dependent traces. The module output mapping is marked platform-independent only when the effective option is explicitly true.",
+      "portability_conclusion": "Not generically established across architectures or operating systems. Lake can choose a platform-neutral build/cache identity for some modules, but the configuration is an unchecked assertion and the pinned Lean .olean implementation does not itself establish cross-architecture portability.",
+      "fresh_execution_needed": true
+    },
+    {
+      "class": "module-ltar",
+      "examples": [".ltar"],
+      "lake_platform_policy": "Packages the module trace plus Lean module artifacts, generated C, and optional bitcode; it does not package the later native object/dynamic-library facets. Output mappings mark it platform-independent only for explicit platformIndependent=true.",
+      "portability_conclusion": "Inherits the portability limits of its members and the correctness of the platformIndependent assertion; archive format alone does not establish cross-platform reuse.",
+      "fresh_execution_needed": true
+    },
+    {
+      "class": "native-object",
+      "examples": [".o"],
+      "lake_platform_policy": "buildO/buildLeanO add platformTrace based on System.Platform.target.",
+      "portability_conclusion": "Host/target platform dependent by Lake's build model; do not reuse as a cross-platform substitute.",
+      "fresh_execution_needed": false
+    },
+    {
+      "class": "static-library",
+      "examples": [".a"],
+      "lake_platform_policy": "Built from object jobs whose traces include platformTrace.",
+      "portability_conclusion": "Derived from platform-dependent object inputs; no generic cross-platform reuse claim.",
+      "fresh_execution_needed": false
+    },
+    {
+      "class": "shared-library-or-plugin",
+      "examples": [".so", ".dylib", ".dll"],
+      "lake_platform_policy": "Shared-library builders add platformTrace; filename, linker flags, and runtime search environment differ by OS.",
+      "portability_conclusion": "Platform/ABI dependent; platform-specific rebuild or matched artifact required.",
+      "fresh_execution_needed": false
+    },
+    {
+      "class": "executable",
+      "examples": ["native executable"],
+      "lake_platform_policy": "Built from native object/library jobs and through platform-sensitive linker machinery.",
+      "portability_conclusion": "Platform/ABI dependent; platform-specific build/package required.",
+      "fresh_execution_needed": false
+    }
+  ],
+  "policy_layers": [
+    {
+      "layer": "module-dependency-trace",
+      "rule": "platformIndependent none/false/true controls whether platform-dependent dependency traces and/or an explicit platform trace participate in module rebuild identity."
+    },
+    {
+      "layer": "root-output-map-entry",
+      "rule": "Module .ltar output mappings are marked platform-independent only when platformIndependent.getD false is true; none is therefore classified as dependent here."
+    },
+    {
+      "layer": "remote-cache-revision-scope",
+      "rule": "Lake cache CLI uses System.Platform.target by default and drops the platform component only for packages explicitly configured platformIndependent=true."
+    }
+  ],
+  "anneal_selected_packages": {
+    "aeneas_package_platformIndependent": "unset (Lake default none)",
+    "mathlib_package_platformIndependent": "unset (Lake default none)",
+    "aeneas_meta_precompileModules": "enabled when CI is absent",
+    "anneal_packaging": "selects distinct Aeneas, Rust, Lean, leantar, and Mathlib-cache assets/hashes for x86_64-linux, aarch64-linux, x86_64-darwin, and aarch64-darwin"
+  }
+}

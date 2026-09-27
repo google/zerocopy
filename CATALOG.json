@@ -3914,6 +3914,51 @@
         "lean/protocol"
       ]
     },
+    "lean-lake-cross-platform-artifact-portability-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/artifacts",
+        "lake/cache",
+        "lake/platform",
+        "lean",
+        "lean/artifacts",
+        "lean/portability"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 and Lake",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Aeneas Lean backend selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Mathlib selected by Aeneas",
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal toolchain packaging",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lean-lake-trace-hash-artifacts-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [

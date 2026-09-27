@@ -1,0 +1,32 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/Init/System/Platform.lean","blob":"cbb97369634eeb1faff3621e4dbae7e6af1ccb25","symbols":["System.Platform.target","getTarget"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Build/Common.lean","blob":"c283fda65ba4d6e3138a0b4ab8252885bf78a014","symbols":["platformTrace","addPlatformTrace","buildArtifactUnlessUpToDate","buildO","buildLeanO","buildStaticLib","buildSharedLib","buildLeanExe"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Build/Module.lean","blob":"21c5f343112a1690390188642a05d6092432ab84","symbols":["Module.recFetchSetup","Module.packLtar","Module.recBuildLean","trackOutputsIfEnabled","Module.recBuildLeanCToOExport","Module.recBuildLeanCToONoExport","Module.recBuildLeanBcToO"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Config/LeanConfig.lean","blob":"9fdd5a656c4316ee6beb45bdc9a1be4dd8d5d42a","symbols":["LeanConfig.platformIndependent"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Config/LeanLib.lean","blob":"077efb6c244fd53bab5dead6c850d40161c96e7f","symbols":["LeanLib.platformIndependent","LeanLib.precompileModules","LeanLib.nativeFacets"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Config/Module.lean","blob":"f8b938e16fe53ada616364033b8d8353baa733ee","symbols":["Module.dynlibFile","Module.platformIndependent","Module.nativeFacets"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Util/NativeLib.lean","blob":"5ed2cdaafed37f8b28524b09a55835f1f4ce69d6","symbols":["sharedLibExt","nameToStaticLib","nameToSharedLib","sharedLibPathEnvVar"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Build/ExternLib.lean","blob":"9ed94d229d3ca5d41173941e157d31f9b9f6b814","symbols":["ExternLib.recBuildShared","computeDynlibOfShared"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Config/PackageConfig.lean","blob":"27a50fb2a713a6bb590260fd4a82d135c2b84952","symbols":["defaultBuildArchive","PackageConfig.precompileModules"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/CLI/Main.lean","blob":"65b0e7fd0d6cd21d512edb49a276bcc65ae31c78","symbols":["cachePlatform","cacheToolchain","Cache.get","Cache.put"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Config/Cache.lean","blob":"607e6b92108f30e0a57d0de682f7faa283d7d470","symbols":["CacheMap.Entry","CacheMap.writeFile","CachePlatform.system","Cache.outputsFile"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/lake/Lake/Build/Run.lean","blob":"afae31b7d20a37e6a505d4dc7a9ce875467faf7e","symbols":["Workspace.saveOutputs","mkBuildContext'"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/library/module.cpp","blob":"97a53f87b06595049cdfe6016ec2c66fd40748b6","symbols":["olean_header","lean_read_module_data_parts","lean_save_module_data_parts"]},
+    {"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","path":"src/runtime/compact.cpp","blob":"c8bf24aa8206bc99cddde2fda2e4e2212b8a75b0","symbols":["object compaction","region relocation"]},
+    {"repository":"AeneasVerif/aeneas","revision":"ac9f1bc5262a5e4ff1e24ca78617121382202727","path":"backends/lean/lakefile.lean","blob":"c32062866e2f88d2eb768b904745e7104edddb0d","symbols":["package aeneas","lean_lib Aeneas","lean_lib AeneasMeta"]},
+    {"repository":"AeneasVerif/aeneas","revision":"ac9f1bc5262a5e4ff1e24ca78617121382202727","path":"backends/lean/lake-manifest.json","blob":"1a5af703163d8b39f4311aafe22ae171788179ee","symbols":["mathlib revision","fixedToolchain"]},
+    {"repository":"leanprover-community/mathlib4","revision":"5450b53e5ddc75d46418fabb605edbf36bd0beb6","path":"lakefile.lean","blob":"2615d72c0aa5e414234eac5f7ade10f4f3890916","symbols":["package mathlib","lean_lib Mathlib"]},
+    {"repository":"leanprover-community/mathlib4","revision":"5450b53e5ddc75d46418fabb605edbf36bd0beb6","path":"lake-manifest.json","blob":"86b358344ea45a46d99dc19ac861011583e6d6e5","symbols":["locked dependency graph"]},
+    {"repository":"google/zerocopy","revision":"41f5b37afe7060fd9fe08c00b200672cd76d77b9","path":"anneal/flake.nix","blob":"433fcf5c64da4f51b9fac471f1faf45c1f730cba","symbols":["eachDefaultSystem","rustPlatform","leanPlatform","aeneasTarget","platform-specific fixed-output hashes"]}
+  ],
+  "related_reference_reports": [
+    "reports/lean-package-native-artifacts-v4-30-0-rc2",
+    "reports/lean-olean-format-identity-v4-30-0-rc2",
+    "reports/lake-artifact-cache-key-semantics-v4-30-0-rc2",
+    "reports/lake-readonly-relocation-offline-concurrency-v4-30-0-rc2",
+    "reports/anneal-host-platform-matrix-main-41f5b37"
+  ]
+}
