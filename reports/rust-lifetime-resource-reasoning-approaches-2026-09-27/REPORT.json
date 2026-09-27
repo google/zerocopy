@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "rust/verification",
+    "rust/lifetimes",
+    "rust/resources",
+    "rust/borrowing",
+    "rust/prophecies",
+    "rust/functionalization",
+    "separation-logic",
+    "permissions"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt: semantic lifetime and ownership resources",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "PACMPL 2 (POPL), Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Prusti: Rust-type-derived permission reasoning",
+      "identity": {
+        "doi": "10.1145/3360573",
+        "publication": "PACMPL 3 (OOPSLA), Article 147",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "RustHorn: prophecy-based functionalization of mutable borrows",
+      "identity": {
+        "doi": "10.1007/978-3-030-44914-8_18",
+        "publication": "ESOP 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Aeneas: loan-based functional translation and backward functions",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "publication": "PACMPL 6 (ICFP), Article 116",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RustHornBelt: semantic foundation for prophecy-based functional specifications",
+      "identity": {
+        "doi": "10.1145/3519939.3523704",
+        "publication": "PLDI 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RefinedRust: lifetime logic, borrow names, and foundational refined ownership types",
+      "identity": {
+        "doi": "10.1145/3656422",
+        "publication": "PACMPL 8 (PLDI), Article 192",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Thrust: prophecy-based refinement types for Rust",
+      "identity": {
+        "doi": "10.1145/3729333",
+        "publication": "PACMPL 9 (PLDI), Article 230",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

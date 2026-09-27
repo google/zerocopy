@@ -1,0 +1,112 @@
+{
+  "subjects": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+    }
+  ],
+  "evidence": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Lean/Elab.lean",
+      "blob": "c72b295cb0b9d7365d21cf2ebd323a3cc4068eab",
+      "symbols": [
+        "ConfigTrace",
+        "importConfigFile",
+        "importConfigFileCore"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Config.lean",
+      "blob": "f1fe9b199f41e00d3cf10725b4dfc6b2d3623ec2",
+      "symbols": [
+        "LoadConfig",
+        "LoadConfig.lakeDir"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Resolve.lean",
+      "blob": "ec7c9978ab99b9a998a1c24d5e1e7ecce3cfa928",
+      "symbols": [
+        "Workspace.resolveDepsCore"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Workspace.lean",
+      "blob": "9f25dd62bc752ede695a25fc20371157eb65d64b",
+      "symbols": [
+        "loadWorkspaceRoot"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/DSL/Extensions.lean",
+      "blob": "2f9a53c0883887889a7c9dc104482b8612c9a73f",
+      "symbols": [
+        "nameExt",
+        "dirExt",
+        "optsExt"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Load/Lean.lean",
+      "blob": "b38ee619b42d8293fc9e4ffb4b8e2f4b1508c1e7",
+      "symbols": [
+        "loadLeanConfig"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "symbols": [
+        "aeneas-config-primer build fragment"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "symbols": [
+        "write_lake_manifest",
+        "generated_lake_manifest",
+        "V1 generated Lakefile"
+      ]
+    }
+  ],
+  "neighboring_reference_reports": [
+    {
+      "package": "lake-config-cache-contents-invalidation-v4-30-0-rc2",
+      "report_blob": "e8cae1b63d2c429aec41f27b1b5b94e9ed40ddd7"
+    },
+    {
+      "package": "lake-readonly-relocation-offline-concurrency-v4-30-0-rc2",
+      "report_blob": "8939500f86c03c4da7d9339f8a02c12346267cf6"
+    },
+    {
+      "package": "lake-server-preparation-v4-30-0-rc2",
+      "report_blob": "589374b2335773dffdcd4702100f9edfd0479c2f"
+    }
+  ],
+  "execution": {
+    "performed": false,
+    "note": "No Lake, Lean, Nix, or Anneal executable was run."
+  }
+}

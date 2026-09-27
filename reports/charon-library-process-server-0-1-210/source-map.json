@@ -1,0 +1,74 @@
+{
+  "subject": {
+    "repository": "AeneasVerif/charon",
+    "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "version": "0.1.210"
+  },
+  "sources": [
+    {
+      "path": "charon/Cargo.toml",
+      "blob": "8c9936202e7bdbdaaefbc19305363da1ab6c0084",
+      "focus": [
+        "[lib] charon_lib",
+        "[[bin]] charon",
+        "[[bin]] charon-driver",
+        "features rustc"
+      ]
+    },
+    {
+      "path": "charon/src/lib.rs",
+      "blob": "a5530a1778d231297d8e480cf11531b141125a4f",
+      "focus": [
+        "public modules",
+        "deserialize_llbc",
+        "driver rustdoc link"
+      ]
+    },
+    {
+      "path": "charon/src/bin/charon/cli.rs",
+      "blob": "3580a74c6079079510aba318949810bc1a95a15f",
+      "focus": [
+        "Charon subcommand enum"
+      ]
+    },
+    {
+      "path": "charon/src/bin/charon/main.rs",
+      "blob": "b4460ce4cd3baa32308718e79b6e194860b042a6",
+      "focus": [
+        "RUSTC_WRAPPER topology",
+        "translate_with_cargo",
+        "translate_without_cargo"
+      ]
+    },
+    {
+      "path": "charon/src/bin/charon-driver/driver.rs",
+      "blob": "3f90a7a31857aed462694066e5ffaa6e28b9dcfa",
+      "focus": [
+        "run_rustc_driver",
+        "CharonCallbacks"
+      ]
+    },
+    {
+      "path": "charon/src/bin/charon-driver/main.rs",
+      "blob": "ab74f3f3d12a869bd8c3c94083b93b7dee1c2482",
+      "focus": [
+        "run_charon",
+        "serialize_to_files",
+        "main"
+      ]
+    },
+    {
+      "path": "README.md",
+      "blob": "6470a71c857dcb64be248cdb5dfe67576d914c99",
+      "focus": [
+        "Usage",
+        "Why Charon?",
+        "Limitations"
+      ]
+    }
+  ],
+  "negative_space": {
+    "no_server_claim": "Limited to exposed pinned manifest targets and CLI subcommands; not a repository-wide impossibility claim.",
+    "execution": "none"
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "schema": "anneal-reference/aeneas-extrinsic-termination-matrix/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "lean": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "facilities": [
+    {
+      "facility": "translation-time decreases clauses",
+      "selection": "-decreases-clauses",
+      "scope": "recursive translated forward functions and translated loop helpers",
+      "evidence_supplied_by_user": [
+        "termination measure",
+        "decrease proof/tactic"
+      ],
+      "generated_helper_suffixes": [
+        "_terminates",
+        "_decreases"
+      ],
+      "template_status": "measure scaffold plus decreases macro expanding to sorry",
+      "lean_mutual_recursion": "explicitly rejected",
+      "lean_fuel_alternative": "unavailable",
+      "pinned_status": "source-level suffix incompatibility: generator emits termination_by + decreasing_by and still appends partial_fixpoint; exact execution diagnostic not observed"
+    },
+    {
+      "facility": "recursive specification theorem",
+      "selection": "ordinary Lean theorem proof",
+      "scope": "selected theorem inputs/preconditions",
+      "evidence_supplied_by_user": [
+        "termination_by measure or inferred measure",
+        "decreasing_by proof when needed"
+      ],
+      "program_definition": "may remain partial_fixpoint",
+      "semantic_result": "successful WP.spec proof excludes Result.div for the covered invocation",
+      "pinned_status": "source-grounded proof-time facility"
+    },
+    {
+      "facility": "loop.spec",
+      "selection": "Aeneas.Std.loop.spec",
+      "scope": "fixed-point loop specification",
+      "evidence_supplied_by_user": [
+        "well-founded measure",
+        "invariant",
+        "postcondition",
+        "strict decrease on every continuation"
+      ],
+      "program_definition": "fixed-point loop remains semantic program",
+      "semantic_result": "specification theorem for covered initial state",
+      "pinned_status": "source-grounded proof-time facility"
+    },
+    {
+      "facility": "loop.spec_decr_nat",
+      "selection": "Aeneas.Std.loop.spec_decr_nat",
+      "scope": "fixed-point loop specification with Nat measure",
+      "evidence_supplied_by_user": [
+        "Nat measure",
+        "invariant",
+        "postcondition",
+        "measure x' < measure x on continuation"
+      ],
+      "program_definition": "fixed-point loop remains semantic program",
+      "semantic_result": "specification theorem for covered initial state",
+      "pinned_status": "source-grounded proof-time facility"
+    },
+    {
+      "facility": "fuel",
+      "selection": "-use-fuel",
+      "scope": "backend-specific translation",
+      "pinned_status": "rejected by Lean backend"
+    }
+  ]
+}

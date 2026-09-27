@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "mcp",
+    "mcp/architecture",
+    "mcp/cancellation",
+    "mcp/concurrency",
+    "mcp/lifecycle",
+    "mcp/progress",
+    "mcp/state",
+    "mcp/subscriptions",
+    "mcp/transports",
+    "proof-assistants"
+  ],
+  "subjects": [
+    {
+      "name": "Model Context Protocol core specification",
+      "identity": {
+        "repository": "modelcontextprotocol/modelcontextprotocol",
+        "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267",
+        "version": "2026-07-28"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

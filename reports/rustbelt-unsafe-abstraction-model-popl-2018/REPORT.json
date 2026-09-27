@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "rustbelt",
+    "rust/unsafe",
+    "rust/unsafe-abstractions",
+    "rust/library-soundness",
+    "semantics/logical-relations",
+    "separation-logic"
+  ],
+  "subjects": [
+    {
+      "name": "RustBelt POPL 2018 unsafe-abstraction soundness model",
+      "identity": {
+        "doi": "10.1145/3158154",
+        "publication": "Proc. ACM Program. Lang. 2, POPL, Article 66",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "RustBelt POPL 2018 accompanying artifact record",
+      "identity": {
+        "doi": "10.5281/zenodo.1115560",
+        "version": "v1",
+        "published": "2017-12-13"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

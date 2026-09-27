@@ -1,0 +1,108 @@
+{
+  "observed_at": "2026-09-27",
+  "scope": "Public Lean-facing MCP implementations selected for distinct architectures relevant to interactive proof development; not an exhaustive census.",
+  "subjects": [
+    {
+      "repository": "oOo0oOo/lean-lsp-mcp",
+      "revision": "bb176c58a4f895061561685318e92b8db446f1b5",
+      "role": "LSP-backed interactive proof server",
+      "files": {
+        "README.md": "123429a8ab2a008237513d26f2e89de5a89b5583",
+        "docs/tools.md": "b68e2977c2f214d2a049cc7a007c32d7115b2d72"
+      }
+    },
+    {
+      "repository": "RIvance/lean4-mcp",
+      "revision": "b749d9ca766e97020563e9ee72a7f0bbbddd690e",
+      "role": "LSP-backed edit-capable proxy",
+      "files": {
+        "README.md": "e729e839cca17ade4f5bb0034ee87962749bbe81"
+      }
+    },
+    {
+      "repository": "r-irbe/lean4-lsp-mcp",
+      "revision": "e7ab346852aad2e1fb54f2aeceefff608122945e",
+      "role": "LSP + compiled-index proof/navigation server",
+      "files": {
+        "README.md": "5ef2ca7124d0ccb3f32b73f0e96e7cc119495b83"
+      }
+    },
+    {
+      "repository": "jcreinhold/lean-host-mcp",
+      "revision": "248d043e674518ad45f1e64c1c9c16647625ad5d",
+      "role": "direct read-only Lean host with supervised workers",
+      "files": {
+        "README.md": "9f9a4885d7c8c4b2296e58de8f8ecfc53139abde",
+        "docs/architecture.md": "8e922ae7013ada8ce5eb1b3292a411fc7a679d02"
+      }
+    },
+    {
+      "repository": "epfl-lara/LeanProbe",
+      "revision": "646cb0ee3d428562b13740649aa7c1689ec0720a",
+      "role": "warm-REPL checker and tactic-session server",
+      "files": {
+        "README.md": "212fa45ede8d33578307939730a664f76f1e30da",
+        "src/lean_probe/skill/SKILL.md": "973f97809d6978ff60a629a8aa6d7a1223a42b80"
+      }
+    },
+    {
+      "repository": "GasStationManager/LeanTool",
+      "revision": "1a4b5ef12ac593202df195d9924981d62608423e",
+      "role": "compiler/Pantograph checker and tool server",
+      "files": {
+        "README.md": "2e69417eb339cfdeb0038bc46a161eb368520294"
+      }
+    },
+    {
+      "repository": "padieul/lean-proof-auto-mcp",
+      "revision": "8d829ecf8e25ac7597fd5cc41b043a40aa404ec1",
+      "role": "deterministic theorem analysis and automation server",
+      "files": {
+        "README.md": "b7e67a3b97d07b7c1736e29ca4b6a339308e752a"
+      }
+    },
+    {
+      "repository": "sandraschi/leanforge-mcp",
+      "revision": "568aafbd4a8f27efa5a4d49f65039cbd5e2754cd",
+      "role": "asynchronous compiler-feedback proof-search service",
+      "files": {
+        "README.md": "65f68349fa60f0feecfaa07193e8507855356b71",
+        "docs/ARCHITECTURE.md": "4729a2199565d62779ff6877dd608fa87af98fee"
+      }
+    },
+    {
+      "repository": "Axiomatic-AI/ax-prover-base-mcp",
+      "revision": "5ade6ba077f7f2e10abcd6a64f124a69fe2bc6ca",
+      "role": "hosted asynchronous compile/prove service",
+      "files": {
+        "README.md": "6206f36e5fbe76e569627b5414e8356607ec6fa1"
+      }
+    },
+    {
+      "repository": "justincasher/lean-explore",
+      "revision": "6b25f8632cc3387cf85f7730375a690a1f1dfb79",
+      "role": "read-only declaration-search MCP boundary case",
+      "files": {
+        "README.md": "ba91509ab68ce642584449e90ce2f73012c6f484"
+      }
+    },
+    {
+      "repository": "drhodes/lean-mcp",
+      "revision": "76d23b4146e24860a90fb0d9e1f5f0a43ff455f1",
+      "role": "native Lean MCP SDK boundary case",
+      "files": {
+        "README.md": "d29105002fdd2fa508baba156ce9294cc6639b54"
+      }
+    }
+  ],
+  "derived_comparison_dimensions": [
+    "proof-state identity",
+    "source-position versus declaration-centric selectors",
+    "mutability",
+    "process/server reuse",
+    "per-project serialization",
+    "restart recovery",
+    "async job persistence",
+    "live prover requirement"
+  ]
+}

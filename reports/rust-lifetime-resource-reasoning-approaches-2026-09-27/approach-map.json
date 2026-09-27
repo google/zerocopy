@@ -1,0 +1,63 @@
+{
+  "schema": "rust-lifetime-resource-approach-map/v1",
+  "observed_at": "2026-09-27",
+  "purpose": "Compact comparison backing the report; not a completeness claim.",
+  "approaches": [
+    {
+      "system": "RustBelt",
+      "borrow_representation": "semantic lifetime/ownership resources in separation logic",
+      "state_return": "recover resources when lifetime/borrow ends",
+      "source_premise": "semantic typing and unsafe-library verification conditions",
+      "unsafe_impl_as_subject": true,
+      "primary_doi": "10.1145/3158154"
+    },
+    {
+      "system": "Prusti",
+      "borrow_representation": "Viper permissions synthesized from Rust type/ownership information",
+      "state_return": "permission recovery; later pledges can state after-expiry facts",
+      "source_premise": "Rust type checker supplies aliasing/framing information",
+      "unsafe_impl_as_subject": false,
+      "primary_doi": "10.1145/3360573"
+    },
+    {
+      "system": "RustHorn",
+      "borrow_representation": "pair of current value and future/prophecy value",
+      "state_return": "resolve final/future value at borrow deadline",
+      "source_premise": "well-borrowed safe Rust subset",
+      "unsafe_impl_as_subject": false,
+      "primary_doi": "10.1007/978-3-030-44914-8_18"
+    },
+    {
+      "system": "Aeneas",
+      "borrow_representation": "value-based loans/borrows in LLBC",
+      "state_return": "generated backward functions return updated borrowed state",
+      "source_premise": "ownership-centric LLBC semantics; original paper excludes unsafe/interior-mutability scope",
+      "unsafe_impl_as_subject": false,
+      "primary_doi": "10.1145/3547647"
+    },
+    {
+      "system": "RustHornBelt",
+      "borrow_representation": "RustHorn-style functional prophecy specification semantically modeled in separation logic",
+      "state_return": "parametric prophecy resolution",
+      "source_premise": "RustBelt-style semantic typing plus verified unsafe-library boundary",
+      "unsafe_impl_as_subject": true,
+      "primary_doi": "10.1145/3519939.3523704"
+    },
+    {
+      "system": "RefinedRust",
+      "borrow_representation": "RustBelt lifetime resources plus borrow-name/refinement machinery",
+      "state_return": "lifetime-resource recovery carries refined final-value information",
+      "source_premise": "foundational model and generated Coq proof obligations",
+      "unsafe_impl_as_subject": true,
+      "primary_doi": "10.1145/3656422"
+    },
+    {
+      "system": "Thrust",
+      "borrow_representation": "dependent refinement type containing current value plus prophecy",
+      "state_return": "prophecy fixed to final current value at release",
+      "source_premise": "soundness conditional on well-borrowedness",
+      "unsafe_impl_as_subject": false,
+      "primary_doi": "10.1145/3729333"
+    }
+  ]
+}

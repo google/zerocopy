@@ -1,0 +1,26 @@
+{
+  "subject": "Anneal Mathlib reachability pruning at google/zerocopy@41f5b37",
+  "algorithm": {
+    "graph_nodes": "Mathlib module names derived from Mathlib .lean paths",
+    "graph_edges": "Mathlib-prefixed imports parsed line-by-line from Mathlib .lean sources",
+    "seed_sources": [
+      "Mathlib-prefixed imports in every non-Mathlib .lean file under project_root and packages_root",
+      "Mathlib-looking module tokens found anywhere in non-Mathlib .trace JSON"
+    ],
+    "closure": "ordinary transitive graph reachability from all seeds",
+    "pruned_source": "Mathlib .lean files whose module names are outside the closure",
+    "pruned_build_artifacts": "matching module-prefix files below package .lake/build/lib/lean and .lake/build/ir",
+    "non_mathlib_policy": "all Lean modules retained"
+  },
+  "safety_shape": {
+    "trace_seed_direction": "intended over-approximation: arbitrary trace text matching Mathlib.* can retain extra modules",
+    "source_seed_direction": "exact for ordinary one-line import directives matched by the script",
+    "known_under_approximation_risks": [
+      "valid imports formatted with comments or whitespace patterns outside the line regex",
+      "trace-only module names whose components are outside [A-Za-z0-9_']",
+      "future/generated consumers not present when the scan runs",
+      "custom Mathlib source layout that breaks module-name-from-path assumptions"
+    ]
+  },
+  "boundary": "This describes dependency closure, not the separate question whether every non-module package file is safe to remove."
+}

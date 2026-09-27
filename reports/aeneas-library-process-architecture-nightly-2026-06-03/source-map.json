@@ -1,0 +1,71 @@
+{
+  "files": [
+    {
+      "blob": "4152c9de6d84484bf501da543553f3e6af324f9a",
+      "path": "src/dune",
+      "role": "public executable/library stanzas and module list"
+    },
+    {
+      "blob": "4656b7396dc213ebfef5c351986e9d89645078cd",
+      "path": "src/dune-project",
+      "role": "project/package identity"
+    },
+    {
+      "blob": "70ea2f7050a98a598b85f982d1e65259c6a66b0a",
+      "path": "src/aeneas.opam",
+      "role": "install package build"
+    },
+    {
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "path": "src/Main.ml",
+      "role": "one-shot CLI lifecycle and library composition"
+    },
+    {
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "path": "src/Translate.ml",
+      "role": "in-memory pure translation and extraction boundary"
+    },
+    {
+      "blob": "dc0ab803c26dafb14caf0da1bcc73e3499716835",
+      "path": "src/PrePasses.ml",
+      "role": "pre-pass boundary callable from library"
+    },
+    {
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "path": "src/Config.ml",
+      "role": "process-global mutable configuration"
+    },
+    {
+      "blob": "c135674b8601786616c6c20ad81ec388bb8cbfea",
+      "path": "src/Errors.ml",
+      "role": "process-global error accumulators"
+    },
+    {
+      "blob": "08f055cf2e87e0164bb3d02dc9f8dde2fc84034c",
+      "path": "src/Parallel.ml",
+      "role": "persistent Domainslib pool"
+    },
+    {
+      "blob": "f331650bd4291d27ba6cee736ce51cf31da9cac1",
+      "path": "README.md",
+      "role": "documented command workflow"
+    }
+  ],
+  "method": {
+    "errors_scan": "all mentions of error_list/unique_errors in exact pinned Errors.ml inspected; no reset helper present",
+    "execution_performed": false,
+    "tree_inventory": "pinned src tree, 114 entries, not truncated"
+  },
+  "native_basis": {
+    "catalog_blob": "5bca2f82ae2cbc99f3bdb0eb8448b6d5eb808105",
+    "catalog_report_count": 105,
+    "google_zerocopy_main": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "google_zerocopy_reference": "b6c1ba9f891840fc95a1de167bc17ebc38f5cf07",
+    "issue_3720_updated_at": "2026-09-27T04:38:05Z"
+  },
+  "subject": {
+    "release": "nightly-2026.06.03",
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+  }
+}

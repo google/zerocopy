@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/pruning",
+    "lake/packages",
+    "lean/imports",
+    "mathlib/reachability",
+    "mathlib/build-artifacts"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Mathlib dependency-closure pruning",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/prune-lake-cache.py"
+      }
+    },
+    {
+      "name": "Lean module-import syntax used to assess pruning completeness",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "component": "Lean.Parser.Module"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

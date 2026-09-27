@@ -100,6 +100,35 @@
         "lean/models"
       ]
     },
+    "aeneas-extrinsic-termination-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas extrinsic termination facilities selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean termination syntax selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/decreases-clauses",
+        "aeneas/lean",
+        "aeneas/termination",
+        "lean/termination",
+        "verification/termination"
+      ]
+    },
     "aeneas-formal-results-literature-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -289,6 +318,27 @@
         "aeneas/generated-files",
         "lean/imports",
         "lean/lake"
+      ]
+    },
+    "aeneas-library-process-architecture-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas selected by Anneal"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/architecture",
+        "aeneas/library",
+        "aeneas/process-model",
+        "aeneas/server",
+        "anneal/interactive"
       ]
     },
     "aeneas-loops-nightly-2026-06-03": {
@@ -1134,6 +1184,27 @@
         "charon/comments"
       ]
     },
+    "charon-library-process-server-0-1-210": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon pinned by Aeneas nightly-2026.06.03"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/architecture",
+        "charon/charon-lib",
+        "charon/process-model",
+        "charon/rustc-driver",
+        "charon/interactive"
+      ]
+    },
     "charon-library-wire-compatibility-0-1-210": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1570,6 +1641,35 @@
         "lake/traces"
       ]
     },
+    "lake-clean-cache-seeded-equivalence-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake clean-build and cache-seeded behavior at Lean v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal cache-seeding pipeline"
+        }
+      ],
+      "topics": [
+        "anneal/cache",
+        "lake",
+        "lake/artifact-cache",
+        "lake/build-equivalence",
+        "lake/build-trace",
+        "lean/module-artifacts",
+        "lean/module-setup"
+      ]
+    },
     "lake-command-environment-reproducibility-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -1712,6 +1812,34 @@
         "lake/build",
         "lake/traces",
         "lake/configuration"
+      ]
+    },
+    "lake-package-config-priming-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake package-configuration cache selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal V1 package-config priming implementation"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/configuration",
+        "lake/config-cache",
+        "lake/cache-priming",
+        "lake/read-only",
+        "anneal/v1"
       ]
     },
     "lake-package-identity-after-vendoring-v4-30-0-rc2": {
@@ -2151,6 +2279,96 @@
         "lean/name-resolution"
       ]
     },
+    "lean-mcp-implementations-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "oOo0oOo/lean-lsp-mcp",
+            "revision": "bb176c58a4f895061561685318e92b8db446f1b5"
+          },
+          "name": "lean-lsp-mcp"
+        },
+        {
+          "identity": {
+            "repository": "RIvance/lean4-mcp",
+            "revision": "b749d9ca766e97020563e9ee72a7f0bbbddd690e"
+          },
+          "name": "lean4-mcp-proxy"
+        },
+        {
+          "identity": {
+            "repository": "r-irbe/lean4-lsp-mcp",
+            "revision": "e7ab346852aad2e1fb54f2aeceefff608122945e"
+          },
+          "name": "lean4-lsp-mcp"
+        },
+        {
+          "identity": {
+            "repository": "jcreinhold/lean-host-mcp",
+            "revision": "248d043e674518ad45f1e64c1c9c16647625ad5d"
+          },
+          "name": "lean-host-mcp"
+        },
+        {
+          "identity": {
+            "repository": "epfl-lara/LeanProbe",
+            "revision": "646cb0ee3d428562b13740649aa7c1689ec0720a"
+          },
+          "name": "LeanProbe"
+        },
+        {
+          "identity": {
+            "repository": "GasStationManager/LeanTool",
+            "revision": "1a4b5ef12ac593202df195d9924981d62608423e"
+          },
+          "name": "LeanTool"
+        },
+        {
+          "identity": {
+            "repository": "padieul/lean-proof-auto-mcp",
+            "revision": "8d829ecf8e25ac7597fd5cc41b043a40aa404ec1"
+          },
+          "name": "lean-proof-auto-mcp"
+        },
+        {
+          "identity": {
+            "repository": "sandraschi/leanforge-mcp",
+            "revision": "568aafbd4a8f27efa5a4d49f65039cbd5e2754cd"
+          },
+          "name": "leanforge-mcp"
+        },
+        {
+          "identity": {
+            "repository": "Axiomatic-AI/ax-prover-base-mcp",
+            "revision": "5ade6ba077f7f2e10abcd6a64f124a69fe2bc6ca"
+          },
+          "name": "Axiomatic Prover MCP"
+        },
+        {
+          "identity": {
+            "repository": "justincasher/lean-explore",
+            "revision": "6b25f8632cc3387cf85f7730375a690a1f1dfb79"
+          },
+          "name": "LeanExplore"
+        },
+        {
+          "identity": {
+            "repository": "drhodes/lean-mcp",
+            "revision": "76d23b4146e24860a90fb0d9e1f5f0a43ff455f1"
+          },
+          "name": "LeanMCP SDK"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mcp",
+        "lean/lsp",
+        "lean/tactic-state",
+        "proof-assistants",
+        "mcp"
+      ]
+    },
     "lean-module-import-semantics-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -2212,6 +2430,62 @@
         "lean/serialization",
         "lean/modules",
         "lean/invalidation"
+      ]
+    },
+    "lean-omega-behavior-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 omega tactic"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/arithmetic",
+        "lean/omega",
+        "lean/proof-automation",
+        "lean/tactics"
+      ]
+    },
+    "lean-package-native-artifacts-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean/Lake native artifact handling selected by Anneal"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean package configuration selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal prepared-package pruning implementation"
+        }
+      ],
+      "topics": [
+        "anneal/pruning",
+        "lake",
+        "lake/artifact-cache",
+        "lake/native-artifacts",
+        "lake/packages",
+        "lean/native-code"
       ]
     },
     "lean-parser-elaborator-source-positions-v4-30-0-rc2": {
@@ -2447,6 +2721,35 @@
         "lake/build-failure"
       ]
     },
+    "mathlib-dependency-closure-pruning-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/prune-lake-cache.py",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal Mathlib dependency-closure pruning"
+        },
+        {
+          "identity": {
+            "component": "Lean.Parser.Module",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean module-import syntax used to assess pruning completeness"
+        }
+      ],
+      "topics": [
+        "anneal/pruning",
+        "lake/packages",
+        "lean/imports",
+        "mathlib/reachability",
+        "mathlib/build-artifacts"
+      ]
+    },
     "mathlib-lake-exe-cache-protocol-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -2475,6 +2778,31 @@
         "lean/artifacts",
         "anneal/offline-builds",
         "anneal/toolchain-bundling"
+      ]
+    },
+    "mcp-proof-assistant-architecture-2026-07-28": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "modelcontextprotocol/modelcontextprotocol",
+            "revision": "5f5440bb26a62e2cf3440b92da5a667efa03b267",
+            "version": "2026-07-28"
+          },
+          "name": "Model Context Protocol core specification"
+        }
+      ],
+      "topics": [
+        "mcp",
+        "mcp/architecture",
+        "mcp/cancellation",
+        "mcp/concurrency",
+        "mcp/lifecycle",
+        "mcp/progress",
+        "mcp/state",
+        "mcp/subscriptions",
+        "mcp/transports",
+        "proof-assistants"
       ]
     },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {
@@ -2730,6 +3058,77 @@
         "rust/dst",
         "rustc/layout",
         "rustc/abi"
+      ]
+    },
+    "rust-lifetime-resource-reasoning-approaches-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "PACMPL 2 (POPL), Article 66",
+            "year": "2018"
+          },
+          "name": "RustBelt: semantic lifetime and ownership resources"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360573",
+            "publication": "PACMPL 3 (OOPSLA), Article 147",
+            "year": "2019"
+          },
+          "name": "Prusti: Rust-type-derived permission reasoning"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-030-44914-8_18",
+            "publication": "ESOP 2020",
+            "year": "2020"
+          },
+          "name": "RustHorn: prophecy-based functionalization of mutable borrows"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647",
+            "publication": "PACMPL 6 (ICFP), Article 116",
+            "year": "2022"
+          },
+          "name": "Aeneas: loan-based functional translation and backward functions"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523704",
+            "publication": "PLDI 2022",
+            "year": "2022"
+          },
+          "name": "RustHornBelt: semantic foundation for prophecy-based functional specifications"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422",
+            "publication": "PACMPL 8 (PLDI), Article 192",
+            "year": "2024"
+          },
+          "name": "RefinedRust: lifetime logic, borrow names, and foundational refined ownership types"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3729333",
+            "publication": "PACMPL 9 (PLDI), Article 230",
+            "year": "2025"
+          },
+          "name": "Thrust: prophecy-based refinement types for Rust"
+        }
+      ],
+      "topics": [
+        "rust/verification",
+        "rust/lifetimes",
+        "rust/resources",
+        "rust/borrowing",
+        "rust/prophecies",
+        "rust/functionalization",
+        "separation-logic",
+        "permissions"
       ]
     },
     "rust-lifetimes-charon-aeneas-nightly-2026-05-31": {
@@ -3059,6 +3458,35 @@
         "rust/aliasing",
         "rust/library-invariants",
         "rustc/validity"
+      ]
+    },
+    "rustbelt-unsafe-abstraction-model-popl-2018": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3158154",
+            "publication": "Proc. ACM Program. Lang. 2, POPL, Article 66",
+            "year": "2018"
+          },
+          "name": "RustBelt POPL 2018 unsafe-abstraction soundness model"
+        },
+        {
+          "identity": {
+            "doi": "10.5281/zenodo.1115560",
+            "published": "2017-12-13",
+            "version": "v1"
+          },
+          "name": "RustBelt POPL 2018 accompanying artifact record"
+        }
+      ],
+      "topics": [
+        "rustbelt",
+        "rust/unsafe",
+        "rust/unsafe-abstractions",
+        "rust/library-soundness",
+        "semantics/logical-relations",
+        "separation-logic"
       ]
     },
     "rustc-mir-before-charon-nightly-2026-05-31": {

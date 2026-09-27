@@ -1,0 +1,100 @@
+{
+  "candidate_work_record_id": "1a7b5e71-9232-4054-9211-e0075c8f4c72",
+  "coordination": {
+    "claim_attempt_result": "GitHub Contents-API exact-SHA state.json replacement was definitely rejected by OpenAI safety checks before dispatch.",
+    "claim_generation_attempted": "gen-73725942-626c-4df0-9771-00d9fc7d1653",
+    "claim_key_attempted": "substantive-lean-omega-v4-30-0-rc2",
+    "coordinator_revision": 22,
+    "coordinator_state_blob": "035b16d64b77dc49b5bb5f3d66b7bbbae3da1fe1",
+    "mode": "candidate-only",
+    "ownership_asserted": false,
+    "post_attempt_state": {
+      "blob_sha": "035b16d64b77dc49b5bb5f3d66b7bbbae3da1fe1",
+      "claim_present": false,
+      "revision": 22
+    },
+    "second_coordinator_write_attempted": false
+  },
+  "instance_id": "anneal-reference-reports-37654172",
+  "native_basis": {
+    "catalog_has_omega_package": false,
+    "catalog_report_count": 105,
+    "google_zerocopy_main_head": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "google_zerocopy_reference_head": "b6c1ba9f891840fc95a1de167bc17ebc38f5cf07",
+    "issue_3720_omega_checkbox_unchecked": true,
+    "issue_3720_state": "open",
+    "issue_3720_updated_at": "2026-09-27T04:38:05Z",
+    "reference_agents_blob": "6af37c4498bcd3d47e1b0bdf426b44ee78cf09aa",
+    "reference_catalog_blob": "5bca2f82ae2cbc99f3bdb0eb8448b6d5eb808105",
+    "reference_format_blob": "bad20c2ff90dcec593926d196ed9b1fcda53cb75",
+    "reference_validator_blob": "79f60d511b47a40b2655bca854aec9a5633620e0",
+    "target_package": "reports/lean-omega-behavior-v4-30-0-rc2",
+    "target_package_absent": true
+  },
+  "profile_id": "0e07d422-93ed-4900-8e8b-3361a74ce96b",
+  "report_package": {
+    "files": [
+      {
+        "path": "REPORT.json",
+        "sha256": "19b397bb297118928fd5f59577cb4fe0437c5d5c0652e82cb7f46b6ddeac854d",
+        "size": 391
+      },
+      {
+        "path": "REPORT.md",
+        "sha256": "b676545de3e8780f6a9e7f3b88e12ea4a39c6fdb068cae99fa925ba49089f000",
+        "size": 20417
+      }
+    ],
+    "format_precheck": "Passed current tools/reference.py package-level metadata rules mirrored locally, UTF-8 readback, package-name rule, and required report-section review.",
+    "full_candidate_validation_reason": "The complete current reference candidate tree was not materialized on this execution surface. Publication still requires rebuilding from the exact then-current reference tip, regenerating CATALOG.json, and running that candidate's own tools/reference.py check.",
+    "full_candidate_validator_executed": false,
+    "manifest_digest_definition": "SHA-256 of UTF-8 canonical JSON manifest with sorted keys and compact separators, followed by newline.",
+    "package": "reports/lean-omega-behavior-v4-30-0-rc2",
+    "package_digest": "sha256:cbebb2f1106a085a548d6d6a08960bfa245c7d4be5d55295e23622c37d26559b",
+    "publication_allowed_from_this_record": false
+  },
+  "research_summary": {
+    "core_conclusion": "Lean v4.30.0-rc2 omega is a proof-producing Nat/Int linear-arithmetic contradiction solver with source-level support for selected casts, divisibility, constant division/remainder, delayed case splits, and opaque nonlinear atoms. It is deliberately incomplete because dark and grey shadows are not implemented.",
+    "duplicate_assessment": "Current 105-report catalog contains no omega package and issue #3720 leaves `omega` behavior unchecked.",
+    "material_limitations": "No fresh Lean execution, no performance measurements, no full-tree candidate validation, and no independent axiom-dependency audit were performed."
+  },
+  "run_id": "4b83fd5a-2d79-4a4d-9702-0df3aca5a509",
+  "schema": "anneal-reference-candidate-revalidation/v1",
+  "source_basis": {
+    "files": [
+      {
+        "blob": "708d3657f2995a06b489e781f8739c80c7b7b8b1",
+        "path": "src/Lean/Elab/Tactic/Omega.lean"
+      },
+      {
+        "blob": "1c807cc35b4d67b3912df0945431e5fcfa4c8274",
+        "path": "src/Lean/Elab/Tactic/Omega/Frontend.lean"
+      },
+      {
+        "blob": "74af59dfb59bc31e443ea60498d2ce7fe9c52c21",
+        "path": "src/Lean/Elab/Tactic/Omega/OmegaM.lean"
+      },
+      {
+        "blob": "68b9bfd0ef782c0ca264d6921b139f63ead97eeb",
+        "path": "src/Lean/Elab/Tactic/Omega/Core.lean"
+      },
+      {
+        "blob": "8a65ffcc70b918db1c7004b346df6de1dfff0334",
+        "path": "src/Init/Meta/Defs.lean"
+      },
+      {
+        "blob": "34366138005fb7460f0c6823c1393065b3128b35",
+        "path": "src/Init/Tactics.lean"
+      }
+    ],
+    "fresh_execution_performed": false,
+    "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "lean_version": "v4.30.0-rc2",
+    "writing_skill": {
+      "blob": "3f4c8a0a2e7b0fdcadf1f4f332e1a979b265a08d",
+      "path": "williams-style/SKILL.md",
+      "repository": "joshlf/skills"
+    }
+  },
+  "worker_id": "w01"
+}

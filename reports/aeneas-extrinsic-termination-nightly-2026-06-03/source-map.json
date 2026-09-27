@@ -1,0 +1,100 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "release": "nightly-2026.06.03"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "version": "v4.30.0-rc2"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "role": "source",
+      "focus": "CLI options, incompatibilities, Lean fuel rejection, mutual recursion restriction"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "role": "source",
+      "focus": "decreases/fuel configuration and user-supplied proof boundary"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "src/Translate.ml",
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "role": "source",
+      "focus": "recursive/loop selection, template/file layout, extraction configuration"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "src/extract/Extract.ml",
+      "blob": "52754e4fdb25b50fce63abe2d2184751d69632e8",
+      "role": "source",
+      "focus": "Lean templates and emitted termination_by/decreasing_by clauses"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "src/extract/ExtractBase.ml",
+      "blob": "4fc8a3f35643ba66555f0889790d50993feef1b9",
+      "role": "source",
+      "focus": "termination helper naming and partial_fixpoint post-qualifier"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "blob": "018c456bcab5374de0b09b17eda0df1a48e2288b",
+      "role": "source",
+      "focus": "spec/divergence boundary and well-founded loop specification lemmas"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "documentation/aeneas-overview.md",
+      "blob": "439076012c1ba93c7ec1bf25aca42e0f1ec14756",
+      "role": "documentation",
+      "focus": "recursive-spec and loop termination proof workflow"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "documentation/proof-strategies.md",
+      "blob": "2b10ed04a1594d6b8a95a80c742af10885974143",
+      "role": "documentation",
+      "focus": "termination_by/decreasing_by and loop.spec proof patterns"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "documentation/tips-and-tricks.md",
+      "blob": "c5d891ed25f689f2fe42578efdedc428bdecfe5e",
+      "role": "documentation",
+      "focus": "loop proof-mode guidance"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "path": "tests/README.md",
+      "blob": "5aa96fab26146514d0ecb2e26fcc40a5a45c94d9",
+      "role": "documentation",
+      "focus": "test-runner decreases-clause configuration examples"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/Lean/Parser/Term.lean",
+      "blob": "16b73a52ad5c2e6819a9d009012a5e2d75f30559",
+      "role": "source/documentation",
+      "focus": "termination_by, partial_fixpoint, decreasing_by, and Termination.suffix grammar"
+    }
+  ],
+  "tree_evidence": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "observation": "Checked-in decreases-clause artifacts exist for F*; no checked-in Lean Clauses/decreases-clause artifact was present in the exact recursive tree listing."
+  },
+  "execution_evidence": "none; exact-pin generation/elaboration probe remains required for runtime diagnostic and operational usability"
+}

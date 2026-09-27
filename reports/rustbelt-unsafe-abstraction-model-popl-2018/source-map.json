@@ -1,0 +1,61 @@
+{
+  "schema": "anneal-reference-candidate-source-map/v1",
+  "subject": "RustBelt unsafe-abstraction model and safe-client composition",
+  "sources": [
+    {
+      "id": "paper",
+      "kind": "published-paper",
+      "title": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "doi": "10.1145/3158154",
+      "url": "https://plv.mpi-sws.org/rustbelt/popl18/paper.pdf",
+      "evidence_role": "source",
+      "locators": {
+        "abstract": "article p. 1",
+        "open_world_motivation": "§1.1, article pp. 2–3",
+        "three_part_soundness": "§1.2, article pp. 3–4",
+        "ownership_sharing_predicates": "§1.2 and §4",
+        "interior_mutability_library_verification": "§6, article pp. 26–28",
+        "fundamental_and_adequacy_theorems": "§7, Theorems 7.1 and 7.2, article p. 29",
+        "limitations": "§9, article p. 31"
+      }
+    },
+    {
+      "id": "appendix",
+      "kind": "technical-appendix",
+      "title": "RustBelt: Securing the Foundations of the Rust Programming Language – Technical appendix",
+      "date": "2017-11-09",
+      "url": "https://plv.mpi-sws.org/rustbelt/popl18/appendix.pdf",
+      "evidence_role": "source",
+      "locators": {
+        "syntax_and_operational_semantics": "§1",
+        "lifetime_logic": "§4",
+        "lambda_rust_model": "§5"
+      }
+    },
+    {
+      "id": "project-page",
+      "kind": "project-page",
+      "url": "https://plv.mpi-sws.org/rustbelt/popl18/",
+      "evidence_role": "documentation",
+      "facts_used": [
+        "identifies the POPL 2018 paper",
+        "links the technical appendix, Coq formalization, and preserved artifact"
+      ]
+    },
+    {
+      "id": "zenodo-artifact",
+      "kind": "artifact-record",
+      "doi": "10.5281/zenodo.1115560",
+      "url": "https://zenodo.org/records/1115560",
+      "version": "v1",
+      "published": "2017-12-13",
+      "evidence_role": "documentation",
+      "facts_used": [
+        "archive contains the LambdaRust repository popl18 tag",
+        "archive provides VM and source-tarball forms",
+        "recorded archive MD5 c4b564643cd7425179185ad39a044898"
+      ],
+      "not_done": "archive was not downloaded, independently hashed, or executed"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "version": "v4.30.0-rc2"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "release": "nightly-2026.06.03"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+    }
+  ],
+  "sources": [
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Build/Facets.lean","blob":"0fcff78fdc4274994dc64229097ae4425f1361dd","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Build/ModuleArtifacts.lean","blob":"9863290328250c33d9933b1569387d96ec244da8","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Build/Module.lean","blob":"21c5f343112a1690390188642a05d6092432ab84","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Build/Library.lean","blob":"6cb600d16b99f31d29e13dccc6cdfccef6a8b23a","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Build/Common.lean","blob":"c283fda65ba4d6e3138a0b4ab8252885bf78a014","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/Defaults.lean","blob":"03033b5a032e450540ad99cc7c3be73544ad7416","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/PackageConfig.lean","blob":"27a50fb2a713a6bb590260fd4a82d135c2b84952","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/Package.lean","blob":"2c73b6a471d6face8084c8b1957f5b802cfa90b7","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/LeanLibConfig.lean","blob":"3cb6ba173b7e213bda5fedd7c390822d3f8fc8b3","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/LeanLib.lean","blob":"077efb6c244fd53bab5dead6c850d40161c96e7f","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/Module.lean","blob":"f8b938e16fe53ada616364033b8d8353baa733ee","role":"source"},
+    {"repository":"leanprover/lean4","path":"src/lake/Lake/Config/Workspace.lean","blob":"b9c01f130240ae7c65ee298778351ddbe312374e","role":"source"},
+    {"repository":"AeneasVerif/aeneas","path":"backends/lean/lakefile.lean","blob":"c32062866e2f88d2eb768b904745e7104edddb0d","role":"source"},
+    {"repository":"google/zerocopy","path":"anneal/prune-lake-cache.py","blob":"b0eb8eaa5ecefad9766a155994968712826ed996","role":"source"},
+    {"repository":"google/zerocopy","path":"anneal/flake.nix","blob":"433fcf5c64da4f51b9fac471f1faf45c1f730cba","role":"source"}
+  ],
+  "execution": {
+    "performed": false,
+    "missing_discriminator": "Archive inventory before/after pruning under actual supported platform/build modes, including CI-sensitive AeneasMeta precompilation."
+  }
+}
