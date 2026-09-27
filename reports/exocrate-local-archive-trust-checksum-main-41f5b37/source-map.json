@@ -1,0 +1,99 @@
+{
+  "observed_at": "2026-09-27",
+  "repository": "google/zerocopy",
+  "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "sources": [
+    {
+      "path": "exocrate/src/lib.rs",
+      "blob": "88cc0d5dd91082070b6ef475a32bf42c25f52115",
+      "regions": [
+        {
+          "lines": "164-240",
+          "symbols": [
+            "Source",
+            "Config::resolve_installation_dir_or_install",
+            "Config::open_source"
+          ],
+          "relevance": "Source::Local carries PathBuf only; existing target fast path precedes source opening; local open returns File plus None expected digest"
+        },
+        {
+          "lines": "392-441",
+          "symbols": [
+            "install"
+          ],
+          "relevance": "Some(digest) hashes; None decodes/unpacks directly without SHA-256 comparison or explicit trailing-input drain"
+        },
+        {
+          "lines": "548-583",
+          "symbols": [
+            "config!"
+          ],
+          "relevance": "version slug hashes path strings, versioned-file bytes, OS, ARCH"
+        },
+        {
+          "lines": "716-746",
+          "symbols": [
+            "test_install_without_hash_validation",
+            "test_install_invalid_archive"
+          ],
+          "relevance": "checked-in test contracts for no-hash install and malformed-input failure"
+        },
+        {
+          "lines": "872-902",
+          "symbols": [
+            "test_config_resolve_installation_dir_or_install_local"
+          ],
+          "relevance": "later nonexistent local path is not accessed once target exists"
+        }
+      ]
+    },
+    {
+      "path": "exocrate/src/sync.rs",
+      "blob": "85b6e203522e963af13d88ab4d3e7684ebb29252",
+      "symbols": [
+        "ManagedDirName::check_exists_or_create"
+      ],
+      "relevance": "under-lock target-exists recheck, staging population, and rename publication boundary"
+    },
+    {
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "regions": [
+        {
+          "lines": "28-67",
+          "symbols": [
+            "SetupArgs",
+            "CONFIG",
+            "REMOTE",
+            "setup_installation_dir"
+          ],
+          "relevance": "CLI local override and common Exocrate config/source selection"
+        }
+      ]
+    },
+    {
+      "path": "anneal/src/setup.rs",
+      "blob": "9e17911f4d1e7695cc63fe9f8b2b20b2f0322f00",
+      "symbols": [
+        "CONFIG",
+        "run_setup"
+      ],
+      "relevance": "corroborating current-main helper with same local/remote selection and versioned inputs"
+    },
+    {
+      "path": "anneal/Cargo.toml",
+      "blob": "9edee13427fd5e3699abd3709cc9f33d7652873e",
+      "relevance": "versioned input and remote metadata location"
+    },
+    {
+      "path": "anneal/Cargo.lock",
+      "blob": "eeaa3f7119369d79b735d8c4836fc08bcc7f7e6d",
+      "relevance": "second versioned input"
+    }
+  ],
+  "execution": {
+    "fresh_execution_performed": false,
+    "checked_in_tests_rerun": false,
+    "evidence_role": "source plus checked-in test contract; derived conclusions are identified in REPORT.md"
+  }
+}

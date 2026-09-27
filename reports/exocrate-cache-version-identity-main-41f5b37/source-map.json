@@ -1,0 +1,80 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "git_blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "roles": [
+        "Location selection",
+        "rel_dir_path",
+        "versioned_files",
+        "remote/local source selection"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.toml",
+      "git_blob": "9edee13427fd5e3699abd3709cc9f33d7652873e",
+      "roles": [
+        "version-slug input",
+        "remote archive metadata"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.lock",
+      "git_blob": "eeaa3f7119369d79b735d8c4836fc08bcc7f7e6d",
+      "roles": [
+        "version-slug input",
+        "dirs 6.0.0 and dirs-sys 0.5.0 resolution"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/lib.rs",
+      "git_blob": "88cc0d5dd91082070b6ef475a32bf42c25f52115",
+      "roles": [
+        "Config::dir_path",
+        "Location semantics",
+        "config! version slug construction",
+        "path-component validation",
+        "documented cleanup/versioning limits"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/sync.rs",
+      "git_blob": "85b6e203522e963af13d88ab4d3e7684ebb29252",
+      "roles": [
+        "parent directory creation",
+        "managed directory publication"
+      ]
+    },
+    {
+      "crate": "dirs",
+      "version": "6.0.0",
+      "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e",
+      "path": "src/lin.rs",
+      "url": "https://docs.rs/crate/dirs/6.0.0/source/src/lin.rs",
+      "roles": [
+        "Linux cache_dir XDG/fallback behavior"
+      ]
+    },
+    {
+      "crate": "dirs",
+      "version": "6.0.0",
+      "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e",
+      "path": "src/mac.rs",
+      "url": "https://docs.rs/crate/dirs/6.0.0/source/src/mac.rs",
+      "roles": [
+        "macOS cache_dir behavior"
+      ]
+    }
+  ]
+}

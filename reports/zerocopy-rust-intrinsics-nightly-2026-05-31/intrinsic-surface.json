@@ -1,0 +1,107 @@
+{
+  "schema": "anneal-reference/zerocopy-rust-intrinsic-surface/v1",
+  "zerocopy_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "rust_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rust_toolchain": "nightly-2026-05-31",
+  "scope": "Source-level potential reachability through zerocopy production source. This is not a monomorphized MIR/LLBC census.",
+  "rows": [
+    {
+      "surface": "core::mem::transmute",
+      "intrinsics": ["transmute"],
+      "zerocopy_examples": ["zerocopy/src/macros.rs", "zerocopy/src/wrappers.rs", "zerocopy/src/util/mod.rs", "zerocopy/src/util/macro_util.rs"],
+      "conditions": ["ordinary source", "some call sites feature-specific"],
+      "notes": "try_transmute! also uses transmute in a dead branch for compile-time size checking"
+    },
+    {
+      "surface": "core::hint::unreachable_unchecked",
+      "intrinsics": ["unreachable"],
+      "zerocopy_examples": ["zerocopy/src/error.rs", "zerocopy/src/lib.rs", "zerocopy/src/pointer/mod.rs", "zerocopy/src/util/mod.rs"],
+      "conditions": ["ordinary source", "old-toolchain NumExt fallback for some sites"]
+    },
+    {
+      "surface": "core::ptr::copy_nonoverlapping",
+      "intrinsics": ["copy_nonoverlapping"],
+      "zerocopy_examples": ["zerocopy/src/lib.rs", "zerocopy/src/util/mod.rs"],
+      "conditions": ["ordinary source"]
+    },
+    {
+      "surface": "raw-pointer copy_to / core::ptr::copy",
+      "intrinsics": ["copy"],
+      "zerocopy_examples": ["zerocopy/src/lib.rs"],
+      "conditions": ["alloc"]
+    },
+    {
+      "surface": "raw-pointer write_bytes",
+      "intrinsics": ["write_bytes"],
+      "zerocopy_examples": ["zerocopy/src/lib.rs"],
+      "conditions": ["alloc"]
+    },
+    {
+      "surface": "core::ptr::read",
+      "intrinsics": ["read_via_copy"],
+      "zerocopy_examples": ["zerocopy/src/ref.rs", "zerocopy/src/wrappers.rs"],
+      "conditions": ["ordinary source"]
+    },
+    {
+      "surface": "core::ptr::write",
+      "intrinsics": ["write_via_move"],
+      "zerocopy_examples": ["zerocopy/src/ref.rs", "zerocopy/src/wrappers.rs"],
+      "conditions": ["ordinary source"]
+    },
+    {
+      "surface": "core::ptr::read_unaligned",
+      "intrinsics": ["copy_nonoverlapping"],
+      "zerocopy_examples": ["zerocopy/src/util/macro_util.rs"],
+      "conditions": ["ordinary source"],
+      "notes": "At this Rust revision read_unaligned has no distinct compiler intrinsic; core implements it through byte copy into MaybeUninit"
+    },
+    {
+      "surface": "raw-pointer add / offset",
+      "intrinsics": ["offset"],
+      "zerocopy_examples": ["zerocopy/src/byte_slice.rs", "zerocopy/src/pointer/inner.rs", "zerocopy/src/lib.rs"],
+      "conditions": ["ordinary source", "alloc adds sites"]
+    },
+    {
+      "surface": "raw-pointer offset_from / byte_offset_from",
+      "intrinsics": ["ptr_offset_from"],
+      "zerocopy_examples": ["zerocopy/src/util/macro_util.rs"],
+      "conditions": ["ordinary source"]
+    },
+    {
+      "surface": "usize::unchecked_add / unchecked_sub / unchecked_mul",
+      "intrinsics": ["unchecked_add", "unchecked_sub", "unchecked_mul"],
+      "zerocopy_examples": ["zerocopy/src/layout.rs", "zerocopy/src/pointer/inner.rs", "zerocopy/src/ref.rs", "zerocopy/src/util/mod.rs", "zerocopy/src/byte_slice.rs"],
+      "conditions": ["pinned nightly uses inherent methods", "older supported compilers may select local NumExt polyfill"]
+    },
+    {
+      "surface": "size_of / align_of and raw dynamic size/alignment queries",
+      "intrinsics": ["size_of", "align_of", "size_of_val", "align_of_val"],
+      "zerocopy_examples": ["zerocopy/src/layout.rs", "zerocopy/src/pointer/ptr.rs", "zerocopy/src/util/macro_util.rs", "zerocopy/src/util/mod.rs"],
+      "conditions": ["ordinary source for static layout", "some raw dynamic calls cfg- or test-specific"]
+    },
+    {
+      "surface": "raw-pointer metadata extraction/assembly",
+      "intrinsics": ["ptr_metadata", "aggregate_raw_ptr"],
+      "zerocopy_examples": ["zerocopy/src/pointer/inner.rs", "zerocopy/src/pointer/mod.rs", "zerocopy/src/util/macro_util.rs", "zerocopy/src/lib.rs"],
+      "conditions": ["ordinary source"],
+      "notes": "Construction being safe does not establish dereferenceability"
+    }
+  ],
+  "false_friends": [
+    {
+      "zerocopy_symbol": "crate::util::transmute_unchecked",
+      "compiler_intrinsic": false,
+      "implementation": "repr(C) union plus ManuallyDrop"
+    }
+  ],
+  "negative_evidence": {
+    "direct_core_intrinsics_import_found": false,
+    "direct_std_intrinsics_import_found_in_zerocopy_src": false,
+    "rust_intrinsic_abi_found_in_zerocopy_src": false
+  },
+  "limitations": [
+    "No compiled MIR/LLBC census was run.",
+    "Transitive dependencies and compiler-synthesized operations are outside this source-level inventory.",
+    "Feature/cfg reachability must be applied for an exact build."
+  ]
+}

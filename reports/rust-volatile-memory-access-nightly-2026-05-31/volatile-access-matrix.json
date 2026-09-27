@@ -1,0 +1,58 @@
+{
+  "schema": "anneal-reference/rust-volatile-access-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "toolchain-date": "nightly-2026-05-31"
+  },
+  "cases": [
+    {
+      "case": "inside-rust-allocation/read",
+      "provenance": "ordinary Rust read provenance/validity required",
+      "alignment": "align_of::<T>() required, including ZST",
+      "value": "must produce properly initialized valid T",
+      "atomicity": "non-atomic",
+      "ownership": "bitwise copy; non-Copy duplicate-use hazard",
+      "volatile_extra": "externally observable; not elided/reordered across other externally observable events"
+    },
+    {
+      "case": "inside-rust-allocation/write",
+      "provenance": "ordinary Rust write provenance/validity required",
+      "alignment": "align_of::<T>() required, including ZST",
+      "value": "source T moved into destination; old destination not dropped",
+      "atomicity": "non-atomic",
+      "ownership": "overwritten resources can leak",
+      "volatile_extra": "externally observable; not elided/reordered across other externally observable events"
+    },
+    {
+      "case": "outside-rust-allocation/read",
+      "provenance": "ordinary Rust allocation provenance not required; without_provenance permitted",
+      "alignment": "align_of::<T>() required, including ZST",
+      "value": "must produce properly initialized valid T",
+      "atomicity": "non-atomic",
+      "hardware_conditions": [
+        "access defined by target hardware",
+        "must not trap",
+        "side effects must not modify Rust-allocated memory"
+      ],
+      "splitting": "may split into multiple hardware loads; unspecified and unstable"
+    },
+    {
+      "case": "outside-rust-allocation/write",
+      "provenance": "ordinary Rust allocation provenance not required; without_provenance permitted",
+      "alignment": "align_of::<T>() required, including ZST",
+      "atomicity": "non-atomic",
+      "hardware_conditions": [
+        "access defined by target hardware",
+        "must not trap",
+        "side effects must not modify Rust-allocated memory"
+      ],
+      "splitting": "may split into multiple hardware stores; unspecified and unstable"
+    }
+  ],
+  "global_boundaries": [
+    "volatile is not an inter-thread synchronization primitive",
+    "ZST volatile operations are no-ops and may be ignored but still require alignment",
+    "one Rust volatile operation does not guarantee one hardware transaction for arbitrary T"
+  ]
+}

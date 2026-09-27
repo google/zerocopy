@@ -1,0 +1,63 @@
+{
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/lib.rs",
+      "blob": "88cc0d5dd91082070b6ef475a32bf42c25f52115",
+      "symbols": [
+        "RemoteArchive",
+        "Source",
+        "Config::resolve_installation_dir_or_install",
+        "Config::open_source",
+        "install",
+        "parse_remote_archive!",
+        "config!",
+        "macro_util::decode_hex",
+        "tests::test_install_new",
+        "tests::test_install_already_exists",
+        "tests::test_install_hash_mismatch",
+        "tests::test_install_trailing_garbage_hash_mismatch"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "symbols": [
+        "CONFIG",
+        "REMOTE",
+        "setup_installation_dir"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.toml",
+      "blob": "9edee13427fd5e3699abd3709cc9f33d7652873e",
+      "symbols": ["package.metadata.exocrate.*"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/sync.rs",
+      "blob": "85b6e203522e963af13d88ab4d3e7684ebb29252",
+      "symbols": ["ManagedDirName::check_exists_or_create"],
+      "role": "bounds when a successfully validated population is published and when an existing target bypasses population"
+    }
+  ],
+  "related_current_reference_candidates": [
+    {
+      "work_record": "227d3133-8c8e-4758-ab48-523e283b6576",
+      "subject": "Archive extraction security — including rejected-archive advisory",
+      "relationship": "separate report owns the security consequences of performing extraction before checksum acceptance"
+    },
+    {
+      "work_record": "2c286986-a324-4de7-9cbb-292ff4278405",
+      "subject": "Atomic staging/rename behavior",
+      "relationship": "separate report owns publication/concurrency details around a successful population"
+    }
+  ]
+}

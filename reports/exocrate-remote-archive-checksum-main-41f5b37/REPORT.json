@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/toolchain",
+    "archive/checksum",
+    "archive/integrity",
+    "exocrate/install",
+    "exocrate/remote"
+  ],
+  "subjects": [
+    {
+      "name": "Exocrate remote archive checksum path selected by Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src/lib.rs"
+      }
+    },
+    {
+      "name": "Anneal v2 remote archive metadata and setup wiring",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

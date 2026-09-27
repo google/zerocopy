@@ -1,0 +1,117 @@
+{
+  "schema": "anneal-reference/rust-panic-primitives-matrix/v1",
+  "subject_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "rows": [
+    {
+      "primitive": "panic!",
+      "normal_condition": "none",
+      "failure_condition": "invoked",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy determines unwind vs abort"
+    },
+    {
+      "primitive": "assert!",
+      "normal_condition": "condition true",
+      "failure_condition": "condition false",
+      "outcome": "panic",
+      "configuration": "always-active ordinary assertion"
+    },
+    {
+      "primitive": "assert_eq!",
+      "normal_condition": "left == right",
+      "failure_condition": "left != right",
+      "outcome": "panic",
+      "configuration": "always-active ordinary assertion"
+    },
+    {
+      "primitive": "assert_ne!",
+      "normal_condition": "left != right",
+      "failure_condition": "left == right",
+      "outcome": "panic",
+      "configuration": "always-active ordinary assertion"
+    },
+    {
+      "primitive": "debug_assert!",
+      "normal_condition": "disabled or condition true",
+      "failure_condition": "enabled and condition false",
+      "outcome": "panic only when enabled",
+      "configuration": "cfg(debug_assertions)"
+    },
+    {
+      "primitive": "Option::unwrap",
+      "normal_condition": "Some",
+      "failure_condition": "None",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "Option::expect",
+      "normal_condition": "Some",
+      "failure_condition": "None",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "Option::unwrap_unchecked",
+      "normal_condition": "Some",
+      "failure_condition": "None",
+      "outcome": "undefined behavior",
+      "configuration": "unsafe caller obligation"
+    },
+    {
+      "primitive": "Result::unwrap",
+      "normal_condition": "Ok",
+      "failure_condition": "Err",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "Result::expect",
+      "normal_condition": "Ok",
+      "failure_condition": "Err",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "Result::unwrap_unchecked",
+      "normal_condition": "Ok",
+      "failure_condition": "Err",
+      "outcome": "undefined behavior",
+      "configuration": "unsafe caller obligation"
+    },
+    {
+      "primitive": "Result::unwrap_err_unchecked",
+      "normal_condition": "Err",
+      "failure_condition": "Ok",
+      "outcome": "undefined behavior",
+      "configuration": "unsafe caller obligation"
+    },
+    {
+      "primitive": "unreachable!",
+      "normal_condition": "not reached",
+      "failure_condition": "reached",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "todo!",
+      "normal_condition": "none",
+      "failure_condition": "invoked",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    },
+    {
+      "primitive": "unimplemented!",
+      "normal_condition": "none",
+      "failure_condition": "invoked",
+      "outcome": "panic",
+      "configuration": "panic handler/strategy"
+    }
+  ],
+  "notes": [
+    "Panic is distinct from undefined behavior.",
+    "The ! return type alone does not classify the non-returning outcome.",
+    "Custom assert! formatting arguments are evaluated only on assertion failure.",
+    "debug_assert! remains type-checked even when its runtime check is disabled."
+  ]
+}

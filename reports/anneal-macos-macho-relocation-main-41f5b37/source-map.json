@@ -1,0 +1,106 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "regions": [
+        "system -> Rust/Lean/Aeneas platform mappings",
+        "fetchToolchainAsset",
+        "packages.omnibus-tar",
+        "packages.omnibus-archive-layout-check"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/setup.rs",
+      "blob": "9e17911f4d1e7695cc63fe9f8b2b20b2f0322f00",
+      "regions": [
+        "Toolchain::command",
+        "rust_library_path_env_var"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "regions": [
+        "run_lake_archive_command"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/charon.rs",
+      "blob": "7e33bda392770d04397f7172296d9a7f25c6e180",
+      "regions": [
+        "Charon command environment setup"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "regions": [
+        "Lean/Aeneas command environment setup"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "flake.nix",
+      "blob": "05e71549416ac622d6f12edc1fc7c74e338949ba",
+      "regions": [
+        "mk-aeneas-release"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": ".github/workflows/release.yml",
+      "blob": "e248e9fdbecb3809f54ef58456db3faee448175f",
+      "regions": [
+        "macOS release matrix",
+        "Package",
+        "Re-package Tarball",
+        "Smoke Test"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "flake.nix",
+      "blob": "844a2ca996e86acb053bbecd52ff251134341da8",
+      "regions": [
+        "charon-portable"
+      ]
+    },
+    {
+      "url": "https://developer.apple.com/forums/thread/736719",
+      "title": "Dynamic Library Identification",
+      "publisher": "Apple Developer Technical Support",
+      "role": "documentation",
+      "observed_at": "2026-09-27"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/documentation/DeveloperTools/Conceptual/DynamicLibraries/100-Articles/RunpathDependentLibraries.html",
+      "title": "Run-Path Dependent Libraries",
+      "publisher": "Apple",
+      "role": "documentation",
+      "observed_at": "2026-09-27"
+    },
+    {
+      "url": "https://developer.apple.com/library/archive/technotes/tn2206/",
+      "title": "Technical Note TN2206: macOS Code Signing In Depth",
+      "publisher": "Apple",
+      "role": "documentation",
+      "observed_at": "2026-09-27"
+    }
+  ]
+}

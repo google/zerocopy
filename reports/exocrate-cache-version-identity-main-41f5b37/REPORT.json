@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/toolchain",
+    "exocrate",
+    "exocrate/cache",
+    "exocrate/versioning",
+    "xdg/cache"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal Exocrate configuration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/src/main.rs"
+      }
+    },
+    {
+      "name": "Exocrate installation path and versioning implementation used by Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src"
+      }
+    },
+    {
+      "name": "dirs cache-directory dependency resolved by Anneal",
+      "identity": {
+        "crate": "dirs",
+        "version": "6.0.0",
+        "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

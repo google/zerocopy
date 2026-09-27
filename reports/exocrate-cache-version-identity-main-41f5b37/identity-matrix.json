@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/exocrate-cache-version-identity/v1",
+  "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "version_slug_algorithm": {
+    "hash": "SHA-256",
+    "ordered_inputs": [
+      {
+        "kind": "literal-path-bytes",
+        "value": "../Cargo.toml"
+      },
+      {
+        "kind": "file-bytes",
+        "path": "anneal/Cargo.toml",
+        "git_blob": "9edee13427fd5e3699abd3709cc9f33d7652873e",
+        "sha256": "8e28a4ff9338d09e4824a1d2dda6632d264f1dbdc72bc3099274aa1aacc7322c"
+      },
+      {
+        "kind": "literal-path-bytes",
+        "value": "../Cargo.lock"
+      },
+      {
+        "kind": "file-bytes",
+        "path": "anneal/Cargo.lock",
+        "git_blob": "eeaa3f7119369d79b735d8c4836fc08bcc7f7e6d",
+        "sha256": "d12706433e5b9904ed3c7246b493cfd1b0c6527885fa1c3b034bb979893f0702"
+      },
+      {
+        "kind": "compile-time-os"
+      },
+      {
+        "kind": "compile-time-arch"
+      }
+    ],
+    "encoding": "lowercase hexadecimal SHA-256 digest"
+  },
+  "supported_anneal_platform_slugs": {
+    "linux/x86_64": "095860c3dfb234bd94737e78858b63e4884c2b3b46286c20f8a47ff0867467f3",
+    "linux/aarch64": "022cd27a2ab9e20a836f7e2958cb59c115b5e9cb1bd299b8461bf3097fefb08f",
+    "macos/x86_64": "b2f3efc6cd1e5ca6524feed124f741bbf4ce70e477f1b37594cef5e82ebf356c",
+    "macos/aarch64": "912e3f6c7ec7fe999c8032b67c71820d4c0246a684a68c30df13dd4fc40e9514"
+  },
+  "normal_user_global_path": {
+    "relative_suffix": [
+      ".anneal",
+      "toolchain",
+      "<platform-version-slug>"
+    ],
+    "linux_cache_root": "absolute $XDG_CACHE_HOME when set; otherwise $HOME/.cache",
+    "macos_cache_root": "$HOME/Library/Caches"
+  },
+  "local_dev_path": {
+    "relative_suffix": [
+      ".anneal",
+      "toolchain",
+      "<platform-version-slug>"
+    ],
+    "root": "runtime $CARGO_MANIFEST_DIR/target when CARGO_MANIFEST_DIR is valid UTF-8; otherwise current-working-directory/target"
+  },
+  "calculation_basis": "Derived directly from google/zerocopy exocrate::config! macro source and exact anneal/Cargo.toml + anneal/Cargo.lock source bytes fetched at the pinned revision. SHA-256 implementation was sanity-checked against SHA-256(abc). No cargo build or Exocrate execution was performed."
+}

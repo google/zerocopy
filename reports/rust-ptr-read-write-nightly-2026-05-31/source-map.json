@@ -1,0 +1,73 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain_date": "2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "documentation/source",
+      "focus": "module validity/alignment/non-atomic contract; read/read_unaligned/write/write_unaligned safety and implementations"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/const_ptr.rs",
+      "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+      "role": "source",
+      "focus": "const raw-pointer read/read_unaligned method delegation"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mut_ptr.rs",
+      "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+      "role": "source",
+      "focus": "mut raw-pointer read/read_unaligned/write/write_unaligned method delegation"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "78d7314c58110b49839894a0f69377f4ee0d1204",
+      "role": "source",
+      "focus": "private read_via_copy/write_via_move intrinsics"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/maybe_uninit.rs",
+      "blob": "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+      "role": "documentation/source",
+      "focus": "typed-copy preservation, padding loss, and implicit reference reborrow boundary"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": "data races, dangling/misaligned access, aliasing incompleteness, invalid-value production and type validity"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "role": "normative",
+      "focus": "initialized and uninitialized abstract bytes"
+    }
+  ],
+  "execution_evidence": "none; exact-pin source/documentation/reference investigation only"
+}

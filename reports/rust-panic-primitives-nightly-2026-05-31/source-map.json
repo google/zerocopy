@@ -1,0 +1,58 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "files": [
+        {
+          "path": "library/core/src/macros/panic.md",
+          "blob": "6bd23b3072ed9a2266ef029ac09f2266e45ed27b",
+          "focus": "panic! contract and payload representation"
+        },
+        {
+          "path": "library/core/src/macros/mod.rs",
+          "blob": "c21191dbc19be8e56fd42a46499032442c97776a",
+          "focus": "assertion/debug-assertion/convenience panic macros"
+        },
+        {
+          "path": "library/core/src/option.rs",
+          "blob": "a490a26aa0ff3b3b56bb1f5a3c2a74109cbc839d",
+          "focus": "Option unwrap/expect/unchecked variants"
+        },
+        {
+          "path": "library/core/src/result.rs",
+          "blob": "f0e1a1def49d14d40e180d65123494765dbfdae0",
+          "focus": "Result unwrap/expect/unchecked variants"
+        },
+        {
+          "path": "library/core/src/panicking.rs",
+          "blob": "3609dd1fe2e02e639d5ad52b5979c03f69463431",
+          "focus": "panic entry points and handler dispatch"
+        },
+        {
+          "path": "library/core/src/hint.rs",
+          "blob": "90326e649058bee9f49c1e600a054f2805a3ab4f",
+          "focus": "unreachable_unchecked inherited by unchecked unwraps"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "files": [
+        {
+          "path": "src/panic.md",
+          "blob": "2be7e42fb2c3d4c752202f87aa07c890d68e437b",
+          "focus": "panic mechanism, handler, strategy"
+        },
+        {
+          "path": "src/behavior-considered-undefined.md",
+          "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+          "focus": "UB boundary for unsafe/intrinsic behavior"
+        }
+      ]
+    }
+  ],
+  "execution_evidence": "none"
+}

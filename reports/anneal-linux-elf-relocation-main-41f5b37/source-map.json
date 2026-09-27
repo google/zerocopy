@@ -1,0 +1,104 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "focus": "producer ELF rewrite, loader constants, toolchain acquisition, layout check"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.lock",
+      "blob": "92ac56b0a777d280f0a76e28f163b20ff6fb2003",
+      "focus": "nixpkgs pin"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/setup.rs",
+      "blob": "9e17911f4d1e7695cc63fe9f8b2b20b2f0322f00",
+      "focus": "runtime Rust/Charon environment"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/resolve.rs",
+      "blob": "a87fa5cde060d5fbf59d47f68b5ed0823fe001c5",
+      "focus": "Cargo/Rustc library path"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "focus": "V2 archive-cache runtime environment"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/charon.rs",
+      "blob": "7e33bda392770d04397f7172296d9a7f25c6e180",
+      "focus": "V1 Charon runtime environment"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "focus": "V1 Lean/Lake runtime environment"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": ".github/workflows/anneal.yml",
+      "blob": "39f648acb45681707bb5f51624c279b44fa2e832",
+      "focus": "archive producer and post-install CI coverage"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "flake.nix",
+      "blob": "844a2ca996e86acb053bbecd52ff251134341da8",
+      "focus": "charon-portable Linux interpreter/RPATH"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "flake.nix",
+      "blob": "05e71549416ac622d6f12edc1fc7c74e338949ba",
+      "focus": "release assembly"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": ".github/workflows/release.yml",
+      "blob": "e248e9fdbecb3809f54ef58456db3faee448175f",
+      "focus": "Linux release variants and smoke tests"
+    },
+    {
+      "repository": "NixOS/nixpkgs",
+      "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+      "path": "pkgs/development/tools/misc/patchelf/default.nix",
+      "blob": "086e18e941858c130e684a5476d2f2bc681a4eea",
+      "focus": "PatchELF 0.15.2 identity"
+    },
+    {
+      "repository": "NixOS/nixpkgs",
+      "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+      "path": "pkgs/stdenv/generic/setup.sh",
+      "blob": "1c5c82be25b7db7ff5889356978f13a3cdd83049",
+      "focus": "generic fixup-phase boundary"
+    },
+    {
+      "repository": "NixOS/patchelf",
+      "revision": "0.15.2",
+      "path": "README.md",
+      "blob": "0b4337714062dfde78dd9cdff0f56ea620e01f6a",
+      "focus": "interpreter and RPATH mutation semantics"
+    }
+  ],
+  "execution_evidence": "No fresh final-archive execution in this report; existing CI contracts are described from pinned workflow source."
+}

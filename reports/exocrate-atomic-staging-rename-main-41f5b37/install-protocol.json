@@ -1,0 +1,40 @@
+{
+  "schema": "anneal-reference/exocrate-atomic-install/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "exocrate"
+  },
+  "paths": {
+    "target": "<versioned-target>",
+    "staging": "<versioned-target>.staging",
+    "lock": "<versioned-target>.lock"
+  },
+  "normal_sequence": [
+    "unlocked target-directory fast-path check",
+    "open source at Config layer after fast-path miss",
+    "create parent directories",
+    "open persistent sibling lock file and acquire exclusive lock",
+    "recheck final target while locked",
+    "remove stale sibling staging directory",
+    "create fresh staging directory",
+    "populate staging",
+    "for remote source: finish SHA-256 and reject mismatch",
+    "rename staging directory to final target",
+    "mark guard complete and unlock on drop"
+  ],
+  "failure_behavior": {
+    "ordinary_population_error": "guard best-effort removes staging; target remains unpublished",
+    "population_panic": "guard best-effort removes staging during unwind; target remains unpublished",
+    "hard_process_termination_before_rename": "destructor cleanup not guaranteed; next managed attempt removes stale staging after acquiring lock",
+    "rename_failure": "guard best-effort removes staging; final error returned",
+    "power_loss": "durability not established; no explicit fsync/sync_all protocol"
+  },
+  "completion_model": {
+    "marker": "directory existence only",
+    "content_revalidation": false,
+    "managed_writer_assumption": "Only cooperating writers create the final directory.",
+    "same_process_concurrency_safe": false,
+    "cross_process_locking_intended": true
+  }
+}

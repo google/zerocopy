@@ -1,0 +1,116 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain-date": "2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/type-layout.md",
+      "blob": "2ee902aef043f4d299e009f6a69d1815d862e69e",
+      "role": "normative",
+      "focus": [
+        "size/alignment",
+        "array layout",
+        "slice layout",
+        "str layout",
+        "trait-object raw layout",
+        "unsized-pointer layout guarantee",
+        "repr(Rust) constraints"
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/dynamically-sized-types.md",
+      "blob": "cd90adb75dc4dc9bd4c7af8ea24a1b5ca7dd7b0b",
+      "role": "normative/descriptive",
+      "focus": [
+        "DST taxonomy",
+        "pointer metadata description",
+        "last-field DST structs"
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/types/slice.md",
+      "blob": "e8be3a9f1ef48fe07a786238baccebca8f4abd39",
+      "role": "normative",
+      "focus": [
+        "slice DST",
+        "initialized elements",
+        "safe bounds checking"
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/types/textual.md",
+      "blob": "05068309a7bfb15a5b4612a24276308a5240c9d0",
+      "role": "normative",
+      "focus": [
+        "str layout as [u8]",
+        "UTF-8 invariant",
+        "&str/&[u8] layout"
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/types/trait-object.md",
+      "blob": "7b07b6a05c0f282c814ccf3b73e89e8db8935cb3",
+      "role": "normative/descriptive",
+      "focus": [
+        "trait objects are DSTs",
+        "data pointer and vtable"
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": [
+        "wide metadata validity",
+        "reference validity"
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/metadata.rs",
+      "blob": "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+      "role": "documentation/source",
+      "focus": [
+        "Pointee metadata kinds",
+        "raw-parts construction",
+        "DynMetadata size/alignment",
+        "DST-tail vtable-size warning"
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+      "role": "documentation/source",
+      "focus": [
+        "size_of_val",
+        "align_of_val",
+        "raw layout-query preconditions for DST tails"
+      ]
+    }
+  ],
+  "execution_evidence": "none"
+}

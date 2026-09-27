@@ -1,0 +1,39 @@
+{
+  "subject": "google/zerocopy Exocrate remote archive checksum semantics at 41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "configured_digest": {
+    "algorithm": "SHA-256",
+    "representation_in_Cargo_toml": "exactly 64 hexadecimal digits; lowercase and uppercase accepted",
+    "runtime_representation": "[u8; 32] baked into RemoteArchive at compile time",
+    "selection": "compile-time OS/ARCH match among the pairs named in parse_remote_archive!"
+  },
+  "hashed_bytes": {
+    "domain": "all response-body bytes exposed by the Source::Remote reader through EOF, before zstd decompression",
+    "includes": [
+      "the zstd-compressed archive bytes consumed while tar extraction runs",
+      "compressed/body bytes read ahead by the decoder",
+      "trailing response-body bytes not required for decompression, because Exocrate drains the underlying hashing reader after dropping the decoder"
+    ],
+    "does_not_mean": "raw HTTP wire framing such as transport/chunk framing; the hash is over bytes exposed by the HTTP body reader"
+  },
+  "verification_order": [
+    "open remote response and obtain body reader plus expected digest",
+    "stream body through HashingReader -> zstd decoder -> tar unpack into staging",
+    "drop decoder/archive",
+    "drain the underlying HashingReader to EOF so trailing bytes contribute",
+    "finalize SHA-256 and compare with expected digest",
+    "on mismatch return InvalidData",
+    "only a successful population can proceed to final staging publication"
+  ],
+  "important_limits": {
+    "pre_authentication_effects": "checksum acceptance occurs after extraction effects in staging; see the separate extraction-security/#3612 report",
+    "existing_installations": "an already-existing managed target is accepted by existence and is not rehashed/revalidated against the configured remote digest",
+    "local_source": "Source::Local supplies no expected digest; local trust/checksum semantics are a separate #3720 subject",
+    "digest_provenance": "SHA-256 comparison authenticates bytes only relative to trust in the compiled expected digest; Exocrate does not itself establish how that digest was produced or signed",
+    "anneal_v2_current_metadata": "current main still contains placeholder URLs and hashes marked FIXME before publication"
+  },
+  "namespace_coupling": {
+    "anneal_config_versioned_files": ["../Cargo.toml", "../Cargo.lock"],
+    "also_includes": ["path strings", "OS", "ARCH"],
+    "effect": "changing the remote checksum/URL in Anneal Cargo.toml also changes Exocrate's version_slug/installation directory, barring a SHA-256 collision"
+  }
+}

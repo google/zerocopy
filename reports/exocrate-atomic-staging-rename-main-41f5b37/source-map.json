@@ -1,0 +1,40 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/lib.rs",
+      "blob": "88cc0d5dd91082070b6ef475a32bf42c25f52115",
+      "regions": [
+        "Config::resolve_installation_dir",
+        "Config::resolve_installation_dir_or_install",
+        "Config::open_source",
+        "install"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/sync.rs",
+      "blob": "85b6e203522e963af13d88ab4d3e7684ebb29252",
+      "regions": [
+        "ManagedDirName::check_exists",
+        "ManagedDirName::check_exists_or_create",
+        "ManagedDirName::staging",
+        "ManagedDirName::lock_path",
+        "tests"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/Cargo.toml",
+      "blob": "b6cd1948ac4ae66b25a33ed93c10ee23de9b35b3",
+      "regions": [
+        "dependencies"
+      ]
+    }
+  ]
+}

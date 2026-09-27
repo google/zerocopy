@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/toolchain",
+    "archive/security",
+    "archive/extraction",
+    "exocrate/install",
+    "exocrate/security"
+  ],
+  "subjects": [
+    {
+      "name": "Exocrate installer selected by current Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src"
+      }
+    },
+    {
+      "name": "Anneal v2 setup path",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/src/main.rs"
+      }
+    },
+    {
+      "name": "tar crate resolved by Anneal",
+      "identity": {
+        "repository": "composefs/tar-rs",
+        "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+        "version": "0.4.46"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

@@ -1,0 +1,93 @@
+{
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/lib.rs",
+      "blob": "88cc0d5dd91082070b6ef475a32bf42c25f52115",
+      "symbols": ["Config::open_source", "install"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "exocrate/src/sync.rs",
+      "blob": "85b6e203522e963af13d88ab4d3e7684ebb29252",
+      "symbols": ["ManagedDirName::check_exists_or_create", "ManagedDirName::staging"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "symbols": ["setup_installation_dir"]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.toml",
+      "blob": "9edee13427fd5e3699abd3709cc9f33d7652873e"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/Cargo.lock",
+      "blob": "eeaa3f7119369d79b735d8c4836fc08bcc7f7e6d",
+      "note": "tar 0.4.46, registry checksum 3f6221d9a6003c78398e3b239969f352578258df48c8eb051caadae0015bc840"
+    },
+    {
+      "repository": "composefs/tar-rs",
+      "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+      "path": "src/lib.rs",
+      "blob": "8a848f28ba58cf7e3cf2018c3a5e14f4751781eb",
+      "symbols": ["crate-level Security documentation"]
+    },
+    {
+      "repository": "composefs/tar-rs",
+      "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+      "path": "src/archive.rs",
+      "blob": "bffeb6f1b931e44afdb636532eef085b1db65ae0",
+      "symbols": ["Archive::_unpack"]
+    },
+    {
+      "repository": "composefs/tar-rs",
+      "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+      "path": "src/entry.rs",
+      "blob": "1a4c4e9b2f045afdc42b47a9dd7eb7bea462cdeb",
+      "symbols": ["EntryFields::unpack_in", "EntryFields::validate_inside_dst", "EntryFields::unpack"]
+    },
+    {
+      "repository": "composefs/tar-rs",
+      "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+      "path": "Cargo.toml",
+      "blob": "258f3abda123c1abfe64532c1ff485b50f81095a",
+      "note": "package version 0.4.46"
+    },
+    {
+      "repository": "google/zerocopy",
+      "issue": "3612",
+      "url": "https://github.com/google/zerocopy/issues/3612",
+      "created_at": "2026-09-04T22:11:40Z",
+      "state_observed": "open",
+      "observed_at": "2026-09-27"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "7c15c7984a20b0c8f8b76574c052581f1abcfc8a",
+      "parent": "2dad389b030e9268d6645ac0bf0626b867e96068",
+      "role": "historical proposed #3612 repair; not ancestor of current main"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "1ef6ed4b53f162352336dae0d73dd4d362796f57",
+      "parent": "2dad389b030e9268d6645ac0bf0626b867e96068",
+      "role": "historical proposed #3612 repair; not ancestor of current main"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "4d866f8381fb79cec80e7257f15f95674441da0e",
+      "parent": "2dad389b030e9268d6645ac0bf0626b867e96068",
+      "role": "historical proposed #3612 repair; not ancestor of current main"
+    }
+  ]
+}

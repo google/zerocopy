@@ -1,0 +1,57 @@
+{
+  "schema": "anneal-reference/rust-ptr-read-write-operation-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain_date": "2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "ptr::read<T>",
+      "access": "source valid for size_of::<T>() reads OR T is zero-sized",
+      "alignment_required": true,
+      "source_initialized_valid_t_required": true,
+      "old_destination_initialized_required": null,
+      "null_zst_exception": true,
+      "ownership": "returns a T while source storage remains unchanged; for non-Copy T the two representations must not both continue as independent owners",
+      "atomic": false
+    },
+    {
+      "operation": "ptr::read_unaligned<T>",
+      "access": "source valid for size_of::<T>() reads",
+      "alignment_required": false,
+      "source_initialized_valid_t_required": true,
+      "old_destination_initialized_required": null,
+      "null_zst_exception": false,
+      "ownership": "returns a T while source storage remains unchanged; same non-Copy ownership hazard as read",
+      "atomic": false
+    },
+    {
+      "operation": "ptr::write<T>",
+      "access": "destination valid for size_of::<T>() writes OR T is zero-sized",
+      "alignment_required": true,
+      "source_initialized_valid_t_required": "src is already a produced typed T",
+      "old_destination_initialized_required": false,
+      "null_zst_exception": true,
+      "ownership": "moves src into destination; does not read or drop old destination contents and does not separately drop src",
+      "atomic": false
+    },
+    {
+      "operation": "ptr::write_unaligned<T>",
+      "access": "destination valid for size_of::<T>() writes",
+      "alignment_required": false,
+      "source_initialized_valid_t_required": "src is already a produced typed T",
+      "old_destination_initialized_required": false,
+      "null_zst_exception": false,
+      "ownership": "moves src into destination; does not read or drop old destination contents and does not separately drop src",
+      "atomic": false
+    }
+  ],
+  "shared_boundaries": [
+    "valid-for-access includes provenance/range/liveness and unresolved aliasing constraints; dereferenceability is necessary but not sufficient for nonzero accesses",
+    "reads must produce a valid initialized T",
+    "ordinary ptr-module accesses are non-atomic",
+    "typed read/write semantics do not establish complete padding-byte or provenance identity of the full object representation",
+    "debug unsafe-precondition assertions do not discharge the public unsafe contract"
+  ]
+}

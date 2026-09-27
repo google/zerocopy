@@ -1,0 +1,60 @@
+{
+  "subject": "google/zerocopy Exocrate archive installation at 41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "remote_install_state_machine": [
+    {
+      "step": 1,
+      "operation": "open remote response",
+      "integrity_state": "expected SHA-256 known; bytes not yet authenticated"
+    },
+    {
+      "step": 2,
+      "operation": "create/reuse deterministic <target>.staging",
+      "integrity_state": "staging is expected empty by design but cleanup failure is ignored"
+    },
+    {
+      "step": 3,
+      "operation": "stream compressed bytes through hashing reader -> zstd -> tar::Archive::unpack",
+      "integrity_state": "unauthenticated remote bytes can create filesystem objects"
+    },
+    {
+      "step": 4,
+      "operation": "drain compressed trailing bytes and finalize SHA-256",
+      "integrity_state": "all compressed input bytes are now hashed, after extraction effects"
+    },
+    {
+      "step": 5,
+      "operation": "compare digest",
+      "on_mismatch": "return InvalidData; StagingGuard attempts remove_dir_all but ignores failure",
+      "on_match": "population succeeds"
+    },
+    {
+      "step": 6,
+      "operation": "rename staging to final target",
+      "integrity_state": "the accepted digest authenticates the successful attempt's input stream, not preexisting staging residue"
+    }
+  ],
+  "tar_0_4_46_containment": {
+    "entry_parent_components": "skip entry containing ParentDir",
+    "absolute_or_root_components": "Prefix/RootDir/CurDir are ignored and extraction remains rooted at dst",
+    "canonical_parent_check": "canonicalized parent must start with canonicalized dst",
+    "hard_links": "target path is canonical-inside-dst validated before hard_link",
+    "symlinks": "outward-pointing link objects may be created; later archive writes through them are subject to canonical-parent validation",
+    "concurrent_destination_mutation": "explicitly outside tar crate threat model",
+    "directory_entries": "deferred until descendants are extracted, then archive permissions applied",
+    "unrecognized_typeflags": "fall through to ordinary-file extraction"
+  },
+  "advisory_3612": {
+    "status_observed": "open",
+    "observed_at": "2026-09-27",
+    "affected_revision_demonstrated": "2dad389b030e9268d6645ac0bf0626b867e96068",
+    "demonstrated_platform": "macOS arm64, unprivileged user",
+    "mechanism": "wrong-hash remote archive leaves non-removable staging residue; later authentic archive merges with residue and successful rename promotes both",
+    "current_source_revalidation": "same relevant extraction-before-hash and ignored-cleanup structure remains at main 41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "historical_repair_commits": [
+    "7c15c7984a20b0c8f8b76574c052581f1abcfc8a",
+    "1ef6ed4b53f162352336dae0d73dd4d362796f57",
+    "4d866f8381fb79cec80e7257f15f95674441da0e"
+  ],
+  "historical_repair_status": "Each repair commit is a one-commit side branch from 2dad389b030e9268d6645ac0bf0626b867e96068 and diverges from current main; none is current authority."
+}

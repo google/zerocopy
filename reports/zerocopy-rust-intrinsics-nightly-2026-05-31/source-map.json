@@ -1,0 +1,158 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/macros.rs",
+      "blob": "2b5a66929f544a60cede7194c3f82260a1b9e8e3",
+      "ranges": ["60-210", "610-665"],
+      "role": "transmute macro runtime and compile-time use"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/util/mod.rs",
+      "blob": "50454af00ccff8b0b58684fb3f048f955d4650c6",
+      "ranges": ["270-390", "425-455", "565-595", "721-800"],
+      "role": "copy, union-based transmute helper, ZST pointer transmute, unchecked arithmetic, compatibility polyfills"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/lib.rs",
+      "blob": "944f177c0b0bf66ebd136e5f21ae1b4c2bde48b5",
+      "ranges": ["3535-3590", "3990-4080", "5415-5580", "6020-6115"],
+      "role": "byte copy, alloc copy/fill, unreachable branches, raw slice construction"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/ref.rs",
+      "blob": "dd0816327ba2532e4f92cdad5266f38c5de9eb54",
+      "ranges": ["360-395", "750-805"],
+      "role": "unchecked subtraction, typed read/write"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/wrappers.rs",
+      "blob": "2d4ff5515918a8e486683d1863289e4105da3022",
+      "ranges": ["230-260", "350-400"],
+      "role": "reference transmute and typed read/write"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/util/macro_util.rs",
+      "blob": "f374a089f414614ea81764ae1ee078af05d27109",
+      "ranges": ["200-220", "536-585", "760-795"],
+      "role": "pointer difference, unaligned read, reference transmute"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/byte_slice.rs",
+      "blob": "3b70ecc2481a05e01fad69c027932fc9481306e6",
+      "ranges": ["245-310"],
+      "role": "pointer add, unchecked subtraction, raw slice creation"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/pointer/inner.rs",
+      "blob": "023df07d045243e0a2924de1d4db2826d2770bb4",
+      "ranges": ["340-425"],
+      "role": "pointer add, unchecked subtraction, raw slice creation"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/pointer/mod.rs",
+      "blob": "03b17bf0786e46d74ba957f36c6013e28ca6806d",
+      "ranges": ["365-400"],
+      "role": "unreachable size branch and raw byte-slice assembly"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/layout.rs",
+      "blob": "d58786d637cf8fb94cde85ed7a3549448561ff60",
+      "ranges": ["1025-1070"],
+      "role": "unchecked metadata arithmetic"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "zerocopy/src/error.rs",
+      "blob": "afdbc038291633afae5f90a29066f753229d366e",
+      "ranges": ["345-375"],
+      "role": "unreachable_unchecked"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "78d7314c58110b49839894a0f69377f4ee0d1204",
+      "ranges": ["380-400", "838-857", "892-916", "1986-2011", "2200-2217", "2269-2278", "2777-2800", "2850-2874", "3002-3050"],
+      "role": "intrinsic declarations and stable-counterpart documentation"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+      "ranges": ["66-68"],
+      "role": "transmute reexport"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/hint.rs",
+      "blob": "90326e649058bee9f49c1e600a054f2805a3ab4f",
+      "ranges": ["101-113"],
+      "role": "unreachable_unchecked wrapper"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "ranges": ["430-552", "1690-1820", "1910-1935"],
+      "role": "copy, typed read/write, unaligned read implementations"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/const_ptr.rs",
+      "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+      "ranges": ["340-405", "608-637", "820-885", "1222-1253"],
+      "role": "pointer offset/add/difference/copy wrappers"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mut_ptr.rs",
+      "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+      "ranges": ["1314-1385", "1427-1438"],
+      "role": "mutable pointer copy and byte-fill wrappers"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/metadata.rs",
+      "blob": "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+      "ranges": ["3-6", "90-134"],
+      "role": "pointer metadata extraction and assembly wrappers"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "ranges": ["1-4"],
+      "role": "nightly-2026-05-31 toolchain pin"
+    }
+  ]
+}

@@ -1143,6 +1143,88 @@
         "rust/toolchain"
       ]
     },
+    "anneal-linux-elf-relocation-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal Linux omnibus ELF relocation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon portable Linux packaging selected by Aeneas"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release packaging selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nixpkgs",
+            "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+            "version": "patchelf-0.15.2"
+          },
+          "name": "PatchELF selected by Anneal's locked nixpkgs"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/relocation",
+        "elf/interpreter",
+        "elf/rpath",
+        "linux/relocation",
+        "nix/patchelf"
+      ]
+    },
+    "anneal-macos-macho-relocation-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal macOS omnibus toolchain packaging"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release packaging selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon portable packaging selected through Aeneas"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/relocation",
+        "macho/dyld",
+        "macho/signing",
+        "macos/relocation"
+      ]
+    },
     "anneal-nix-fixed-output-downloads-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -2185,6 +2267,156 @@
         "lean/diagnostics",
         "lean/lsp",
         "rust/generated-source"
+      ]
+    },
+    "exocrate-archive-extraction-security-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "exocrate/src",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate installer selected by current Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal/src/main.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal v2 setup path"
+        },
+        {
+          "identity": {
+            "repository": "composefs/tar-rs",
+            "revision": "fc459c149f83bf4daceaa52e17d351989002e1a9",
+            "version": "0.4.46"
+          },
+          "name": "tar crate resolved by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/security",
+        "archive/extraction",
+        "exocrate/install",
+        "exocrate/security"
+      ]
+    },
+    "exocrate-atomic-staging-rename-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "exocrate",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate installer used by current Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "exocrate",
+        "exocrate/install",
+        "exocrate/concurrency",
+        "filesystem/atomic-rename"
+      ]
+    },
+    "exocrate-cache-version-identity-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/src/main.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal Exocrate configuration"
+        },
+        {
+          "identity": {
+            "path": "exocrate/src",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate installation path and versioning implementation used by Anneal"
+        },
+        {
+          "identity": {
+            "crate": "dirs",
+            "crates.io-sha256": "c3e8aa94d75141228480295a7d0e7feb620b1a5ad9f12bc40be62411e38cce4e",
+            "version": "6.0.0"
+          },
+          "name": "dirs cache-directory dependency resolved by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "exocrate",
+        "exocrate/cache",
+        "exocrate/versioning",
+        "xdg/cache"
+      ]
+    },
+    "exocrate-local-archive-trust-checksum-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "exocrate/src/lib.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate local-archive installation path selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal/src/main.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal setup local-archive override"
+        }
+      ],
+      "topics": [
+        "anneal/toolchain",
+        "archive/integrity",
+        "exocrate/install",
+        "exocrate/local"
+      ]
+    },
+    "exocrate-remote-archive-checksum-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "exocrate/src/lib.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate remote archive checksum path selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal v2 remote archive metadata and setup wiring"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/checksum",
+        "archive/integrity",
+        "exocrate/install",
+        "exocrate/remote"
       ]
     },
     "generated-rust-visibility-nightly-2026-05-31": {
@@ -3807,6 +4039,34 @@
         "aeneas/drops"
       ]
     },
+    "rust-dst-slice-layout-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/layout",
+        "rust/dst",
+        "rust/slices",
+        "rust/str",
+        "rust/pointers/metadata"
+      ]
+    },
     "rust-extern-foreign-items-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -4168,6 +4428,35 @@
         "rust/validity"
       ]
     },
+    "rust-panic-primitives-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/assertions",
+        "rust/divergence",
+        "rust/option",
+        "rust/panic",
+        "rust/result",
+        "rust/unsafe"
+      ]
+    },
     "rust-panic-unwind-abort-divergence-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -4277,6 +4566,34 @@
         "rust/initialization",
         "rust/provenance",
         "rust/unsafe"
+      ]
+    },
+    "rust-ptr-read-write-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust core raw-pointer read/write operations behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference examined with the pinned compiler"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/pointers",
+        "rust/pointer-read-write",
+        "rust/unsafe",
+        "rust/initialization",
+        "rust/provenance"
       ]
     },
     "rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31": {
@@ -4606,6 +4923,25 @@
         "rustc/validity"
       ]
     },
+    "rust-volatile-memory-access-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain-date": "nightly-2026-05-31"
+          },
+          "name": "Rust volatile pointer operations"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/memory",
+        "rust/pointers",
+        "rust/volatile"
+      ]
+    },
     "rust-wide-pointer-metadata-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -4751,6 +5087,42 @@
         "rustc/def-id",
         "rustc/def-path-hash",
         "rustc/hir"
+      ]
+    },
+    "zerocopy-rust-intrinsics-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "zerocopy intrinsic-facing source selected by current Anneal"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler and core library behind nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          },
+          "name": "Charon toolchain pin selected by Aeneas"
+        }
+      ],
+      "topics": [
+        "zerocopy/intrinsics",
+        "rust/intrinsics",
+        "rust/pointers",
+        "rust/unsafe",
+        "anneal/verification-surface"
       ]
     }
   }

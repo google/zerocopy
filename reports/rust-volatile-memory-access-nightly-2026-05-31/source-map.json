@@ -1,0 +1,29 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "toolchain-date": "nightly-2026-05-31"
+  },
+  "sources": [
+    {
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "public-api-documentation+source",
+      "focus": "read_volatile/write_volatile semantics, safety, splitting"
+    },
+    {
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "78d7314c58110b49839894a0f69377f4ee0d1204",
+      "role": "source-documentation",
+      "focus": "volatile versus atomic intrinsics"
+    },
+    {
+      "path": "library/core/src/ptr/non_null.rs",
+      "role": "source",
+      "focus": "NonNull volatile convenience wrappers delegate to ptr APIs",
+      "blob": "b9b42c1efe05a97354be95140923c1b517de84ee"
+    }
+  ],
+  "execution_evidence": "none"
+}

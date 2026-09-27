@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "zerocopy/intrinsics",
+    "rust/intrinsics",
+    "rust/pointers",
+    "rust/unsafe",
+    "anneal/verification-surface"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy intrinsic-facing source selected by current Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+      }
+    },
+    {
+      "name": "Rust compiler and core library behind nightly-2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "nightly-2026-05-31"
+      }
+    },
+    {
+      "name": "Charon toolchain pin selected by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+        "rust-toolchain": "nightly-2026-05-31",
+        "version": "0.1.210"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

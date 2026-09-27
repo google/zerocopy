@@ -1,0 +1,54 @@
+{
+  "schema": "anneal-reference/rust-dst-slice-layout-matrix/v1",
+  "rust_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "reference_revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+  "entries": [
+    {
+      "subject": "[T] of length n",
+      "metadata": "usize element count n",
+      "dynamic_size": "size_of::<T>() * n",
+      "dynamic_alignment": "align_of::<T>()",
+      "element_offset": "i * size_of::<T>()",
+      "basis": "Reference array layout + slice same-as-array-section"
+    },
+    {
+      "subject": "[ZST] of length n",
+      "metadata": "usize element count n",
+      "dynamic_size": "0",
+      "dynamic_alignment": "align_of::<T>()",
+      "element_offset": "0 for every i",
+      "critical_boundary": "logical length is not byte extent"
+    },
+    {
+      "subject": "str of byte length n",
+      "metadata": "usize byte count n",
+      "dynamic_size": "same as [u8] length n",
+      "dynamic_alignment": "same as [u8]",
+      "additional_validity": "UTF-8 invariant for str"
+    },
+    {
+      "subject": "dyn Trait value",
+      "metadata": "DynMetadata / vtable",
+      "dynamic_layout": "same as erased concrete value",
+      "vtable_layout_data": "concrete type size and alignment"
+    },
+    {
+      "subject": "struct with DST last field",
+      "metadata": "same metadata as last field",
+      "dynamic_layout": "statically sized prefix plus dynamically sized tail under enclosing representation/layout",
+      "critical_boundary": "tail metadata or DynMetadata::size_of is not generally the whole enclosing size"
+    },
+    {
+      "subject": "pointer to unsized T",
+      "stable_layout_guarantee": "pointer is sized; size and alignment each >= those of pointer to sized T",
+      "descriptive_current_shape": "data plus pointee-dependent metadata; Reference notes current twice-usize-size shape is not to be relied upon"
+    }
+  ],
+  "validity_boundaries": [
+    "Raw metadata shape alone does not establish dereferenceability.",
+    "Wide reference/Box slice metadata must not make total pointed-to size exceed isize::MAX.",
+    "Safe slice values require initialized elements.",
+    "str additionally requires its UTF-8 invariant.",
+    "Raw size/alignment queries impose subject-specific metadata preconditions."
+  ]
+}

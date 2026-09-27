@@ -1,0 +1,79 @@
+{
+  "schema": "anneal-reference/macos-relocation-contract/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "platforms": [
+    "x86_64-darwin",
+    "aarch64-darwin"
+  ],
+  "components": [
+    {
+      "component": "aeneas",
+      "upstream_packaging": "Pinned Aeneas release runs dylibbundler on ./aeneas, bundles dylibs under ./libs, and writes @executable_path/libs references.",
+      "upstream_smoke": "Pinned release workflow extracts the final per-host tarball and runs ./aeneas --help.",
+      "anneal_final_macho_mutation": "none in omnibus-tar",
+      "anneal_runtime_library_path": "Lean-related invocation paths set DYLD_LIBRARY_PATH to installed Lean lib and lib/lean.",
+      "final_archive_macho_metadata_verified": false
+    },
+    {
+      "component": "charon",
+      "upstream_packaging": "Pinned charon-portable has explicit post-copy relocation only on Linux; no explicit Darwin relocation branch.",
+      "upstream_smoke": "Aeneas release workflow smoke does not launch Charon.",
+      "anneal_final_macho_mutation": "none in omnibus-tar",
+      "anneal_runtime_library_path": "Anneal Charon invocation sets DYLD_LIBRARY_PATH to installed Rust lib and sets managed Rust PATH.",
+      "final_archive_macho_metadata_verified": false
+    },
+    {
+      "component": "rust",
+      "upstream_packaging": "Official Rust components are fetched into a fixed-output tree with patching/stripping disabled by Anneal's downloader.",
+      "upstream_smoke": "not established by this report",
+      "anneal_final_macho_mutation": "none in omnibus-tar",
+      "anneal_runtime_library_path": "Anneal Charon invocation uses installed Rust lib via DYLD_LIBRARY_PATH.",
+      "final_archive_macho_metadata_verified": false
+    },
+    {
+      "component": "lean",
+      "upstream_packaging": "Official Lean archive is fetched into a fixed-output tree with patching/stripping disabled by Anneal's downloader.",
+      "upstream_smoke": "not established for the later Anneal omnibus archive by this report",
+      "anneal_final_macho_mutation": "none in omnibus-tar",
+      "anneal_runtime_library_path": "Lake/Aeneas invocation paths use installed Lean lib and lib/lean via DYLD_LIBRARY_PATH.",
+      "final_archive_macho_metadata_verified": false
+    }
+  ],
+  "final_stage": {
+    "darwin_specific_macho_rewrite": false,
+    "darwin_specific_codesign": false,
+    "macho_load_command_validation": false,
+    "signature_validation": false,
+    "layout_check_content_scope": "archive names/layout; does not inspect Mach-O contents"
+  },
+  "required_stronger_probe": {
+    "inspect": [
+      "LC_LOAD_DYLIB",
+      "LC_ID_DYLIB",
+      "LC_RPATH",
+      "embedded code signature"
+    ],
+    "tools": [
+      "file or Mach-O magic scan",
+      "otool -L",
+      "otool -l",
+      "codesign -d",
+      "codesign --verify --strict"
+    ],
+    "runtime": [
+      "aeneas",
+      "charon",
+      "rustc",
+      "lean",
+      "lake"
+    ],
+    "architectures": [
+      "x86_64-darwin",
+      "aarch64-darwin"
+    ],
+    "relocation": "extract outside the Nix store and run with Anneal's intended environment"
+  }
+}

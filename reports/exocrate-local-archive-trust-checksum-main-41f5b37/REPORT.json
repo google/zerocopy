@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/toolchain",
+    "archive/integrity",
+    "exocrate/install",
+    "exocrate/local"
+  ],
+  "subjects": [
+    {
+      "name": "Exocrate local-archive installation path selected by Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src/lib.rs"
+      }
+    },
+    {
+      "name": "Anneal setup local-archive override",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/src/main.rs"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

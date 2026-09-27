@@ -1,0 +1,57 @@
+{
+  "subject": "google/zerocopy Exocrate local archive trust/checksum semantics at 41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "source_selection": {
+    "anneal_cli_option": "--local-archive <path-to-local-archive>",
+    "selected_variant": "Source::Local(PathBuf)",
+    "open_source_result": "File::open(path) reader plus expected_sha256 = None"
+  },
+  "new_installation": {
+    "integrity_check": "none supplied by Exocrate for Source::Local",
+    "pipeline": "local File reader -> zstd decoder -> tar unpack -> managed staging -> successful rename",
+    "sha256_wrapper": false,
+    "digest_comparison": false,
+    "explicit_input_eof_drain_after_extraction": false,
+    "structural_failure": "zstd/tar I/O or format failures can still abort population"
+  },
+  "existing_installation": {
+    "outer_fast_path": "target directory existence is checked before open_source",
+    "source_access": "not required when target already exists",
+    "checked_in_discriminator": "after installing one local archive, test_config_resolve_installation_dir_or_install_local resolves the target even when a later Source::Local names /nonexistent/path/should/not/be/accessed",
+    "tree_rehash_on_reuse": false
+  },
+  "namespace_identity": {
+    "anneal_rel_dir_path": [
+      ".anneal",
+      "toolchain"
+    ],
+    "versioned_files": [
+      "../Cargo.toml",
+      "../Cargo.lock"
+    ],
+    "macro_hash_inputs": [
+      "each configured path string",
+      "complete bytes of each configured file",
+      "OS",
+      "ARCH"
+    ],
+    "local_archive_path_included": false,
+    "local_archive_contents_included": false,
+    "derived_effect": "different local archives selected at runtime address the same target namespace for the same Anneal versioned inputs and host platform"
+  },
+  "trust_boundary": {
+    "established_by_local_mode": "bytes accepted by zstd/tar can populate the absent target; later existing-target resolution can reuse that tree",
+    "not_established": [
+      "archive content matches an expected SHA-256",
+      "archive was produced by an intended release",
+      "archive has a valid signature",
+      "extracted tree matches a content manifest",
+      "existing tree still matches the source archive"
+    ],
+    "caller_responsibility": "archive identity/provenance/integrity beyond structural decoding is external to current Source::Local"
+  },
+  "adjacent_scopes": {
+    "remote_archive_checksum": "separate: Source::Remote supplies Some(sha256)",
+    "archive_extraction_security": "separate: path/link/rejected-staging behavior",
+    "atomic_publication": "separate: locking, rename, same-process limitation, power-loss durability"
+  }
+}

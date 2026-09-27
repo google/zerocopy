@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-reference/linux-elf-relocation/v1",
+  "anneal": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "flake_blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+  },
+  "host_interpreters": {
+    "x86_64-linux": "/lib64/ld-linux-x86-64.so.2",
+    "aarch64-linux": "/lib/ld-linux-aarch64.so.1"
+  },
+  "final_selection": {
+    "find_predicate": "regular file AND executable bit",
+    "file_predicate": "file(1) output contains `ELF 64-bit`"
+  },
+  "final_actions": [
+    {
+      "operation": "set interpreter",
+      "condition": "patchelf --print-interpreter succeeds",
+      "target": "host_interpreters[system]",
+      "failure_policy": "ignored (`|| true`)"
+    },
+    {
+      "operation": "set RPATH",
+      "condition": "selected ELF",
+      "target": "",
+      "failure_policy": "ignored (`|| true`)"
+    },
+    {
+      "operation": "strip",
+      "condition": "selected ELF",
+      "failure_policy": "ignored (`|| true`)"
+    }
+  ],
+  "known_upstream_boundary": {
+    "component": "Charon charon-portable",
+    "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "linux_interpreter_written_for_all_architectures": "/lib64/ld-linux-x86-64.so.2",
+    "anneal_aarch64_final_pass_intent": "overwrite with /lib/ld-linux-aarch64.so.1"
+  },
+  "consumer_compensations": [
+    {
+      "consumer": "Charon",
+      "linux_library_path": [
+        "<archive>/rust/lib"
+      ],
+      "path_prefix": [
+        "<archive>/rust/bin"
+      ]
+    },
+    {
+      "consumer": "Lean/Lake",
+      "linux_library_path": [
+        "<archive>/lean/lib",
+        "<archive>/lean/lib/lean"
+      ],
+      "path_prefix": [
+        "<archive>/lean/bin"
+      ]
+    }
+  ],
+  "validation_boundary": {
+    "build_time_postcondition_check": false,
+    "layout_check_inspects_elf_metadata": false,
+    "current_post_anneal_ci_host": "x86_64-linux",
+    "fresh_binary_probe_performed_for_this_report": false
+  }
+}
