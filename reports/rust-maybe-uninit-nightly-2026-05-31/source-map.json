@@ -1,0 +1,41 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain": "nightly-2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/maybe_uninit.rs",
+      "blob": "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+      "role": "documentation/source",
+      "focus": "MaybeUninit initialization invariant, layout, validity, typed-copy/padding semantics, API contracts, partial initialization, slice helpers"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": "invalid values, initializedness, aggregate/reference validity, aliasing and uninitialized-memory boundary"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "role": "normative",
+      "focus": "abstract initialized versus uninitialized bytes; incomplete-model warning"
+    }
+  ],
+  "execution_evidence": "none; exact-nightly Miri/rustc probes are optional strengthening work, not claimed observations"
+}

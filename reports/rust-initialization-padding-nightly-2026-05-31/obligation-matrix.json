@@ -1,0 +1,53 @@
+{
+  "schema": "anneal-reference/rust-initialization-padding-matrix/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain": "nightly-2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "cases": [
+    {
+      "case": "ordinary_valid_T",
+      "initialization_requirement": "All representation bytes required by T's validity must be initialized; padding need not be initialized.",
+      "padding_guarantee": "No guarantee that padding is initialized.",
+      "basis": ["reference validity rules", "MaybeUninit field-by-field example"]
+    },
+    {
+      "case": "typed_move_or_copy_T",
+      "initialization_requirement": "Source must be a valid T.",
+      "padding_guarantee": "Semantic value is preserved; initialized padding may lose its value.",
+      "additional": "Copies containing references may implicitly reborrow and alter provenance.",
+      "basis": ["MaybeUninit typed-copy documentation"]
+    },
+    {
+      "case": "typed_copy_MaybeUninit_T",
+      "initialization_requirement": "Contained bytes need not form a valid T.",
+      "padding_guarantee": "Contents/provenance of T's non-padding bytes are preserved; padding is not promised preserved.",
+      "basis": ["MaybeUninit validity documentation"]
+    },
+    {
+      "case": "ptr_copy_or_copy_nonoverlapping",
+      "initialization_requirement": "Source bytes need not form valid T values; pointer access/alignment/overlap requirements still apply.",
+      "padding_guarantee": "Initialization state is preserved exactly for all copied bytes.",
+      "basis": ["core::ptr copy contracts"]
+    },
+    {
+      "case": "zeroed_T",
+      "initialization_requirement": "All-zero data representation must be valid for T.",
+      "padding_guarantee": "Returned typed padding is not necessarily zero.",
+      "basis": ["mem::zeroed", "MaybeUninit::zeroed"]
+    },
+    {
+      "case": "read_complete_representation_as_u8",
+      "initialization_requirement": "Every byte read as u8 must be initialized.",
+      "padding_guarantee": "A valid T can still have uninitialized padding, so an ordinary &[u8] view over the full representation can demand more initialization than T validity provides.",
+      "basis": ["Reference scalar initializedness", "MaybeUninit byte-view API"]
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain": "nightly-2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/non_null.rs",
+      "blob": "86e9d01381a5198a4694137fafa75beb6a4f9f06",
+      "role": "documentation/source",
+      "focus": "NonNull value invariant, representation, variance, auto-traits, constructors, provenance methods, raw/reference conversions, convenience/wide-pointer methods"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "documentation/source",
+      "focus": "pointer address/provenance model, shared-reference write restrictions, Strict and Exposed Provenance"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": "invalid values, NonNull valid-range note, raw/reference validity and aliasing boundaries"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/subtyping.md",
+      "blob": "1e9d6c15eaf98d32d45dec52ed9b8cb0a0cefabe",
+      "role": "normative",
+      "focus": "variance definitions and built-in pointer/reference variance"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "role": "normative",
+      "focus": "incomplete memory model and abstract byte states"
+    }
+  ],
+  "execution_evidence": "none; bounded exact-nightly rustc/Miri probes are optional strengthening work"
+}

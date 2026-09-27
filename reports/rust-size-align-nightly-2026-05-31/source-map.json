@@ -1,0 +1,68 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain-date": "2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+      "role": "source+documentation",
+      "focus": "size_of, align_of, size_of_val, align_of_val, raw dynamic-layout variants, SizedTypeProperties"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/intrinsics/mod.rs",
+      "blob": "78d7314c58110b49839894a0f69377f4ee0d1204",
+      "role": "source+documentation",
+      "focus": "size/alignment intrinsics and dynamic-layout intrinsic safety"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/metadata.rs",
+      "blob": "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+      "role": "source+documentation",
+      "focus": "DST metadata and DynMetadata size/alignment distinction"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/type-layout.md",
+      "blob": "2ee902aef043f4d299e009f6a69d1815d862e69e",
+      "role": "normative",
+      "focus": "size/alignment definitions, Sized, arrays, slices, str, pointers, trait objects"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/dynamically-sized-types.md",
+      "blob": "cd90adb75dc4dc9bd4c7af8ea24a1b5ca7dd7b0b",
+      "role": "normative",
+      "focus": "DST categories, pointer metadata, unsized-tail structs"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "role": "source",
+      "focus": "nightly-2026-05-31 selection"
+    }
+  ],
+  "execution_evidence": {
+    "performed": false,
+    "note": "No fresh rustc, Miri, or target-layout probe was executed."
+  }
+}

@@ -2732,6 +2732,35 @@
         "lean/imports"
       ]
     },
+    "lake-source-materialization-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake dependency source materialization selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal V2 vendored Lake dependency preparation"
+        }
+      ],
+      "topics": [
+        "anneal/vendoring",
+        "lake",
+        "lake/dependencies",
+        "lake/materialization",
+        "lake/offline",
+        "lake/packages"
+      ]
+    },
     "lake-state-model-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -3591,6 +3620,35 @@
         "proof-assistants"
       ]
     },
+    "rust-aggregate-layout-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference aggregate-layout contract"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/layout",
+        "rust/repr",
+        "rust/structs",
+        "rust/enums",
+        "rust/unions",
+        "rust/unsafe"
+      ]
+    },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -3782,6 +3840,34 @@
         "rust/abi",
         "rustc/hir",
         "charon/ffi"
+      ]
+    },
+    "rust-initialization-padding-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler and core library selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/initialization",
+        "rust/memory",
+        "rust/padding",
+        "rust/typed-copy",
+        "rust/validity"
       ]
     },
     "rust-inline-global-assembly-nightly-2026-05-31": {
@@ -3999,6 +4085,34 @@
         "anneal/item-identity"
       ]
     },
+    "rust-maybe-uninit-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust core MaybeUninit semantics selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/initialization",
+        "rust/layout",
+        "rust/maybe-uninit",
+        "rust/memory",
+        "rust/validity"
+      ]
+    },
     "rust-module-file-resolution-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -4023,6 +4137,35 @@
         "rust/paths",
         "rust/source-files",
         "rustc/source-map"
+      ]
+    },
+    "rust-nonnull-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/nonnull",
+        "rust/pointers",
+        "rust/provenance",
+        "rust/variance",
+        "rust/layout",
+        "rust/validity"
       ]
     },
     "rust-panic-unwind-abort-divergence-nightly-2026-05-31": {
@@ -4080,6 +4223,62 @@
         "rust/byte-pointers"
       ]
     },
+    "rust-pointer-casts-provenance-apis-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust core raw-pointer APIs behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust/pointers",
+        "rust/provenance",
+        "rust/pointer-casts",
+        "rust/strict-provenance",
+        "rust/exposed-provenance",
+        "rust/unsafe"
+      ]
+    },
+    "rust-pointer-copy-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust raw-pointer bulk-copy primitives behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust/pointers",
+        "rust/pointers/copy",
+        "rust/pointers/copy-nonoverlapping",
+        "rust/initialization",
+        "rust/provenance",
+        "rust/unsafe"
+      ]
+    },
     "rust-raw-pointer-validity-provenance-alignment-nightly-2026-05-31": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -4108,6 +4307,63 @@
         "rust/strict-provenance"
       ]
     },
+    "rust-raw-slice-pointer-construction-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/dst",
+        "rust/pointers",
+        "rust/raw-pointers",
+        "rust/slices",
+        "rust/unsafe",
+        "rust/validity"
+      ]
+    },
+    "rust-reference-creation-from-raw-pointers-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust/raw-pointers",
+        "rust/references",
+        "rust/aliasing",
+        "rust/validity",
+        "rust/unsafe",
+        "rust/maybe-uninit"
+      ]
+    },
     "rust-safety-boundary-completeness-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -4133,6 +4389,33 @@
         "rust/safety-boundary",
         "rust/invariants",
         "rustc/unsafety"
+      ]
+    },
+    "rust-size-align-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust core memory-layout APIs behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference layout semantics used to interpret those APIs"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/layout",
+        "rust/size",
+        "rust/alignment",
+        "rust/dst"
       ]
     },
     "rust-source-span-provenance-nightly-2026-05-31": {
@@ -4235,6 +4518,35 @@
         "miri/aliasing"
       ]
     },
+    "rust-unreachable-unchecked-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust compiler and core library behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the selected compiler revision"
+        }
+      ],
+      "topics": [
+        "rust",
+        "rust/intrinsics",
+        "rust/never",
+        "rust/undefined-behavior",
+        "rust/unsafe",
+        "rustc/mir",
+        "verification/obligations"
+      ]
+    },
     "rust-unsafe-fields-nightly-2026-05-31": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -4292,6 +4604,34 @@
         "rust/aliasing",
         "rust/library-invariants",
         "rustc/validity"
+      ]
+    },
+    "rust-wide-pointer-metadata-nightly-2026-05-31": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain-date": "2026-05-31"
+          },
+          "name": "Rust wide raw-pointer metadata APIs behind Anneal-era nightly-2026-05-31"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference bundled by the compiler revision"
+        }
+      ],
+      "topics": [
+        "rust/pointers",
+        "rust/pointers/metadata",
+        "rust/pointers/wide",
+        "rust/dst",
+        "rust/slices",
+        "rust/trait-objects"
       ]
     },
     "rustbelt-unsafe-abstraction-model-popl-2018": {

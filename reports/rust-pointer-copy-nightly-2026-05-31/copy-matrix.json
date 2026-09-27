@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/rust-pointer-copy-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "operations": [
+    {
+      "api": "ptr::copy_nonoverlapping",
+      "effective_bytes": "count * size_of::<T>()",
+      "source_access": "valid for reads over full effective range, or effective bytes == 0",
+      "destination_access": "valid for writes over full effective range, or effective bytes == 0",
+      "alignment": "src and dst aligned for T even when effective bytes == 0",
+      "overlap": "forbidden",
+      "copy_model": "memcpy-like untyped byte copy",
+      "initialization": "preserved exactly; source bytes need not form valid initialized T",
+      "ownership": "bitwise copies regardless of T: Copy; surrounding code controls logical ownership/resource use",
+      "atomicity": "non-atomic"
+    },
+    {
+      "api": "ptr::copy",
+      "effective_bytes": "count * size_of::<T>()",
+      "source_access": "valid for reads over full effective range, or effective bytes == 0",
+      "destination_access": "valid for writes over full effective range, or effective bytes == 0; destination remains valid while source range is read",
+      "alignment": "src and dst aligned for T even when effective bytes == 0",
+      "overlap": "permitted",
+      "copy_model": "memmove-like, as if via a temporary byte array",
+      "initialization": "preserved exactly; source bytes need not form valid initialized T",
+      "ownership": "bitwise copies regardless of T: Copy; surrounding code controls logical ownership/resource use",
+      "atomicity": "non-atomic"
+    }
+  ],
+  "method_normalization": [
+    {
+      "api": "*const T::copy_to",
+      "normalizes_to": "ptr::copy(self, dest, count)"
+    },
+    {
+      "api": "*const T::copy_to_nonoverlapping",
+      "normalizes_to": "ptr::copy_nonoverlapping(self, dest, count)"
+    },
+    {
+      "api": "*mut T::copy_to",
+      "normalizes_to": "ptr::copy(self, dest, count)"
+    },
+    {
+      "api": "*mut T::copy_to_nonoverlapping",
+      "normalizes_to": "ptr::copy_nonoverlapping(self, dest, count)"
+    },
+    {
+      "api": "*mut T::copy_from",
+      "normalizes_to": "ptr::copy(src, self, count)"
+    },
+    {
+      "api": "*mut T::copy_from_nonoverlapping",
+      "normalizes_to": "ptr::copy_nonoverlapping(src, self, count)"
+    }
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "schema": "anneal-reference/rust-pointer-provenance-api-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "apis": [
+    {
+      "operation": "pointer.cast::<U>() / raw-pointer `as` to raw pointer",
+      "address": "preserved for sized-to-sized; wide-to-thin keeps data pointer",
+      "provenance": "no integer roundtrip; source pointer value/access authority is not upgraded",
+      "metadata": "sized-to-sized none; wide-to-thin discarded; compatible wide-to-wide `as` preserves exactly",
+      "access_note": "does not establish alignment, validity, aliasing, or access permission for U"
+    },
+    {
+      "operation": "cast_mut / cast_const",
+      "address": "unchanged",
+      "provenance": "does not create new allocation authority",
+      "metadata": "unchanged",
+      "access_note": "mutability marker change does not establish writability"
+    },
+    {
+      "operation": "addr",
+      "address": "returned as usize",
+      "provenance": "discarded and explicitly not exposed",
+      "metadata": "data-address component only",
+      "access_note": "retain an original pointer and use with_addr/map_addr to restore provenance"
+    },
+    {
+      "operation": "expose_provenance / pointer as usize",
+      "address": "returned as integer",
+      "provenance": "discarded from integer value and side-effectfully exposed for possible later reconstruction",
+      "metadata": "data-address component for method",
+      "access_note": "enters Exposed Provenance model"
+    },
+    {
+      "operation": "with_addr",
+      "address": "replaced with supplied usize",
+      "provenance": "preserved from self",
+      "metadata": "preserved by Self result",
+      "access_note": "formation does not prove resulting address is usable; later access must stay within self provenance/other rules"
+    },
+    {
+      "operation": "map_addr",
+      "address": "f(self.addr())",
+      "provenance": "preserved from self",
+      "metadata": "preserved",
+      "access_note": "Strict Provenance convenience for tagged/address manipulation"
+    },
+    {
+      "operation": "without_provenance / without_provenance_mut",
+      "address": "supplied usize",
+      "provenance": "none",
+      "metadata": "thin pointer",
+      "access_note": "zero-sized access may be allowed if aligned; non-zero-sized memory access is UB"
+    },
+    {
+      "operation": "with_exposed_provenance / integer as raw pointer",
+      "address": "supplied integer interpreted as address",
+      "provenance": "some eligible previously exposed provenance may be chosen; exact selection unspecified",
+      "metadata": "thin pointer constructor",
+      "access_note": "later use is UB if no exposed provenance justifies it; aliasing still applies"
+    },
+    {
+      "operation": "with_metadata_of (unstable boundary example)",
+      "address": "from self",
+      "provenance": "from self only",
+      "metadata": "from meta operand",
+      "access_note": "metadata source does not transfer the meta pointer provenance"
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "schema": "anneal-reference/rust-size-align-semantics-matrix/v1",
+  "subject_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "queries": [
+    {
+      "api": "size_of::<T>()",
+      "domain": "T: Sized",
+      "result": "type-level byte size / array stride including alignment padding",
+      "runtime_metadata": false,
+      "const": true,
+      "does_not_establish": [
+        "padding initialization",
+        "bit validity",
+        "provenance",
+        "allocation or lifetime",
+        "cross-compilation stability absent a separate guarantee"
+      ]
+    },
+    {
+      "api": "align_of::<T>()",
+      "domain": "T: Sized",
+      "result": "type-level ABI-required minimum alignment in bytes",
+      "runtime_metadata": false,
+      "const": true,
+      "does_not_establish": [
+        "preferred alignment",
+        "pointer provenance",
+        "dereferenceability",
+        "cross-target equality"
+      ]
+    },
+    {
+      "api": "size_of_val::<T: ?Sized>(&T)",
+      "domain": "valid Rust reference to sized or dynamically sized T",
+      "result": "byte size of the complete referenced value",
+      "runtime_metadata": "needed for DSTs",
+      "const": true,
+      "does_not_establish": [
+        "size of the reference representation",
+        "byte initialization throughout the extent",
+        "soundness of independently manufactured raw metadata"
+      ]
+    },
+    {
+      "api": "align_of_val::<T: ?Sized>(&T)",
+      "domain": "valid Rust reference to sized or dynamically sized T",
+      "result": "ABI-required minimum alignment of the complete referenced value",
+      "runtime_metadata": "needed for DSTs",
+      "const": true,
+      "does_not_establish": [
+        "alignment of the reference representation",
+        "provenance or allocation validity",
+        "permission to construct a reference from raw parts"
+      ]
+    }
+  ],
+  "dst_examples": [
+    {
+      "kind": "slice [T]",
+      "size_rule": "layout of the represented array section; for length n, derived size n * size_of::<T>()",
+      "alignment_rule": "same alignment as T"
+    },
+    {
+      "kind": "str",
+      "size_rule": "same layout as [u8], therefore byte extent rather than character count",
+      "alignment_rule": "same layout as [u8]"
+    },
+    {
+      "kind": "dyn Trait",
+      "size_rule": "layout of the erased concrete value",
+      "alignment_rule": "alignment of the erased concrete value"
+    },
+    {
+      "kind": "struct with DST tail",
+      "size_rule": "complete outer value, combining statically sized prefix and dynamic tail",
+      "alignment_rule": "complete outer value; tail metadata alone is not the outer layout"
+    }
+  ]
+}

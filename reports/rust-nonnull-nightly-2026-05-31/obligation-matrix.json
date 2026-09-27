@@ -1,0 +1,158 @@
+{
+  "schema": "anneal-reference/nonnull-obligation-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain": "nightly-2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "NonNull::new(raw)",
+      "establishes": [
+        "result is None or a NonNull value whose raw pointer is non-null"
+      ],
+      "does_not_establish": [
+        "dereferenceability",
+        "alignment for T",
+        "live allocation",
+        "usable provenance",
+        "initialized T",
+        "aliasing/exclusive ownership"
+      ]
+    },
+    {
+      "operation": "NonNull::new_unchecked(raw)",
+      "requires": [
+        "raw pointer is non-null"
+      ],
+      "establishes": [
+        "NonNull non-null value invariant"
+      ],
+      "does_not_establish": [
+        "other access/reference obligations"
+      ]
+    },
+    {
+      "operation": "NonNull::dangling()",
+      "establishes": [
+        "non-null",
+        "well-aligned address for sized T"
+      ],
+      "explicitly_does_not_establish": [
+        "live allocation",
+        "dereferenceability",
+        "unique sentinel identity",
+        "ordinary access provenance"
+      ]
+    },
+    {
+      "operation": "NonNull::without_provenance(nonzero_addr)",
+      "requires": [
+        "non-zero numeric address"
+      ],
+      "establishes": [
+        "non-null pointer value at that address",
+        "absent provenance"
+      ],
+      "does_not_establish": [
+        "ordinary non-zero-sized memory access authority"
+      ]
+    },
+    {
+      "operation": "addr",
+      "requires": [
+        "valid NonNull value"
+      ],
+      "establishes": [
+        "non-zero numeric address"
+      ],
+      "does_not_establish": [
+        "provenance encoded in returned integer"
+      ]
+    },
+    {
+      "operation": "with_addr/map_addr",
+      "requires": [
+        "valid NonNull base",
+        "new address is NonZero"
+      ],
+      "establishes": [
+        "new non-null pointer with base provenance"
+      ],
+      "does_not_establish": [
+        "new address is within provenance for an eventual access"
+      ]
+    },
+    {
+      "operation": "from_ref(&T)",
+      "establishes": [
+        "non-null wrapper derived from a valid shared reference"
+      ],
+      "preserves_restriction": [
+        "does not authorize mutation outside UnsafeCell"
+      ]
+    },
+    {
+      "operation": "as_ptr",
+      "establishes": [
+        "raw *mut T representation of same NonNull pointer"
+      ],
+      "does_not_establish": [
+        "permission to write",
+        "valid T",
+        "reference lifetime/aliasing"
+      ]
+    },
+    {
+      "operation": "as_ref",
+      "requires": [
+        "pointer convertible to shared reference",
+        "valid initialized T",
+        "lifetime and shared-reference aliasing obligations"
+      ],
+      "establishes": [
+        "shared reference for chosen lifetime"
+      ]
+    },
+    {
+      "operation": "as_mut",
+      "requires": [
+        "pointer convertible to unique mutable reference",
+        "valid initialized T",
+        "lifetime and exclusivity obligations"
+      ],
+      "establishes": [
+        "mutable reference for chosen lifetime"
+      ]
+    },
+    {
+      "operation": "as_uninit_ref/as_uninit_mut (unstable)",
+      "requires": [
+        "pointer convertible to corresponding reference to storage",
+        "lifetime/aliasing/alignment/allocation obligations"
+      ],
+      "relaxes": [
+        "T itself may be uninitialized because pointee reference type is MaybeUninit<T>"
+      ]
+    },
+    {
+      "operation": "Copy/Clone of NonNull",
+      "establishes": [
+        "duplicate pointer value"
+      ],
+      "does_not_establish": [
+        "duplicate ownership",
+        "independent mutation rights",
+        "extended allocation lifetime"
+      ]
+    }
+  ],
+  "type_properties": {
+    "permanent_value_invariant": "non-null",
+    "variance": "covariant in T",
+    "send": false,
+    "sync": false,
+    "copy": true,
+    "ownership_token": false
+  }
+}

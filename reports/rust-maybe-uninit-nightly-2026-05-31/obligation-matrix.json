@@ -1,0 +1,126 @@
+{
+  "schema": "anneal-reference/rust-maybe-uninit-obligations/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain": "nightly-2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "MaybeUninit::new(val)",
+      "requires": [
+        "val is an existing valid T by ordinary Rust typing"
+      ],
+      "establishes": [
+        "storage contains initialized T"
+      ],
+      "ownership_effect": "T is stored but will not be automatically dropped with the wrapper"
+    },
+    {
+      "operation": "MaybeUninit::uninit()",
+      "requires": [],
+      "establishes": [
+        "wrapper is valid; contents may be uninitialized/invalid for T"
+      ],
+      "ownership_effect": "no live T is established"
+    },
+    {
+      "operation": "MaybeUninit::zeroed()",
+      "requires": [],
+      "establishes": [
+        "wrapper is valid; storage is zero-filled subject to typed padding non-preservation"
+      ],
+      "ownership_effect": "no live valid T established unless zero representation is valid for T"
+    },
+    {
+      "operation": "write(val)",
+      "requires": [
+        "exclusive access to wrapper"
+      ],
+      "establishes": [
+        "valid T in storage",
+        "returned &mut T is valid"
+      ],
+      "ownership_effect": "moves val in without dropping prior contents; repeated write can leak prior value"
+    },
+    {
+      "operation": "as_mut_ptr() + raw write",
+      "requires": [
+        "raw-pointer operation-specific access conditions"
+      ],
+      "establishes": [
+        "only whatever bytes/value facts the write proves"
+      ],
+      "ownership_effect": "caller tracks whether a live T has been fully constructed"
+    },
+    {
+      "operation": "assume_init()",
+      "requires": [
+        "contents valid as inhabited T"
+      ],
+      "establishes": [
+        "returned owned T"
+      ],
+      "ownership_effect": "transfers the in-place representation into returned T; wrapper is consumed"
+    },
+    {
+      "operation": "assume_init_read()",
+      "requires": [
+        "contents valid as inhabited T"
+      ],
+      "establishes": [
+        "returned T while source bytes remain"
+      ],
+      "ownership_effect": "bitwise-copies T; multiple logical owners can be created for non-duplicable values"
+    },
+    {
+      "operation": "assume_init_ref()",
+      "requires": [
+        "contents already valid as inhabited T",
+        "reference validity/aliasing conditions"
+      ],
+      "establishes": [
+        "shared reference to T"
+      ],
+      "ownership_effect": "borrows; cannot be used to initialize invalid contents"
+    },
+    {
+      "operation": "assume_init_mut()",
+      "requires": [
+        "contents already valid as inhabited T",
+        "exclusive reference conditions"
+      ],
+      "establishes": [
+        "mutable reference to T"
+      ],
+      "ownership_effect": "borrows exclusively; cannot be used to initialize invalid contents"
+    },
+    {
+      "operation": "assume_init_drop()",
+      "requires": [
+        "contents initialized as T",
+        "all additional invariants needed by T::drop"
+      ],
+      "establishes": [
+        "T destructor executed in place"
+      ],
+      "ownership_effect": "destroys live in-place T; storage no longer carries that live resource"
+    },
+    {
+      "operation": "typed move/copy of MaybeUninit<T>",
+      "requires": [
+        "wrapper value exists"
+      ],
+      "establishes": [
+        "non-padding bytes of T, including provenance, are preserved"
+      ],
+      "ownership_effect": "padding contents are not guaranteed to be preserved"
+    }
+  ],
+  "global_invariants": [
+    "MaybeUninit<T> itself has no validity requirements beyond representation size; initialized and uninitialized bytes are permitted.",
+    "MaybeUninit<T> has the same size, alignment, and ABI as T, but containing types can have different layout/niche use.",
+    "Dropping MaybeUninit<T> never runs T drop code.",
+    "No runtime initializedness tag exists; unsafe caller proof determines whether assume_init* is legal."
+  ]
+}

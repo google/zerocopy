@@ -1,0 +1,44 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain-date": "2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/type-layout.md",
+      "blob": "2ee902aef043f4d299e009f6a69d1815d862e69e",
+      "role": "normative",
+      "focus": "repr(Rust), repr(C), primitive enum representations, align/packed, transparent, layout/ABI boundary"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/items/unions.md",
+      "blob": "c330b037007ff36dc2e8475daefc96e176121914",
+      "role": "normative",
+      "focus": "union storage, field offsets, no active field, read validity and safety"
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "rust-toolchain",
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "role": "source",
+      "focus": "nightly-2026-05-31 selection"
+    }
+  ],
+  "execution_evidence": {
+    "performed": false,
+    "note": "No fresh compiler or target-layout probe was executed; unspecified repr(Rust) choices are intentionally left unspecified."
+  }
+}

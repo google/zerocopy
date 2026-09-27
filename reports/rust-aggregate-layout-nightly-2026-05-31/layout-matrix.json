@@ -1,0 +1,64 @@
+{
+  "schema": "anneal-reference/rust-aggregate-layout-matrix/v1",
+  "reference_revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+  "representations": [
+    {
+      "representation": "Rust",
+      "struct_field_order": "unspecified",
+      "struct_field_overlap": "non-zero-sized fields do not overlap; zero-sized fields may share addresses",
+      "field_alignment": "each field offset divisible by field alignment",
+      "type_alignment": "at least maximum field alignment",
+      "additional_layout_guarantees": "none"
+    },
+    {
+      "representation": "C struct",
+      "struct_field_order": "declaration order",
+      "field_placement": "minimal pre-field padding to field alignment",
+      "type_alignment": "maximum field alignment, before separate alignment modifiers",
+      "final_size": "end offset rounded up to type alignment"
+    },
+    {
+      "representation": "C union",
+      "field_offsets": "all zero",
+      "type_alignment": "maximum field alignment",
+      "final_size": "maximum field size rounded up to union alignment"
+    },
+    {
+      "representation": "C fieldless enum",
+      "size_alignment": "target default C enum size/alignment",
+      "valid_values": "Rust discriminants only; not the full C integer value set"
+    },
+    {
+      "representation": "C fieldful enum",
+      "shape": "repr(C) struct { tag: repr(C) fieldless enum, payload: repr(C) union of repr(C) variant payload structs }"
+    },
+    {
+      "representation": "primitive fieldless enum",
+      "size_alignment": "same as selected primitive integer representation"
+    },
+    {
+      "representation": "primitive fieldful enum",
+      "shape": "repr(C) union of repr(C) variant structs, each beginning with the primitive tag"
+    },
+    {
+      "representation": "C + primitive fieldful enum",
+      "shape": "C tagged-union representation with the tag enum changed to the selected primitive representation"
+    },
+    {
+      "representation": "packed(N)",
+      "field_position_alignment": "min(N, field type alignment)",
+      "field_order": "not specified unless another representation supplies it",
+      "critical_safety_boundary": "ordinary references to actually unaligned fields are undefined behavior"
+    },
+    {
+      "representation": "align(N)",
+      "effect": "raises aggregate alignment when N is larger",
+      "field_order": "not specified unless another representation supplies it"
+    },
+    {
+      "representation": "transparent",
+      "constraint": "any number of size-0/alignment-1 fields plus at most one other field",
+      "effect": "same layout and ABI as the one other field, or unit if absent"
+    }
+  ]
+}

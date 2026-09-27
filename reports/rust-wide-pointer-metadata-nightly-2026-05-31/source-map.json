@@ -1,0 +1,54 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "sources": [
+        {
+          "path": "library/core/src/ptr/metadata.rs",
+          "blob": "1eeadf1217b5f94b48a33de62cd82ad47941890c",
+          "role": "source/documentation",
+          "focus": "Pointee metadata mapping, raw-parts APIs, DynMetadata"
+        },
+        {
+          "path": "library/core/src/ptr/const_ptr.rs",
+          "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+          "role": "source/documentation",
+          "focus": "to_raw_parts and with_metadata_of"
+        },
+        {
+          "path": "library/core/src/ptr/mut_ptr.rs",
+          "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+          "role": "source/documentation",
+          "focus": "mutable to_raw_parts and with_metadata_of"
+        },
+        {
+          "path": "library/core/src/ptr/mod.rs",
+          "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+          "role": "source/documentation",
+          "focus": "public ptr_metadata re-export and provenance context"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "sources": [
+        {
+          "path": "src/types/pointer.md",
+          "blob": "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1",
+          "role": "normative",
+          "focus": "raw pointer semantics and DST comparison"
+        },
+        {
+          "path": "src/behavior-considered-undefined.md",
+          "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+          "role": "normative",
+          "focus": "wide pointer/reference/Box metadata validity"
+        }
+      ]
+    }
+  ],
+  "execution_evidence": "none"
+}

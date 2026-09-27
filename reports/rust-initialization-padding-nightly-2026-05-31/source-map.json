@@ -1,0 +1,71 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "toolchain": "nightly-2026-05-31"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/memory-model.md",
+      "blob": "cc3cf02ec0adba12134ad6cb82e51a4b864da784",
+      "role": "normative",
+      "focus": "abstract initialized/uninitialized bytes and explicit memory-model incompleteness"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": "invalid-value production, initializedness, aggregate validity, and padding exception"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/type-layout.md",
+      "blob": "2ee902aef043f4d299e009f6a69d1815d862e69e",
+      "role": "normative",
+      "focus": "size/alignment, layout freedom, repr(C) padding algorithm, repr(packed) padding"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/maybe_uninit.rs",
+      "blob": "7e2c6b9b3bcb2d66af376243d95c541e5bd4024d",
+      "role": "documentation/source",
+      "focus": "initialization invariant, field-by-field padding, typed-copy guarantee, padding loss, provenance caveat, round-trip examples, byte views"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/mem/mod.rs",
+      "blob": "62c612e7ba2a65bb1645faaa669abd2a1d35a6c2",
+      "role": "documentation/source",
+      "focus": "size_of padding and mem::zeroed padding caveat"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "documentation/source",
+      "focus": "untyped copy initialization preservation, typed read/write boundary, swap_nonoverlapping padding fix"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "0fe8f3454dbe9dda52a254991347e96bec579a6f",
+      "role": "source-history",
+      "focus": "fix for #134713 restoring untyped swap_nonoverlapping behavior"
+    }
+  ],
+  "execution_evidence": "none; suggested exact-pin Miri probes are revalidation/strengthening work and are not claimed observations"
+}

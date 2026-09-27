@@ -1,0 +1,73 @@
+{
+  "schema": "anneal-reference/rust-wide-pointer-metadata-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "metadata_kinds": [
+    {
+      "pointee": "Sized T",
+      "metadata_type": "()",
+      "meaning": "thin pointer"
+    },
+    {
+      "pointee": "extern type",
+      "metadata_type": "()",
+      "meaning": "thin pointer"
+    },
+    {
+      "pointee": "str",
+      "metadata_type": "usize",
+      "meaning": "length in bytes"
+    },
+    {
+      "pointee": "[T]",
+      "metadata_type": "usize",
+      "meaning": "length in elements"
+    },
+    {
+      "pointee": "struct with DST tail",
+      "metadata_type": "tail metadata",
+      "meaning": "same metadata kind/value semantics as final unsized field"
+    },
+    {
+      "pointee": "dyn Trait",
+      "metadata_type": "DynMetadata<dyn Trait>",
+      "meaning": "compiler-generated vtable metadata for erased concrete type"
+    }
+  ],
+  "operations": [
+    {
+      "api": "ptr::metadata",
+      "data_effect": "none",
+      "metadata_effect": "extract",
+      "dereferenceability_proof": false
+    },
+    {
+      "api": "*const/*mut::to_raw_parts",
+      "data_effect": "erase pointee type to () while retaining pointer component",
+      "metadata_effect": "extract typed metadata",
+      "dereferenceability_proof": false
+    },
+    {
+      "api": "ptr::from_raw_parts(_mut)",
+      "data_effect": "use supplied thin data pointer",
+      "metadata_effect": "attach supplied metadata",
+      "dereferenceability_proof": false
+    },
+    {
+      "api": "with_metadata_of",
+      "data_effect": "preserve data address/provenance of self",
+      "metadata_effect": "replace with metadata of meta pointer",
+      "dereferenceability_proof": false
+    }
+  ],
+  "critical_boundaries": [
+    "metadata compatibility does not grant data-pointer provenance",
+    "safe raw-pointer construction is weaker than safe dereference/reference formation",
+    "DynMetadata vtable size is not necessarily whole enclosing DST size",
+    "vtable pointer equality is not reliable concrete-type identity",
+    "raw dyn-trait metadata validity is explicitly debated in the pinned Reference"
+  ]
+}

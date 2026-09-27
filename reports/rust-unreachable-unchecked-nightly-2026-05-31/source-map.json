@@ -1,0 +1,20 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"library/core/src/hint.rs","blob":"90326e649058bee9f49c1e600a054f2805a3ab4f","role":"documentation+source","focus":"stable unreachable_unchecked contract, implementation, optimizer warning, assert_unchecked relation"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"library/core/src/intrinsics/mod.rs","blob":"78d7314c58110b49839894a0f69377f4ee0d1204","role":"documentation+source","focus":"unreachable intrinsic contract and attributes"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"library/core/src/ub_checks.rs","blob":"f25781ea8ce5aef2c332b19246c1b5c7e041b2c6","role":"source","focus":"optional unsafe-precondition diagnostics and check_language_ub gating"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"library/core/src/macros/mod.rs","blob":"c21191dbc19be8e56fd42a46499032442c97776a","role":"documentation+source","focus":"unreachable! panic semantics and contrast"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"compiler/rustc_mir_transform/src/lower_intrinsics.rs","blob":"fe53d301c5574101399b60d38451a57b24c43535","role":"source","focus":"unreachable intrinsic lowering to TerminatorKind::Unreachable"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"compiler/rustc_middle/src/mir/syntax.rs","blob":"07eaa085fabc9742d0d51c73eeba91dcc9e67d2e","role":"source","focus":"MIR Unreachable UB semantics"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"compiler/rustc_middle/src/mir/interpret/error.rs","blob":"7d9f6903d3ef0e5a441081bb0aba3b50280b7449","role":"source","focus":"interpreter Unreachable diagnostic"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"tests/mir-opt/lower_intrinsics.rs","blob":"e8a770147741598a84e52e340d285fe59611c2f0","role":"checked-in test","focus":"lowering fixture"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"tests/mir-opt/lower_intrinsics.unreachable.LowerIntrinsics.panic-unwind.diff","blob":"2b715ac1d635b0c8991d475250f611192a8308f0","role":"checked-in expected output","focus":"call-to-Unreachable golden diff"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"src/tools/miri/tests/fail/unreachable.rs","blob":"3389d5b9ddeafd46d2748f3f863596ea7947da96","role":"checked-in test","focus":"reached stable API under Miri"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"src/tools/miri/tests/fail/unreachable.stderr","blob":"ab8ba4a68e5feea69fd2a1811876f9e9693bc94c","role":"checked-in expected output","focus":"Miri UB diagnostic"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"tests/ui/consts/const_unsafe_unreachable_ub.rs","blob":"39f053951276ed77a76edb816c0fc819efc799ea","role":"checked-in test","focus":"const-eval reached unreachable_unchecked"},
+    {"repository":"rust-lang/rust","revision":"14210df0e27ccd7d9e6a05b8085cbd438e4bbc65","path":"tests/ui/consts/const_unsafe_unreachable_ub.stderr","blob":"7d2448cc3c6dfcf06245404408d6f158912f6cdb","role":"checked-in expected output","focus":"const-eval E0080 diagnostic"},
+    {"repository":"rust-lang/reference","revision":"ad35aca481751a06afeb23820a672b0f3b11a476","path":"src/behavior-considered-undefined.md","blob":"373052061c50fc2f6d1c07a91960d40bac505284","role":"normative","focus":"unsafe/UB rule, compiler-intrinsic UB, soundness responsibility, never-type validity"}
+  ],
+  "execution_evidence": "No fresh execution in this investigation; checked-in expected-output artifacts are preserved upstream test evidence."
+}

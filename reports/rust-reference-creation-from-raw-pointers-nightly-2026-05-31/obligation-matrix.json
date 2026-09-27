@@ -1,0 +1,86 @@
+{
+  "schema": "anneal-reference/raw-pointer-reference-formation-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain": "nightly-2026-05-31"
+  },
+  "operations": [
+    {
+      "operation": "&*p / as_ref_unchecked",
+      "result": "&T",
+      "requires": [
+        "non-null",
+        "aligned for T",
+        "dereferenceable/live pointee extent authorized by provenance",
+        "valid T at creation (selected conservative contract)",
+        "shared-reference aliasing/mutation discipline for resulting lifetime"
+      ]
+    },
+    {
+      "operation": "&mut *p / as_mut_unchecked",
+      "result": "&mut T",
+      "requires": [
+        "non-null",
+        "aligned for T",
+        "dereferenceable/live pointee extent authorized by provenance",
+        "valid T at creation (selected conservative contract)",
+        "mutable-reference exclusivity discipline for resulting lifetime"
+      ]
+    },
+    {
+      "operation": "p.as_ref()",
+      "result": "Option<&T>",
+      "requires": [
+        "either p is null, or every &T conversion obligation holds"
+      ],
+      "does_not_validate": [
+        "alignment",
+        "provenance/range",
+        "pointee validity",
+        "aliasing",
+        "lifetime"
+      ]
+    },
+    {
+      "operation": "p.as_mut()",
+      "result": "Option<&mut T>",
+      "requires": [
+        "either p is null, or every &mut T conversion obligation holds"
+      ],
+      "does_not_validate": [
+        "alignment",
+        "provenance/range",
+        "pointee validity",
+        "aliasing",
+        "lifetime"
+      ]
+    },
+    {
+      "operation": "p.as_uninit_ref()",
+      "result": "Option<&MaybeUninit<T>>",
+      "requires": [
+        "either p is null, or reference obligations hold for MaybeUninit<T>"
+      ],
+      "relaxes": [
+        "storage need not already contain an initialized valid T"
+      ]
+    },
+    {
+      "operation": "&raw const place / &raw mut place",
+      "result": "raw pointer",
+      "requires": [
+        "raw-pointer/place-expression rules, not ordinary reference validity at construction"
+      ],
+      "use_when": [
+        "place may be misaligned",
+        "place may not yet contain a valid value",
+        "ordinary reference aliasing assumptions are not justified"
+      ]
+    }
+  ],
+  "global_uncertainties": [
+    "Exact Rust aliasing rules remain unsettled in the pinned Reference.",
+    "The exact requirement that references point to a valid initialized T is explicitly marked as debated; core documentation requires the conservative form."
+  ]
+}

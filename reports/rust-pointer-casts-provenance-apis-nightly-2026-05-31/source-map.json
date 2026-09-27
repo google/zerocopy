@@ -1,0 +1,74 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "role": "core library implementation/documentation"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "role": "normative language reference"
+    }
+  ],
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mod.rs",
+      "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+      "role": "documentation+source",
+      "focus": "provenance overview; Strict/Exposed Provenance; no-provenance and exposed-provenance constructors"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/const_ptr.rs",
+      "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+      "role": "documentation+source",
+      "focus": "const raw-pointer cast/address/provenance APIs"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/mut_ptr.rs",
+      "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+      "role": "documentation+source",
+      "focus": "mutable raw-pointer counterparts"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "library/core/src/ptr/docs/addr.md",
+      "blob": "785b88a9987090d4d04ebe614fee3fc0d89794ec",
+      "role": "documentation",
+      "focus": "addr discards without exposing provenance"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/expressions/operator-expr.md",
+      "blob": "6c5e4ffbf1532597c3ffe9a800ca80e0fb3cec8a",
+      "role": "normative",
+      "focus": "raw pointer pointer/integer and pointer/pointer casts, wide metadata compatibility"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/types/pointer.md",
+      "blob": "ffd234a3b77dbb4d34f58b4e0b366a79ca7cc2f1",
+      "role": "normative",
+      "focus": "raw pointer type/value and transmutation boundary"
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "path": "src/behavior-considered-undefined.md",
+      "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+      "role": "normative",
+      "focus": "pointer access, aliasing, raw-pointer initialization, metadata and const provenance restrictions"
+    }
+  ],
+  "execution_evidence": "none; exact-pin Miri/rustc discriminator remains a revalidation step"
+}

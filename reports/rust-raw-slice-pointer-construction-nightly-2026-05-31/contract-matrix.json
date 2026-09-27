@@ -1,0 +1,41 @@
+{
+  "schema": "anneal-reference/rust-raw-slice-pointer-contract-matrix/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  "operations": [
+    {
+      "operation": "ptr::slice_from_raw_parts(data, len)",
+      "creates": "*const [T]",
+      "construction_is_safe": true,
+      "requires_at_construction": ["data is a valid raw-pointer value", "len is a valid usize value"],
+      "does_not_establish": ["non-nullness", "alignment", "allocation coverage", "initialization of T", "dereferenceability", "aliasing rights", "len * size_of::<T>() <= isize::MAX"]
+    },
+    {
+      "operation": "ptr::slice_from_raw_parts_mut(data, len)",
+      "creates": "*mut [T]",
+      "construction_is_safe": true,
+      "requires_at_construction": ["data is a valid raw-pointer value", "len is a valid usize value"],
+      "does_not_establish": ["non-nullness", "alignment", "allocation coverage", "initialization of T", "dereferenceability", "unique ownership", "len * size_of::<T>() <= isize::MAX"]
+    },
+    {
+      "operation": "raw_slice.len()",
+      "construction_is_safe": true,
+      "reads": "slice metadata only",
+      "documented_even_if": ["data pointer is null", "data pointer is unaligned"]
+    },
+    {
+      "operation": "slice::from_raw_parts(data, len)",
+      "creates": "&[T]",
+      "construction_is_safe": false,
+      "requires": ["non-null", "aligned", "one-allocation range", "read-valid range", "initialized T elements", "total size <= isize::MAX", "non-wrapping range", "shared-reference aliasing/lifetime rules"]
+    },
+    {
+      "operation": "slice::from_raw_parts_mut(data, len)",
+      "creates": "&mut [T]",
+      "construction_is_safe": false,
+      "requires": ["non-null", "aligned", "one-allocation range", "read/write-valid range", "initialized T elements", "total size <= isize::MAX", "non-wrapping range", "exclusive mutable-reference aliasing/lifetime rules"]
+    }
+  ]
+}

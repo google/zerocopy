@@ -1,0 +1,93 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "lake_subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "anneal_subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "sources": [
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Load/Materialize.lean",
+      "blob": "e098e5adbbf33a641fa5cf7d37d0bbd371956f4b",
+      "role": "source materialization"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Load/Resolve.lean",
+      "blob": "ec7c9978ab99b9a998a1c24d5e1e7ecce3cfa928",
+      "role": "recursive manifest resolution"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Load/Workspace.lean",
+      "blob": "9f25dd62bc752ede695a25fc20371157eb65d64b",
+      "role": "workspace load/update choice"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Load/Manifest.lean",
+      "blob": "760eb81419762fb0ab11393e93082930645e2b6d",
+      "role": "manifest source schema"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Config/Dependency.lean",
+      "blob": "a06fad9cd1da3df2ab1b2c6aaaba38535e64a0f1",
+      "role": "configured source kinds"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/Util/Git.lean",
+      "blob": "e60d7e27924551cd495f9ef9adec4c7e45bdd47d",
+      "role": "Git fetch/clone/revision operations"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/CLI/Main.lean",
+      "blob": "65b0e7fd0d6cd21d512edb49a276bcc65ae31c78",
+      "role": "build-before-workspace ordering"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/Lake/CLI/Help.lean",
+      "blob": "aa96ac1b5fa65178418d4292b49d8086f0d6a9bb",
+      "role": "CLI documentation"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "src/lake/README.md",
+      "blob": "2bc9c7832db61b10e78d33cd5e980449e4da13a0",
+      "role": "Lake dependency documentation"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "path": "tests/lake/tests/clone/test.sh",
+      "blob": "b3ba81f1f56337186a812435bd70e505923ed78f",
+      "role": "checked-in no-fetch test"
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "role": "Anneal vendored archive producer"
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/rewrite-lake-vendor.py",
+      "blob": "e61fc992837435a43b3e434ddd3b07aa7d13b48c",
+      "role": "Git-to-path metadata rewrite"
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "role": "Anneal generated workspace consumer manifest"
+    }
+  ],
+  "execution_evidence": "No fresh execution in this candidate; exact-pin matrix is specified in Revalidation."
+}

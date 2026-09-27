@@ -1,0 +1,38 @@
+{
+  "schema": "anneal-reference/rust-unreachable-unchecked-semantics/v1",
+  "subject": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "toolchain-date": "2026-05-31"
+  },
+  "distinctions": [
+    {
+      "operation": "core::hint::unreachable_unchecked",
+      "if_reached": "undefined behavior",
+      "verification_obligation": "prove the call site is unreachable on every well-defined execution",
+      "may_be_modeled_as_panic": false,
+      "notes": "The stable wrapper has optional UB-precondition instrumentation before the compiler intrinsic; that instrumentation cannot be relied on for safety."
+    },
+    {
+      "operation": "core::intrinsics::unreachable",
+      "if_reached": "undefined behavior",
+      "verification_obligation": "prove the intrinsic is unreachable",
+      "may_be_modeled_as_panic": false,
+      "notes": "LowerIntrinsics rewrites the call to MIR TerminatorKind::Unreachable."
+    },
+    {
+      "operation": "core::hint::assert_unchecked(false)",
+      "if_reached": "immediate undefined behavior",
+      "verification_obligation": "prove the asserted condition is true",
+      "may_be_modeled_as_panic": false,
+      "notes": "The pinned documentation calls this logically equivalent to taking an unreachable_unchecked branch."
+    },
+    {
+      "operation": "unreachable!()",
+      "if_reached": "panic",
+      "verification_obligation": "ordinary panic/failure semantics, not an unsafe non-reachability promise",
+      "may_be_modeled_as_panic": true,
+      "notes": "Safe macro; explicitly contrasted with unreachable_unchecked in core documentation."
+    }
+  ]
+}

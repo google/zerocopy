@@ -1,0 +1,42 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subjects": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "sources": [
+        {
+          "path": "library/core/src/ptr/mod.rs",
+          "blob": "ff2c18d685b65832c296731f23f1664779b874f2",
+          "role": "core-library contract/source",
+          "focus": "pointer validity/provenance/alignment/non-atomic rules; copy and copy_nonoverlapping contracts/implementation"
+        },
+        {
+          "path": "library/core/src/ptr/const_ptr.rs",
+          "blob": "5cbbebf9f478819ee80e0c6486d622ae9ffdac00",
+          "role": "source",
+          "focus": "const-pointer copy wrapper methods"
+        },
+        {
+          "path": "library/core/src/ptr/mut_ptr.rs",
+          "blob": "53ef7f754d201a1dc08aa50a320266a8ab55245f",
+          "role": "source",
+          "focus": "mutable-pointer copy_to/copy_from wrapper methods"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "sources": [
+        {
+          "path": "src/behavior-considered-undefined.md",
+          "blob": "373052061c50fc2f6d1c07a91960d40bac505284",
+          "role": "normative",
+          "focus": "data races, pointer access, aliasing uncertainty, invalid values"
+        }
+      ]
+    }
+  ],
+  "execution_evidence": "none; source/specification report only"
+}
