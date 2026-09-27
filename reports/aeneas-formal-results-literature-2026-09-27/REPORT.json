@@ -1,0 +1,43 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/correctness",
+    "aeneas/formal-results",
+    "aeneas/semantics",
+    "verification/literature"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas: Rust Verification by Functional Translation",
+      "identity": {
+        "doi": "10.1145/3547647",
+        "arxiv": "2206.07185v2",
+        "venue": "ICFP 2022"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680",
+        "venue": "ICFP 2024"
+      }
+    },
+    {
+      "name": "Mechanized LLBC development",
+      "identity": {
+        "repository": "AeneasVerif/mechanized-llbc",
+        "revision": "1268d802a59ddb0672528f24d873ed4b3b28ca0c"
+      }
+    },
+    {
+      "name": "Aeneas release selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

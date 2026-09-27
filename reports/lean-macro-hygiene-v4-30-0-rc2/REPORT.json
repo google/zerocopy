@@ -1,0 +1,20 @@
+{
+  "topics": [
+    "lean",
+    "lean/macros",
+    "lean/hygiene",
+    "lean/quotation",
+    "lean/name-resolution"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 macro hygiene selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}

@@ -69,6 +69,172 @@
         "lean/models"
       ]
     },
+    "aeneas-formal-results-literature-2026-09-27": {
+      "topics": [
+        "aeneas",
+        "aeneas/correctness",
+        "aeneas/formal-results",
+        "aeneas/semantics",
+        "verification/literature"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas: Rust Verification by Functional Translation",
+          "identity": {
+            "doi": "10.1145/3547647",
+            "arxiv": "2206.07185v2",
+            "venue": "ICFP 2022"
+          }
+        },
+        {
+          "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+          "identity": {
+            "doi": "10.1145/3674640",
+            "arxiv": "2404.02680",
+            "venue": "ICFP 2024"
+          }
+        },
+        {
+          "name": "Mechanized LLBC development",
+          "identity": {
+            "repository": "AeneasVerif/mechanized-llbc",
+            "revision": "1268d802a59ddb0672528f24d873ed4b3b28ca0c"
+          }
+        },
+        {
+          "name": "Aeneas release selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "aeneas-panic-error-unwind-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/errors",
+        "aeneas/panic",
+        "aeneas/result",
+        "aeneas/unwind",
+        "charon/control-flow",
+        "rust/panic"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas panic/error translation selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas-paired Charon control-flow input",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-partial-functions-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/partial-functions",
+        "aeneas/recursion",
+        "aeneas/divergence",
+        "lean/partial-fixpoint"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas nightly-2026.06.03 release",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Lean 4 partial_fixpoint implementation used by the Anneal toolchain",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-post-monomorphization-errors-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/consts",
+        "aeneas/monomorphization",
+        "rust/post-monomorphization-errors",
+        "zerocopy/static-assertions"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas nightly selected by Anneal",
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "zerocopy PME guard implementation",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-recursion-termination-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/recursion",
+        "aeneas/termination",
+        "aeneas/lean",
+        "aeneas/translation",
+        "lean/termination"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas recursive-function translation and termination treatment selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Lean 4 used by the selected Aeneas backend",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "aeneas-resource-semantics-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -89,6 +255,63 @@
         "aeneas/unsafe-rust",
         "rust/provenance"
       ]
+    },
+    "aeneas-rust-comment-preservation-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/comments",
+        "aeneas/lean",
+        "charon/comments",
+        "charon/source-metadata"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Rust-comment preservation in generated Lean",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon comment metadata consumed by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "aeneas-rust-support-failure-matrix-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/failure-modes",
+        "aeneas/lean",
+        "aeneas/support",
+        "aeneas/translation",
+        "aeneas/unsafe-rust",
+        "rust/features"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Rust support and failure boundary selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon input producer pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "aeneas-rust-to-lean-translation-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
@@ -119,6 +342,100 @@
         "aeneas/types",
         "rust/borrows"
       ]
+    },
+    "aeneas-rust-type-shapes-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/lean",
+        "aeneas/types",
+        "lean/types",
+        "rust/types"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Lean translation selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas-paired Charon input producer",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-trait-translation-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/associated-items",
+        "aeneas/lean",
+        "aeneas/traits",
+        "aeneas/translation",
+        "rust/traits"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas trait translation selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas-paired Charon trait input",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-trusted-base-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/trust",
+        "aeneas/tcb",
+        "aeneas/translation",
+        "charon",
+        "lean/trust"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas trusted-base boundary selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon producer paired with the selected Aeneas release",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        },
+        {
+          "name": "Lean checker selected by the Aeneas/Anneal toolchain",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "aeneas-wp-proof-tools-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
@@ -368,6 +685,28 @@
         "aeneas/models"
       ]
     },
+    "charon-raw-pointers-unsafe-operations-0-1-210": {
+      "topics": [
+        "charon/raw-pointers",
+        "charon/unsafe-operations",
+        "charon/provenance",
+        "charon/pointer-metadata",
+        "charon/mir",
+        "rust/unsafe"
+      ],
+      "subjects": [
+        {
+          "name": "Charon raw-pointer and unsafe-operation representation",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "charon-start-from-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -493,6 +832,28 @@
         "charon/transformations",
         "charon/serialization"
       ]
+    },
+    "charon-unions-0-1-210": {
+      "topics": [
+        "charon",
+        "charon/unions",
+        "charon/layout",
+        "charon/unsafe-rust",
+        "rust/unions",
+        "rust/layout"
+      ],
+      "subjects": [
+        {
+          "name": "Charon union representation and translation",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
@@ -633,6 +994,68 @@
         "lake/jobs",
         "lake/traces"
       ]
+    },
+    "lake-workspace-package-mutable-state-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/state-ownership",
+        "lake/workspace",
+        "lake/package",
+        "lake/build",
+        "lake/concurrency"
+      ],
+      "subjects": [
+        {
+          "name": "Lake workspace-versus-package mutable-state ownership",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "lean-infotree-elaboration-info-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/elaboration",
+        "lean/infotree",
+        "lean/metaprogramming",
+        "lean/source-information",
+        "lean/server"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 InfoTree and elaboration-information representation selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lean-macro-hygiene-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/macros",
+        "lean/hygiene",
+        "lean/quotation",
+        "lean/name-resolution"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 macro hygiene selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "lean-server-tactic-state-v4-30-0-rc2": {
       "observed_at": "2026-09-26",

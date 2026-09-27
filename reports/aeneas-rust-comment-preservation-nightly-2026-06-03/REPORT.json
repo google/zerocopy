@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/comments",
+    "aeneas/lean",
+    "charon/comments",
+    "charon/source-metadata"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas Rust-comment preservation in generated Lean",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Charon comment metadata consumed by Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}
