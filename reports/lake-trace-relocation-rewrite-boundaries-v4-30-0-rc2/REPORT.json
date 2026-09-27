@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lake",
+    "lake/build",
+    "lake/configuration",
+    "lake/relocation",
+    "lake/reproducibility",
+    "lake/traces"
+  ],
+  "subjects": [
+    {
+      "name": "Lake trace formats and freshness behavior selected by Anneal",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "component": "Lake"
+      }
+    },
+    {
+      "name": "Anneal trace-prefix rewrite utility examined as historical remediation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/rewrite-lake-vendor.py"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

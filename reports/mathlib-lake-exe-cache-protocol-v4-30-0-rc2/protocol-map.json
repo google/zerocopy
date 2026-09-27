@@ -1,0 +1,72 @@
+{
+  "subject": "Mathlib v4.30.0-rc2 lake exe cache protocol map",
+  "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+  "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+  "layers": [
+    {
+      "name": "custom Mathlib cache key",
+      "representation": "UInt64 formatted as 16 hexadecimal digits plus .ltar",
+      "role": "names the local and remote per-module cache object",
+      "source": "Cache/Hashing.lean + Cache/Lean.lean"
+    },
+    {
+      "name": "transport object",
+      "representation": "f/<optional repo prefix>/<cache-key>.ltar",
+      "role": "HTTP download/upload object; downloads land as .ltar.part then rename on success",
+      "source": "Cache/Requests.lean"
+    },
+    {
+      "name": "ltar internal Lake hash",
+      "representation": "4-byte magic LTAR/LTR2/LTR3 followed by 8-byte little-endian UInt64",
+      "role": "Lake depHash used by Mathlib's skip-decompression check against the installed .trace",
+      "source": "Cache/IO.lean"
+    },
+    {
+      "name": "module build payload",
+      "representation": "trace plus required/optional compiled artifacts and sidecar hashes",
+      "role": "files restored into Mathlib or dependency build directories by leantar",
+      "source": "Cache/IO.lean mkBuildPaths/packCache/unpackCache"
+    }
+  ],
+  "commands": [
+    {
+      "command": "get",
+      "download": "missing linked .ltar objects",
+      "decompress": true,
+      "force_download": false
+    },
+    {
+      "command": "get!",
+      "download": "all linked .ltar objects",
+      "decompress": true,
+      "force_download": true
+    },
+    {
+      "command": "get-",
+      "download": "missing linked .ltar objects",
+      "decompress": false,
+      "force_download": false
+    }
+  ],
+  "payload_paths": {
+    "required": [
+      ".trace",
+      ".olean",
+      ".olean.hash",
+      ".ilean",
+      ".ilean.hash",
+      "generated .c",
+      "generated .c.hash"
+    ],
+    "optional": [
+      ".olean.server",
+      ".olean.private",
+      ".olean.server.hash",
+      ".olean.private.hash",
+      ".ir",
+      ".ir.hash",
+      ".extra"
+    ]
+  },
+  "important_distinction": "The .ltar filename hash is Mathlib's custom module-cache key. The hash in the .ltar header is a Lake dependency hash. They are different protocol layers and must not be treated as interchangeable."
+}

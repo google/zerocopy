@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "mathlib/cache",
+    "mathlib/lake-exe-cache",
+    "lake/cache",
+    "lean/artifacts",
+    "anneal/offline-builds",
+    "anneal/toolchain-bundling"
+  ],
+  "subjects": [
+    {
+      "name": "Mathlib lake exe cache protocol and artifact format selected by Aeneas",
+      "identity": {
+        "repository": "leanprover-community/mathlib4",
+        "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+        "version": "v4.30.0-rc2",
+        "component": "Cache"
+      }
+    },
+    {
+      "name": "Anneal consumption of the selected Mathlib cache",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/flake.nix"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

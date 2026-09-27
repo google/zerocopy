@@ -1,0 +1,22 @@
+{
+  "topics": [
+    "lake",
+    "lake/artifact-cache",
+    "lake/artifacts",
+    "lake/build",
+    "lake/cache",
+    "lake/remote-cache",
+    "lake/traces"
+  ],
+  "subjects": [
+    {
+      "name": "Lake artifact-cache architecture",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

@@ -1,0 +1,76 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "sources": [
+    {
+      "path": "src/Main.ml",
+      "blob": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc",
+      "role": "source",
+      "focus": "short_names normalization, builtin preforcing, CLI, logging time"
+    },
+    {
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "role": "source",
+      "focus": "default parallel configuration and race-fix rationale"
+    },
+    {
+      "path": "src/Parallel.ml",
+      "blob": "08f055cf2e87e0164bb3d02dc9f8dde2fc84034c",
+      "role": "source",
+      "focus": "persistent pool and order-preserving await"
+    },
+    {
+      "path": "src/Translate.ml",
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "role": "source",
+      "focus": "parallel dispatch, ID-map reconstruction, declaration-order extraction, generated headers"
+    },
+    {
+      "path": "src/pure/PureMicroPasses.ml",
+      "blob": "e0662ab3153f3c401b44cbe6c0cad4e17157f063",
+      "role": "source",
+      "focus": "domain-local fresh-variable generator"
+    },
+    {
+      "path": "src/utils/SCC.ml",
+      "blob": "aa700193fda3a4eb76b6eb5fe67edf1821dad567",
+      "role": "source",
+      "focus": "concrete graph replacing global mutable vertex counter"
+    },
+    {
+      "path": "tests/test_runner/run_test.ml",
+      "blob": "0a4b726e995dca0132314dae00c421ffd7f3a7a4",
+      "role": "source",
+      "focus": "upstream test runner forces -sequential"
+    },
+    {
+      "path": "Makefile",
+      "blob": "b547c69dd21e85de6a5eca44690cca6ba4d949d1",
+      "role": "source",
+      "focus": "generated-output test workflow"
+    }
+  ],
+  "history": [
+    {
+      "commit": "a6ee3423bfc3370d37f88c32e310d802d3455174",
+      "role": "history",
+      "focus": "task-local fresh-variable race fix"
+    },
+    {
+      "commit": "62d5293278190ed9ffd2ef489d37a74f42338069",
+      "role": "history",
+      "focus": "SCC global mutable vertex race fix"
+    },
+    {
+      "commit": "adf75de33b81430e453d251ed5f129c151d472ff",
+      "role": "history",
+      "focus": "parallel translation re-enabled by default"
+    }
+  ],
+  "execution_evidence": "none; repeated byte-level generation remains an explicit revalidation step"
+}

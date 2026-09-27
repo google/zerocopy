@@ -1,0 +1,65 @@
+{
+  "schema": "anneal-reference/aeneas-generated-function-interface-matrix/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "rules": [
+    {
+      "case": "ordinary forward function",
+      "shape": "translated forward inputs -> translated forward output, wrapped in Result only when effect analysis requires failure",
+      "evidence": [
+        "src/symbolic/SymbolicToPureTypes.ml"
+      ]
+    },
+    {
+      "case": "shared reference",
+      "shape": "reference constructor erased from forward type; no mutable owner-restoration path solely for the shared borrow",
+      "evidence": [
+        "src/symbolic/SymbolicToPureTypes.ml"
+      ]
+    },
+    {
+      "case": "mutable borrow returned",
+      "shape": "forward value plus one or more backward closures derived from region groups",
+      "evidence": [
+        "src/symbolic/SymbolicToPureTypes.ml",
+        "src/symbolic/SymbolicToPureExpressions.ml"
+      ]
+    },
+    {
+      "case": "unit-returning mutator with input-free backward result",
+      "shape": "default simplification may omit Unit and return the updated owner value directly",
+      "evidence": [
+        "src/Config.ml",
+        "src/symbolic/SymbolicToPureTypes.ml"
+      ]
+    },
+    {
+      "case": "choose fixture",
+      "rust": "fn choose<'a,T>(b: bool, x: &'a mut T, y: &'a mut T) -> &'a mut T",
+      "lean": "Bool -> T -> T -> Result (T × (T -> (T × T)))",
+      "meaning": "forward selected T plus closure mapping final selected T to final x/y owners"
+    },
+    {
+      "case": "array_to_mut_slice_ fixture",
+      "rust": "&mut [T; 32] -> &mut [T]",
+      "lean": "Array T 32 -> Result (Slice T × (Slice T -> Array T 32))",
+      "meaning": "forward mutable slice value plus owner reconstruction closure"
+    },
+    {
+      "case": "index_mut_array fixture",
+      "rust": "(&mut [T; 32], usize) -> &mut T",
+      "lean": "Array T 32 -> Usize -> Result (T × (T -> Array T 32))",
+      "meaning": "forward element plus closure restoring updated array"
+    },
+    {
+      "case": "nested inner_mut fixture",
+      "rust": "&mut &mut u32 -> &mut u32",
+      "lean": "U32 -> Result (U32 × (U32 -> U32) × (U32 -> U32))",
+      "meaning": "forward value plus multiple backward closures for nested borrow structure"
+    }
+  ],
+  "logical_specification_boundary": "Generated function return shapes are computational interfaces. User-facing Hoare/WP postconditions are separate Lean propositions/theorems."
+}

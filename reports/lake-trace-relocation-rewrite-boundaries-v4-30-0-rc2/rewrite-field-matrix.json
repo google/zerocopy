@@ -1,0 +1,62 @@
+{
+  "subject": "Lean/Lake v4.30.0-rc2 trace rewrite field classification",
+  "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "classifications": [
+    {
+      "trace_kind": "BuildMetadata",
+      "field": "depHash",
+      "role": "freshness identity",
+      "rewrite_class": "semantic-do-not-rewrite",
+      "basis": "SavedTrace.replayIfUpToDate and replayOrFetchIfUpToDate compare this value with the current dependency/input hash."
+    },
+    {
+      "trace_kind": "BuildMetadata",
+      "field": "inputs[*].caption",
+      "role": "explanatory trace tree label",
+      "rewrite_class": "non-identity-but-audit-visible",
+      "basis": "serializeInputs stores BuildTrace.caption separately from BuildTrace.hash; core freshness checks do not compare saved input captions."
+    },
+    {
+      "trace_kind": "BuildMetadata",
+      "field": "outputs",
+      "role": "cache output description",
+      "rewrite_class": "operational-do-not-rewrite-generically",
+      "basis": "getArtifactsUsingTrace? resolves artifacts from outputs when depHash matches. Ordinary Artifact output JSON is path-neutral, but ResolveOutputs is target-specific."
+    },
+    {
+      "trace_kind": "BuildMetadata",
+      "field": "log",
+      "role": "replayed build log",
+      "rewrite_class": "non-identity-but-observable",
+      "basis": "SavedTrace.replayIfUpToDate replays the saved log after a successful freshness check."
+    },
+    {
+      "trace_kind": "BuildMetadata",
+      "field": "synthetic",
+      "role": "replay-versus-fetch action state",
+      "rewrite_class": "semantic-do-not-rewrite",
+      "basis": "replayOrFetchIfUpToDate uses synthetic together with log emptiness when selecting the fetch/replay action."
+    },
+    {
+      "trace_kind": "ConfigTrace (.olean.trace)",
+      "field": "idx/name/platform/leanHash/configHash",
+      "role": "compiled-configuration validity identity",
+      "rewrite_class": "semantic-do-not-rewrite",
+      "basis": "importConfigFile compares these fields when deciding whether the compiled configuration is current."
+    },
+    {
+      "trace_kind": "ConfigTrace (.olean.trace)",
+      "field": "options",
+      "role": "persisted Lake configuration inputs reused on stale-trace re-elaboration",
+      "rewrite_class": "operational-do-not-rewrite-generically",
+      "basis": "when a non-forced trace is stale, importConfigFile passes trace.options to re-elaboration."
+    },
+    {
+      "trace_kind": "BuildMetadata .trace.nobuild",
+      "field": "whole file",
+      "role": "no-build diagnostic dependency trace",
+      "rewrite_class": "coverage-gap-in-current-anneal-glob",
+      "basis": "buildAction writes traceFile.addExtension(\"nobuild\"); Path.rglob(\"*.trace\") does not select a file ending in .trace.nobuild."
+    }
+  ]
+}

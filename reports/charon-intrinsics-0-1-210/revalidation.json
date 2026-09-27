@@ -1,0 +1,173 @@
+{
+  "candidate_work_record_id": "40b80e5b-b2db-411b-8ca1-78c92281a516",
+  "coordination": {
+    "claim_attempt": "definitely rejected before dispatch by execution safety gate",
+    "coordinator_claims_observed_empty": true,
+    "coordinator_repository": "joshlf/anneal-reference-coordination",
+    "coordinator_revision": 22,
+    "coordinator_state_blob": "035b16d64b77dc49b5bb5f3d66b7bbbae3da1fe1",
+    "mode": "candidate-only",
+    "ownership_asserted": false
+  },
+  "instance_id": "anneal-reference-reports-37654172",
+  "legacy_salvage_record_id": "72f2f2ca-fa94-4c9e-82d7-ac4bab09eb66",
+  "native_basis": {
+    "catalog_report_count": 105,
+    "google_zerocopy_main_head": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "google_zerocopy_reference_head": "b6c1ba9f891840fc95a1de167bc17ebc38f5cf07",
+    "issue_3720_updated_at": "2026-09-27T04:38:05Z",
+    "issue_checkbox_unchecked": true,
+    "reference_agents_blob": "6af37c4498bcd3d47e1b0bdf426b44ee78cf09aa",
+    "reference_catalog_blob": "5bca2f82ae2cbc99f3bdb0eb8448b6d5eb808105",
+    "reference_format_blob": "bad20c2ff90dcec593926d196ed9b1fcda53cb75",
+    "target_package": "reports/charon-intrinsics-0-1-210",
+    "target_package_absent": true
+  },
+  "profile_id": "0e07d422-93ed-4900-8e8b-3361a74ce96b",
+  "remaining_validation": {
+    "candidate_validator_executed": false,
+    "publication_allowed_from_this_record": false,
+    "reason": "The full current reference candidate tree was not materialized on this execution surface; container GitHub network access is unavailable. Native publication still requires constructing the exact candidate, regenerating CATALOG.json, and running that candidate's own python3 tools/reference.py check."
+  },
+  "report_package": {
+    "format_review": "REPORT.json matches current FORMAT.md top-level schema; REPORT.md retains the current default section order and its original Williams-style basis is the current Williams-style blob.",
+    "package_digest": "sha256:50896d914cdeba73d5cfb8e2157a62c70d7cbfc69c61f59179decf95f9a0e8d6",
+    "prose_materially_revised": false,
+    "report_json": {
+      "library_file_id": "libfile_815dceb5a3248191ba20573e3ecfd3ff",
+      "sha256": "51690c7a90135233b725f9dfa4cf5c770b33c0c56bd1cc26ba59d04328681a97"
+    },
+    "report_md": {
+      "library_file_id": "libfile_aefd36639eec8191bb2a558a1516fc9b",
+      "sha256": "b8c4b06723b462dddf299d7aed40ea464546fcc252c6440ad981575d3f61c492"
+    }
+  },
+  "revalidated_at": "2026-09-27",
+  "run_id": "8a35f66a-30cb-475c-a1e7-acd58647cc0e",
+  "schema": "anneal-reference/candidate-revalidation/v1",
+  "skills_basis": {
+    "chatgpt_realization_blob": "e73968d70e41fb23a9c7379212efc649e3801884",
+    "durable_work_coordination_blob": "f1916c95a2c158b37599c03b95c95c26b9b2c6b1",
+    "williams_style_blob": "3f4c8a0a2e7b0fdcadf1f4f332e1a979b265a08d"
+  },
+  "source_revalidation": {
+    "files": [
+      {
+        "blob": "7964644be017856c6d165545a67bd6ef06e0c85c",
+        "checks": [
+          "tcx.intrinsic",
+          "Body::Intrinsic",
+          "type_id"
+        ],
+        "path": "charon/src/bin/charon-driver/translate/translate_items.rs"
+      },
+      {
+        "blob": "23044319a8f763d241912c5d693ed94cf597682f",
+        "checks": [
+          "Intrinsic",
+          "arg_names",
+          "Extern",
+          "Opaque",
+          "Missing"
+        ],
+        "path": "charon/src/ast/gast.rs"
+      },
+      {
+        "blob": "c03ca8077f131a2ef701e9d27eaa9e69bb617124",
+        "checks": [
+          "build_type_id_body",
+          "NonDivergingIntrinsic::Assume",
+          "CopyNonOverlapping",
+          "CastKind::Transmute",
+          "BinOp::Offset",
+          "UbChecks",
+          "Unreachable"
+        ],
+        "path": "charon/src/bin/charon-driver/translate/translate_bodies.rs"
+      },
+      {
+        "blob": "eeb2143c714ee8b429a59c2aaf9f097afb18a940",
+        "checks": [
+          "OffsetOf",
+          "UbChecks",
+          "OverflowChecks",
+          "ContractChecks",
+          "Transmute",
+          "Offset",
+          "TypeId"
+        ],
+        "path": "charon/src/ast/expressions.rs"
+      },
+      {
+        "blob": "f13ec694f9802a02080abd98cb1155a51387c24d",
+        "checks": [
+          "offset_of",
+          "OffsetOf"
+        ],
+        "path": "charon/src/transform/resugar/reconstruct_intrinsics.rs"
+      },
+      {
+        "blob": "8d9ec016c3b6e42ba0cbac180546551d4a52587a",
+        "checks": [
+          "reconstruct_intrinsics"
+        ],
+        "path": "charon/src/transform/mod.rs"
+      },
+      {
+        "blob": "3c6179f10742b2ee82c8ca07e6d51be6c8dc7694",
+        "checks": [
+          "CopyNonOverlapping",
+          "Assert",
+          "AbortKind"
+        ],
+        "path": "charon/src/ast/ullbc_ast.rs"
+      },
+      {
+        "blob": "40f29f8a4b19f98e929b5fe82b8a009d813120ad",
+        "checks": [
+          "CopyNonOverlapping",
+          "Assert",
+          "AbortKind"
+        ],
+        "path": "charon/src/ast/llbc_ast.rs"
+      }
+    ],
+    "preserved_fixture_outputs": [
+      {
+        "blob": "db553749c8afe8dae724a664dc7f5b71c2b95b07",
+        "checks": [
+          "<intrinsic:ctpop>",
+          "<intrinsic:size_of>",
+          "<intrinsic:align_of>",
+          "copy_nonoverlapping"
+        ],
+        "path": "charon/tests/ui/copy_nonoverlapping.out"
+      },
+      {
+        "blob": "2a506d150c09c9f247fddc010ebdf7ff0b159b6d",
+        "checks": [
+          "<intrinsic:cold_path>",
+          "offset",
+          "transmute",
+          "ub_checks"
+        ],
+        "path": "charon/tests/ui/ptr-offset.out"
+      },
+      {
+        "blob": "82a3518cf2f4fb655bae8a6987ea8b4b1c2e03cc",
+        "checks": [
+          "offset_of"
+        ],
+        "path": "charon/tests/ui/simple/generic-offset-of.out"
+      }
+    ],
+    "result": "All cited implementation blob identities still match the legacy report's pinned evidence, and all discriminating source/fixture markers checked in this run were present.",
+    "subject": {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "rust_toolchain": "nightly-2026-05-31",
+      "version": "0.1.210"
+    }
+  },
+  "worker_id": "w02"
+}

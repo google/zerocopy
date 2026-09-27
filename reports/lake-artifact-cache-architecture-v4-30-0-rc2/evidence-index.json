@@ -1,0 +1,16 @@
+{
+  "schema": "anneal-reference-report-evidence-index/v1",
+  "subject_revision": "leanprover/lean4@3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {"role":"source","path":"src/lake/Lake/Config/Artifact.lean","blob":"41d6af1a9aa52d6888d3f245df38b4cd76a4dd5d","symbols":["artifactPath","ArtifactDescr","ArtifactDescr.relPath","Artifact.useLocalFile","Artifact.trace"]},
+    {"role":"source","path":"src/lake/Lake/Config/Cache.lean","blob":"607e6b92108f30e0a57d0de682f7faa283d7d470","symbols":["Cache","Cache.outputsFile","Cache.writeOutputs","Cache.readOutputs?","CacheOutput","downloadArtifact","downloadArtifactCore"]},
+    {"role":"source","path":"src/lake/Lake/Build/Common.lean","blob":"c283fda65ba4d6e3138a0b4ab8252885bf78a014","symbols":["Cache.saveArtifact","getArtifactsUsingCache?","getArtifactsUsingTrace?","getArtifacts?","resolveArtifact","restoreArtifact","buildArtifactUnlessUpToDate"]},
+    {"role":"source","path":"src/lake/Lake/Config/Monad.lean","blob":"59e032d7c516298a494c070abb948eafe2474184","symbols":["Package.restoreAllArtifacts","Package.isArtifactCacheReadable","Package.isArtifactCacheWritable"]},
+    {"role":"source","path":"src/lake/Lake/Config/PackageConfig.lean","blob":"27a50fb2a713a6bb590260fd4a82d135c2b84952","symbols":["PackageConfig.enableArtifactCache?","PackageConfig.restoreAllArtifacts?"]},
+    {"role":"source","path":"src/lake/Lake/Config/Package.lean","blob":"2c73b6a471d6face8084c8b1957f5b802cfa90b7","symbols":["Package.cacheScope"]},
+    {"role":"source","path":"src/lake/Lake/Config/Workspace.lean","blob":"b9c01f130240ae7c65ee298778351ddbe312374e","symbols":["computeLakeCache","Workspace.enableArtifactCache?","Workspace.lakeCache"]},
+    {"role":"source","path":"src/lake/Lake/Config/Env.lean","blob":"eed315c538de746a891d18f72564e88aea64e969","symbols":["Env.compute","Env.cacheToolchain","Env.lakeCache?"]}
+  ],
+  "fresh_execution_performed": false
+}

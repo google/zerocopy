@@ -1,0 +1,56 @@
+{
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "evidence": [
+    {
+      "role": "source",
+      "path": "src/Lean/Elab/Tactic/Simp.lean",
+      "blob": "3e6308c7cf806f921484155e8ff8295804b0ef45",
+      "symbols": [
+        "register_builtin_option linter.unusedSimpArgs",
+        "pushUnusedSimpArgsInfo",
+        "warnUnusedSimpArgs",
+        "warnUnusedSimpArgs.usedThmIdOfSimpTheorem",
+        "evalSimp",
+        "evalSimpAll"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/Lean/Linter/UnusedSimpArgs.lean",
+      "blob": "1c8f04bef6604d01fcf3151400c16ea4807c1399",
+      "symbols": [
+        "warnUnused",
+        "unusedSimpArgs",
+        "builtin_initialize addLinter unusedSimpArgs"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/Lean/Linter/Basic.lean",
+      "blob": "052c9fc1b3e5c1a256ee27560075ed9135a40b4c",
+      "symbols": [
+        "linter.all",
+        "getLinterAll",
+        "getLinterValue"
+      ]
+    },
+    {
+      "role": "source-test",
+      "path": "tests/elab/simpUnusedArgs.lean",
+      "blob": "1864f5b84ae8ae0b781651bd57d760d3ba20703f"
+    },
+    {
+      "role": "source-test",
+      "path": "tests/elab/12559.lean",
+      "blob": "7dd8f27e35e5f0ec66ee30383a14852206f9ef12"
+    }
+  ],
+  "execution": {
+    "performed": false,
+    "note": "No Lean executable or Lake environment was run; checked-in tests were inspected as source evidence only."
+  }
+}

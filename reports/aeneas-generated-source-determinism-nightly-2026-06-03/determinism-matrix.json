@@ -1,0 +1,51 @@
+{
+  "schema": "anneal-reference/aeneas-generated-source-determinism-matrix/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "observations": [
+    {
+      "dimension": "generated header",
+      "source_observation": "fixed marker/module/config text; no wall-clock timestamp in Translate.extract_file",
+      "confidence": "source-established",
+      "boundary": "custom message/module/config values remain source inputs"
+    },
+    {
+      "dimension": "LLBC short names",
+      "source_observation": "Main clears short_names explicitly to make printing more deterministic",
+      "confidence": "source-established"
+    },
+    {
+      "dimension": "parallel result ordering",
+      "source_observation": "pool tasks are retained and awaited in task-list order, not completion order",
+      "confidence": "source-established",
+      "boundary": "does not prove absence of hidden shared-state races"
+    },
+    {
+      "dimension": "top-level declaration order",
+      "source_observation": "extract_definitions iterates ctx.crate.declarations and looks translated declarations up by ID",
+      "confidence": "source-established",
+      "boundary": "LLBC declaration order is therefore an explicit input"
+    },
+    {
+      "dimension": "known parallel races",
+      "source_observation": "per-task fresh-variable generators and concrete SCC vertices replace two previously shared mutable counters",
+      "confidence": "source-and-history-established",
+      "boundary": "not a complete race-freedom audit"
+    },
+    {
+      "dimension": "upstream golden generation",
+      "source_observation": "test runner unconditionally adds -sequential",
+      "confidence": "source-established",
+      "boundary": "checked-in generated outputs do not validate default-parallel byte determinism"
+    },
+    {
+      "dimension": "byte-for-byte repeated-run guarantee",
+      "source_observation": "not executed in this investigation",
+      "confidence": "open",
+      "required_probe": "repeat fresh-directory generation in sequential and default-parallel modes and hash sorted output trees"
+    }
+  ]
+}

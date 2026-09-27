@@ -1,0 +1,112 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "release": "nightly-2026.06.03"
+  },
+  "sources": [
+    {
+      "path": "src/pure/Pure.ml",
+      "blob": "acde8579d6861a08efae086c72f3156283110342",
+      "role": "source",
+      "focus": "decomposed/final function signature data model and backward interface metadata"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPureTypes.ml",
+      "blob": "d35b6d67a65af220fdb56614ab1b51edc029b06f",
+      "role": "source",
+      "focus": "forward/reference type translation, backward inputs/outputs, final result construction"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPureCore.ml",
+      "blob": "2f2b34275b8d7313733b146218bc6ed26716a7be",
+      "role": "source",
+      "focus": "forward/backward inputs and outputs in body synthesis context"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPureExpressions.ml",
+      "blob": "b24d12a8a8403a5bc8aae7b55c35ce0259b75bc8",
+      "role": "source",
+      "focus": "merged returned backward closures, call destructuring, back local naming"
+    },
+    {
+      "path": "src/symbolic/SymbolicToPure.ml",
+      "blob": "95ba91f539e48009efa420dfa956c4c55581cb3a",
+      "role": "source",
+      "focus": "final function declaration assembly"
+    },
+    {
+      "path": "src/extract/ExtractBase.ml",
+      "blob": "4fc8a3f35643ba66555f0889790d50993feef1b9",
+      "role": "source",
+      "focus": "function and helper name construction"
+    },
+    {
+      "path": "src/extract/Extract.ml",
+      "blob": "52754e4fdb25b50fce63abe2d2184751d69632e8",
+      "role": "source",
+      "focus": "function parameter and result extraction"
+    },
+    {
+      "path": "src/Config.ml",
+      "blob": "99a9eba5ae67dde20dbfd8d835cdc2900fc60355",
+      "role": "source",
+      "focus": "simplify_merged_fwd_backs default and semantics"
+    },
+    {
+      "path": "tests/src/no_nested_borrows.rs",
+      "blob": "707f7d6e1201d1220380dd565a4178806cf3a9ec",
+      "role": "fixture-input",
+      "focus": "choose Rust source"
+    },
+    {
+      "path": "tests/lean/NoNestedBorrows.lean",
+      "blob": "e2a706b744e2e9a105e305cf8a2b353354209dae",
+      "role": "generated-fixture",
+      "focus": "choose generated interface"
+    },
+    {
+      "path": "tests/src/arrays.rs",
+      "blob": "478af7171452826436f56f12c88493debac8e0d0",
+      "role": "fixture-input",
+      "focus": "mutable array/slice Rust source"
+    },
+    {
+      "path": "tests/lean/Arrays.lean",
+      "blob": "00b7716b63b41c4747889b42f2dee3796d3ab12d",
+      "role": "generated-fixture",
+      "focus": "mutable array/slice generated interfaces"
+    },
+    {
+      "path": "tests/src/nested-borrows.rs",
+      "blob": "61d62cf0e0723a4019e024882e35fb8b212a67eb",
+      "role": "fixture-input",
+      "focus": "nested mutable borrow source"
+    },
+    {
+      "path": "tests/lean/NestedBorrows.lean",
+      "blob": "61b3b2b31e50555182867a5b73fa510d05106e22",
+      "role": "generated-fixture",
+      "focus": "multiple backward closures and _back local names"
+    },
+    {
+      "path": "tests/lean/Tutorial/Tutorial.lean",
+      "blob": "4513b4db1863ea7f3f55fb597ed3b94eb9c770a3",
+      "role": "generated-fixture",
+      "focus": "generated mutable-borrow and loop interfaces"
+    },
+    {
+      "path": "tests/lean/BaseTutorial.lean",
+      "blob": "52a9947feab2f607729e23c10dfc9e12bba02d41",
+      "role": "documentation-fixture",
+      "focus": "separate user-written Hoare-style specifications"
+    }
+  ],
+  "paired_dependency": {
+    "repository": "AeneasVerif/charon",
+    "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+    "version": "0.1.210"
+  },
+  "execution_evidence": "No fresh execution; checked-in generated Lean artifacts are same-revision preserved evidence."
+}

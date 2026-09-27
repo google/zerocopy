@@ -1,0 +1,22 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/loops",
+    "aeneas/symbolic-execution",
+    "aeneas/lean",
+    "aeneas/partial-functions",
+    "aeneas/borrows",
+    "rust/loops"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas nightly-2026.06.03 loop translation",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}
