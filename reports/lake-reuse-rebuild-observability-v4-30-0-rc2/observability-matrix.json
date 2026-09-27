@@ -1,0 +1,58 @@
+{
+  "schema": "anneal-reference/lake-reuse-rebuild-observability-matrix/v1",
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "signals": [
+    {
+      "signal": "lake --no-build exit/result",
+      "strongest_supported_claim": "A required target did or did not reach a builder-required condition under the selected build configuration.",
+      "does_not_establish": [
+        "no filesystem mutations",
+        "no artifact-cache fetch/restoration",
+        "no network access",
+        "preexisting local output was the reuse source"
+      ]
+    },
+    {
+      "signal": "JobState.action / non-ANSI monitor verb",
+      "strongest_supported_claim": "Lake classified the job state as replay, fetch, build, or unknown.",
+      "does_not_establish": [
+        "complete subordinate action history",
+        "absence of weaker actions in a composite job"
+      ]
+    },
+    {
+      "signal": "BuildMetadata.synthetic",
+      "strongest_supported_claim": "The persisted ordinary trace was created by fetch metadata rather than a normal builder when true.",
+      "does_not_establish": [
+        "what every later invocation did",
+        "complete cache/network provenance"
+      ]
+    },
+    {
+      "signal": ".trace.nobuild",
+      "strongest_supported_claim": "Diagnostic expected-input state was emitted by a no-build failure path that writes this sidecar.",
+      "does_not_establish": [
+        "all no-build failures create it",
+        "current staleness by its mere presence"
+      ]
+    },
+    {
+      "signal": "independent output digest",
+      "strongest_supported_claim": "Observed output bytes are equal or different.",
+      "does_not_establish": [
+        "whether Lake rebuilt, replayed, or fetched those bytes"
+      ]
+    },
+    {
+      "signal": "--rehash",
+      "strongest_supported_claim": "Lake recomputed relevant file hashes instead of trusting existing .hash sidecars.",
+      "does_not_establish": [
+        "build/fetch/replay action identity"
+      ]
+    }
+  ]
+}

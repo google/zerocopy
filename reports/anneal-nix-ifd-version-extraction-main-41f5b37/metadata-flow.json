@@ -1,0 +1,60 @@
+{
+  "schema": "anneal-reference/ifd-metadata-flow/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/flake.nix",
+    "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+  },
+  "producer": {
+    "package": "aeneas-unpacked",
+    "output": "metadata.json",
+    "fields": [
+      {
+        "field": "lean-toolchain",
+        "producer_expression": "parse $out/backends/lean/lean-toolchain after extracting Aeneas archive",
+        "provenance": "archive-derived",
+        "selected_value": "4.30.0-rc2"
+      },
+      {
+        "field": "rust-toolchain-date",
+        "producer_expression": "RUST_DATE=${rustDate}",
+        "provenance": "statically injected from anneal/flake.nix",
+        "selected_value": "2026-05-31"
+      },
+      {
+        "field": "rust-toolchain-version",
+        "producer_expression": "nightly-$RUST_DATE",
+        "provenance": "derived from statically injected rustDate",
+        "selected_value": "nightly-2026-05-31"
+      }
+    ]
+  },
+  "ifd_consumer": {
+    "package": "test-ifd",
+    "trigger": "builtins.readFile \"${unpacked}/metadata.json\"",
+    "parser": "builtins.fromJSON",
+    "uses": [
+      {
+        "field": "lean-toolchain",
+        "consumer": "fetchLeanToolchain leanVersion",
+        "expected_hash_source": "self.packages.${system}.lean-toolchain.outputHash"
+      },
+      {
+        "field": "rust-toolchain-date",
+        "consumer": "fetchRustToolchain rustDate",
+        "expected_hash_source": "self.packages.${system}.rust-toolchain.outputHash"
+      },
+      {
+        "field": "rust-toolchain-version",
+        "consumer": "test-ifd diagnostic output",
+        "expected_hash_source": null
+      }
+    ]
+  },
+  "ordinary_packages": {
+    "rust-toolchain": "uses top-level static rustDate and rustToolchainSha256",
+    "lean-toolchain": "uses top-level static leanVersion and leanToolchainSha256",
+    "default": "aeneas-unpacked"
+  }
+}

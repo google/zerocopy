@@ -1,0 +1,74 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": "Anneal v1 integration-test worker-cache disk amplification",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "d410c162d51977635ca5afac67d99a3b10327a94",
+      "path": "anneal/tests/integration.rs",
+      "blob": "55c9d14f8dbf01e1643cf67013ad24841177188c",
+      "role": "source",
+      "focus": [
+        "WorkerCacheGuard",
+        "acquire_worker_cache",
+        "calculate_dynamic_lean_concurrency_limit",
+        "TestContext::new",
+        "smart_clone_cache"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "f98458e7eaf54ff34b69e417ee34e79036f06547",
+      "pull_request": 3305,
+      "role": "documentation+source",
+      "focus": "reported approximately 100-worker / 100-GB incident and deletion of worker-cache infrastructure"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "69e77a55f1b80f051b9dd9555363d2e074c48d3a",
+      "pull_request": 3304,
+      "role": "documentation+source",
+      "focus": "local-filesystem Git dependency and shared Lake artifact-cache ownership transition"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "37d1fef927ec84a9086312ad1bb9840c205b0d87",
+      "pull_request": 3306,
+      "role": "documentation+source",
+      "focus": "recursive local Git source materialization"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "aa4ef2afe4d36fcc078b8ce3fb6dac8fb21aa03b",
+      "pull_request": 3297,
+      "role": "documentation",
+      "status": "closed-unmerged",
+      "focus": "corroborating artifact-cache experiment and description of the prior worker clone pool"
+    },
+    {
+      "repository": "google/zerocopy",
+      "issue": 3668,
+      "updated_at": "2026-09-11T19:04:53Z",
+      "role": "documentation",
+      "focus": "later historical synthesis of Anneal/Lake ownership and materialization evolution"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/integration.rs",
+      "blob": "8fc6f6b9b4d4785e532e0647466a2e2373fe709a",
+      "role": "source",
+      "focus": "current non-applicability of historical worker-pool architecture"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "role": "source",
+      "focus": "current generated-manifest and Lake build path"
+    }
+  ],
+  "execution_evidence": null,
+  "measurement_boundary": "The approximately 100-worker / 100-GB figure is a contemporaneous reported incident from PR #3305, not a reproduced measurement in this investigation."
+}

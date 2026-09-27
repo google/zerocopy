@@ -1,0 +1,59 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "sources": [
+    {
+      "path": "src/lake/Lake/Build/Job/Basic.lean",
+      "blob": "1f0066910478137341388422d8d593ddffbaca18",
+      "role": "source",
+      "focus": "JobAction values, verbs, state merge"
+    },
+    {
+      "path": "src/lake/Lake/Build/Run.lean",
+      "blob": "afae31b7d20a37e6a505d4dc7a9ce875467faf7e",
+      "role": "source",
+      "focus": "monitor output, no-build exit/result"
+    },
+    {
+      "path": "src/lake/Lake/Build/Common.lean",
+      "blob": "c283fda65ba4d6e3138a0b4ab8252885bf78a014",
+      "role": "source",
+      "focus": "trace provenance, replay/fetch/build paths, artifact restoration, hash sidecars"
+    },
+    {
+      "path": "src/lake/Lake/Build/Context.lean",
+      "blob": "8f2eda8d462334f933f112d7ebc4acd3e9553568",
+      "role": "source",
+      "focus": "BuildConfig noBuild/oldMode/trustHash/verbosity"
+    },
+    {
+      "path": "src/lake/Lake/Build/Module.lean",
+      "blob": "21c5f343112a1690390188642a05d6092432ab84",
+      "role": "source",
+      "focus": "specialized rebuild-needed path"
+    },
+    {
+      "path": "src/lake/Lake/Config/Env.lean",
+      "blob": "eed315c538de746a891d18f72564e88aea64e969",
+      "role": "source",
+      "focus": "LAKE_NO_CACHE, LAKE_ARTIFACT_CACHE, cache directories"
+    },
+    {
+      "path": "src/lake/Lake/Config/Monad.lean",
+      "blob": "59e032d7c516298a494c070abb948eafe2474184",
+      "role": "source",
+      "focus": "artifact cache readable/writable policy"
+    },
+    {
+      "path": "src/lake/Lake/CLI/Help.lean",
+      "blob": "aa96ac1b5fa65178418d4292b49d8086f0d6a9bb",
+      "role": "documentation",
+      "focus": "CLI observability/freshness/cache flags"
+    }
+  ],
+  "execution_evidence": "none; exact-pin execution remains a revalidation step"
+}

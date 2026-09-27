@@ -1,0 +1,22 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/diagnostics",
+    "anneal/source-maps",
+    "anneal/v1",
+    "lean/generated-code",
+    "source-correspondence"
+  ],
+  "subjects": [
+    {
+      "name": "Diagnostic provenance for synthesized Lean scaffolding in Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "current_design": "anneal redesign",
+        "historical_implementation": "anneal/v1"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

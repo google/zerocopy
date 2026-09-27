@@ -1,0 +1,24 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "scope": "responsibility/provenance mapping for synthesized Anneal-generated Lean scaffolding"
+  },
+  "sources": [
+    {"path":"anneal/README.md","blob":"bf22d554437659f38d8918c1e7c3480f4f62b126","role":"current-design-authority","focus":"current redesign / V1 authority boundary"},
+    {"path":"anneal/PRINCIPLES.md","blob":"d5339a95254eae14ac201139d07d9d36d48a19fb","role":"current-design-authority","focus":"Rust-oriented goals and verification promise"},
+    {"path":"anneal/DESIGN.md","blob":"0e8170979f3a466f2460c0ef7ec6d9a6b92650b8","role":"current-design-authority","focus":"Rust-oriented diagnostics; source/model mapping mechanism undecided"},
+    {"path":"anneal/v1/src/parse/attr.rs","blob":"9f352d511ca964e8c58d24206a3088608cb8aaf6","role":"historical-source","focus":"proof/axiom representation and source-spanned clauses"},
+    {"path":"anneal/v1/src/generate.rs","blob":"f087023d08011a90d56bcbdc759e6cbc90c344b5","role":"historical-source-and-tests","focus":"MappingKind, SourceMapping, mapped vs unmapped generated scaffolding, production axiom path"},
+    {"path":"anneal/v1/src/aeneas.rs","blob":"9b4618a20938315afc290744bbdfa498848620f4","role":"historical-source-and-tests","focus":"diagnostic mapping, sorry redirect, function/file fencing"},
+    {"path":"anneal/v1/src/diagnostics.rs","blob":"cd27b771e2f22bdb104c5335a70cfde3207e8fdb","role":"historical-source","focus":"Rust rendering and fallback"},
+    {"path":"anneal/v1/README.md","blob":"2bfda6336f87bf3cd785a19286363ab13423bd7d","role":"historical-documentation","focus":"V1 workflow and historical status"},
+    {"path":"reports/end-to-end-source-correspondence-nightly-2026-06-03-v4-30-0-rc2/REPORT.md","blob":"f6d9139254827972c6b41ae4bcbb8bbeccd20241","role":"current-reference-context","focus":"Aeneas item-level provenance and V1 sidecar overview"}
+  ],
+  "not_executed": [
+    "cargo anneal V1 generation/verification",
+    "Lean diagnostic reproduction on synthesized scaffolding",
+    "axiom keyword mapping reproduction"
+  ]
+}

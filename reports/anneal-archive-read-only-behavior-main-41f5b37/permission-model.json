@@ -1,0 +1,55 @@
+{
+  "schema": "anneal-reference/archive-read-only-model/v1",
+  "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "stages": [
+    {
+      "stage": "omnibus staging",
+      "actor": "anneal/flake.nix",
+      "operation": "chmod -R a-w $TMPDIR/dist_staging",
+      "coverage": "staged payload entries under aeneas/ lean/ rust/",
+      "effect": "removes user/group/other write bits before tar"
+    },
+    {
+      "stage": "raw tar",
+      "actor": "GNU tar selected by Nix",
+      "operation": "tar -cf $out *",
+      "coverage": "top-level payload members and descendants",
+      "effect": "encodes staged member metadata; installation root is not a member"
+    },
+    {
+      "stage": "Exocrate staging",
+      "actor": "exocrate/src/sync.rs",
+      "operation": "fs::create_dir_all(<final>.staging)",
+      "coverage": "container directory around archive payload",
+      "effect": "root permissions originate outside archive"
+    },
+    {
+      "stage": "Exocrate extraction",
+      "actor": "exocrate/src/lib.rs",
+      "operation": "tar::Archive::unpack(target_dir)",
+      "coverage": "archive members",
+      "effect": "no Exocrate permission-hardening pass follows"
+    },
+    {
+      "stage": "publication",
+      "actor": "exocrate/src/sync.rs",
+      "operation": "fs::rename(staging, final)",
+      "coverage": "whole staging directory",
+      "effect": "no explicit permission change"
+    },
+    {
+      "stage": "reuse",
+      "actor": "exocrate/src/lib.rs",
+      "operation": "check_exists -> ResolvedExisting",
+      "coverage": "final installation path",
+      "effect": "existence/type check only; no recursive permission revalidation"
+    }
+  ],
+  "current_test": {
+    "path": "anneal/src/main.rs",
+    "root_checked": "<installation>/aeneas",
+    "unix_rule": "mode & 0o222 == 0 for every non-symlink ordinary entry visited recursively",
+    "symlink_rule": "skipped",
+    "consumer": "separate writable generated workspace runs lake --old build and lean --json against installed Aeneas/Lean"
+  }
+}

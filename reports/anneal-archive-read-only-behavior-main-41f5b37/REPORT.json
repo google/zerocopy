@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/toolchain",
+    "archive/permissions",
+    "archive/read-only",
+    "exocrate/install"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal omnibus archive construction",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/flake.nix"
+      }
+    },
+    {
+      "name": "Anneal v2 Exocrate setup and archive-cache reuse test",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/src/main.rs"
+      }
+    },
+    {
+      "name": "Exocrate installer selected by Anneal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "exocrate/src"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

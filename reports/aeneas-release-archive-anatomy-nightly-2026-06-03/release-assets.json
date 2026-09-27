@@ -1,0 +1,48 @@
+{
+  "assets": [
+    {
+      "created_at": "2026-06-03T05:47:10Z",
+      "id": 436960558,
+      "name": "aeneas-linux-x86_64.tar.gz",
+      "sha256": "00fb8ef427d4d06dcabd90f5196266e07731adf2a7466964ce6f4f6d1e8cbc11",
+      "size": 60715544,
+      "updated_at": "2026-06-03T05:47:13Z"
+    },
+    {
+      "created_at": "2026-06-03T06:22:58Z",
+      "id": 436982907,
+      "name": "aeneas-linux-aarch64.tar.gz",
+      "sha256": "25402c4cbcb7da2d337cb168663542bc9c75ae9b10d2d2708f5289e8ca9d1902",
+      "size": 62392219,
+      "updated_at": "2026-06-03T06:23:00Z"
+    },
+    {
+      "created_at": "2026-06-03T05:53:27Z",
+      "id": 436964244,
+      "name": "aeneas-macos-x86_64.tar.gz",
+      "sha256": "ba25ee857a76fa8f4c1022f6dff4072c9a01007453d67c61cfbaa1aa1c03e317",
+      "size": 60658870,
+      "updated_at": "2026-06-03T05:53:31Z"
+    },
+    {
+      "created_at": "2026-06-03T06:38:39Z",
+      "id": 436992826,
+      "name": "aeneas-macos-aarch64.tar.gz",
+      "sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61",
+      "size": 61499346,
+      "updated_at": "2026-06-03T06:38:44Z"
+    }
+  ],
+  "note": "GitHub release API metadata observed 2026-09-27; asset bytes were not downloaded in this investigation.",
+  "release": {
+    "id": 333508110,
+    "immutable": false,
+    "prerelease": true,
+    "published_at": "2026-06-03T05:42:20Z",
+    "repository": "AeneasVerif/aeneas",
+    "tag_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "tag_name": "nightly-2026.06.03",
+    "updated_at": "2026-06-03T06:38:44Z"
+  },
+  "schema": "anneal-reference/aeneas-release-assets/v1"
+}

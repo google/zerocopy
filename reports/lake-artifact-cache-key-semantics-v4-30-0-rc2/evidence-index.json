@@ -1,0 +1,153 @@
+{
+  "schema": "anneal-reference-report-evidence-index/v1",
+  "subject_revision": "leanprover/lean4@3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "observed_at": "2026-09-27",
+  "fresh_execution_performed": false,
+  "sources": [
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Trace.lean",
+      "blob": "656c991fab8a6475802373224514ec7e73f9b18b",
+      "symbols": [
+        "BuildTrace",
+        "BuildTrace.compute",
+        "BuildTrace.mix"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Job/Monad.lean",
+      "blob": "7321de72c6283e5af458b19bd2988d99f906745d",
+      "symbols": [
+        "getTrace",
+        "setTrace",
+        "addTrace",
+        "addSubTrace"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Job/Basic.lean",
+      "blob": "1f0066910478137341388422d8d593ddffbaca18",
+      "symbols": [
+        "JobState",
+        "JobState.merge",
+        "Job.getTrace"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Job/Register.lean",
+      "blob": "700ecf9be3b0628952f0cc9b32ce9cac99a07607",
+      "symbols": [
+        "JobState.renew",
+        "registerJob"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Common.lean",
+      "blob": "c283fda65ba4d6e3138a0b4ab8252885bf78a014",
+      "symbols": [
+        "platformTrace",
+        "addPlatformTrace",
+        "addLeanTrace",
+        "addPureTrace",
+        "BuildMetadata",
+        "SavedTrace.replayIfUpToDate'",
+        "fetchFileHash",
+        "buildArtifactUnlessUpToDate",
+        "buildO",
+        "buildLeanO",
+        "buildSharedLib",
+        "buildLeanSharedLib",
+        "buildLeanExe"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Module.lean",
+      "blob": "21c5f343112a1690390188642a05d6092432ab84",
+      "symbols": [
+        "Module.recBuildLean",
+        "traceOptions",
+        "Module.recFetchSetup",
+        "trackOutputsIfEnabled"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Library.lean",
+      "blob": "6cb600d16b99f31d29e13dccc6cdfccef6a8b23a",
+      "symbols": [
+        "LeanLib.recBuildStatic"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Context.lean",
+      "blob": "8f2eda8d462334f933f112d7ebc4acd3e9553568",
+      "symbols": [
+        "BuildContext",
+        "getLeanTrace"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Build/Run.lean",
+      "blob": "afae31b7d20a37e6a505d4dc7a9ce875467faf7e",
+      "symbols": [
+        "mkBuildContext"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Config/Artifact.lean",
+      "blob": "41d6af1a9aa52d6888d3f245df38b4cd76a4dd5d",
+      "symbols": [
+        "ArtifactDescr",
+        "ArtifactDescr.relPath",
+        "Artifact.trace"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Config/Cache.lean",
+      "blob": "607e6b92108f30e0a57d0de682f7faa283d7d470",
+      "symbols": [
+        "CacheMap",
+        "Cache.outputsFile",
+        "Cache.writeOutputs",
+        "Cache.readOutputs?"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Config/Package.lean",
+      "blob": "2c73b6a471d6face8084c8b1957f5b802cfa90b7",
+      "symbols": [
+        "Package",
+        "Package.id?",
+        "Package.cacheScope",
+        "Package.platformIndependent"
+      ]
+    },
+    {
+      "role": "source",
+      "path": "src/lake/Lake/Config/Env.lean",
+      "blob": "eed315c538de746a891d18f72564e88aea64e969",
+      "symbols": [
+        "Env",
+        "Env.compute",
+        "Env.cacheToolchain"
+      ]
+    }
+  ],
+  "adjacent_durable_evidence": [
+    {
+      "record_id": "5a2f45ab-5124-4cc2-9a11-a9266e7ce215",
+      "scope": "Lake artifact-cache architecture at the same pinned Lean revision",
+      "use": "Evidence index and scope boundary only; exact key semantics were re-read from pinned source."
+    }
+  ]
+}

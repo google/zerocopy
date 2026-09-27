@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/v1",
+    "anneal/integration-tests",
+    "anneal/lake",
+    "lake/cache",
+    "lake/concurrency"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal integration-test worker-cache implementation before PR #3305",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d410c162d51977635ca5afac67d99a3b10327a94",
+        "path": "anneal/tests/integration.rs"
+      }
+    },
+    {
+      "name": "Anneal PR #3305 worker-cache removal",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "f98458e7eaf54ff34b69e417ee34e79036f06547",
+        "pull_request": "3305"
+      }
+    },
+    {
+      "name": "Current retained Anneal v1 implementation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

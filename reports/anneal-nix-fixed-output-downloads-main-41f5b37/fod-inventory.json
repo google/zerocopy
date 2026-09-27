@@ -1,0 +1,77 @@
+{
+  "schema": "anneal-reference/fod-inventory/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/flake.nix",
+    "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+  },
+  "logical_versions": {
+    "aeneas": "nightly-2026.06.03",
+    "rust": "nightly-2026-05-31",
+    "lean": "v4.30.0-rc2",
+    "leantar": "0.1.16"
+  },
+  "platform_hashes": {
+    "x86_64-linux": {
+      "aeneas_fetchurl": "sha256-APuO9CfU0G3KvZD1GWJm4HcxrfKnRmlkzm9PbR6MvBE=",
+      "rust_toolchain_recursive": "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw=",
+      "lean_toolchain_recursive": "sha256-o47cQjSLK5YL8YZ2raaj+mGAvvO+dIDfVeP2L+WoyMs=",
+      "leantar_fetchurl": "sha256-LLxAyiFCJ6DlNnIcAhutcZqALdhrHy2JiVce+vv709E=",
+      "mathlib_cache_download_recursive": "sha256-n67tKjzZm5LsDU1Dl9kaOFKrQw+8YE201F0toYu1C3s="
+    },
+    "aarch64-linux": {
+      "aeneas_fetchurl": "sha256-JUAsTLy32i0zfLFoZjVCvJx1rpsQ0tJwj1KJ6MqdGQI=",
+      "rust_toolchain_recursive": "sha256-gWFajI7TJyjslQLZm4VWBBsKA6nYe1lNQwrgUp2hwSA=",
+      "lean_toolchain_recursive": "sha256-IrEGcTEeI1q0/7tLtMiiKPcW05JvaU8kNY6y5eprYg4=",
+      "leantar_fetchurl": "sha256-Jut3VDaIPj1c2tJ681ucNyEscxBjFoY+ofxfjsLMneQ=",
+      "mathlib_cache_download_recursive": "sha256-9Yj5BAv6V5BTLd/nOWzIuqTDJPKwqR28bg7m9+46K98="
+    },
+    "x86_64-darwin": {
+      "aeneas_fetchurl": "sha256-uiXuhXp2+o9MECL23/QHLJoBAHRT1nxhz7qhqhwD4xc=",
+      "rust_toolchain_recursive": "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo=",
+      "lean_toolchain_recursive": "sha256-DDPmVkXjSLDr21LXcdvNkmGjD2v+sbUyY+REr3uylwI=",
+      "leantar_fetchurl": "sha256-58eNYGxlMHhiuw/sWqRG1ves4TN7HkiVzEfZH3VlmWw=",
+      "mathlib_cache_download_recursive": "sha256-DBdUmPfheeLTVwaVUzkB541Y9CWSQN6gmxBnJ3oxL4c="
+    },
+    "aarch64-darwin": {
+      "aeneas_fetchurl": "sha256-dveLZF4zjsfokynwrSJ5KZf0K9m16xRkOsMq3iJO62E=",
+      "rust_toolchain_recursive": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "lean_toolchain_recursive": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "leantar_fetchurl": "sha256-tbWQ0vhC4jWZPsdW09vWCKE8iP1U02p7K2WjY7LuXjU=",
+      "mathlib_cache_download_recursive": "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk="
+    }
+  },
+  "boundaries": [
+    {
+      "name": "Aeneas release",
+      "constructor": "pkgs.fetchurl",
+      "hash_shape": "single archive file",
+      "downstream": "packages.aeneas-unpacked"
+    },
+    {
+      "name": "Rust toolchain",
+      "constructor": "fetchToolchainAsset/fetchRustToolchain",
+      "hash_shape": "recursive merged sysroot tree",
+      "downstream": "packages.rust-toolchain"
+    },
+    {
+      "name": "Lean toolchain",
+      "constructor": "fetchToolchainAsset/fetchLeanToolchain",
+      "hash_shape": "recursive extracted toolchain tree",
+      "downstream": "packages.lean-toolchain"
+    },
+    {
+      "name": "leantar archive",
+      "constructor": "pkgs.fetchurl inside fetchLeantar",
+      "hash_shape": "single archive file",
+      "downstream": "ordinary fetchLeantar derivation installs executable"
+    },
+    {
+      "name": "Mathlib cache/source download",
+      "constructor": "packages.mathlib-cache-download",
+      "hash_shape": "recursive sanitized cache/source tree",
+      "downstream": "packages.mathlib-cache-unpacked"
+    }
+  ]
+}

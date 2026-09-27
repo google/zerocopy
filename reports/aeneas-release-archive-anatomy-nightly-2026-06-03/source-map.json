@@ -1,0 +1,65 @@
+{
+  "not_executed": [
+    "download/unpack of any release asset",
+    "binary linkage inspection",
+    "final-archive Charon execution",
+    "final-archive Lean consumer build"
+  ],
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "blob": "e248e9fdbecb3809f54ef58456db3faee448175f",
+      "focus": "release creation, platform matrix, staging, precompile, tar, smoke test, upload",
+      "path": ".github/workflows/release.yml",
+      "repository": "AeneasVerif/aeneas",
+      "role": "source"
+    },
+    {
+      "blob": "05e71549416ac622d6f12edc1fc7c74e338949ba",
+      "focus": "release derivations and staged archive root",
+      "path": "flake.nix",
+      "repository": "AeneasVerif/aeneas",
+      "role": "source"
+    },
+    {
+      "blob": "36287bb77a71c66326bcd3816ada526d41a5dee2",
+      "focus": "Lean precompile and dependency-source pruning",
+      "path": "scripts/ci-precompile-lean.sh",
+      "repository": "AeneasVerif/aeneas",
+      "role": "source"
+    },
+    {
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26",
+      "focus": "Lean version",
+      "path": "backends/lean/lean-toolchain",
+      "repository": "AeneasVerif/aeneas",
+      "role": "source"
+    },
+    {
+      "blob": "1a5af703163d8b39f4311aafe22ae171788179ee",
+      "focus": "Lean dependency pins",
+      "path": "backends/lean/lake-manifest.json",
+      "repository": "AeneasVerif/aeneas",
+      "role": "source"
+    },
+    {
+      "blob": "4e348edab20d6bd5b195e758afe20f9d8258a3e1",
+      "focus": "Rust toolchain copied into release",
+      "path": "rust-toolchain",
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "role": "source"
+    },
+    {
+      "focus": "asset names, sizes, digests, mutability/prerelease state",
+      "release_id": "333508110",
+      "repository": "AeneasVerif/aeneas",
+      "role": "release-metadata"
+    }
+  ],
+  "subject": {
+    "release": "nightly-2026.06.03",
+    "repository": "AeneasVerif/aeneas",
+    "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+  }
+}

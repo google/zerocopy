@@ -1,0 +1,74 @@
+{
+  "execution": {
+    "missing_decisive_probe": "Independent paired builds of the exact omnibus-tar derivation, followed by raw tar hash/member-metadata comparison and then same-input zstd comparison.",
+    "performed": false
+  },
+  "observed_at": "2026-09-27",
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "path": "anneal/flake.nix",
+      "regions": [
+        {
+          "focus": "fixed-output Aeneas/Rust/Lean inputs",
+          "lines": "90-188"
+        },
+        {
+          "focus": "Aeneas extraction, Mathlib cache FOD, full-tree intermediate timestamp normalization",
+          "lines": "230-386"
+        },
+        {
+          "focus": "Aeneas compiled/vendored tree and old-mode timestamp handling",
+          "lines": "390-490"
+        },
+        {
+          "focus": "omnibus final staging, ELF mutation, selective timestamp repair, tar creation",
+          "lines": "494-553"
+        },
+        {
+          "focus": "zstd archive derivations and compression levels",
+          "lines": "558-584"
+        },
+        {
+          "focus": "layout/path-safety check",
+          "lines": "586-646"
+        }
+      ],
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "role": "source"
+    },
+    {
+      "blob": "92ac56b0a777d280f0a76e28f163b20ff6fb2003",
+      "focus": "pins nixpkgs 549bd84d6279f9852cae6225e372cc67fb91a4c1",
+      "path": "anneal/flake.lock",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "role": "source"
+    },
+    {
+      "blob": "51344245c45f756e32aa23f9ab0c1834e7cc626c",
+      "focus": "GNU tar 1.35 selection",
+      "path": "pkgs/by-name/gn/gnutar/package.nix",
+      "repository": "NixOS/nixpkgs",
+      "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+      "role": "source"
+    },
+    {
+      "blob": "a014b652d313facb7d2bc0ad5f4c345347e1eaca",
+      "focus": "Zstandard 1.5.7 selection",
+      "path": "pkgs/tools/compression/zstd/default.nix",
+      "repository": "NixOS/nixpkgs",
+      "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+      "role": "source"
+    },
+    {
+      "accessed_at": "2026-09-27",
+      "focus": "archive metadata, default --sort=none, Making tar Archives More Reproducible",
+      "role": "documentation",
+      "url": "https://www.gnu.org/software/tar/manual/tar.html",
+      "version": "GNU tar 1.35"
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/flake.nix",
+    "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+  },
+  "symbols": [
+    "fetchAeneas",
+    "fetchToolchainAsset",
+    "fetchRustToolchain",
+    "fetchLeanToolchain",
+    "fetchLeantar",
+    "packages.mathlib-cache-download",
+    "packages.mathlib-cache-unpacked",
+    "packages.aeneas-compiled",
+    "packages.test-ifd"
+  ],
+  "documentation": [
+    {
+      "title": "Nix 2.30.3 Reference Manual — Advanced Attributes",
+      "url": "https://releases.nixos.org/nix/nix-2.30.3/manual/language/advanced-attributes.html",
+      "role": "fixed-output derivation type and recursive/NAR hashing semantics"
+    },
+    {
+      "title": "Nix 2.22 Reference Manual — Advanced Attributes",
+      "url": "https://releases.nixos.org/nix/nix-2.22.0/manual/language/advanced-attributes.html",
+      "role": "fetchurl fixed-output example and flat-versus-recursive description"
+    }
+  ],
+  "execution": {
+    "performed": false,
+    "missing_probes": [
+      "build fixed-output derivations at the exact current flake",
+      "deliberate wrong-hash rejection",
+      "downstream no-reacquisition probe after fixed outputs are available"
+    ]
+  }
+}

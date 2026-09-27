@@ -550,6 +550,55 @@
         "lean/termination"
       ]
     },
+    "aeneas-release-archive-anatomy-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas nightly-2026.06.03 release source and packaging workflow"
+        },
+        {
+          "identity": {
+            "artifact": "aeneas-linux-x86_64.tar.gz",
+            "sha256": "00fb8ef427d4d06dcabd90f5196266e07731adf2a7466964ce6f4f6d1e8cbc11"
+          },
+          "name": "Aeneas nightly-2026.06.03 Linux x86_64 release asset"
+        },
+        {
+          "identity": {
+            "artifact": "aeneas-linux-aarch64.tar.gz",
+            "sha256": "25402c4cbcb7da2d337cb168663542bc9c75ae9b10d2d2708f5289e8ca9d1902"
+          },
+          "name": "Aeneas nightly-2026.06.03 Linux AArch64 release asset"
+        },
+        {
+          "identity": {
+            "artifact": "aeneas-macos-x86_64.tar.gz",
+            "sha256": "ba25ee857a76fa8f4c1022f6dff4072c9a01007453d67c61cfbaa1aa1c03e317"
+          },
+          "name": "Aeneas nightly-2026.06.03 macOS x86_64 release asset"
+        },
+        {
+          "identity": {
+            "artifact": "aeneas-macos-aarch64.tar.gz",
+            "sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61"
+          },
+          "name": "Aeneas nightly-2026.06.03 macOS AArch64 release asset"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/archive",
+        "aeneas/packaging",
+        "aeneas/release",
+        "aeneas/toolchain",
+        "toolchain/distribution"
+      ]
+    },
     "aeneas-resource-semantics-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -904,6 +953,212 @@
         "aeneas/tactics",
         "lean/tactics",
         "anneal/history"
+      ]
+    },
+    "anneal-archive-read-only-behavior-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal omnibus archive construction"
+        },
+        {
+          "identity": {
+            "path": "anneal/src/main.rs",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal v2 Exocrate setup and archive-cache reuse test"
+        },
+        {
+          "identity": {
+            "path": "exocrate/src",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Exocrate installer selected by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/permissions",
+        "archive/read-only",
+        "exocrate/install"
+      ]
+    },
+    "anneal-archive-timestamps-lake-reuse-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "component": "Lake",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake modification-time fallback selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal archive timestamp normalization"
+        }
+      ],
+      "topics": [
+        "anneal/toolchain",
+        "lake",
+        "lake/mtime",
+        "lake/old-mode",
+        "archive/reproducibility"
+      ]
+    },
+    "anneal-nix-fixed-output-downloads-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal Nix fixed-output acquisition architecture"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/nix",
+        "anneal/toolchain",
+        "mathlib/cache",
+        "nix/fetch",
+        "nix/fixed-output",
+        "toolchain/materialization"
+      ]
+    },
+    "anneal-nix-ifd-version-extraction-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal import-from-derivation toolchain-version probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/nix",
+        "anneal/toolchain",
+        "nix/evaluation",
+        "nix/ifd",
+        "toolchain/versioning"
+      ]
+    },
+    "anneal-omnibus-archive-byte-reproducibility-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal omnibus toolchain archive construction"
+        },
+        {
+          "identity": {
+            "package": "gnutar",
+            "repository": "NixOS/nixpkgs",
+            "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+            "version": "1.35"
+          },
+          "name": "GNU tar selected by Anneal's pinned nixpkgs"
+        },
+        {
+          "identity": {
+            "package": "zstd",
+            "repository": "NixOS/nixpkgs",
+            "revision": "549bd84d6279f9852cae6225e372cc67fb91a4c1",
+            "version": "1.5.7"
+          },
+          "name": "Zstandard selected by Anneal's pinned nixpkgs"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/toolchain",
+        "archive/reproducibility",
+        "nix/toolchain",
+        "tar/reproducibility",
+        "zstd"
+      ]
+    },
+    "anneal-synthesized-scaffolding-diagnostic-provenance-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "current_design": "anneal redesign",
+            "historical_implementation": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Diagnostic provenance for synthesized Lean scaffolding in Anneal"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/diagnostics",
+        "anneal/source-maps",
+        "anneal/v1",
+        "lean/generated-code",
+        "source-correspondence"
+      ]
+    },
+    "anneal-v1-integration-test-disk-amplification-f98458e": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/tests/integration.rs",
+            "repository": "google/zerocopy",
+            "revision": "d410c162d51977635ca5afac67d99a3b10327a94"
+          },
+          "name": "Anneal integration-test worker-cache implementation before PR #3305"
+        },
+        {
+          "identity": {
+            "pull_request": "3305",
+            "repository": "google/zerocopy",
+            "revision": "f98458e7eaf54ff34b69e417ee34e79036f06547"
+          },
+          "name": "Anneal PR #3305 worker-cache removal"
+        },
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Current retained Anneal v1 implementation"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/v1",
+        "anneal/integration-tests",
+        "anneal/lake",
+        "lake/cache",
+        "lake/concurrency"
       ]
     },
     "cargo-compilation-subject-identity-2026-05-31": {
@@ -1641,6 +1896,48 @@
         "lake/traces"
       ]
     },
+    "lake-artifact-cache-key-semantics-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake artifact-cache key semantics"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/artifact-cache",
+        "lake/cache-keys",
+        "lake/build-traces",
+        "lake/reproducibility",
+        "lake/relocation"
+      ]
+    },
+    "lake-artifact-cache-noncoverage-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake artifact-cache noncoverage"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/artifact-cache",
+        "lake/cache-boundaries",
+        "lake/build",
+        "lake/package-cache",
+        "lake/reproducibility"
+      ]
+    },
     "lake-clean-cache-seeded-equivalence-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1870,6 +2167,44 @@
         "anneal"
       ]
     },
+    "lake-package-tree-pruning-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "component": "Lake",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake package model selected by Anneal"
+        },
+        {
+          "identity": {
+            "path": "anneal/prune-lake-cache.py",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal package-tree pruning"
+        },
+        {
+          "identity": {
+            "path": "backends/lean",
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean package selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/package",
+        "lake/pruning",
+        "lake/artifacts",
+        "anneal/toolchain"
+      ]
+    },
     "lake-path-embedding-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1922,6 +2257,28 @@
         "lake/concurrency",
         "lake/artifact-cache",
         "anneal/history"
+      ]
+    },
+    "lake-reuse-rebuild-observability-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake reuse/rebuild observability selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/artifact-cache",
+        "lake/build",
+        "lake/incremental",
+        "lake/no-build",
+        "lake/observability",
+        "lake/traces"
       ]
     },
     "lake-server-preparation-v4-30-0-rc2": {

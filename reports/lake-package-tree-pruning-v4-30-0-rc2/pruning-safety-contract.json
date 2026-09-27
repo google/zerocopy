@@ -1,0 +1,54 @@
+{
+  "schema": "anneal-reference/pruning-safety-contract/v1",
+  "subject": "Safe pruning of Lean package trees",
+  "principle": "A file is removable only relative to an explicit supported-consumer set and evidence that the file is outside the transitive dependencies of those consumers.",
+  "current_anneal": {
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "fixed_deleted_files": [
+      ".gitignore",
+      ".gitattributes",
+      "README.md",
+      "LICENSE",
+      "bors.toml",
+      ".pre-commit-config.yaml",
+      ".gitpod.yml"
+    ],
+    "fixed_deleted_directories": [
+      ".github",
+      ".vscode",
+      ".devcontainer",
+      ".docker",
+      "docs",
+      "tests",
+      "test"
+    ],
+    "recursive_deleted_glob": "**/*.ltar",
+    "mathlib_only_module_reachability_pruning": true,
+    "non_mathlib_module_policy": "No module-reachability deletion before fixed metadata-directory cleanup; test/ and tests/ can still remove Lean sources.",
+    "phase_order": [
+      "materialize upstream packages/cache",
+      "build offline",
+      "prime package configuration",
+      "rewrite/check traces",
+      "prune package trees",
+      "stage final archive"
+    ]
+  },
+  "lake_v4_30_0_rc2_dependency_categories": [
+    "package configuration source and compiled configuration state",
+    "dependency manifest and selected dependency graph",
+    "lean library/executable target source roots",
+    "scripts, hooks, test/lint drivers, and extra dependency targets",
+    "compiled Lean and native artifacts required by selected targets",
+    "configured metadata paths for supported metadata/release operations",
+    "tool-specific mutable/cache state needed by supported consumers"
+  ],
+  "validation_obligation": "Exercise the declared supported consumer surface after pruning under the intended offline/read-only/relocated deployment conditions; fixed-name classification alone is insufficient.",
+  "not_proven": [
+    "full file-access closure for every pinned transitive package",
+    "all supported generated-workspace operations after current pruning",
+    "native-artifact completeness",
+    "cross-platform artifact portability",
+    "empty-directory irrelevance"
+  ]
+}

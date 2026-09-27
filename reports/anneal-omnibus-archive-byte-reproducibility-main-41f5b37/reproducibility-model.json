@@ -1,0 +1,84 @@
+{
+  "current_validation": {
+    "checks": [
+      "top-level names",
+      "required member names",
+      "presence of Mathlib .olean",
+      "no absolute/parent-relative names",
+      "no repository-checkout top-level names"
+    ],
+    "does_not_check": [
+      "independent rebuild byte equality",
+      "raw tar SHA-256 equality",
+      "compressed archive SHA-256 equality",
+      "canonical owner/group/mtime/mode",
+      "canonical recursive member order"
+    ],
+    "name": "omnibus-archive-layout-check"
+  },
+  "schema": "anneal-reference/omnibus-reproducibility-model/v1",
+  "stages": [
+    {
+      "byte_boundary": "hash-pinned input",
+      "control": "per-system fetchurl SHA-256",
+      "stage": "upstream Aeneas asset"
+    },
+    {
+      "byte_boundary": "content-addressed derived tree",
+      "control": "recursive fixed-output SHA-256",
+      "stage": "Rust toolchain materialization"
+    },
+    {
+      "byte_boundary": "content-addressed derived tree",
+      "control": "recursive fixed-output SHA-256",
+      "stage": "Lean toolchain materialization"
+    },
+    {
+      "byte_boundary": "content-addressed downloaded/cache tree",
+      "control": "recursive fixed-output SHA-256",
+      "stage": "Mathlib cache download"
+    },
+    {
+      "byte_boundary": "ordinary derivation; no paired rebuild in this report",
+      "control": "full output tree touched to Unix epoch",
+      "stage": "Mathlib cache unpack"
+    },
+    {
+      "byte_boundary": "ordinary derivation; no paired rebuild in this report",
+      "control": "selective source/config epoch touch plus build/rewrites/pruning",
+      "stage": "Aeneas compiled/vendored tree"
+    },
+    {
+      "byte_boundary": "ordinary derivation; final metadata not globally canonicalized",
+      "control": "copy fixed/derived trees; Linux patch/strip; selective Aeneas source/config epoch touch; chmod a-w",
+      "stage": "omnibus final staging"
+    },
+    {
+      "byte_boundary": "no --sort/name, owner/group, or global mtime canonicalization flags",
+      "control": "GNU tar 1.35 `tar -cf $out *`",
+      "stage": "raw tar"
+    },
+    {
+      "byte_boundary": "must be tested only after raw tar equality",
+      "control": "zstd 1.5.7 level 1",
+      "stage": "compressed local archive"
+    },
+    {
+      "byte_boundary": "distinct configuration; must be tested independently",
+      "control": "zstd 1.5.7 level 6",
+      "stage": "compressed CI archive"
+    }
+  ],
+  "status": "source-level byte reproducibility not established; decisive paired-build execution remains",
+  "subject": {
+    "path": "anneal/flake.nix",
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "systems": [
+    "x86_64-linux",
+    "aarch64-linux",
+    "x86_64-darwin",
+    "aarch64-darwin"
+  ]
+}

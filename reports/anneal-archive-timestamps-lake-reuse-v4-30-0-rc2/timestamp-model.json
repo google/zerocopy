@@ -1,0 +1,50 @@
+{
+  "schema": "anneal-reference/archive-timestamp-model/v1",
+  "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "lake_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "lake_version": "v4.30.0-rc2",
+  "rules": {
+    "ordinary_reuse": "current dependency hash must equal saved depHash and output must exist",
+    "old_mode_fallback": "when hash reuse fails, output mtime must be strictly greater than the selected oldTrace mtime",
+    "mtime_only_cacheability": false,
+    "module_old_trace": "module source trace mtime"
+  },
+  "anneal_touch_sites": [
+    {
+      "stage": "mathlib-cache-unpacked",
+      "selection": "entire output tree",
+      "mtime": "1970-01-01 00:00:00",
+      "purpose": "source comment: keep release archive reproducible"
+    },
+    {
+      "stage": "aeneas-compiled before lake --old build",
+      "selection": [
+        "*.lean",
+        "lakefile.lean",
+        "lakefile.toml",
+        "lake-manifest.json",
+        "lean-toolchain"
+      ],
+      "mtime": "1970-01-01 00:00:00",
+      "purpose": "make rewritten inputs older than prebuilt artifacts"
+    },
+    {
+      "stage": "omnibus-tar final staging",
+      "selection": [
+        "*.lean",
+        "lakefile.lean",
+        "lakefile.toml",
+        "lake-manifest.json",
+        "lean-toolchain"
+      ],
+      "mtime": "1970-01-01 00:00:00",
+      "purpose": "restore old-mode ordering after store finalization/staging copy"
+    }
+  ],
+  "critical_invariant": "For mtime fallback, relevant output mtime > selected input/reference mtime. Equality is insufficient.",
+  "not_proven": [
+    "actual final archive mtimes on supported hosts",
+    "byte reproducibility of final archive",
+    "ordinary hash-mode equivalence after vendoring"
+  ]
+}
