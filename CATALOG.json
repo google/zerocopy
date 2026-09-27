@@ -112,6 +112,100 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "aeneas-generated-lean-stability-near-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/lean",
+        "aeneas/generated-source",
+        "aeneas/release-stability",
+        "anneal/toolchain-pinning"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas nightly-2026.06.01",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+            "release": "nightly-2026.06.01"
+          }
+        },
+        {
+          "name": "Aeneas revision tagged nightly-2026.06.02 and nightly-2026.06.03",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release_tags": "nightly-2026.06.02, nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas nightly-2026.06.04",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac74e1baafe0973e919df9c86af0d4c521b642ff",
+            "release": "nightly-2026.06.04"
+          }
+        },
+        {
+          "name": "Aeneas nightly-2026.06.05",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "5c70d9b0f648fa1c0becb92cab15a5ace1e6c093",
+            "release": "nightly-2026.06.05"
+          }
+        },
+        {
+          "name": "Charon selected by Aeneas nightly-2026.06.01",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "42836b36b666a980cbc9d438a8aed340ad3b848b"
+          }
+        },
+        {
+          "name": "Charon selected by Aeneas nightly-2026.06.03",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-nested-borrow-flaky-repro-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/borrows",
+        "aeneas/nested-borrows",
+        "aeneas/regressions",
+        "anneal/history"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas nested-borrow behavior selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Historical Hermes Aeneas pin for the flaky nested-reference fixture",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+            "release": "build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          }
+        },
+        {
+          "name": "Historical Hermes nested-reference flaky fixture",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "9bdef60f295715bc113419661b376071cc18e2b3",
+            "path": "hermes/tests/fixtures/edge_cases_types/test_2_6_nested_refs"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "aeneas-panic-error-unwind-nightly-2026-06-03": {
       "topics": [
         "aeneas",
@@ -283,6 +377,35 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "aeneas-rust-lean-naming-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/lean",
+        "aeneas/naming",
+        "charon/item-identity",
+        "lean/namespaces",
+        "source-correspondence"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Lean naming selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Aeneas-paired Charon item-name producer",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "aeneas-rust-support-failure-matrix-nightly-2026-06-03": {
       "topics": [
         "aeneas",
@@ -370,6 +493,43 @@
         }
       ],
       "observed_at": "2026-09-26"
+    },
+    "aeneas-separation-logic-status-2026-09-26": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas release selected by Anneal"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "b86120db3183b0107eb5f2637b11c424cd06ef1c"
+          },
+          "name": "Current Aeneas main separation-logic prerequisites"
+        },
+        {
+          "identity": {
+            "pull_request": "1352",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+          },
+          "name": "Draft first-order sequential separation logic"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/separation-logic",
+        "aeneas/unsafe-rust",
+        "aeneas/resources",
+        "aeneas/lean",
+        "aeneas/itree"
+      ]
     },
     "aeneas-trait-translation-nightly-2026-06-03": {
       "topics": [
@@ -586,6 +746,28 @@
         "charon/mir",
         "rustc/crates"
       ]
+    },
+    "charon-enum-layout-0-1-210": {
+      "topics": [
+        "charon",
+        "charon/discriminants",
+        "charon/enums",
+        "charon/layout",
+        "charon/niches",
+        "rust/layout"
+      ],
+      "subjects": [
+        {
+          "name": "Charon enum, discriminant, niche, and layout model",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "charon-item-identity-spans-comments-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
@@ -949,6 +1131,108 @@
         "anneal/coverage"
       ]
     },
+    "lake-command-environment-reproducibility-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/cli",
+        "lake/environment",
+        "lake/reproducibility",
+        "lake/configuration"
+      ],
+      "subjects": [
+        {
+          "name": "Lake command-line and environment reproducibility inputs selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "lake-package-identity-after-vendoring-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/package-identity",
+        "lake/vendoring",
+        "lake/dependencies",
+        "lake/manifest",
+        "anneal"
+      ],
+      "subjects": [
+        {
+          "name": "Lake package identity after vendoring selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal V2 archive workspace construction",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lake-path-embedding-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/relocation",
+        "lake/manifest",
+        "lake/build-traces",
+        "lake/artifact-cache",
+        "lean/module-setup",
+        "anneal/history"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 / Lake v4.30.0-rc2",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal V1 Lake relocation remediation",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "64bd6d6f1142022eb9297e880214ceb2d87ef72a",
+            "pull_request": "3450"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lake-readonly-relocation-offline-concurrency-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/manifest",
+        "lake/dependencies",
+        "lake/relocation",
+        "lake/read-only",
+        "lake/offline",
+        "lake/concurrency",
+        "lake/artifact-cache",
+        "anneal/history"
+      ],
+      "subjects": [
+        {
+          "name": "Lake read-only, relocation, offline, and concurrency behavior shipped with Lean v4.30.0-rc2",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "lake-server-preparation-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -995,6 +1279,34 @@
         "lake/traces"
       ]
     },
+    "lake-transitive-path-dependencies-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/path-dependencies",
+        "lake/transitive-dependencies",
+        "lake/manifest",
+        "lake/relocation",
+        "anneal"
+      ],
+      "subjects": [
+        {
+          "name": "Lake transitive path dependency semantics selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal V2 archive workspace construction",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lake-workspace-package-mutable-state-v4-30-0-rc2": {
       "topics": [
         "lake",
@@ -1015,6 +1327,46 @@
         }
       ],
       "observed_at": "2026-09-26"
+    },
+    "lean-grind-behavior-extensibility-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/grind",
+        "lean/tactics",
+        "lean/proof-automation",
+        "lean/extensibility"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 grind tactic",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
+    "lean-ilean-schema-uses-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/ilean",
+        "lean/server",
+        "lean/references",
+        "lean/navigation"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 `.ilean` schema and server/reference uses selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
     },
     "lean-infotree-elaboration-info-v4-30-0-rc2": {
       "topics": [
@@ -1037,6 +1389,26 @@
       ],
       "observed_at": "2026-09-27"
     },
+    "lean-json-cli-protocol-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/cli",
+        "lean/diagnostics",
+        "lean/json",
+        "lean/protocol"
+      ],
+      "subjects": [
+        {
+          "name": "Lean command-line JSON diagnostic protocol selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lean-macro-hygiene-v4-30-0-rc2": {
       "topics": [
         "lean",
@@ -1048,6 +1420,27 @@
       "subjects": [
         {
           "name": "Lean 4 macro hygiene selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "lean-name-resolution-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/name-resolution",
+        "lean/namespaces",
+        "lean/open",
+        "lean/protected-names",
+        "lean/macros"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 namespace and name resolution selected by Anneal",
           "identity": {
             "repository": "leanprover/lean4",
             "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
@@ -1078,6 +1471,26 @@
         "lean/infoview",
         "lean/incremental-elaboration"
       ]
+    },
+    "lean-termination-checking-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/termination",
+        "lean/recursion",
+        "lean/elaboration",
+        "lean/well-founded-recursion"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 termination checking selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "lean-trust-admissions-v4-30-0-rc2": {
       "observed_at": "2026-09-25",

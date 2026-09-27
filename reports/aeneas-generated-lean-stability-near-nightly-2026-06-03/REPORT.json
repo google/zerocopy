@@ -1,0 +1,58 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/lean",
+    "aeneas/generated-source",
+    "aeneas/release-stability",
+    "anneal/toolchain-pinning"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas nightly-2026.06.01",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+        "release": "nightly-2026.06.01"
+      }
+    },
+    {
+      "name": "Aeneas revision tagged nightly-2026.06.02 and nightly-2026.06.03",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release_tags": "nightly-2026.06.02, nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Aeneas nightly-2026.06.04",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac74e1baafe0973e919df9c86af0d4c521b642ff",
+        "release": "nightly-2026.06.04"
+      }
+    },
+    {
+      "name": "Aeneas nightly-2026.06.05",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "5c70d9b0f648fa1c0becb92cab15a5ace1e6c093",
+        "release": "nightly-2026.06.05"
+      }
+    },
+    {
+      "name": "Charon selected by Aeneas nightly-2026.06.01",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "42836b36b666a980cbc9d438a8aed340ad3b848b"
+      }
+    },
+    {
+      "name": "Charon selected by Aeneas nightly-2026.06.03",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}

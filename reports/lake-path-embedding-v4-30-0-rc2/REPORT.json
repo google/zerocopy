@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "lake",
+    "lake/relocation",
+    "lake/manifest",
+    "lake/build-traces",
+    "lake/artifact-cache",
+    "lean/module-setup",
+    "anneal/history"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 / Lake v4.30.0-rc2",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Anneal V1 Lake relocation remediation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "64bd6d6f1142022eb9297e880214ceb2d87ef72a",
+        "pull_request": "3450"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

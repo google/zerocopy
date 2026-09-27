@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "aeneas",
+    "aeneas/borrows",
+    "aeneas/nested-borrows",
+    "aeneas/regressions",
+    "anneal/history"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas nested-borrow behavior selected by Anneal",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Historical Hermes Aeneas pin for the flaky nested-reference fixture",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+        "release": "build-2026.04.07.112215-42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    },
+    {
+      "name": "Historical Hermes nested-reference flaky fixture",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "9bdef60f295715bc113419661b376071cc18e2b3",
+        "path": "hermes/tests/fixtures/edge_cases_types/test_2_6_nested_refs"
+      }
+    }
+  ],
+  "observed_at": "2026-09-26"
+}

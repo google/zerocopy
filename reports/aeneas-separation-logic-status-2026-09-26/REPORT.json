@@ -1,0 +1,37 @@
+{
+  "observed_at": "2026-09-26",
+  "subjects": [
+    {
+      "identity": {
+        "release": "nightly-2026.06.03",
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+      },
+      "name": "Aeneas release selected by Anneal"
+    },
+    {
+      "identity": {
+        "branch": "main",
+        "repository": "AeneasVerif/aeneas",
+        "revision": "b86120db3183b0107eb5f2637b11c424cd06ef1c"
+      },
+      "name": "Current Aeneas main separation-logic prerequisites"
+    },
+    {
+      "identity": {
+        "pull_request": "1352",
+        "repository": "AeneasVerif/aeneas",
+        "revision": "75fb1479040d32d43d31b74510167ee3b873d28a"
+      },
+      "name": "Draft first-order sequential separation logic"
+    }
+  ],
+  "topics": [
+    "aeneas",
+    "aeneas/separation-logic",
+    "aeneas/unsafe-rust",
+    "aeneas/resources",
+    "aeneas/lean",
+    "aeneas/itree"
+  ]
+}
