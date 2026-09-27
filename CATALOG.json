@@ -1,5 +1,36 @@
 {
   "reports": {
+    "aeneas-architecture-translation-pipeline-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/architecture",
+        "aeneas/llbc",
+        "aeneas/pipeline",
+        "aeneas/pure-ir",
+        "aeneas/symbolic-execution",
+        "aeneas/translation"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas translation pipeline selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon input producer pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "rust-toolchain": "nightly-2026-05-31",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "aeneas-charon-compatibility-nightly-2026-06-03": {
       "observed_at": "2026-09-25",
       "subjects": [
@@ -170,6 +201,27 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "aeneas-lean-project-package-anatomy-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/lean",
+        "aeneas/package",
+        "aeneas/generated-files",
+        "lean/imports",
+        "lean/lake"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas Lean project and generated-package layout selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "aeneas-nested-borrow-flaky-repro-nightly-2026-06-03": {
       "topics": [
         "aeneas",
@@ -295,6 +347,34 @@
           "identity": {
             "repository": "google/zerocopy",
             "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "aeneas-raw-pointers-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/raw-pointers",
+        "aeneas/unsafe-rust",
+        "aeneas/models",
+        "lean/raw-pointers"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon pinned by Aeneas",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
           }
         }
       ],
@@ -560,6 +640,35 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "aeneas-translation-correctness-obligations-nightly-2026-06-03": {
+      "topics": [
+        "aeneas",
+        "aeneas/correctness",
+        "aeneas/translation",
+        "aeneas/trust",
+        "aeneas/semantics",
+        "charon/llbc"
+      ],
+      "subjects": [
+        {
+          "name": "Aeneas translation-correctness obligations and trust boundary selected by Anneal",
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "release": "nightly-2026.06.03"
+          }
+        },
+        {
+          "name": "Charon input representation paired with the selected Aeneas release",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "aeneas-trusted-base-nightly-2026-06-03": {
       "topics": [
         "aeneas",
@@ -724,6 +833,30 @@
         "charon/output",
         "charon/options"
       ]
+    },
+    "charon-closures-nightly-2026-06-03": {
+      "topics": [
+        "charon",
+        "charon/captures",
+        "charon/closures",
+        "charon/fn-traits",
+        "charon/function-pointers",
+        "charon/lifetimes",
+        "charon/traits",
+        "rust/closures"
+      ],
+      "subjects": [
+        {
+          "name": "Charon closure representation and translation",
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210",
+            "rust-toolchain": "nightly-2026-05-31"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "charon-dependency-and-source-coverage-nightly-2026-06-03": {
       "observed_at": "2026-09-26",
@@ -1151,6 +1284,26 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "lake-config-cache-contents-invalidation-v4-30-0-rc2": {
+      "topics": [
+        "lake",
+        "lake/configuration",
+        "lake/config-cache",
+        "lake/invalidation",
+        "lake/concurrency"
+      ],
+      "subjects": [
+        {
+          "name": "Lake .lake/config cache contents and invalidation selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-27"
+    },
     "lake-package-identity-after-vendoring-v4-30-0-rc2": {
       "topics": [
         "lake",
@@ -1429,6 +1582,28 @@
       ],
       "observed_at": "2026-09-26"
     },
+    "lean-module-import-semantics-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/environment",
+        "lean/imports",
+        "lean/module-system",
+        "lean/modules",
+        "lean/olean",
+        "lean/search-path"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
     "lean-name-resolution-v4-30-0-rc2": {
       "topics": [
         "lean",
@@ -1441,6 +1616,47 @@
       "subjects": [
         {
           "name": "Lean 4 namespace and name resolution selected by Anneal",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
+    },
+    "lean-partial-definitions-v4-30-0-rc2": {
+      "observed_at": "2026-09-26",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 partial definitions selected by Anneal"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/partial-definitions",
+        "lean/opacity",
+        "lean/compiler",
+        "lean/trust"
+      ]
+    },
+    "lean-pretty-printing-roundtrip-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/delaboration",
+        "lean/parser",
+        "lean/pretty-printing",
+        "lean/roundtrip",
+        "lean/syntax"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 selected by Anneal",
           "identity": {
             "repository": "leanprover/lean4",
             "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
@@ -1512,6 +1728,33 @@
         "lean/unsafe",
         "lean/native-evaluation"
       ]
+    },
+    "lean-warnings-as-errors-v4-30-0-rc2": {
+      "topics": [
+        "lean",
+        "lean/diagnostics",
+        "lean/warnings",
+        "lean/command-line",
+        "lake/build-failure"
+      ],
+      "subjects": [
+        {
+          "name": "Lean 4 and bundled Lake warning/failure mechanisms",
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          }
+        },
+        {
+          "name": "Anneal toolchain selection",
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          }
+        }
+      ],
+      "observed_at": "2026-09-26"
     },
     "rust-auto-trait-coinduction-nightly-2026-05-31": {
       "observed_at": "2026-09-26",

@@ -1,0 +1,20 @@
+{
+  "observed_at": "2026-09-26",
+  "subjects": [
+    {
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      },
+      "name": "Lean 4 partial definitions selected by Anneal"
+    }
+  ],
+  "topics": [
+    "lean",
+    "lean/partial-definitions",
+    "lean/opacity",
+    "lean/compiler",
+    "lean/trust"
+  ]
+}
