@@ -1,0 +1,165 @@
+{
+  "schema": "anneal-reference/mathlib-release-cache-upgrade-checklist/v1",
+  "baseline": {
+    "aeneas_release": "nightly-2026.06.03",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "lean_version": "v4.30.0-rc2",
+    "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+    "mathlib_input_rev": "v4.30.0-rc2"
+  },
+  "policy": {
+    "decision_unit": "resolved Mathlib/Lake graph plus cache protocol/payload/helper, Anneal materialization/restoration/pruning, and semantic consumer evidence",
+    "tag_is_identity": false,
+    "cache_download_is_compatibility_proof": false,
+    "fixed_output_hash_is_provenance_proof": false,
+    "filename_hash_equals_archive_header_hash": false,
+    "source_and_execution_are_complementary": true
+  },
+  "gates": [
+    {
+      "id": "identity-closure",
+      "question": "Are exact Mathlib and inherited package revisions recorded?",
+      "checks": [
+        "Resolve Aeneas and Lean identities.",
+        "Record Mathlib commit, inputRev, and complete lake-manifest closure.",
+        "Diff all changed package revisions."
+      ],
+      "reject_if": [
+        "Only a tag/version label is recorded.",
+        "Manifest changes are unreviewed."
+      ]
+    },
+    {
+      "id": "lean-lake-compat",
+      "question": "Does the proposed Mathlib state match the exact Lean/Lake toolchain?",
+      "checks": [
+        "Compare Mathlib and Aeneas lean-toolchain files.",
+        "Verify Anneal packages that exact Lean release.",
+        "Apply Lean/Lake upgrade gates if the toolchain changes."
+      ],
+      "reject_if": [
+        "Prepared artifacts come from a different Lean build without explicit compatibility evidence."
+      ]
+    },
+    {
+      "id": "cache-cli-protocol",
+      "question": "Does the Mathlib cache command still have the transport/install behavior Anneal uses?",
+      "checks": [
+        "Diff Cache/Main.lean and Cache/Requests.lean.",
+        "Verify get- still means download without decompression.",
+        "Record endpoint, local-cache, partial-file, retry, and override semantics."
+      ],
+      "reject_if": [
+        "Anneal command semantics changed without migration.",
+        "Network materialization now mutates the final build tree unexpectedly."
+      ]
+    },
+    {
+      "id": "cache-key",
+      "question": "Is the custom module cache-key contract understood and appropriately invalidated?",
+      "checks": [
+        "Diff root/module hashing code.",
+        "Record all root/key inputs.",
+        "Verify changed project/config inputs cause reviewed key changes.",
+        "Keep filename key separate from Lake depHash."
+      ],
+      "reject_if": [
+        "Archive names are compared without revalidating their key algorithm/inputs.",
+        "Filename hash and archive-header hash are conflated."
+      ]
+    },
+    {
+      "id": "payload-format-helper",
+      "question": "Are cache payload membership and archive/helper semantics compatible?",
+      "checks": [
+        "Diff required/optional build paths in Cache/IO.lean.",
+        "Resolve exact leantar/helper implementation.",
+        "Inventory at least one representative archive.",
+        "Probe old/new format compatibility if helper/format changes."
+      ],
+      "reject_if": [
+        "New required artifact families are silently dropped.",
+        "Format/helper changes are inferred compatible from .ltar suffix alone."
+      ]
+    },
+    {
+      "id": "native-platform-artifacts",
+      "question": "Are native and host-specific outputs preserved on every supported host?",
+      "checks": [
+        "Inventory native/object/shared/plugin/executable products.",
+        "Run representative restore/build on each supported host class.",
+        "Record architecture/ABI-specific differences."
+      ],
+      "reject_if": [
+        "Portability is inferred from one host or from pure .olean presence only."
+      ]
+    },
+    {
+      "id": "nix-fixed-output",
+      "question": "Has Anneal reviewed and re-pinned the actual network materialization output?",
+      "checks": [
+        "Run production-equivalent fixed-output materialization per supported host.",
+        "Inspect tree diffs before updating recursive hashes.",
+        "Keep network phase separate from ordinary transforms."
+      ],
+      "reject_if": [
+        "Expected hashes are changed without reviewing resulting tree.",
+        "Fixed-output identity is treated as semantic/provenance proof."
+      ]
+    },
+    {
+      "id": "consumer-relocation-offline-readonly",
+      "question": "Does restored state work in Anneal final consumer topology?",
+      "checks": [
+        "Move to fresh consumer location.",
+        "Make intended shared state read-only.",
+        "Deny/observe network access.",
+        "Record unexpected writes/fetches/rebuilds."
+      ],
+      "reject_if": [
+        "Only producer-location success is tested.",
+        "Hidden network or shared-tree writes are tolerated."
+      ]
+    },
+    {
+      "id": "pruning",
+      "question": "Is Anneal pruning still complete and conservative for the new graph/layout?",
+      "checks": [
+        "Recompute source/trace closure.",
+        "Diff retained/deleted modules.",
+        "Review changed source/module/native-artifact layout.",
+        "Validate final pruned tree through production consumer."
+      ],
+      "reject_if": [
+        "Required modules/artifacts are removed.",
+        "Source reachability is used to justify deleting unrelated package/native metadata."
+      ]
+    },
+    {
+      "id": "clean-seeded-equivalence",
+      "question": "Is cache-seeded behavior semantically equivalent to a clean build for representative consumers?",
+      "checks": [
+        "Compare representative elaboration/proof behavior.",
+        "Compare required Lean/native artifacts or justify differences.",
+        "Inspect trace/setup/import state and rebuild/reuse observations.",
+        "Classify intentional path-bearing differences."
+      ],
+      "reject_if": [
+        "Acceptance rests only on file presence or exit status.",
+        "Unexpected semantic/proof differences remain unexplained."
+      ]
+    },
+    {
+      "id": "integrated-lifecycle",
+      "question": "Does the full production cache lifecycle work from identity resolution through final proof use?",
+      "checks": [
+        "Exercise download-only materialization, restore, rewrite, prune, relocate, read-only/offline consumption, and representative proof/build.",
+        "Preserve commands, revisions, manifests, hashes, host identity, inventories, and outcomes."
+      ],
+      "reject_if": [
+        "Any component uses an identity or artifact not represented in the evidence package.",
+        "The final consumer requires an unplanned network access, rebuild, write, or different toolchain."
+      ]
+    }
+  ]
+}

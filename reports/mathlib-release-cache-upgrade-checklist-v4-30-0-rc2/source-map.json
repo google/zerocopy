@@ -1,0 +1,119 @@
+{
+  "baseline": {
+    "mathlib_repository": "leanprover-community/mathlib4",
+    "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+    "mathlib_input_rev": "v4.30.0-rc2",
+    "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+    "anneal_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "reference_head": "e1ef8f81d5e12ea48c35023ef8da740ca9dbfd10"
+  },
+  "direct_sources": [
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lakefile.lean",
+      "blob": "c32062866e2f88d2eb768b904745e7104edddb0d"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lake-manifest.json",
+      "blob": "1a5af703163d8b39f4311aafe22ae171788179ee"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "backends/lean/lean-toolchain",
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "Cache/Main.lean",
+      "blob": "12f69c07522f61db89318bc8331b5eb395b45377"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "Cache/Hashing.lean",
+      "blob": "418e884d1262cd8655ceddccf0e3c5894f742e46"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "Cache/IO.lean",
+      "blob": "872ffe7ce8c608f6769e3e3cc5bb5dac8f9b001a"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "Cache/Requests.lean",
+      "blob": "2f59d1ec95d8f04574c74b869afd4473acf60406"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "Cache/Lean.lean",
+      "blob": "0934e22f2dc396411106b008016fba4569cf741d"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "lakefile.lean",
+      "blob": "2615d72c0aa5e414234eac5f7ade10f4f3890916"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "lake-manifest.json",
+      "blob": "86b358344ea45a46d99dc19ac861011583e6d6e5"
+    },
+    {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "path": "lean-toolchain",
+      "blob": "6c7e31fffe3e03be3e0d7021acd9cd848e44db26"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+    }
+  ],
+  "reference_reports": [
+    {
+      "path": "reports/mathlib-lake-exe-cache-protocol-v4-30-0-rc2/REPORT.md",
+      "blob": "0c397523bf122b8656fc55ffd3f1ce4780d08327"
+    },
+    {
+      "path": "reports/mathlib-lake-exe-cache-protocol-v4-30-0-rc2/protocol-map.json",
+      "blob": "ebe41178cae7c31d920ef34097ba82254370dc3a"
+    },
+    {
+      "path": "reports/mathlib-dependency-closure-pruning-v4-30-0-rc2/REPORT.md",
+      "blob": "d446456e780f8abd195a5828f1bb1fd8630d2e65"
+    },
+    {
+      "path": "reports/lean-package-native-artifacts-v4-30-0-rc2/REPORT.md",
+      "blob": "2bf92e4df20c54ea9069c27a231301d2d94fa132"
+    },
+    {
+      "path": "reports/lake-clean-cache-seeded-equivalence-v4-30-0-rc2/REPORT.md",
+      "blob": "28e29b99b1642930d292c8b9f0c8e988b63e2d77"
+    },
+    {
+      "path": "reports/lake-readonly-relocation-offline-concurrency-v4-30-0-rc2/REPORT.md",
+      "blob": "8939500f86c03c4da7d9339f8a02c12346267cf6"
+    },
+    {
+      "path": "reports/anneal-nix-fixed-output-downloads-main-41f5b37/REPORT.md",
+      "blob": "eda8e67e1c9ded780395e581e58a7e01ebecf565"
+    },
+    {
+      "path": "reports/anneal-toolchain-version-coupling-main-41f5b37/REPORT.md",
+      "blob": "91ac8612cc400e531363fde5c870abaded6b7eb7"
+    }
+  ],
+  "note": "All direct-source identities and all current-reference report blob identities in this map were freshly resolved during this run."
+}
