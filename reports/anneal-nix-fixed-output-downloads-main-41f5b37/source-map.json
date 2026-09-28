@@ -30,11 +30,19 @@
     }
   ],
   "execution": {
-    "performed": false,
-    "missing_probes": [
-      "build fixed-output derivations at the exact current flake",
-      "deliberate wrong-hash rejection",
-      "downstream no-reacquisition probe after fixed outputs are available"
+    "performed": true,
+    "host": "aarch64-darwin",
+    "nix_version": "2.35.2",
+    "support": "execution-observations.json",
+    "completed": [
+      "Aeneas fetchurl FOD hash verification",
+      "Lean recursive FOD hash verification",
+      "Rust recursive FOD build/hash verification",
+      "flat and recursive wrong-hash rejection"
+    ],
+    "incomplete": [
+      "Mathlib recursive FOD correct-hash verification; two attempts produced different actual hashes",
+      "downstream no-reacquisition/offline build"
     ]
   }
 }

@@ -18,6 +18,8 @@ The current archive layout check verifies names and required members. It does no
 
 The durable conclusion is therefore negative but useful: the current source does not justify deriving an expected omnibus-archive SHA-256 solely from the logical toolchain inputs, and a successful layout check is not evidence of byte reproducibility. A per-system, per-derivation reproducibility claim requires an independent paired-build comparison. If that comparison fails, compare the uncompressed tar files first; the source already identifies tar metadata and member ordering as uncontrolled dimensions.
 
+A real `omnibus-tar` build was attempted on `aarch64-darwin` with Nix 2.35.2, but it stopped at the Mathlib cache fixed-output check before cache unpacking, Aeneas compilation, or tar creation. A direct retry of the Mathlib cache derivation also failed and produced a different actual hash, despite the same pinned Mathlib and listed dependency revisions. This is not an observed omnibus tar mismatch: no tar was produced and no paired archive comparison could run. Exact hashes and command/elapsed/resource summaries are in [`execution-observations.json`](execution-observations.json). Full build transcripts remain in the local campaign scratch; no successful archive output exists to preserve.
+
 ## Applicability
 
 This report applies to Anneal's omnibus archive pipeline at `google/zerocopy@41f5b37afe7060fd9fe08c00b200672cd76d77b9`, especially `packages.omnibus-tar`, `packages.omnibus-archive`, and `packages.omnibus-archive-ci` in `anneal/flake.nix`.
@@ -33,7 +35,7 @@ The Rust, Lean, and Aeneas asset identities differ by system, and Linux addition
 
 `omnibus-archive` and `omnibus-archive-ci` are also distinct configurations. The first sets `ANNEAL_ZSTD_LEVEL = 1`; the second overrides it to 6. A reproducibility experiment should compare repeated builds of the same one of those derivations. Equality between the two variants is neither required nor established.
 
-The findings are based on immutable source, pinned package definitions, and GNU tar 1.35 documentation. No fresh Nix build, tar-byte comparison, or Zstandard execution was performed in this investigation.
+The source analysis is based on immutable source, pinned package definitions, and GNU tar 1.35 documentation. A fresh Nix build was attempted on `aarch64-darwin`; it failed at the Mathlib fixed-output prerequisite. No tar-byte comparison or Zstandard execution was possible.
 
 ## Findings
 
@@ -131,7 +133,7 @@ Basis: **source** for which stages are fixed-output; **derived** boundary on wha
 
 ## Boundaries
 
-**No paired build was performed.** This report establishes that the current source lacks a complete tar-canonicalization contract; it does not report an observed mismatch between two current builds.
+**No tar or paired archive build completed.** The `omnibus-tar` derivation stopped at its Mathlib fixed-output prerequisite, and a direct retry of that prerequisite also failed. This report does not report an observed mismatch between two archive builds.
 
 **No claim that every uncontrolled field actually varies in ordinary CI.** GNU tar documents the fields and ordering that can affect bytes. The current recipe leaves some of them to staged filesystem state. A particular host or Nix execution may happen to reproduce those values.
 
@@ -165,7 +167,7 @@ Pinned archive/compression tools:
 - `NixOS/nixpkgs@549bd84d6279f9852cae6225e372cc67fb91a4c1`, `pkgs/tools/compression/zstd/default.nix`, blob `a014b652d313facb7d2bc0ad5f4c345347e1eaca`: Zstandard `1.5.7`.
 - GNU tar 1.35 manual, `https://www.gnu.org/software/tar/manual/tar.html`, especially “Making `tar` Archives More Reproducible”, accessed 2026-09-27. The manual identifies unsorted directory order and archive metadata as byte-reproducibility inputs and documents the relevant canonicalization options.
 
-Evidence roles are **source**, **documentation**, and **derived**. There is no fresh **execution** evidence.
+Evidence roles are **source**, **documentation**, **execution**, and **derived**. Execution is limited to the failed prerequisite attempts recorded in `execution-observations.json`; it contains no archive-byte result.
 
 ## Revalidation
 

@@ -1,0 +1,72 @@
+{
+  "schema": "anneal-reference/nix-fixed-output-execution/v1",
+  "host": {
+    "system": "aarch64-darwin",
+    "os": "Darwin 25.6.0",
+    "nix_version": "2.35.2",
+    "store": "daemon"
+  },
+  "verified_outputs": [
+    {
+      "package": "aeneas-download",
+      "output": "/nix/store/5ch17b2mjgip9r9j672vgsx4yyipq6sg-aeneas-macos-aarch64.tar.gz",
+      "hash_mode": "flat",
+      "declared_hash": "sha256-dveLZF4zjsfokynwrSJ5KZf0K9m16xRkOsMq3iJO62E=",
+      "actual_hash": "sha256-dveLZF4zjsfokynwrSJ5KZf0K9m16xRkOsMq3iJO62E=",
+      "nar_size_bytes": 61499464,
+      "result": "pass"
+    },
+    {
+      "package": "lean-toolchain",
+      "output": "/nix/store/wf1mr6pak9n88v5bwm6y749d8k19r0mw-lean-toolchain-aarch64-darwin-4.30.0-rc2",
+      "hash_mode": "recursive",
+      "declared_hash": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "actual_hash": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "nar_size_bytes": 2637857872,
+      "result": "pass"
+    },
+    {
+      "package": "rust-toolchain",
+      "output": "/nix/store/ms2vns33wg2qxzqdfdw37w6g9xay9jjc-rust-toolchain-aarch64-darwin-2026-05-31",
+      "hash_mode": "recursive",
+      "declared_hash": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "actual_hash": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "result": "pass"
+    }
+  ],
+  "wrong_hash_controls": [
+    {
+      "mode": "flat",
+      "result": "expected hash mismatch rejection",
+      "actual_hash": "sha256-+RJE+nlBcQVCB5kH4Qs1iU2kQXj/zwWyyPSQFHoLFFU="
+    },
+    {
+      "mode": "recursive",
+      "result": "expected hash mismatch rejection",
+      "actual_hash": "sha256-aCRsg+S5an8EHhSZTxuGeTIlu1G4U3VSIJWYArMC8nY="
+    }
+  ],
+  "mathlib_cache_attempts": [
+    {
+      "via": "omnibus-tar dependency",
+      "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "declared_hash": "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk=",
+      "actual_hash": "sha256-3rJZJxl4JixeBUZFlhhCcHuIWXOIOXKYkXAjwwfZ2+Y=",
+      "downloaded_cache_files": 8297,
+      "result": "hash mismatch"
+    },
+    {
+      "via": "direct mathlib-cache-download retry",
+      "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "declared_hash": "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk=",
+      "actual_hash": "sha256-zr00ZF1TNLiXJdIUNZBy2d8xIIcx2JrOAOYbozRmOPk=",
+      "downloaded_cache_files": 8297,
+      "result": "hash mismatch"
+    }
+  ],
+  "boundaries": [
+    "No successful Mathlib cache FOD was produced.",
+    "No downstream Mathlib unpack, Aeneas compilation, or omnibus build completed.",
+    "No sandbox/network-isolation claim follows from these runs."
+  ]
+}

@@ -1,0 +1,197 @@
+{
+  "target": "mathlib-cache-download",
+  "command": [
+    "nix",
+    "--extra-experimental-features",
+    "nix-command flakes",
+    "build",
+    ".#mathlib-cache-download",
+    "--no-link",
+    "--max-jobs",
+    "1",
+    "--cores",
+    "1",
+    "-L",
+    "--no-write-lock-file"
+  ],
+  "elapsed_s": 105.8,
+  "returncode": 1,
+  "stop_reason": null,
+  "samples": [
+    {
+      "elapsed_s": 0.0,
+      "memory_free_percent": 46,
+      "nix_available_bytes": 63616274432
+    },
+    {
+      "elapsed_s": 3.0,
+      "memory_free_percent": 46,
+      "nix_available_bytes": 64186466304
+    },
+    {
+      "elapsed_s": 6.0,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 64186208256
+    },
+    {
+      "elapsed_s": 9.1,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 64186208256
+    },
+    {
+      "elapsed_s": 12.1,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 64128528384
+    },
+    {
+      "elapsed_s": 15.1,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 64052199424
+    },
+    {
+      "elapsed_s": 18.1,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 64001847296
+    },
+    {
+      "elapsed_s": 21.2,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63934738432
+    },
+    {
+      "elapsed_s": 24.2,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63884402688
+    },
+    {
+      "elapsed_s": 27.2,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63834071040
+    },
+    {
+      "elapsed_s": 30.3,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63765909504
+    },
+    {
+      "elapsed_s": 33.3,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63715520512
+    },
+    {
+      "elapsed_s": 36.3,
+      "memory_free_percent": 45,
+      "nix_available_bytes": 63665233920
+    },
+    {
+      "elapsed_s": 39.3,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 63664148480
+    },
+    {
+      "elapsed_s": 42.3,
+      "memory_free_percent": 43,
+      "nix_available_bytes": 63664115712
+    },
+    {
+      "elapsed_s": 45.4,
+      "memory_free_percent": 43,
+      "nix_available_bytes": 63664160768
+    },
+    {
+      "elapsed_s": 48.4,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 63519010816
+    },
+    {
+      "elapsed_s": 51.4,
+      "memory_free_percent": 43,
+      "nix_available_bytes": 63499010048
+    },
+    {
+      "elapsed_s": 54.4,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 63461277696
+    },
+    {
+      "elapsed_s": 57.5,
+      "memory_free_percent": 40,
+      "nix_available_bytes": 63452549120
+    },
+    {
+      "elapsed_s": 60.5,
+      "memory_free_percent": 41,
+      "nix_available_bytes": 63361449984
+    },
+    {
+      "elapsed_s": 63.5,
+      "memory_free_percent": 41,
+      "nix_available_bytes": 63361417216
+    },
+    {
+      "elapsed_s": 66.5,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 63288246272
+    },
+    {
+      "elapsed_s": 69.5,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 63144804352
+    },
+    {
+      "elapsed_s": 72.6,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 62991421440
+    },
+    {
+      "elapsed_s": 75.6,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 62920155136
+    },
+    {
+      "elapsed_s": 78.6,
+      "memory_free_percent": 42,
+      "nix_available_bytes": 62917332992
+    },
+    {
+      "elapsed_s": 81.6,
+      "memory_free_percent": 43,
+      "nix_available_bytes": 62917304320
+    },
+    {
+      "elapsed_s": 84.7,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 62916431872
+    },
+    {
+      "elapsed_s": 87.7,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 62578409472
+    },
+    {
+      "elapsed_s": 90.7,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 62346215424
+    },
+    {
+      "elapsed_s": 93.7,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 62164074496
+    },
+    {
+      "elapsed_s": 96.7,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 61807939584
+    },
+    {
+      "elapsed_s": 99.8,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 62342877184
+    },
+    {
+      "elapsed_s": 102.8,
+      "memory_free_percent": 44,
+      "nix_available_bytes": 63035916288
+    }
+  ]
+}

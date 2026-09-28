@@ -1,0 +1,14 @@
+Command:
+  source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
+  nix --extra-experimental-features 'nix-command flakes' build .#test-ifd --no-link --max-jobs 1 --cores 1 -L
+
+Observed output:
+this derivation will be built:
+  /nix/store/7q2ld6f2mnqywzr21glciarw45ab15xn-test-ifd-eval.drv
+building '/nix/store/7q2ld6f2mnqywzr21glciarw45ab15xn-test-ifd-eval.drv'...
+test-ifd-eval> Dynamic IFD Verification Success!
+test-ifd-eval> Extracted Lean Toolchain Version: 4.30.0-rc2
+test-ifd-eval> Extracted Rust Toolchain Version: nightly-2026-05-31
+test-ifd-eval> Dynamically Constructed Rust Toolchain Store Path: /nix/store/ms2vns33wg2qxzqdfdw37w6g9xay9jjc-rust-toolchain-aarch64-darwin-2026-05-31
+
+Exit status: 0

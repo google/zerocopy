@@ -1,0 +1,51 @@
+{
+  "schema": "anneal-reference/omnibus-build-attempts/v1",
+  "host": {
+    "system": "aarch64-darwin",
+    "os": "Darwin 25.6.0",
+    "nix_version": "2.35.2",
+    "physical_memory_bytes": 8589934592
+  },
+  "guard": {
+    "max_build_jobs": 1,
+    "max_cores": 1,
+    "stop_if_memory_free_below_percent": 30,
+    "stop_if_nix_available_below_bytes": 21474836480,
+    "stop_after_seconds": 2700,
+    "lowest_memory_free_percent": 40,
+    "lowest_nix_available_gib": 57,
+    "resource_stop_triggered": false
+  },
+  "attempts": [
+    {
+      "command_target": ".#omnibus-tar",
+      "elapsed_seconds": 102.8,
+      "exit_status": 1,
+      "failed_derivation": "mathlib-cache-download-aarch64-darwin-0.1.0",
+      "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "declared_recursive_hash": "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk=",
+      "actual_recursive_hash": "sha256-3rJZJxl4JixeBUZFlhhCcHuIWXOIOXKYkXAjwwfZ2+Y=",
+      "cache_files_downloaded": 8297,
+      "downstream_archive_created": false,
+      "log": "support/execution/omnibus-tar-build-attempt1.log"
+    },
+    {
+      "command_target": ".#mathlib-cache-download",
+      "elapsed_seconds": 105.8,
+      "exit_status": 1,
+      "mathlib_revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+      "declared_recursive_hash": "sha256-wv2NZcKiyYaW6L/o7+oHWZdYZhVYLzZjyQczoaHRJnk=",
+      "actual_recursive_hash": "sha256-zr00ZF1TNLiXJdIUNZBy2d8xIIcx2JrOAOYbozRmOPk=",
+      "cache_files_downloaded": 8297,
+      "downstream_archive_created": false,
+      "log": "support/execution/mathlib-cache-download-attempt2.log"
+    }
+  ],
+  "conclusion": "The two cache materializations had different recursive hashes despite the same pinned Mathlib and listed dependency revisions. No omnibus tar or compressed archive was built; therefore no paired byte-reproducibility result exists.",
+  "unrun": [
+    "preserve failed FOD output trees and compare differing files",
+    "build omnibus-tar twice",
+    "compare tar members, metadata, and raw bytes",
+    "compress and compare each configured zstd variant"
+  ]
+}

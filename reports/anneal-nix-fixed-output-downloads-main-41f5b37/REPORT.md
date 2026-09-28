@@ -10,6 +10,8 @@ The most important architectural boundary is Mathlib. A fixed-output derivation 
 
 These hashes are integrity and reproducibility gates, not provenance signatures. They make changed outputs fail the expected-hash contract, but they do not prove who produced the bytes or that the configured expected hash was chosen from a trustworthy source.
 
+A 2026-09-27 execution on `aarch64-darwin` with Nix 2.35.2 confirmed the Aeneas archive and Lean extracted-tree hashes, and confirmed rejection of intentional wrong-hash controls. The Rust tree also built and matched its declared hash as part of the IFD/toolchain relocation probe. In contrast, the Mathlib cache FOD failed twice with two different actual hashes for the same pinned Mathlib/dependency revisions; that unstable acquisition prevented the downstream omnibus build. See [`execution-observations.json`](execution-observations.json) for exact outputs and boundaries.
+
 ## Applicability
 
 This report describes the current Anneal Nix expression at `google/zerocopy@41f5b37afe7060fd9fe08c00b200672cd76d77b9`, specifically `anneal/flake.nix` blob `433fcf5c64da4f51b9fac471f1faf45c1f730cba`.
@@ -23,7 +25,7 @@ The expression supports four host systems:
 
 The same upstream logical toolchain versions are selected across those systems, but Anneal records separate expected output hashes because the downloaded or reconstructed results are platform-specific.
 
-The report uses Nix's documented fixed-output semantics to interpret the explicit `outputHash*` attributes. It does not claim a particular Nix executable version for the current Anneal flake: its `nixpkgs` input follows `nixos-unstable`, and the report did not execute the flake. The directly observed subject is Anneal's expression and its declared content identities.
+The report uses Nix's documented fixed-output semantics to interpret the explicit `outputHash*` attributes. Direct execution was performed on `aarch64-darwin` with Nix 2.35.2. This is the evaluator version for the recorded host run, not a version pinned by the Anneal flake. The execution results apply only to the recorded platform and derivations.
 
 This report is separate from the nearby #3720 subject on import-from-derivation/version extraction. `packages.test-ifd` consumes metadata from `aeneas-unpacked` and reconstructs dynamic Rust/Lean derivations using the already-declared output hashes, but the evaluation mechanics of that IFD path deserve their own report.
 
@@ -173,7 +175,9 @@ Basis: **source**. Detailed IFD evaluation semantics are **not examined** here.
 
 ## Boundaries
 
-**No fresh Nix build.** This run inspected the exact flake and Nix documentation but did not execute any derivation, intentionally corrupt a hash, or test sandbox/network behavior.
+**Platform-limited execution.** Aeneas and Lean correct-hash builds, Rust correct-hash construction, two wrong-hash controls, and two Mathlib-cache attempts were run on one `aarch64-darwin` host. No other platform was built.
+
+**Mathlib cache and downstream build remain incomplete.** The Mathlib fixed-output result did not match its declared hash in either attempt. No successful `mathlib-cache-unpacked`, Aeneas compilation, or omnibus build was obtained from these runs.
 
 **No claim that ordinary derivations are network-isolated on every host.** The architecture places intended network materialization in fixed-output derivations, but actual Nix sandbox/network policy depends on the executing Nix configuration and platform. This report does not upgrade that design intent into a host-independent runtime guarantee.
 
@@ -214,7 +218,7 @@ Preserved report support material:
 - `fod-inventory.json`: exact current platform/version/hash matrix and fixed-output boundary classification.
 - `source-map.json`: implementation symbols, source identity, and documentation references.
 
-Evidence roles: **source**, **documentation**, and **derived**. There is no fresh **execution** evidence.
+Evidence roles: **source**, **documentation**, **execution**, and **derived**. The execution evidence is limited to Nix 2.35.2 on `aarch64-darwin`; it does not test sandbox/network isolation.
 
 ## Revalidation
 

@@ -1,0 +1,75 @@
+{
+  "schema": "anneal-reference/nix-toolchain-relocation-observations/v1",
+  "host": {
+    "system": "aarch64-darwin",
+    "os": "Darwin 25.6.0",
+    "nix_version": "2.35.2",
+    "physical_memory_bytes": 8589934592,
+    "nix_store_mounted_during_probe": true
+  },
+  "toolchains": {
+    "lean": {
+      "store_output": "/nix/store/wf1mr6pak9n88v5bwm6y749d8k19r0mw-lean-toolchain-aarch64-darwin-4.30.0-rc2",
+      "relocated_root": "relocated_lean",
+      "declared_nar_hash": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "source_nar_hash": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "copy_nar_hash": "sha256-dpUCCLkhoGDKkDKPZxr7WrmkifxHi4MWLpD148z2vhg=",
+      "inventory": {
+        "entries": 14447,
+        "directories": 570,
+        "files": 13877,
+        "symlinks": 0,
+        "executable_files": 11,
+        "sha256": "77c2af70d52e0f6c48d429def71b9aa495a34e98a5d5d2f1c57a27680b89460a",
+        "source_and_copy_identical": true
+      },
+      "smoke_results": {
+        "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+        "lake_version": "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)",
+        "lean_run_output": "relocated lean ok",
+        "all_exit_statuses_zero": true,
+        "relative_load_paths": [
+          "@executable_path/../lib",
+          "@executable_path/../lib/lean"
+        ]
+      },
+      "disk_size_bytes_approx": 2684354560
+    },
+    "rust": {
+      "store_output": "/nix/store/ms2vns33wg2qxzqdfdw37w6g9xay9jjc-rust-toolchain-aarch64-darwin-2026-05-31",
+      "relocated_root": "relocated_rust",
+      "declared_nar_hash": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "source_nar_hash": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "copy_nar_hash": "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=",
+      "inventory": {
+        "entries": 8193,
+        "directories": 1360,
+        "files": 6833,
+        "symlinks": 0,
+        "executable_files": 83,
+        "sha256": "d94ef08200855aa736c74040bca79a50b432b5396a140abc4c972d9097e1d388",
+        "source_and_copy_identical": true
+      },
+      "smoke_results": {
+        "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "cargo_version": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)",
+        "compile_run_output": "relocated rust ok",
+        "all_exit_statuses_zero": true,
+        "relative_load_paths": [
+          "@loader_path/../lib"
+        ]
+      },
+      "disk_size_bytes_approx": 1717986918
+    }
+  },
+  "resources": {
+    "minimum_memory_free_percent": 43,
+    "minimum_nix_available_gib": 61,
+    "all_stages_completed": true
+  },
+  "limits": [
+    "Original /nix/store remained mounted and populated.",
+    "The whole final omnibus archive was not built, scanned, or relocated.",
+    "No cross-platform or clean-machine generalization is made."
+  ]
+}

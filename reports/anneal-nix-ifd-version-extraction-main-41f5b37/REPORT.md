@@ -10,6 +10,8 @@ The ordinary current toolchain packages do not depend on this IFD path. `package
 
 Under Nix's documented IFD semantics, reading `${unpacked}/metadata.json` during evaluation can force `aeneas-unpacked` to be realized before evaluation can continue. Evaluation therefore acquires a build-time dependency and fails when IFD is disabled with `allow-import-from-derivation = false`.
 
+A direct `nix build .#test-ifd` on `aarch64-darwin` with Nix 2.35.2 completed successfully after the required fixed-output toolchains were materialized. Its output printed `Dynamic IFD Verification Success!`, Lean `4.30.0-rc2`, Rust `nightly-2026-05-31`, and the dynamically constructed Rust output path. This confirms the end-to-end test derivation for that host; it does not make IFD part of the normal bundle.
+
 ## Applicability
 
 This report describes `anneal/flake.nix` blob `433fcf5c64da4f51b9fac471f1faf45c1f730cba` at `google/zerocopy@41f5b37afe7060fd9fe08c00b200672cd76d77b9`.
@@ -22,7 +24,7 @@ It covers:
 - the relationship between the IFD probe and the normal Rust/Lean package definitions;
 - the evaluator/build boundary implied by Nix IFD.
 
-It does not establish the exact Nix executable version used by every Anneal consumer. IFD semantics are interpreted using versioned Nix reference documentation; the exact current flake does not itself pin the evaluator binary.
+The exact current flake does not pin the evaluator binary. The direct build used Nix 2.35.2 on `aarch64-darwin`; this observed version does not characterize every Anneal consumer or platform.
 
 The report also does not repeat the fixed-output acquisition analysis. The upstream archive/toolchain hashes and network-materialization boundaries are covered separately by the candidate report for “Nix fixed-output derivations used for upstream archives/caches.”
 
@@ -194,7 +196,7 @@ Basis: **source**.
 
 ## Boundaries
 
-**No fresh Nix evaluation or build.** The report traces exact source and versioned Nix semantics. It does not contain an observed `nix build .#test-ifd` transcript.
+**One-host execution.** `nix build .#test-ifd` succeeded on `aarch64-darwin` with Nix 2.35.2. No IFD-disabled run, other-platform run, or evaluation-performance comparison was performed. The build does not establish IFD behavior under every Nix configuration.
 
 **No exact evaluator-version claim.** `nixpkgs` selection does not identify the Nix binary used by the caller. The report therefore does not claim a specific Nix release at runtime.
 
@@ -231,7 +233,7 @@ Preserved support material:
 - `metadata-flow.json`: exact producer fields, provenance classification, and consumer mapping.
 - `source-map.json`: implementation source and documentation references.
 
-Evidence roles: **source**, **documentation**, and **derived**. There is no fresh **execution** evidence.
+Evidence roles: **source**, **documentation**, **execution**, and **derived**. The observed `test-ifd` output is preserved in [`execution-results.json`](execution-results.json).
 
 ## Revalidation
 

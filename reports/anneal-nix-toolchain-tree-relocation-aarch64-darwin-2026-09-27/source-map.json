@@ -1,0 +1,23 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/flake.nix",
+    "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba"
+  },
+  "symbols": [
+    "fetchToolchainAsset",
+    "fetchRustToolchain",
+    "fetchLeanToolchain",
+    "packages.rust-toolchain",
+    "packages.lean-toolchain"
+  ],
+  "execution": {
+    "performed": true,
+    "host": "aarch64-darwin",
+    "nix_version": "2.35.2",
+    "probe": "copy each recursive fixed-output tree outside /nix/store; compare NAR hash and metadata inventory; run copied command-line tools and smoke programs",
+    "support": "relocation-observations.json"
+  }
+}

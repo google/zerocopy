@@ -33,6 +33,17 @@
     }
   ],
   "execution": {
-    "performed": false
+    "performed": true,
+    "host": "aarch64-darwin",
+    "nix_version": "2.35.2",
+    "support": "execution-results.json",
+    "completed": [
+      "build packages.test-ifd and observe dynamic IFD verification output"
+    ],
+    "missing_probes": [
+      "IFD-disabled behavior on this host",
+      "evaluation performance comparison",
+      "other platforms"
+    ]
   }
 }

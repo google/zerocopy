@@ -1,7 +1,12 @@
 {
   "execution": {
-    "missing_decisive_probe": "Independent paired builds of the exact omnibus-tar derivation, followed by raw tar hash/member-metadata comparison and then same-input zstd comparison.",
-    "performed": false
+    "performed": true,
+    "host": "aarch64-darwin",
+    "nix_version": "2.35.2",
+    "support": "execution-observations.json",
+    "attempted": "omnibus-tar build and direct Mathlib cache FOD retry",
+    "result": "both attempts stopped at Mathlib fixed-output hash verification before tar creation",
+    "missing_decisive_probe": "Independent paired builds of a completed exact omnibus-tar derivation, followed by raw tar hash/member-metadata comparison and same-input zstd comparison."
   },
   "observed_at": "2026-09-27",
   "schema": "anneal-reference/source-map/v1",
