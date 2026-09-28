@@ -1,0 +1,7 @@
+[package]
+name = "consumer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+coverage_app = { path = "../coverage_app", features = ["selected"] }

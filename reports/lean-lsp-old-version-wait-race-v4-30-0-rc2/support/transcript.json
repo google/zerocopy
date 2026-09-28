@@ -1,0 +1,1052 @@
+[
+  {
+    "kind": "batch",
+    "data": {
+      "version": "v1",
+      "sha256": "124609a47e5052d0ab602f8b13d216ef65837f2df4377486040f5bcd49cd6f4d",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\n\u22a2 n = n\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$PROBE/batch-v1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\n\u22a2 n = n\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$PROBE/batch-v1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":34,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": ""
+    }
+  },
+  {
+    "kind": "batch",
+    "data": {
+      "version": "v2",
+      "sha256": "bc3a07024a0de03f8c66dc020da163f3f29b9d9a9e1dc95151e277bdf76bbe9d",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "rootUri": "file://$PROBE",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) : n = n := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 2,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\n\u22a2 n = n",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 34,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\n\u22a2 n = n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 34,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n\u22a2 n = n"
+        ],
+        "rendered": "```lean\nn : Nat\n\u22a2 n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo (n : Nat) : n = n := by\n  rfl\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$PROBE/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$PROBE/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server",
+    "data": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "kind": "server_exit",
+    "data": {
+      "exit": 0,
+      "stderr": ""
+    }
+  }
+]

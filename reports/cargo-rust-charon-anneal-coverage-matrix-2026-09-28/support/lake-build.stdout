@@ -1,0 +1,10 @@
+⚠ [1507/1688] Replayed Aeneas.Std.Slice
+warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`
+warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`
+⚠ [1569/1688] Replayed Aeneas.Std.String
+warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`
+⚠ [1585/1688] Replayed Aeneas.Std.StringIter
+warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`
+⚠ [1687/1688] Replayed Anneal
+warning: anneal/Anneal.lean:594:0: Definition `Anneal.test_has_layout` of class type must be marked with `@[reducible]` or `@[implicit_reducible]`
+Build completed successfully (1688 jobs).

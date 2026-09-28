@@ -1,0 +1,19 @@
+{
+  "host": "aarch64-apple-darwin",
+  "cargo": "1.98.0-nightly (fbb61be30 2026-05-26)",
+  "rustc": "1.98.0-nightly (f8a08b688 2026-05-30)",
+  "results": [
+    {"command":"cargo -Z unstable-options build --offline --workspace --all-targets --unit-graph", "exit":0, "units":12, "roots":9},
+    {"command":"cargo build --offline --workspace --all-targets", "exit":0, "rustc_invocations":14},
+    {"command":"cargo test --offline --workspace", "exit":0},
+    {"command":"cargo -Z unstable-options build --offline --package coverage_app --lib --features selected --unit-graph", "exit":0, "units":7, "roots":1},
+    {"command":"charon cargo --preset aeneas -- --package coverage_app --lib --features selected --offline", "exit":0},
+    {"command":"cargo-anneal verify --manifest-path coverage_app/Cargo.toml --features selected --lib", "exit":0},
+    {"command":"charon cargo --preset aeneas -- --package consumer --bin consumer --offline", "exit":0},
+    {"command":"cargo-anneal verify --manifest-path coverage_app/Cargo.toml --lib (selected feature omitted)", "exit":1, "observation":"scanner finds annotation but cfg removes declaration; Charon/rustc compilation failure"},
+    {"command":"Charon extraction of coverage_app bin and integration test", "exit":101, "observation":"Cargo reports missing expected local coverage_app rlib"},
+    {"command":"Aeneas Lean backend on selected library LLBC", "exit":0},
+    {"command":"Lean Lake build of generated Anneal project and theorem axiom query", "exit":0}
+  ],
+  "replay_note":"A later attempt to rerun Charon from this shell did not launch: charon-driver could not load librustc_driver via @rpath. This retry is not included among the earlier successful observations."
+}

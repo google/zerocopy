@@ -1,0 +1,20 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling coverage_app v0.1.0 (<workspace>/coverage_app)
+error: extern location for coverage_app does not exist: <workspace>/target/aarch64-apple-darwin/debug/deps/libcoverage_app-40251404b9c73e27.rlib
+ --> coverage_app/src/main.rs:2:13
+  |
+2 |     let _ = coverage_app::library_subject();
+  |             ^^^^^^^^^^^^
+
+error: extern location for coverage_app does not exist: <workspace>/target/aarch64-apple-darwin/debug/deps/libcoverage_app-40251404b9c73e27.rlib
+ --> coverage_app/tests/integration.rs:3:13
+  |
+3 |     assert!(coverage_app::library_subject() > 0);
+  |             ^^^^^^^^^^^^
+
+ERROR Code failed to compile
+error: could not compile `coverage_app` (bin "coverage_app") due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+ERROR Code failed to compile
+error: could not compile `coverage_app` (test "integration") due to 1 previous error

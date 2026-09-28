@@ -1,0 +1,11 @@
+{
+  "topics": ["rust/cargo", "rust/compilation-units", "rust/charon", "anneal/v1", "verification/coverage"],
+  "subjects": [
+    {"name":"Rust Cargo", "identity":{"repository":"rust-lang/cargo","revision":"fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef","version":"1.98.0-nightly (2026-05-26)"}},
+    {"name":"Charon", "identity":{"repository":"AeneasVerif/charon","revision":"0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1","version":"0.1.210"}},
+    {"name":"Aeneas", "identity":{"repository":"AeneasVerif/aeneas","revision":"42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"}},
+    {"name":"Anneal V1", "identity":{"repository":"google/zerocopy","revision":"bd0956be95c5f798f0c0484921b9b9d1fc6e9988","path":"anneal/v1"}},
+    {"name":"Lean 4", "identity":{"repository":"leanprover/lean4","revision":"3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc","version":"v4.30.0-rc2"}}
+  ],
+  "observed_at":"2026-09-28"
+}

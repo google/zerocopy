@@ -1,0 +1,3 @@
+[workspace]
+members = ["coverage_app", "shared", "proc_macro", "consumer"]
+resolver = "2"

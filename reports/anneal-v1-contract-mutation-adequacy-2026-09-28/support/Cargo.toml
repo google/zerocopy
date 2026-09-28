@@ -1,0 +1,4 @@
+[package]
+name = "v1-abs-probe"
+version = "0.1.0"
+edition = "2024"

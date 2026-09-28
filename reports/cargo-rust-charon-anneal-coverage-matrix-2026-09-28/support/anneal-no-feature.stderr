@@ -1,0 +1,13 @@
+   Compiling coverage_app v0.1.0 (<workspace>/coverage_app)
+warning: failed to resolve item path `crate::selected_feature_subject`: path `crate::selected_feature_subject` does not correspond to any item
+
+
+thread 'rustc' (26542043) panicked at src/errors.rs:261:13:
+failed to resolve item path `crate::selected_feature_subject`: path `crate::selected_feature_subject` does not correspond to any item
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+ERROR Compilation panicked
+error: could not compile `coverage_app` (lib)
+
+Caused by:
+  process didn't exit successfully: `<workspace>/toolchain-base/anneal/toolchain/f44ae6414b534f9610dc52f7356cf8ddd4d173d555fcdb99a33d43bce5cf3e9e/aeneas/bin/charon-driver rustc --crate-name coverage_app --edition=2021 coverage_app/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --cfg 'feature="default"' --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("default", "selected"))' -C metadata=8b48ace745f18a24 -C extra-filename=-2eba317b9e673812 --out-dir <workspace>/target/anneal/cargo_target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -C incremental=<workspace>/target/anneal/cargo_target/aarch64-apple-darwin/debug/incremental -L dependency=<workspace>/target/anneal/cargo_target/aarch64-apple-darwin/debug/deps -L dependency=<workspace>/target/anneal/cargo_target/debug/deps --extern generated_macro=<workspace>/target/anneal/cargo_target/debug/deps/libgenerated_macro-5f6d15348da32b78.dylib --extern shared=<workspace>/target/anneal/cargo_target/aarch64-apple-darwin/debug/deps/libshared-24a5e7d6e9f93946.rmeta` (exit status: 101)
+Error: Charon failed with status: exit status: 101

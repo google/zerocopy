@@ -1,0 +1,4 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling coverage_app v0.1.0 (<workspace>/coverage_app)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.30s

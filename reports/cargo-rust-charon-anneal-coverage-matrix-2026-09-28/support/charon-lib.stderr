@@ -1,0 +1,6 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling shared v0.1.0 (<workspace>/shared)
+   Compiling coverage_app v0.1.0 (<workspace>/coverage_app)
+   Compiling generated_macro v0.1.0 (<workspace>/proc_macro)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.09s

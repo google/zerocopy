@@ -1,0 +1,18 @@
+{
+  "charon_version": "0.1.210",
+  "crate_name": "consumer",
+  "functions": [
+    {
+      "name": "consumer::main",
+      "local": true,
+      "opacity": "Transparent",
+      "body_kind": "Structured"
+    },
+    {
+      "name": "coverage_app::selected_feature_subject",
+      "local": false,
+      "opacity": "Foreign",
+      "body_kind": "O"
+    }
+  ]
+}

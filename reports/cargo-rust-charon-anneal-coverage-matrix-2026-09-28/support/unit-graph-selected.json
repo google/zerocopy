@@ -1,0 +1,368 @@
+{
+  "roots": [
+    1
+  ],
+  "units": [
+    {
+      "dependencies": [
+        {
+          "extern_crate_name": "build_script_build",
+          "index": 3,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        },
+        {
+          "extern_crate_name": "generated_macro",
+          "index": 4,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        },
+        {
+          "extern_crate_name": "shared",
+          "index": 6,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        }
+      ],
+      "features": [
+        "default",
+        "selected"
+      ],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/coverage_app#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 2,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "lib"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2021",
+        "kind": [
+          "lib"
+        ],
+        "name": "coverage_app",
+        "src_path": "<fixture>/coverage_app/src/lib.rs",
+        "test": true
+      }
+    },
+    {
+      "dependencies": [
+        {
+          "extern_crate_name": "coverage_app",
+          "index": 0,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        },
+        {
+          "extern_crate_name": "build_script_build",
+          "index": 3,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        },
+        {
+          "extern_crate_name": "generated_macro",
+          "index": 4,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        },
+        {
+          "extern_crate_name": "shared",
+          "index": 6,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        }
+      ],
+      "features": [
+        "default",
+        "selected"
+      ],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/coverage_app#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 2,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "bin"
+        ],
+        "doc": true,
+        "doctest": false,
+        "edition": "2021",
+        "kind": [
+          "bin"
+        ],
+        "name": "coverage_app",
+        "src_path": "<fixture>/coverage_app/src/main.rs",
+        "test": true
+      }
+    },
+    {
+      "dependencies": [
+        {
+          "extern_crate_name": "shared",
+          "index": 5,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        }
+      ],
+      "features": [
+        "default",
+        "selected"
+      ],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/coverage_app#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "bin"
+        ],
+        "doc": false,
+        "doctest": false,
+        "edition": "2021",
+        "kind": [
+          "custom-build"
+        ],
+        "name": "build-script-build",
+        "src_path": "<fixture>/coverage_app/build.rs",
+        "test": false
+      }
+    },
+    {
+      "dependencies": [
+        {
+          "extern_crate_name": "build_script_build",
+          "index": 2,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        }
+      ],
+      "features": [
+        "default",
+        "selected"
+      ],
+      "mode": "run-custom-build",
+      "pkg_id": "path+file://<fixture>/coverage_app#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 2,
+        "incremental": false,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": false,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": null,
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "bin"
+        ],
+        "doc": false,
+        "doctest": false,
+        "edition": "2021",
+        "kind": [
+          "custom-build"
+        ],
+        "name": "build-script-build",
+        "src_path": "<fixture>/coverage_app/build.rs",
+        "test": false
+      }
+    },
+    {
+      "dependencies": [
+        {
+          "extern_crate_name": "shared",
+          "index": 5,
+          "noprelude": false,
+          "nounused": false,
+          "public": false
+        }
+      ],
+      "features": [],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/proc_macro#generated_macro@0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "proc-macro"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2021",
+        "kind": [
+          "proc-macro"
+        ],
+        "name": "generated_macro",
+        "src_path": "<fixture>/proc_macro/src/lib.rs",
+        "test": true
+      }
+    },
+    {
+      "dependencies": [],
+      "features": [
+        "build-api",
+        "default",
+        "macro-api"
+      ],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/shared#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 0,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "lib"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2021",
+        "kind": [
+          "lib"
+        ],
+        "name": "shared",
+        "src_path": "<fixture>/shared/src/lib.rs",
+        "test": true
+      }
+    },
+    {
+      "dependencies": [],
+      "features": [
+        "default",
+        "target-api"
+      ],
+      "mode": "build",
+      "pkg_id": "path+file://<fixture>/shared#0.1.0",
+      "platform": null,
+      "profile": {
+        "codegen_backend": null,
+        "codegen_units": null,
+        "debug_assertions": true,
+        "debuginfo": 2,
+        "incremental": true,
+        "lto": "false",
+        "name": "dev",
+        "opt_level": "0",
+        "overflow_checks": true,
+        "panic": "unwind",
+        "rpath": false,
+        "split_debuginfo": "unpacked",
+        "strip": {
+          "deferred": "None"
+        }
+      },
+      "target": {
+        "crate_types": [
+          "lib"
+        ],
+        "doc": true,
+        "doctest": true,
+        "edition": "2021",
+        "kind": [
+          "lib"
+        ],
+        "name": "shared",
+        "src_path": "<fixture>/shared/src/lib.rs",
+        "test": true
+      }
+    }
+  ],
+  "version": 1
+}

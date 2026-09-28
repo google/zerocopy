@@ -1,0 +1,37 @@
+  × scalar_tac failed to prove the goal below.
+  │ 
+  │ Note that scalar_tac is almost equivalent to:
+  │   scalar_tac_preprocess; omega
+  │ 
+  │ Goal:
+  │ x : I32
+  │ h_x_is_valid : Anneal.IsValid.isValid x
+  │ h_anon : ↑x > -2147483648
+  │ ⊢ x ≥ 0
+    ╭─[$WORKSPACE/src/main.rs:13:7]
+ 12 │ ///   subst ret
+ 13 │ ///   scalar_tac
+    ·       ─────┬────
+    ·            ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+  × scalar_tac failed to prove the goal below.
+  │ 
+  │ Note that scalar_tac is almost equivalent to:
+  │   scalar_tac_preprocess; omega
+  │ 
+  │ Goal:
+  │ x : I32
+  │ h_x_is_valid : Anneal.IsValid.isValid x
+  │ h_anon : ↑x > -2147483648
+  │ ⊢ ↑x < 0 → ↑x = -↑x
+    ╭─[$WORKSPACE/src/main.rs:21:7]
+ 20 │ ///   subst ret
+ 21 │ ///   scalar_tac
+    ·       ─────┬────
+    ·            ╰── here
+ 22 │ /// ```
+    ╰────
+
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

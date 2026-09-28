@@ -1,0 +1,11 @@
+[package]
+name = "shared"
+version = "0.1.0"
+edition = "2021"
+
+[features]
+default = []
+target-api = []
+build-api = []
+dev-api = []
+macro-api = []

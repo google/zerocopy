@@ -1,0 +1,36 @@
+{
+  "charon_version": "0.1.210",
+  "crate_name": "coverage_app",
+  "functions": [
+    {
+      "name": "coverage_app::proc_generated",
+      "local": true,
+      "opacity": "Transparent",
+      "body_kind": "Structured"
+    },
+    {
+      "name": "coverage_app::library_subject",
+      "local": true,
+      "opacity": "Transparent",
+      "body_kind": "Structured"
+    },
+    {
+      "name": "coverage_app::selected_feature_subject",
+      "local": true,
+      "opacity": "Transparent",
+      "body_kind": "Structured"
+    },
+    {
+      "name": "coverage_app::BUILD_VALUE",
+      "local": true,
+      "opacity": "Transparent",
+      "body_kind": "Structured"
+    },
+    {
+      "name": "shared::target_value",
+      "local": false,
+      "opacity": "Foreign",
+      "body_kind": "O"
+    }
+  ]
+}

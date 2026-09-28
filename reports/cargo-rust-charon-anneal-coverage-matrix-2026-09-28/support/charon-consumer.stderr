@@ -1,0 +1,6 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+
+thread 'main' (26556495) panicked at src/bin/charon/main.rs:245:9:
+failed to determine underlying rustc version of Charon:\nCommandError { stdout: "", stderr: "dyld[27448]: Library not loaded: @rpath/librustc_driver-c20cab87d43f5461.dylib\n  Referenced from: <234132C7-AE69-34D8-8937-D9761CCC8028> <local-tools>/aeneas-release/charon-driver\n  Reason: tried: '/usr/local/lib/librustc_driver-c20cab87d43f5461.dylib' (no such file), '/usr/lib/librustc_driver-c20cab87d43f5461.dylib' (no such file, not in dyld cache)\n" }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

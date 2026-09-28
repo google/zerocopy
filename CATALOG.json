@@ -1830,6 +1830,59 @@
         "lake/cache-reuse"
       ]
     },
+    "anneal-v1-contract-mutation-adequacy-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "9f8283296b0150fbfe1043bbe3633879c900067915bb46aa293e55711564aee8",
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Retained Anneal V1 implementation"
+        },
+        {
+          "identity": {
+            "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "version": "0.1.210"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+          },
+          "name": "mathlib4"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/v1",
+        "lean/verification",
+        "verification/specification-adequacy",
+        "verification/mutation-testing"
+      ]
+    },
     "anneal-v1-coverage-totality-holes-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -2313,6 +2366,57 @@
         "cargo/features",
         "cargo/metadata",
         "cargo/resolver"
+      ]
+    },
+    "cargo-rust-charon-anneal-coverage-matrix-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+            "version": "1.98.0-nightly (2026-05-26)"
+          },
+          "name": "Rust Cargo"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "version": "0.1.210"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal V1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "rust/cargo",
+        "rust/compilation-units",
+        "rust/charon",
+        "anneal/v1",
+        "verification/coverage"
       ]
     },
     "cargo-unit-graphs-rustc-invocations-2026-05-31": {
@@ -4395,6 +4499,26 @@
         "reproducibility"
       ]
     },
+    "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 batch compiler"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/diagnostics",
+        "lean/reproducibility",
+        "anneal/evidence-oracles"
+      ]
+    },
     "lean-cli-entry-points-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -4734,6 +4858,27 @@
         "lake/traces",
         "lake/hashes",
         "lake/module-artifacts"
+      ]
+    },
+    "lean-lsp-old-version-wait-race-v4-30-0-rc2": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server and batch checker"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/lsp",
+        "lean/tactic-state",
+        "lean/invalidation",
+        "anneal/interactive"
       ]
     },
     "lean-macro-hygiene-v4-30-0-rc2": {

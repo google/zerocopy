@@ -1,0 +1,141 @@
+{
+  "cases": {
+    "a": {
+      "consumer_exit_code": 0,
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "cfad98ad2706efefd39131cec37d567375e5f0d817134088bf1543e69430ae25",
+      "severity": [
+        "information"
+      ],
+      "source_sha256": "64eeaea07df037e4679fff14ff544f6604fd2524d228e24d8c09c4ce19c69f86"
+    },
+    "a-output-only": {
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "cfad98ad2706efefd39131cec37d567375e5f0d817134088bf1543e69430ae25"
+    },
+    "a-repeat": {
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "cfad98ad2706efefd39131cec37d567375e5f0d817134088bf1543e69430ae25"
+    },
+    "b": {
+      "consumer_exit_code": 0,
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "f5d53027d97c308b0123cc722c281452d4ce37c01ebd1847654c7a4640b10f83",
+      "severity": [
+        "information"
+      ],
+      "source_sha256": "64eeaea07df037e4679fff14ff544f6604fd2524d228e24d8c09c4ce19c69f86"
+    },
+    "c": {
+      "consumer_exit_code": 0,
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "4dc0c7a2c535a5ff6e99c483df4338546beee3434e15fde2ec061c3b9d40cc29",
+      "severity": [
+        "information"
+      ],
+      "source_sha256": "3974640f916786d464f12e5e11bf72ab57c9f05c5193f4024636f74f38200b9b"
+    },
+    "d": {
+      "exit_code": 1,
+      "olean_bytes": null,
+      "olean_sha256": null,
+      "severity": [
+        "information",
+        "error"
+      ],
+      "source_sha256": "c70ff66c97d23f6c1be7e1b562d1f175f7778d4ced55a7d2bbece8930dba9c91"
+    },
+    "e": {
+      "consumer_exit_code": 0,
+      "consumer_json_sha256": "5da0cabdc28ff3162ca649b60dbd155544c5a382bc53baa1c81233dd46d62850",
+      "exit_code": 0,
+      "olean_bytes": 5824,
+      "olean_sha256": "a97e0842fd559edce22b26961ed6e746a511ab6e1363c688a6a48b6119ca27aa",
+      "severity": [
+        "information"
+      ],
+      "source_sha256": "5e30cbb6d51a6c77eb9490f8af4d7899a0b39fdcb5a659fa57c0c212cbe3ec5f"
+    }
+  },
+  "comparisons": {
+    "a_b_consumer_equal": true,
+    "a_b_normalized_diagnostics_equal": true,
+    "a_b_olean_equal": false,
+    "a_b_raw_diagnostics_equal": false,
+    "a_b_same_source": true,
+    "a_b_verification_oracle_equal": true,
+    "a_c_actionable_diagnostics_equal": true,
+    "a_c_consumer_equal": true,
+    "a_c_normalized_diagnostics_equal": false,
+    "a_c_olean_equal": false,
+    "a_c_verification_oracle_equal": true,
+    "a_d_verification_oracle_equal": false,
+    "a_e_consumer_equal": false,
+    "a_e_normalized_diagnostics_equal": true,
+    "a_e_olean_equal": false,
+    "a_e_verification_oracle_equal": false,
+    "a_output_only_olean_equal": true,
+    "a_repeat_olean_equal": true,
+    "d_olean_absent": true,
+    "d_rejected": true
+  },
+  "tool": {
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "command_pattern": "lean --json -o support/results/<case>/Probe.olean support/<case>/Probe.lean",
+    "consumer_command_pattern": "LEAN_PATH=support/results/<case> lean --json support/query/Query.lean",
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  },
+  "verification_oracle": {
+    "a": {
+      "actionable_messages": [],
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0
+    },
+    "b": {
+      "actionable_messages": [],
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0
+    },
+    "c": {
+      "actionable_messages": [],
+      "consumer_json_sha256": "e444dc793f58670d321e5925b852c704c0f87ae802e3fb3f731977fa51f4e2e0",
+      "exit_code": 0
+    },
+    "d": {
+      "actionable_messages": [
+        {
+          "caption": "",
+          "data": "Tactic `decide` proved that the proposition\n  1 + 1 = 3\nis false",
+          "endPos": {
+            "column": 51,
+            "line": 3
+          },
+          "fileName": "<same-source-file>/Probe.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 45,
+            "line": 3
+          },
+          "severity": "error"
+        }
+      ],
+      "consumer_json_sha256": null,
+      "exit_code": 1
+    },
+    "e": {
+      "actionable_messages": [],
+      "consumer_json_sha256": "5da0cabdc28ff3162ca649b60dbd155544c5a382bc53baa1c81233dd46d62850",
+      "exit_code": 0
+    }
+  }
+}

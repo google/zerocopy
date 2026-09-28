@@ -1,0 +1,19 @@
+[package]
+name = "coverage_app"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[features]
+default = []
+selected = []
+
+[dependencies]
+shared = { path = "../shared", features = ["target-api"] }
+generated_macro = { path = "../proc_macro" }
+
+[build-dependencies]
+shared = { path = "../shared", features = ["build-api"] }
+
+[dev-dependencies]
+shared = { path = "../shared", features = ["dev-api"] }
