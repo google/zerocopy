@@ -1,0 +1,120 @@
+  ⚠ 'intros' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:10:17]
+  9 │ ///   unfold abs
+ 10 │ ///   split <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                 ───┬──
+    ·                    ╰── here
+ 11 │ /// proof (h0):
+    ╰────
+
+  ⚠ 'intros' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:13:30]
+ 12 │ ///   unfold abs at h_returns
+ 13 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                              ───┬──
+    ·                                 ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+  ⚠ '(try cases h_req)' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:13:41]
+ 12 │ ///   unfold abs at h_returns
+ 13 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                         ────────┬────────
+    ·                                                 ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+  ⚠ '(try cases h_req)' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:16:41]
+ 15 │ ///   unfold abs at h_returns
+ 16 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                         ────────┬────────
+    ·                                                 ╰── here
+ 17 │ /// proof (h2):
+    ╰────
+
+  ⚠ '(try cases h_req)' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:19:41]
+ 18 │ ///   unfold abs at h_returns
+ 19 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                         ────────┬────────
+    ·                                                 ╰── here
+ 20 │ /// ```
+    ╰────
+
+  ⚠ 'scalar_tac' tactic does nothing
+  │ 
+  │ Note: This linter can be disabled with `set_option linter.unusedTactic
+  │ false`
+    ╭─[$WORKSPACE/src/main.rs:19:390]
+ 18 │ ///   unfold abs at h_returns
+ 19 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                                  ─────┬────
+    ·                                                                                                                                                                                                                                                                                                                                                                                                       ╰── here
+ 20 │ /// ```
+    ╰────
+
+  ⚠ this tactic is never executed
+  │ 
+  │ Note: This linter can be disabled with `set_option
+  │ linter.unreachableTactic false`
+    ╭─[$WORKSPACE/src/main.rs:19:390]
+ 18 │ ///   unfold abs at h_returns
+ 19 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                                  ─────┬────
+    ·                                                                                                                                                                                                                                                                                                                                                                                                       ╰── here
+ 20 │ /// ```
+    ╰────
+
+  ⚠ Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+  │ 
+  │ Note: This linter can be disabled with `set_option
+  │ linter.unnecessarySeqFocus false`
+    ╭─[$WORKSPACE/src/main.rs:10:373]
+  9 │ ///   unfold abs
+ 10 │ ///   split <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                 ─┬─
+    ·                                                                                                                                                                                                                                                                                                                                                                                  ╰── here
+ 11 │ /// proof (h0):
+    ╰────
+
+  ⚠ Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+  │ 
+  │ Note: This linter can be disabled with `set_option
+  │ linter.unnecessarySeqFocus false`
+    ╭─[$WORKSPACE/src/main.rs:13:386]
+ 12 │ ///   unfold abs at h_returns
+ 13 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                              ─┬─
+    ·                                                                                                                                                                                                                                                                                                                                                                                               ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+  ⚠ Used `tac1 <;> tac2` where `(tac1; tac2)` would suffice
+  │ 
+  │ Note: This linter can be disabled with `set_option
+  │ linter.unnecessarySeqFocus false`
+    ╭─[$WORKSPACE/src/main.rs:16:386]
+ 15 │ ///   unfold abs at h_returns
+ 16 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                              ─┬─
+    ·                                                                                                                                                                                                                                                                                                                                                                                               ╰── here
+ 17 │ /// proof (h2):
+    ╰────
+

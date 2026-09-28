@@ -1,0 +1,894 @@
+{
+  "charon_version": "0.1.210",
+  "translated": {
+    "crate_name": "v1_abs_probe",
+    "options": {
+      "ullbc": false,
+      "precise_drops": false,
+      "skip_borrowck": false,
+      "mir": null,
+      "rustc_args": [],
+      "targets": [],
+      "monomorphize": false,
+      "monomorphize_mut": null,
+      "start_from": [
+        "crate::abs"
+      ],
+      "start_from_if_exists": [],
+      "start_from_attribute": null,
+      "start_from_pub": false,
+      "include": [],
+      "opaque": [],
+      "exclude": [],
+      "extract_opaque_bodies": false,
+      "translate_all_methods": false,
+      "lift_associated_types": [
+        "*"
+      ],
+      "hide_marker_traits": true,
+      "remove_adt_clauses": true,
+      "hide_allocator": true,
+      "remove_unused_self_clauses": true,
+      "desugar_drops": false,
+      "ops_to_function_calls": true,
+      "index_to_function_calls": true,
+      "treat_box_as_builtin": true,
+      "raw_consts": false,
+      "unsized_strings": false,
+      "reconstruct_fallible_operations": true,
+      "reconstruct_asserts": true,
+      "unbind_item_vars": true,
+      "print_original_ullbc": false,
+      "print_ullbc": false,
+      "print_built_llbc": false,
+      "print_llbc": false,
+      "dest_dir": null,
+      "dest_file": "$WORKSPACE/target/anneal/f5f5bb0b87430d1d/llbc/V1AbsProbeV1AbsProbea6d6c1948bec6cff.llbc",
+      "no_dedup_serialized_ast": false,
+      "format": null,
+      "no_serialize": false,
+      "no_typecheck": false,
+      "no_normalize": false,
+      "abort_on_error": true,
+      "error_on_warnings": false,
+      "preset": "Aeneas"
+    },
+    "target_information": [
+      {
+        "key": "aarch64-apple-darwin",
+        "value": {
+          "target_pointer_size": 8,
+          "is_little_endian": true
+        }
+      }
+    ],
+    "files": [
+      {
+        "id": 0,
+        "name": {
+          "Local": "src/main.rs"
+        },
+        "crate_name": "v1_abs_probe",
+        "contents": "/// Computes the absolute value.\n///\n/// ```lean, anneal, spec\n/// requires: x.val > -2147483648\n/// ensures (h0): ret >= 0\n/// ensures (h1): (x : Int) >= 0 -> (ret : Int) = x\n/// ensures (h2): (x : Int) < 0 -> (ret : Int) = -x\n/// proof (h_progress):\n///   unfold abs\n///   split <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac\n/// proof (h0):\n///   unfold abs at h_returns\n///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac\n/// proof (h1):\n///   unfold abs at h_returns\n///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac\n/// proof (h2):\n///   unfold abs at h_returns\n///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac\n/// ```\npub unsafe fn abs(x: i32) -> i32 {\n    if x < 0 { -x } else { x }\n}\n\nfn main() {}\n"
+      }
+    ],
+    "item_names": [
+      {
+        "key": {
+          "Fun": 0
+        },
+        "value": [
+          {
+            "Ident": [
+              "v1_abs_probe",
+              0
+            ]
+          },
+          {
+            "Ident": [
+              "abs",
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "assoc_item_names": [],
+    "short_names": [
+      {
+        "key": {
+          "Fun": 0
+        },
+        "value": [
+          {
+            "Ident": [
+              "abs",
+              0
+            ]
+          }
+        ]
+      }
+    ],
+    "type_decls": [],
+    "fun_decls": [
+      {
+        "def_id": 0,
+        "item_meta": {
+          "name": [
+            {
+              "Ident": [
+                "v1_abs_probe",
+                0
+              ]
+            },
+            {
+              "Ident": [
+                "abs",
+                0
+              ]
+            }
+          ],
+          "span": {
+            "data": {
+              "file_id": 0,
+              "beg": {
+                "line": 21,
+                "col": 0
+              },
+              "end": {
+                "line": 23,
+                "col": 1
+              }
+            },
+            "generated_from_span": null
+          },
+          "source_text": "pub unsafe fn abs(x: i32) -> i32 {\n    if x < 0 { -x } else { x }\n}",
+          "attr_info": {
+            "attributes": [
+              {
+                "DocComment": " Computes the absolute value."
+              },
+              {
+                "DocComment": ""
+              },
+              {
+                "DocComment": " ```lean, anneal, spec"
+              },
+              {
+                "DocComment": " requires: x.val > -2147483648"
+              },
+              {
+                "DocComment": " ensures (h0): ret >= 0"
+              },
+              {
+                "DocComment": " ensures (h1): (x : Int) >= 0 -> (ret : Int) = x"
+              },
+              {
+                "DocComment": " ensures (h2): (x : Int) < 0 -> (ret : Int) = -x"
+              },
+              {
+                "DocComment": " proof (h_progress):"
+              },
+              {
+                "DocComment": "   unfold abs"
+              },
+              {
+                "DocComment": "   split <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac"
+              },
+              {
+                "DocComment": " proof (h0):"
+              },
+              {
+                "DocComment": "   unfold abs at h_returns"
+              },
+              {
+                "DocComment": "   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac"
+              },
+              {
+                "DocComment": " proof (h1):"
+              },
+              {
+                "DocComment": "   unfold abs at h_returns"
+              },
+              {
+                "DocComment": "   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac"
+              },
+              {
+                "DocComment": " proof (h2):"
+              },
+              {
+                "DocComment": "   unfold abs at h_returns"
+              },
+              {
+                "DocComment": "   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac"
+              },
+              {
+                "DocComment": " ```"
+              }
+            ],
+            "inline": null,
+            "rename": null,
+            "public": true
+          },
+          "is_local": true,
+          "opacity": "Transparent",
+          "lang_item": null
+        },
+        "generics": {
+          "regions": [],
+          "types": [],
+          "const_generics": [],
+          "trait_clauses": [],
+          "regions_outlive": [],
+          "types_outlive": [],
+          "trait_type_constraints": []
+        },
+        "signature": {
+          "is_unsafe": true,
+          "abi": "Rust",
+          "inputs": [
+            {
+              "HashConsedValue": [
+                233,
+                {
+                  "Literal": {
+                    "Int": "I32"
+                  }
+                }
+              ]
+            }
+          ],
+          "output": {
+            "Deduplicated": 233
+          }
+        },
+        "src": "TopLevel",
+        "is_global_initializer": null,
+        "body": {
+          "Structured": {
+            "span": {
+              "data": {
+                "file_id": 0,
+                "beg": {
+                  "line": 21,
+                  "col": 0
+                },
+                "end": {
+                  "line": 23,
+                  "col": 1
+                }
+              },
+              "generated_from_span": null
+            },
+            "bound_body_regions": 0,
+            "locals": {
+              "arg_count": 1,
+              "locals": [
+                {
+                  "index": 0,
+                  "name": null,
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 21,
+                        "col": 29
+                      },
+                      "end": {
+                        "line": 21,
+                        "col": 32
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "ty": {
+                    "Deduplicated": 233
+                  }
+                },
+                {
+                  "index": 1,
+                  "name": "x",
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 21,
+                        "col": 18
+                      },
+                      "end": {
+                        "line": 21,
+                        "col": 19
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "ty": {
+                    "Deduplicated": 233
+                  }
+                },
+                {
+                  "index": 2,
+                  "name": null,
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 12
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "ty": {
+                    "HashConsedValue": [
+                      235,
+                      {
+                        "Literal": "Bool"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "index": 3,
+                  "name": null,
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 8
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "ty": {
+                    "Deduplicated": 233
+                  }
+                },
+                {
+                  "index": 4,
+                  "name": null,
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 16
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 17
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "ty": {
+                    "Deduplicated": 233
+                  }
+                }
+              ]
+            },
+            "body": {
+              "span": {
+                "data": {
+                  "file_id": 0,
+                  "beg": {
+                    "line": 22,
+                    "col": 4
+                  },
+                  "end": {
+                    "line": 23,
+                    "col": 1
+                  }
+                },
+                "generated_from_span": null
+              },
+              "statements": [
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 12
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 1,
+                  "kind": {
+                    "StorageLive": 2
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 8
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 2,
+                  "kind": {
+                    "StorageLive": 3
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 8
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 3,
+                  "kind": {
+                    "Assign": [
+                      {
+                        "kind": {
+                          "Local": 3
+                        },
+                        "ty": {
+                          "Deduplicated": 233
+                        }
+                      },
+                      {
+                        "Use": [
+                          {
+                            "Copy": {
+                              "kind": {
+                                "Local": 1
+                              },
+                              "ty": {
+                                "Deduplicated": 233
+                              }
+                            }
+                          },
+                          "Yes"
+                        ]
+                      }
+                    ]
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 7
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 12
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 4,
+                  "kind": {
+                    "Assign": [
+                      {
+                        "kind": {
+                          "Local": 2
+                        },
+                        "ty": {
+                          "Deduplicated": 235
+                        }
+                      },
+                      {
+                        "BinaryOp": [
+                          "Lt",
+                          {
+                            "Move": {
+                              "kind": {
+                                "Local": 3
+                              },
+                              "ty": {
+                                "Deduplicated": 233
+                              }
+                            }
+                          },
+                          {
+                            "Const": {
+                              "kind": {
+                                "Literal": {
+                                  "Scalar": {
+                                    "Signed": [
+                                      "I32",
+                                      "0"
+                                    ]
+                                  }
+                                }
+                              },
+                              "ty": {
+                                "Deduplicated": 233
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 4
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 30
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 16,
+                  "kind": {
+                    "Switch": {
+                      "If": [
+                        {
+                          "Move": {
+                            "kind": {
+                              "Local": 2
+                            },
+                            "ty": {
+                              "Deduplicated": 235
+                            }
+                          }
+                        },
+                        {
+                          "span": {
+                            "data": {
+                              "file_id": 0,
+                              "beg": {
+                                "line": 22,
+                                "col": 4
+                              },
+                              "end": {
+                                "line": 22,
+                                "col": 30
+                              }
+                            },
+                            "generated_from_span": null
+                          },
+                          "statements": [
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 11
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 12
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 5,
+                              "kind": {
+                                "StorageDead": 3
+                              },
+                              "comments_before": []
+                            },
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 16
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 17
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 6,
+                              "kind": {
+                                "StorageLive": 4
+                              },
+                              "comments_before": []
+                            },
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 16
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 17
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 7,
+                              "kind": {
+                                "Assign": [
+                                  {
+                                    "kind": {
+                                      "Local": 4
+                                    },
+                                    "ty": {
+                                      "Deduplicated": 233
+                                    }
+                                  },
+                                  {
+                                    "Use": [
+                                      {
+                                        "Copy": {
+                                          "kind": {
+                                            "Local": 1
+                                          },
+                                          "ty": {
+                                            "Deduplicated": 233
+                                          }
+                                        }
+                                      },
+                                      "Yes"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "comments_before": []
+                            },
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 15
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 17
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 10,
+                              "kind": {
+                                "Assign": [
+                                  {
+                                    "kind": {
+                                      "Local": 0
+                                    },
+                                    "ty": {
+                                      "Deduplicated": 233
+                                    }
+                                  },
+                                  {
+                                    "UnaryOp": [
+                                      {
+                                        "Neg": "Panic"
+                                      },
+                                      {
+                                        "Move": {
+                                          "kind": {
+                                            "Local": 4
+                                          },
+                                          "ty": {
+                                            "Deduplicated": 233
+                                          }
+                                        }
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              "comments_before": []
+                            },
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 16
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 17
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 11,
+                              "kind": {
+                                "StorageDead": 4
+                              },
+                              "comments_before": []
+                            }
+                          ]
+                        },
+                        {
+                          "span": {
+                            "data": {
+                              "file_id": 0,
+                              "beg": {
+                                "line": 22,
+                                "col": 4
+                              },
+                              "end": {
+                                "line": 22,
+                                "col": 30
+                              }
+                            },
+                            "generated_from_span": null
+                          },
+                          "statements": [
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 11
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 12
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 13,
+                              "kind": {
+                                "StorageDead": 3
+                              },
+                              "comments_before": []
+                            },
+                            {
+                              "span": {
+                                "data": {
+                                  "file_id": 0,
+                                  "beg": {
+                                    "line": 22,
+                                    "col": 27
+                                  },
+                                  "end": {
+                                    "line": 22,
+                                    "col": 28
+                                  }
+                                },
+                                "generated_from_span": null
+                              },
+                              "id": 14,
+                              "kind": {
+                                "Assign": [
+                                  {
+                                    "kind": {
+                                      "Local": 0
+                                    },
+                                    "ty": {
+                                      "Deduplicated": 233
+                                    }
+                                  },
+                                  {
+                                    "Use": [
+                                      {
+                                        "Copy": {
+                                          "kind": {
+                                            "Local": 1
+                                          },
+                                          "ty": {
+                                            "Deduplicated": 233
+                                          }
+                                        }
+                                      },
+                                      "Yes"
+                                    ]
+                                  }
+                                ]
+                              },
+                              "comments_before": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 22,
+                        "col": 29
+                      },
+                      "end": {
+                        "line": 22,
+                        "col": 30
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 17,
+                  "kind": {
+                    "StorageDead": 2
+                  },
+                  "comments_before": []
+                },
+                {
+                  "span": {
+                    "data": {
+                      "file_id": 0,
+                      "beg": {
+                        "line": 23,
+                        "col": 1
+                      },
+                      "end": {
+                        "line": 23,
+                        "col": 1
+                      }
+                    },
+                    "generated_from_span": null
+                  },
+                  "id": 18,
+                  "kind": "Return",
+                  "comments_before": []
+                }
+              ]
+            },
+            "comments": []
+          }
+        }
+      }
+    ],
+    "global_decls": [],
+    "trait_decls": [],
+    "trait_impls": [],
+    "ordered_decls": [
+      {
+        "Fun": {
+          "NonRec": 0
+        }
+      }
+    ]
+  },
+  "has_errors": false
+}

@@ -1,0 +1,14 @@
+  × mismatched types
+    ╭─[$WORKSPACE/src/main.rs:21:30]
+ 20 │ /// ```
+ 21 │ pub unsafe fn abs(x: i32) -> i32 {
+    ·                              ─┬─
+    ·                               ╰── expected `i32` because of return type
+ 22 │     if x < 0 { "broken" } else { x }
+    ·                ────┬───
+    ·                    ╰── expected `i32`, found `&str`
+ 23 │ }
+    ╰────
+
+[External Info] For more information about this error, try `rustc --explain E0308`.
+Error: Diagnostic error in charon

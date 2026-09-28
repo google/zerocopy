@@ -1,0 +1,55 @@
+  × scalar_tac failed to prove the goal below.
+  │ 
+  │ Note that scalar_tac is almost equivalent to:
+  │   scalar_tac_preprocess; omega
+  │ 
+  │ Goal:
+  │ x ret : I32
+  │ h_x_is_valid : Anneal.IsValid.isValid x
+  │ x✝ : Result (IScalar IScalarTy.I32)
+  │ y✝ : IScalar IScalarTy.I32
+  │ h_anon : -2147483648 < ↑x
+  │ h✝ : ↑x < 0
+  │ h_returns : y✝ = ret
+  │ this✝¹ : -2147483648 ≤ ↑x
+  │ this✝ : ↑x < 2147483648
+  │ this : ↑0 = 0
+  │ heq✝ : IScalar.tryMk IScalarTy.I32 (-↑x) = ok ret
+  │ h_bound : ↑ret = -↑x ∧ ↑x ≤ 2147483648 ∧ -↑x < 2147483648
+  │ ⊢ 0 < ↑x
+    ╭─[$WORKSPACE/src/main.rs:13:390]
+ 12 │ ///   unfold abs at h_returns
+ 13 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                                  ─────┬────
+    ·                                                                                                                                                                                                                                                                                                                                                                                                       ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+  × scalar_tac failed to prove the goal below.
+  │ 
+  │ Note that scalar_tac is almost equivalent to:
+  │   scalar_tac_preprocess; omega
+  │ 
+  │ Goal:
+  │ x ret : I32
+  │ x✝ : Result (IScalar IScalarTy.I32)
+  │ y✝ : IScalar IScalarTy.I32
+  │ h_x_is_valid : Anneal.IsValid.isValid ret
+  │ h_anon : -2147483648 < ↑ret
+  │ h✝ : 0 ≤ ↑ret
+  │ h_returns : x = ret
+  │ this✝¹ : -2147483648 ≤ ↑ret
+  │ this✝ : ↑ret < 2147483648
+  │ this : ↑0 = 0
+  │ heq✝ : IScalar.tryMk IScalarTy.I32 (-↑ret) = ok y✝
+  │ h_bound : ↑y✝ = -↑ret ∧ ↑ret ≤ 2147483648 ∧ -↑ret < 2147483648
+  │ ⊢ ↑ret < 0
+    ╭─[$WORKSPACE/src/main.rs:13:390]
+ 12 │ ///   unfold abs at h_returns
+ 13 │ ///   split at h_returns <;> intros <;> (try cases h_req) <;> (try have := Aeneas.Std.IScalar.hmin x) <;> (try have := Aeneas.Std.IScalar.hmax x) <;> (try have : (↑(0 : I32) : Int) = 0 := by rfl) <;> (try have h_bound := Aeneas.Std.IScalar.tryMk_eq IScalarTy.I32 (-↑x)) <;> (try split at h_bound) <;> (try simp_all [HNeg.hNeg, Aeneas.Std.IScalar.neg, Aeneas.Std.IScalar.inBounds]) <;> scalar_tac
+    ·                                                                                                                                                                                                                                                                                                                                                                                                  ─────┬────
+    ·                                                                                                                                                                                                                                                                                                                                                                                                       ╰── here
+ 14 │ /// proof (h1):
+    ╰────
+
+Error: Lean verification failed. Consider running `cargo anneal generate`, iterating on generated `.lean` files, and copying results back to `.rs` files.

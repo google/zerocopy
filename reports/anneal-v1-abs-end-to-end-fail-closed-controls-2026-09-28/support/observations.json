@@ -1,0 +1,92 @@
+{
+  "observed_at": "2026-09-28",
+  "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "cli_version": "cargo-anneal 0.1.0-alpha.24",
+  "cli_build": "cargo build --offline --locked --manifest-path anneal/v1/Cargo.toml --bin cargo-anneal",
+  "cli_sha256": "9f8283296b0150fbfe1043bbe3633879c900067915bb46aa293e55711564aee8",
+  "positive_verify_exit": 0,
+  "positive_artifacts": {
+    "rust_source": {
+      "path": "src/main.rs",
+      "sha256": "8160bd52e66e8d1e5a8505bb10461d99f30abf0a118ae457496bcd1ce0d8850d",
+      "size_bytes": 2084
+    },
+    "llbc": {
+      "path": "target/anneal/f5f5bb0b87430d1d/llbc/V1AbsProbeV1AbsProbea6d6c1948bec6cff.llbc",
+      "sha256": "683d6d5ffee354680443d72375bb4b87c20f9e15a76af16a48b3a61169a8e330",
+      "size_bytes": 11372
+    },
+    "aeneas_funs": {
+      "path": "target/anneal/f5f5bb0b87430d1d/lean/generated/V1AbsProbeV1AbsProbea6d6c1948bec6cff/Funs.lean",
+      "sha256": "d011a8a4ad093a7ac822d108e4fb9f3511b08ceeddfefae29e2e199423974655",
+      "size_bytes": 783
+    },
+    "anneal_spec": {
+      "path": "target/anneal/f5f5bb0b87430d1d/lean/generated/V1AbsProbeV1AbsProbea6d6c1948bec6cff/V1AbsProbeV1AbsProbea6d6c1948bec6cff.lean",
+      "sha256": "1f5d2740cf4d45d302b83b720792a37469bee4a6c17c2c6f425499fb05ca9b0a",
+      "size_bytes": 3213
+    },
+    "lake_manifest": {
+      "path": "target/anneal/f5f5bb0b87430d1d/lean/lake-manifest.json",
+      "sha256": "75842398c3b37eb5ac42f8169add795e21b43316c04b1eecc57005f66c4b3e4d",
+      "size_bytes": 4969
+    },
+    "verify_log": {
+      "path": "source-built-verify.stderr",
+      "sha256": "4a9e0a03e7f0feb5b777f8ba728651c3d47823f2410330be8c0b4d5265424dc6",
+      "size_bytes": 12053
+    }
+  },
+  "rust_compile_failure": {
+    "exit": 1,
+    "diagnostic": "rustc E0308 type mismatch, surfaced as Diagnostic error in charon",
+    "old_success_artifacts_remained_byte_identical": {
+      "llbc": true,
+      "aeneas_funs": true,
+      "anneal_spec": true,
+      "lake_manifest": true
+    },
+    "old_success_hashes": {
+      "llbc": "683d6d5ffee354680443d72375bb4b87c20f9e15a76af16a48b3a61169a8e330",
+      "aeneas_funs": "d011a8a4ad093a7ac822d108e4fb9f3511b08ceeddfefae29e2e199423974655",
+      "anneal_spec": "1f5d2740cf4d45d302b83b720792a37469bee4a6c17c2c6f425499fb05ca9b0a",
+      "lake_manifest": "75842398c3b37eb5ac42f8169add795e21b43316c04b1eecc57005f66c4b3e4d"
+    }
+  },
+  "false_postcondition": {
+    "exit": 1,
+    "diagnostic": "Lean scalar_tac failures for the deliberately false ret < 0 postcondition; V1 reports Lean verification failed",
+    "aeneas_funs_unchanged": true,
+    "anneal_generated_spec_changed": true,
+    "generated_spec_olean_emitted": false
+  },
+  "misspelled_annotation_after_success": {
+    "exit": 0,
+    "default_stdout_bytes": 0,
+    "default_stderr_bytes": 0,
+    "warning_level_exit": 0,
+    "warning_level_stderr": "[WARN  cargo_anneal] No Anneal annotations (/// ```lean ...) found in the selected targets. Nothing to verify.",
+    "previous_success_artifacts_after_noop_sha256": {
+      "llbc": "683d6d5ffee354680443d72375bb4b87c20f9e15a76af16a48b3a61169a8e330",
+      "aeneas_funs": "d011a8a4ad093a7ac822d108e4fb9f3511b08ceeddfefae29e2e199423974655",
+      "anneal_spec": "1f5d2740cf4d45d302b83b720792a37469bee4a6c17c2c6f425499fb05ca9b0a",
+      "lake_manifest": "75842398c3b37eb5ac42f8169add795e21b43316c04b1eecc57005f66c4b3e4d"
+    },
+    "previous_success_artifacts_unchanged": {
+      "llbc": true,
+      "aeneas_funs": true,
+      "anneal_spec": true,
+      "lake_manifest": true
+    }
+  },
+  "axioms_query_exit": 0,
+  "axioms_query_info": "'v1_abs_probe.abs.spec' depends on axioms: [propext, Classical.choice, Quot.sound]",
+  "local_llbc_sha256_before_path_redaction": "683d6d5ffee354680443d72375bb4b87c20f9e15a76af16a48b3a61169a8e330",
+  "clean_replay": {
+    "observed_at": "2026-09-28",
+    "mirror_helper": "prepare-toolchain-mirror.py",
+    "verify_exit": 0,
+    "result": "positive proof completed again from a fresh Cargo workspace using the disposable path-manifest view",
+    "note": "This is a success revalidation, not a byte-for-byte reproducibility comparison; the fresh workspace generated a different Cargo target identity."
+  }
+}
