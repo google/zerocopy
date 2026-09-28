@@ -1122,6 +1122,35 @@
         "anneal/history"
       ]
     },
+    "anneal-3725-recommendation-coverage-audit-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "f733f6eec6c7ec45633288bbe025dfd5a155d66a885b593dc6a4b0d97160621c",
+            "issue": "3725",
+            "repository": "google/zerocopy",
+            "url": "https://github.com/google/zerocopy/issues/3725"
+          },
+          "name": "zerocopy issue #3725"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "report_count": "260",
+            "repository": "google/zerocopy",
+            "revision": "6056bd38f7b1896b4120e212d9e63e2430d92792"
+          },
+          "name": "zerocopy reference corpus snapshot"
+        }
+      ],
+      "topics": [
+        "anneal/research",
+        "reference/corpus-audit",
+        "verification/coverage",
+        "research-traceability"
+      ]
+    },
     "anneal-archive-read-only-behavior-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [

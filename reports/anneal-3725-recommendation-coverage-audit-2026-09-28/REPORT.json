@@ -1,0 +1,8 @@
+{
+  "topics": ["anneal/research", "reference/corpus-audit", "verification/coverage", "research-traceability"],
+  "subjects": [
+    {"name":"zerocopy issue #3725", "identity":{"repository":"google/zerocopy","issue":"3725","url":"https://github.com/google/zerocopy/issues/3725","body_sha256":"f733f6eec6c7ec45633288bbe025dfd5a155d66a885b593dc6a4b0d97160621c"}},
+    {"name":"zerocopy reference corpus snapshot", "identity":{"repository":"google/zerocopy","revision":"6056bd38f7b1896b4120e212d9e63e2430d92792","branch":"reference","report_count":"260"}}
+  ],
+  "observed_at":"2026-09-28"
+}
