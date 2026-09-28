@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "anneal/v1",
+    "lean/lsp",
+    "lean/tactic-state",
+    "lean/invalidation"
+  ],
+  "subjects": [
+    {
+      "name": "Zerocopy V1 source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+      }
+    },
+    {
+      "name": "Lean 4 and Lake",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Aeneas Lean library revision selected by the generated workspace",
+      "identity": {
+        "repository": "google/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    }
+  ],
+  "observed_at": "2026-09-28"
+}

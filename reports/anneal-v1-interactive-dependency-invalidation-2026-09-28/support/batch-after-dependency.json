@@ -1,0 +1,13 @@
+{
+  "argv": [
+    "lake",
+    "--offline",
+    "env",
+    "lean",
+    "user/Probe.lean",
+    "--json"
+  ],
+  "exit_code": 1,
+  "stdout": "{\"caption\":\"\",\"data\":\"Application type mismatch: The argument\\n  rfl\\nhas type\\n  ?m.7 = ?m.7\\nbut is expected to have type\\n  relocate_probe.identity x = Aeneas.Std.Result.ok x\\nin the application\\n  And.intro rfl\",\"endPos\":{\"column\":12,\"line\":4},\"fileName\":\"user/Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":9,\"line\":4},\"severity\":\"error\"}\n",
+  "stderr": ""
+}

@@ -1,0 +1,3148 @@
+[
+  {
+    "elapsed_ms": 1042,
+    "kind": "baseline_generated_build",
+    "data": {
+      "exit_code": 0,
+      "stdout": "\u26a0 [1506/1595] Replayed Aeneas.Std.Slice\nwarning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\nwarning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n\u26a0 [1568/1595] Replayed Aeneas.Std.String\nwarning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n\u26a0 [1584/1595] Replayed Aeneas.Std.StringIter\nwarning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\nBuild completed successfully (1685 jobs).\n",
+      "stderr": ""
+    }
+  },
+  {
+    "elapsed_ms": 9703,
+    "kind": "batch-v1-open-subgoals",
+    "data": {
+      "exit_code": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unsolved goals\\ncase left\\nx : Aeneas.Std.U32\\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x\\n\\ncase right\\nx : Aeneas.Std.U32\\n\u22a2 True\",\"endPos\":{\"column\":17,\"line\":4},\"fileName\":\"user/Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":108,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "source_sha256": "13cb2697526713acb3ca6084f69687fd14d368f5d12cccf908c0725bde2857d2"
+    }
+  },
+  {
+    "elapsed_ms": 11743,
+    "kind": "batch-v2-proved",
+    "data": {
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "",
+      "source_sha256": "9240bcf965c294930a9b4113696f46deb7c940eef1ade056b1ddd2a11670673f"
+    }
+  },
+  {
+    "elapsed_ms": 11744,
+    "kind": "server_start",
+    "data": {
+      "label": "initial",
+      "pid": 16952,
+      "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean"
+    }
+  },
+  {
+    "elapsed_ms": 11805,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 16939,
+        "rootUri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false,
+          "logCfg": {
+            "logDir": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/evidence/server-logs"
+          }
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12110,
+    "kind": "server",
+    "data": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12110,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 12110,
+    "kind": "source_snapshot",
+    "data": {
+      "label": "initial",
+      "sha256": "13cb2697526713acb3ca6084f69687fd14d368f5d12cccf908c0725bde2857d2",
+      "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  apply And.intro\n"
+    }
+  },
+  {
+    "elapsed_ms": 12110,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  apply And.intro\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12110,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12112,
+    "kind": "server",
+    "data": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12112,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 12114,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12361,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12361,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12673,
+    "kind": "server",
+    "data": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1507/1685] Replayed Aeneas.Std.Slice\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1569/1685] Replayed Aeneas.Std.String\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1585/1685] Replayed Aeneas.Std.StringIter\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13127,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13156,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 13201,
+    "kind": "server",
+    "data": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 13726,
+    "kind": "server",
+    "data": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 14240,
+    "kind": "server",
+    "data": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 14256,
+    "kind": "server",
+    "data": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 14779,
+    "kind": "server",
+    "data": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 15305,
+    "kind": "server",
+    "data": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 15834,
+    "kind": "server",
+    "data": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 16334,
+    "kind": "server",
+    "data": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 16365,
+    "kind": "server",
+    "data": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 16878,
+    "kind": "server",
+    "data": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 17331,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17332,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17332,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17332,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17334,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17338,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 17,
+                "line": 3
+              },
+              "start": {
+                "character": 108,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\ncase left\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x\n\ncase right\nx : Aeneas.Std.U32\n\u22a2 True",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 108,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17338,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17340,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17343,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17343,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17343,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17344,
+    "kind": "server",
+    "data": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 17346,
+    "kind": "server",
+    "data": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17346,
+    "kind": "goal_observation",
+    "data": {
+      "label": "initial-before-tactic",
+      "character": 2,
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 17346,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 17
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17347,
+    "kind": "server",
+    "data": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case left\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x",
+          "case right\nx : Aeneas.Std.U32\n\u22a2 True"
+        ],
+        "rendered": "```lean\ncase left\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x\n```\n---\n```lean\ncase right\nx : Aeneas.Std.U32\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17347,
+    "kind": "goal_observation",
+    "data": {
+      "label": "initial-after-tactic",
+      "character": 17,
+      "result": {
+        "goals": [
+          "case left\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x",
+          "case right\nx : Aeneas.Std.U32\n\u22a2 True"
+        ],
+        "rendered": "```lean\ncase left\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x\n```\n---\n```lean\ncase right\nx : Aeneas.Std.U32\n\u22a2 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 17347,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  exact \u27e8rfl, trivial\u27e9\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17347,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17404,
+    "kind": "server",
+    "data": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 17558,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17558,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17558,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17560,
+    "kind": "server",
+    "data": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 17560,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17561,
+    "kind": "server",
+    "data": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17561,
+    "kind": "goal_observation",
+    "data": {
+      "label": "edited-v2-before-tactic",
+      "character": 2,
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 17561,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 22
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17561,
+    "kind": "server",
+    "data": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 17561,
+    "kind": "goal_observation",
+    "data": {
+      "label": "edited-v2-after-tactic",
+      "character": 22,
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 17562,
+    "kind": "dependency_source_edit",
+    "data": {
+      "path": "generated/RelocateProbeRelocateProbe93d79f43b0c543cb/Funs.lean",
+      "before_sha256": "27b02d8843009c22cbd74fb430b3ccc3dc9a25c7c515aa373f4f62f6e65c69eb",
+      "after_sha256": "935d3ca2e5d5c5add0ec4e42c46f8606fa7b244215930c1061325b837d272149"
+    }
+  },
+  {
+    "elapsed_ms": 34527,
+    "kind": "dependency_rebuild",
+    "data": {
+      "exit_code": 0,
+      "stdout": "\u26a0 [1506/1610] Replayed Aeneas.Std.Slice\nwarning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\nwarning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n\u26a0 [1568/1610] Replayed Aeneas.Std.String\nwarning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n\u26a0 [1584/1610] Replayed Aeneas.Std.StringIter\nwarning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n\u2714 [1683/1685] Built RelocateProbeRelocateProbe93d79f43b0c543cb.Funs (5.6s)\n\u2714 [1684/1685] Built Generated (10s)\nBuild completed successfully (1685 jobs).\n",
+      "stderr": ""
+    }
+  },
+  {
+    "elapsed_ms": 34528,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/generated/RelocateProbeRelocateProbe93d79f43b0c543cb/Funs.lean",
+            "type": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34528,
+    "kind": "notify_dependency_change",
+    "data": {
+      "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/generated/RelocateProbeRelocateProbe93d79f43b0c543cb/Funs.lean"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  exact \u27e8rfl, trivial\u27e9\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 34529,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Imports are out of date and should be rebuilt; use the \"Restart File\" command in your editor.",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34743,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34744,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34744,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "Imports are out of date and should be rebuilt; use the \"Restart File\" command in your editor.",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34745,
+    "kind": "server",
+    "data": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 34746,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34760,
+    "kind": "server",
+    "data": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34760,
+    "kind": "goal_observation",
+    "data": {
+      "label": "same-server-after-dependency-rebuild-before-tactic",
+      "character": 2,
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 34760,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 22
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34761,
+    "kind": "server",
+    "data": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34761,
+    "kind": "goal_observation",
+    "data": {
+      "label": "same-server-after-dependency-rebuild-after-tactic",
+      "character": 22,
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 34761,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 34762,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "elapsed_ms": 34795,
+    "kind": "server",
+    "data": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 34795,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 34884,
+    "kind": "server_stop",
+    "data": {
+      "label": "same-server-after-dependency-rebuild",
+      "exit_code": 0,
+      "stderr": ""
+    }
+  },
+  {
+    "elapsed_ms": 34887,
+    "kind": "server_start",
+    "data": {
+      "label": "fresh-process-after-dependency-rebuild",
+      "pid": 16993,
+      "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean"
+    }
+  },
+  {
+    "elapsed_ms": 34887,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "initialize",
+      "params": {
+        "processId": 16939,
+        "rootUri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false,
+          "logCfg": {
+            "logDir": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/evidence/server-logs"
+          }
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36279,
+    "kind": "server",
+    "data": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36279,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 36281,
+    "kind": "source_snapshot",
+    "data": {
+      "label": "fresh-process-after-dependency-rebuild",
+      "sha256": "9240bcf965c294930a9b4113696f46deb7c940eef1ade056b1ddd2a11670673f",
+      "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  exact \u27e8rfl, trivial\u27e9\n"
+    }
+  },
+  {
+    "elapsed_ms": 36281,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n\ntheorem identity_pair (x : Aeneas.Std.U32) : (relocate_probe.identity x = Aeneas.Std.Result.ok x) \u2227 True := by\n  exact \u27e8rfl, trivial\u27e9\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36281,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36281,
+    "kind": "server",
+    "data": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36281,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 36283,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36528,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36528,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 36841,
+    "kind": "server",
+    "data": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1507/1685] Replayed Aeneas.Std.Slice\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1569/1685] Replayed Aeneas.Std.String\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1585/1685] Replayed Aeneas.Std.StringIter\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37297,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37363,
+    "kind": "server",
+    "data": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 37435,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 37893,
+    "kind": "server",
+    "data": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 38400,
+    "kind": "server",
+    "data": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 38416,
+    "kind": "server",
+    "data": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 38940,
+    "kind": "server",
+    "data": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 39469,
+    "kind": "server",
+    "data": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 39999,
+    "kind": "server",
+    "data": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 40417,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40417,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40431,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40432,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40432,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40433,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40435,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40440,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40440,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40442,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 12,
+                "line": 3
+              },
+              "start": {
+                "character": 9,
+                "line": 3
+              }
+            },
+            "message": "Application type mismatch: The argument\n  rfl\nhas type\n  ?m.7 = ?m.7\nbut is expected to have type\n  relocate_probe.identity x = Aeneas.Std.Result.ok x\nin the application\n  And.intro rfl",
+            "range": {
+              "end": {
+                "character": 12,
+                "line": 3
+              },
+              "start": {
+                "character": 9,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40442,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40444,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40445,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40445,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40446,
+    "kind": "server",
+    "data": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 40446,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "server",
+    "data": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "goal_observation",
+    "data": {
+      "label": "fresh-after-change-before-tactic",
+      "character": 2,
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 22
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "server",
+    "data": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "goal_observation",
+    "data": {
+      "label": "fresh-after-change-after-tactic",
+      "character": 22,
+      "result": {
+        "goals": [
+          "x : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True"
+        ],
+        "rendered": "```lean\nx : Aeneas.Std.U32\n\u22a2 relocate_probe.identity x = Aeneas.Std.Result.ok x \u2227 True\n```"
+      },
+      "error": null
+    }
+  },
+  {
+    "elapsed_ms": 40447,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 40448,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/replay/move-parent/moved-lean/user/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 40481,
+    "kind": "server",
+    "data": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 40481,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 40504,
+    "kind": "server_stop",
+    "data": {
+      "label": "fresh-process-after-dependency-rebuild",
+      "exit_code": 0,
+      "stderr": ""
+    }
+  }
+]

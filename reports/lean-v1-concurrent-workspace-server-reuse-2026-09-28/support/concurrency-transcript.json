@@ -1,0 +1,5192 @@
+[
+  {
+    "elapsed_ms": 5,
+    "kind": "resource_sample",
+    "label": "baseline",
+    "disk_free_bytes": 56111923200,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 55%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 55,
+    "active_servers": 0,
+    "aggregate_tree_rss_bytes": 0,
+    "servers": []
+  },
+  {
+    "elapsed_ms": 509,
+    "kind": "lake_env",
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+    "returncode": 0,
+    "lean_path_sha256": "8d9d9a7f0fbb2522792f3c61218a42091ec174cb997713b7f81b436af958dc8c"
+  },
+  {
+    "elapsed_ms": 510,
+    "kind": "server_start",
+    "server": "worker-a",
+    "pid": 17120,
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+    "source_sha256": "8d61aed138bce5c93123f78845c204c17d3978af3b42dcaad33e6e896e119be7"
+  },
+  {
+    "elapsed_ms": 543,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 17116,
+        "rootUri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n\ntheorem worker_a_ok_ok : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 547,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 549,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 788,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 788,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 1100,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 1629,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 2153,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 2656,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 2681,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1506/1623] Replayed Aeneas.Std.Slice\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1568/1623] Replayed Aeneas.Std.String\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1584/1623] Replayed Aeneas.Std.StringIter\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3203,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 3259,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3733,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 4251,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 4749,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 4773,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 5303,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 5822,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 6841,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 8548,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8548,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8548,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8548,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8549,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8549,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8549,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8549,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8562,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8562,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8562,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8562,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8562,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 8563,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8563,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "before-tactic",
+    "character": 2,
+    "result": {
+      "goals": [
+        "\u22a2 True"
+      ],
+      "rendered": "```lean\n\u22a2 True\n```"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 8563,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8563,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 8563,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "after-tactic",
+    "character": 9,
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 8874,
+    "kind": "resource_sample",
+    "label": "one-loaded-generated-project-server",
+    "disk_free_bytes": 56112885760,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 47%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 47,
+    "active_servers": 1,
+    "aggregate_tree_rss_bytes": 218316800,
+    "servers": [
+      {
+        "label": "worker-a",
+        "pid": 17120,
+        "tree_rss_bytes": 218316800,
+        "processes": [
+          [
+            "17120",
+            "lean",
+            "218316800"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "elapsed_ms": 9526,
+    "kind": "lake_env",
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b",
+    "returncode": 0,
+    "lean_path_sha256": "199edae5c6037d1ff2b4d40f13ffc19fefaf333a7a8e60cd0196dcf0e848cf62"
+  },
+  {
+    "elapsed_ms": 9527,
+    "kind": "server_start",
+    "server": "worker-b",
+    "pid": 17128,
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b",
+    "source_sha256": "4aa9f6b95503f149b89cb2f854f1b28bccf5cc0640787e71366578b796fc1870"
+  },
+  {
+    "elapsed_ms": 9527,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 17116,
+        "rootUri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9563,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9563,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 9563,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n\ntheorem worker_b_ok_ok : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9563,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9564,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9564,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 9565,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9805,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 9805,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 10110,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 10633,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 11150,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 11674,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 11686,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1506/1636] Replayed Aeneas.Std.Slice\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1568/1636] Replayed Aeneas.Std.String\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1584/1636] Replayed Aeneas.Std.StringIter\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12128,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12197,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 12267,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 12727,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 13252,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 13782,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 13782,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 14315,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 14840,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 15883,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 17978,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 20060,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 22130,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 22902,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22904,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22909,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22910,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22910,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22910,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22910,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22911,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22911,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22912,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22915,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22916,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22916,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22917,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22917,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22953,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22953,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22954,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22954,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22954,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 22963,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22963,
+    "kind": "goal_query",
+    "server": "worker-b",
+    "label": "before-tactic",
+    "character": 2,
+    "result": {
+      "goals": [
+        "\u22a2 True"
+      ],
+      "rendered": "```lean\n\u22a2 True\n```"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 22963,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22963,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 22963,
+    "kind": "goal_query",
+    "server": "worker-b",
+    "label": "after-tactic",
+    "character": 9,
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 23010,
+    "kind": "resource_sample",
+    "label": "two-loaded-independent-generated-project-servers",
+    "disk_free_bytes": 56112578560,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 30%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 30,
+    "active_servers": 2,
+    "aggregate_tree_rss_bytes": 361938944,
+    "servers": [
+      {
+        "label": "worker-a",
+        "pid": 17120,
+        "tree_rss_bytes": 192020480,
+        "processes": [
+          [
+            "17120",
+            "lean",
+            "192020480"
+          ]
+        ]
+      },
+      {
+        "label": "worker-b",
+        "pid": 17128,
+        "tree_rss_bytes": 169918464,
+        "processes": [
+          [
+            "17128",
+            "lean",
+            "169918464"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "elapsed_ms": 23010,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n\ntheorem worker_a_ok_ok : True := by\n  exact True.intro\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23010,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23011,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 23221,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23221,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23222,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23224,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 23224,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23225,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23225,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "edit-before-tactic",
+    "character": 2,
+    "result": {
+      "goals": [
+        "\u22a2 True"
+      ],
+      "rendered": "```lean\n\u22a2 True\n```"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 23225,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 18
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23225,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23225,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "edit-after-tactic",
+    "character": 18,
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 23226,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Generated\n\ntheorem worker_b_ok_ok : True := by\n  exact True.intro\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23226,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23428,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23428,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23428,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23429,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 23429,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23430,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23430,
+    "kind": "goal_query",
+    "server": "worker-b",
+    "label": "edit-before-tactic",
+    "character": 2,
+    "result": {
+      "goals": [
+        "\u22a2 True"
+      ],
+      "rendered": "```lean\n\u22a2 True\n```"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 23430,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 18
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23430,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23430,
+    "kind": "goal_query",
+    "server": "worker-b",
+    "label": "edit-after-tactic",
+    "character": 18,
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 23441,
+    "kind": "resource_sample",
+    "label": "two-servers-after-independent-edits",
+    "disk_free_bytes": 56112578560,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 30%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 30,
+    "active_servers": 2,
+    "aggregate_tree_rss_bytes": 377454592,
+    "servers": [
+      {
+        "label": "worker-a",
+        "pid": 17120,
+        "tree_rss_bytes": 198131712,
+        "processes": [
+          [
+            "17120",
+            "lean",
+            "198131712"
+          ]
+        ]
+      },
+      {
+        "label": "worker-b",
+        "pid": 17128,
+        "tree_rss_bytes": 179322880,
+        "processes": [
+          [
+            "17128",
+            "lean",
+            "179322880"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "elapsed_ms": 23441,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 23443,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 23473,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 23473,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 23561,
+    "kind": "server_stop",
+    "server": "worker-a",
+    "reason": "graceful-stop-for-reconstruction",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 25081,
+    "kind": "lake_env",
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+    "returncode": 0,
+    "lean_path_sha256": "8d9d9a7f0fbb2522792f3c61218a42091ec174cb997713b7f81b436af958dc8c"
+  },
+  {
+    "elapsed_ms": 25082,
+    "kind": "server_start",
+    "server": "worker-a",
+    "pid": 17141,
+    "cwd": "$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+    "source_sha256": "3a339d3f4b8a3667d5b813279b6daa6fd64f4a6cc5ca1ca9c76ba83e4ece4264"
+  },
+  {
+    "elapsed_ms": 25082,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 17116,
+        "rootUri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Generated\n\ntheorem worker_a_ok_ok : True := by\n  exact True.intro\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25118,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 25120,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25360,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25360,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 25665,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 26186,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 26707,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 27231,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 27233,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 27750,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 27760,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1506/1533] Replayed Aeneas.Std.Slice\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27760,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27760,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1568/1658] Replayed Aeneas.Std.String\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u26a0 [1584/1658] Replayed Aeneas.Std.StringIter\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 27863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 28003,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 28279,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 28809,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 29314,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 29336,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 29863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 30389,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 31386,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 33455,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 35511,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 37601,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 39657,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 41728,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 43819,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 45856,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45858,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45863,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45864,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45864,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45865,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45867,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 18,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45869,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45872,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45874,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45875,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45875,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45909,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 45917,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45917,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45918,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45918,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45918,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 45928,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 True"
+        ],
+        "rendered": "```lean\n\u22a2 True\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45928,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "before-tactic",
+    "character": 2,
+    "result": {
+      "goals": [
+        "\u22a2 True"
+      ],
+      "rendered": "```lean\n\u22a2 True\n```"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 45928,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean"
+        },
+        "position": {
+          "line": 3,
+          "character": 18
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45929,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 45929,
+    "kind": "goal_query",
+    "server": "worker-a",
+    "label": "after-tactic",
+    "character": 18,
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    },
+    "error": null
+  },
+  {
+    "elapsed_ms": 45973,
+    "kind": "resource_sample",
+    "label": "restarted-worker-a-while-worker-b-remains-live",
+    "disk_free_bytes": 56109981696,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 30%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 30,
+    "active_servers": 2,
+    "aggregate_tree_rss_bytes": 164610048,
+    "servers": [
+      {
+        "label": "worker-b",
+        "pid": 17128,
+        "tree_rss_bytes": 14761984,
+        "processes": [
+          [
+            "17128",
+            "lean",
+            "14761984"
+          ]
+        ]
+      },
+      {
+        "label": "worker-a",
+        "pid": 17141,
+        "tree_rss_bytes": 149848064,
+        "processes": [
+          [
+            "17141",
+            "lean",
+            "149848064"
+          ]
+        ]
+      }
+    ]
+  },
+  {
+    "elapsed_ms": 45973,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 45974,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-a/Probe.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 46002,
+    "kind": "server",
+    "server": "worker-a",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 46002,
+    "kind": "client",
+    "server": "worker-a",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "server_stop",
+    "server": "worker-a",
+    "reason": "graceful-shutdown",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 46091,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 46094,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$ANNEAL_LOCAL_TOOLS/scratch/20260928-3725/concurrent/worker-b/Probe.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 46129,
+    "kind": "server",
+    "server": "worker-b",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 46129,
+    "kind": "client",
+    "server": "worker-b",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 46819,
+    "kind": "server_stop",
+    "server": "worker-b",
+    "reason": "graceful-shutdown",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 46823,
+    "kind": "resource_sample",
+    "label": "after-stop",
+    "disk_free_bytes": 56110043136,
+    "memory_pressure_exit": 0,
+    "memory_pressure_stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 50%\n",
+    "memory_pressure_stderr": "",
+    "memory_free_percent": 50,
+    "active_servers": 0,
+    "aggregate_tree_rss_bytes": 0,
+    "servers": []
+  }
+]

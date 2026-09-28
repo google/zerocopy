@@ -1919,6 +1919,39 @@
         "lake/concurrency"
       ]
     },
+    "anneal-v1-interactive-dependency-invalidation-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Zerocopy V1 source"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "repository": "google/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas Lean library revision selected by the generated workspace"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "lean/lsp",
+        "lean/tactic-state",
+        "lean/invalidation"
+      ]
+    },
     "anneal-v1-issafe-semantic-gaps-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -5207,6 +5240,39 @@
         "lean/generated-proofs"
       ]
     },
+    "lean-v1-concurrent-workspace-server-reuse-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Zerocopy V1 source"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "repository": "google/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas Lean library revision selected by the generated workspace"
+        }
+      ],
+      "topics": [
+        "lean/lsp",
+        "lean/server",
+        "lean/concurrency",
+        "anneal/v1"
+      ]
+    },
     "lean-warnings-as-errors-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
       "subjects": [
@@ -5626,6 +5692,38 @@
         "verification/total-correctness",
         "compcert",
         "aeneas/termination"
+      ]
+    },
+    "reference-report-evidence-negative-controls-2026-09-28": {
+      "observed_at": "2026-09-28",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Zerocopy V1 generated-project probe"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a0828fbef19f463066f80451ecbbd14dc8604d21"
+          },
+          "name": "reference corpus state used for the evidence review"
+        }
+      ],
+      "topics": [
+        "reference/evidence",
+        "research/harness",
+        "reproducibility"
       ]
     },
     "rust-aggregate-layout-nightly-2026-05-31": {
