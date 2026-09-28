@@ -26,6 +26,12 @@ permissions: {}
 
 env:
   CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN: 1
+  KANI_ARGS: >-
+    --manifest-path zerocopy/Cargo.toml
+    --package zerocopy
+    --features __internal_use_only_features_that_work_on_stable
+    --output-format=terse
+    -Zfunction-contracts
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -212,6 +218,14 @@ jobs:
             .github/workflows/ci.yml
           grep -E "^ *kani-version: $KANI_LATEST$" \
             .github/workflows/ci.yml >/dev/null
+      # Exercise the same Kani invocation as CI before opening a PR. This makes
+      # incompatible CLI or verifier changes fail the roller instead of
+      # repeatedly creating a PR which cannot pass CI.
+      - name: Test Kani version
+        uses: model-checking/kani-github-action@f838096619a707b0f6b2118cf435eaccfa33e51f # v1.1
+        with:
+          args: ${{ env.KANI_ARGS }}
+          kani-version: ${{ env.ZC_KANI_LATEST }}
       - name: Submit PR
         id: submit-pr
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1  # v8.1.1 # zizmor: ignore[superfluous-actions]
