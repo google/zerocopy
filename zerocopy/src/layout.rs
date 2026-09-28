@@ -698,41 +698,31 @@ impl DstLayout {
                     None => return Err(MetadataCastError::Size),
                 };
 
-                // Calculate the number of elements that fit in
-                // `max_slice_and_padding_bytes`; any remaining bytes will be
-                // considered padding.
+                // Calculate the maximum number of elements that fit in
+                // `max_slice_and_padding_bytes`.
                 //
                 // Guaranteed not to divide by zero: `elem_size` is non-zero.
                 #[allow(clippy::arithmetic_side_effects)]
                 let elems = max_slice_and_padding_bytes / elem_size.get();
-                // Guaranteed not to overflow on multiplication: `usize::MAX >=
-                // max_slice_and_padding_bytes >= (max_slice_and_padding_bytes /
-                // elem_size) * elem_size`.
+                // Let M = max_total_bytes, A = self.align, E = elem_size, and
+                // r = (M - offset) % E. Division gives M - offset = elems * E
+                // + r, so the unpadded size is offset + elems * E = M - r.
+                // M is a multiple of A. When E <= A, r < E <= A, so rounding
+                // M - r up to A gives M without reconstructing it from `elems`.
                 //
-                // Guaranteed not to overflow on addition:
-                // - max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size <= max_slice_and_padding_bytes == max_total_bytes - offset
-                // - elems * elem_size + offset <= max_total_bytes <= usize::MAX
+                // For E > A, keep the multiplication: computing the size from
+                // the remainder can cause LLVM to duplicate division work.
                 #[allow(clippy::arithmetic_side_effects)]
-                let without_padding = offset + elems * elem_size.get();
-                // `self_bytes` is equal to the offset bytes plus the bytes
-                // consumed by the trailing slice plus any padding bytes
-                // required to satisfy the alignment. Note that we have computed
-                // the maximum number of trailing slice elements that could fit
-                // in `self_bytes`, so any padding is guaranteed to be less than
-                // the size of an extra element.
-                //
-                // Guaranteed not to overflow:
-                // - By previous comment: without_padding == elems * elem_size +
-                //   offset <= max_total_bytes
-                // - By construction, `max_total_bytes` is a multiple of
-                //   `self.align`.
-                // - At most, adding padding needed to round `without_padding`
-                //   up to the next multiple of the alignment will bring
-                //   `self_bytes` up to `max_total_bytes`.
-                #[allow(clippy::arithmetic_side_effects)]
-                let self_bytes =
-                    without_padding + util::padding_needed_for(without_padding, self.align);
+                let self_bytes = if elem_size.get() <= self.align.get() {
+                    max_total_bytes
+                } else {
+                    // Neither operation can overflow: elems * E <= M - offset,
+                    // so adding offset gives a value <= M <= usize::MAX.
+                    let without_padding = offset + elems * elem_size.get();
+                    // Rounding up cannot overflow either: M is a multiple of
+                    // A, so rounding a value <= M up to A still gives <= M.
+                    without_padding + util::padding_needed_for(without_padding, self.align)
+                };
                 (elems, self_bytes)
             }
         };
@@ -745,7 +735,7 @@ impl DstLayout {
             // - In the `Sized` branch, only returns `size` if `size <=
             //   bytes_len`.
             // - In the `SliceDst` branch, calculates `self_bytes <=
-            //   max_toatl_bytes`, which is upper-bounded by `bytes_len`.
+            //   max_total_bytes`, which is upper-bounded by `bytes_len`.
             #[allow(clippy::arithmetic_side_effects)]
             CastType::Suffix => bytes_len - self_bytes,
         };
@@ -1513,6 +1503,9 @@ mod tests {
         fn validate_behavior(
             (layout, addr, bytes_len, cast_type): (DstLayout, usize, usize, CastType),
         ) {
+            use core::convert::TryFrom as _;
+
+            let wide = |n: usize| u128::try_from(n).unwrap();
             if let Ok((elems, split_at)) =
                 layout.validate_cast_and_convert_metadata(addr, bytes_len, cast_type)
             {
@@ -1530,32 +1523,40 @@ mod tests {
                 assert!(!(sized && elems != 0), "{}", debug_str);
 
                 let resulting_size = match layout.size_info {
-                    SizeInfo::Sized { size } => size,
+                    SizeInfo::Sized { size } => wide(size),
                     SizeInfo::SliceDst(TrailingSliceLayout { offset, elem_size }) => {
-                        let padded_size = |elems| {
-                            let without_padding = offset + elems * elem_size;
-                            without_padding + util::padding_needed_for(without_padding, align)
+                        // Use wider arithmetic so even the next element's
+                        // padded size can exceed `usize::MAX` without wrapping.
+                        let padded_size = |elems: u128| {
+                            let without_padding = wide(offset) + elems * wide(elem_size);
+                            let align = wide(align.get());
+                            ((without_padding + align - 1) / align) * align
                         };
 
-                        let resulting_size = padded_size(elems);
+                        let resulting_size = padded_size(wide(elems));
                         // Test that `validate_cast_and_convert_metadata`
                         // computed the largest possible value that fits in the
                         // given range.
-                        assert!(padded_size(elems + 1) > bytes_len, "{}", debug_str);
+                        assert!(padded_size(wide(elems) + 1) > wide(bytes_len), "{}", debug_str);
                         resulting_size
                     }
                 };
 
                 // Test safety postconditions guaranteed by
                 // `validate_cast_and_convert_metadata`.
-                assert!(resulting_size <= bytes_len, "{}", debug_str);
+                assert!(resulting_size <= wide(bytes_len), "{}", debug_str);
                 match cast_type {
                     CastType::Prefix => {
                         assert_eq!(addr % align, 0, "{}", debug_str);
-                        assert_eq!(resulting_size, split_at, "{}", debug_str);
+                        assert_eq!(resulting_size, wide(split_at), "{}", debug_str);
                     }
                     CastType::Suffix => {
-                        assert_eq!(split_at, bytes_len - resulting_size, "{}", debug_str);
+                        assert_eq!(
+                            wide(split_at),
+                            wide(bytes_len) - resulting_size,
+                            "{}",
+                            debug_str
+                        );
                         assert_eq!((addr + split_at) % align, 0, "{}", debug_str);
                     }
                 }
@@ -1592,6 +1593,42 @@ mod tests {
                 .map(|(size_info, align)| layout(size_info, align));
         itertools::iproduct!(layouts, 0..8, 0..8, [CastType::Prefix, CastType::Suffix])
             .for_each(validate_behavior);
+
+        // Exercise remainders below, at, and above the alignment, as well as
+        // sizes near integer limits. No allocation is needed: this method
+        // checks layout arithmetic independently of pointer validity.
+        let large = DstLayout::MAX_SIZE - 32;
+        let layouts = itertools::iproduct!(
+            [0, 1, 3, 8, large],
+            [1, 3, 4, 12, 17, large],
+            [1, 2, 4, 8, 16, DstLayout::CURRENT_MAX_ALIGN.get()]
+        )
+        .map(|(offset, elem_size, align)| layout((offset, elem_size), align));
+        let lengths = [
+            0,
+            3,
+            4,
+            7,
+            8,
+            15,
+            16,
+            17,
+            31,
+            32,
+            33,
+            large,
+            usize::MAX - 31,
+            usize::MAX - 1,
+            usize::MAX,
+        ];
+        itertools::iproduct!(
+            layouts,
+            [0usize, 1, 31],
+            lengths,
+            [CastType::Prefix, CastType::Suffix]
+        )
+        .filter(|(_, addr, len, _)| addr.checked_add(*len).is_some())
+        .for_each(validate_behavior);
     }
 
     #[test]
