@@ -1,0 +1,19 @@
+{
+  "lean_archive": {
+    "url": "https://github.com/leanprover/lean4/releases/download/v4.30.0-rc2/lean-4.30.0-rc2-linux_aarch64.tar.zst",
+    "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f"
+  },
+  "bundled_leantar": {
+    "archive_path": "lean-4.30.0-rc2-linux_aarch64/bin/leantar",
+    "sha256": "89ef0c3bd2c40e727191bcd406ef3dac95e0b9000ac93cb7f8c681031ad486be",
+    "elf_e_machine": 62
+  },
+  "native_leantar_archive": {
+    "url": "https://github.com/digama0/leangz/releases/download/v0.1.16/leantar-v0.1.16-aarch64-unknown-linux-musl.tar.gz",
+    "sha256": "26eb775436883e3d5cdad27af35b9c37212c73106316863ea1fc5f8ec2cc9de4"
+  },
+  "native_leantar": {
+    "sha256": "d99c68938b90d323ca4987ffb31d42d717e7a2dbd2148d1870c0b36542a637e9",
+    "elf_e_machine": 183
+  }
+}

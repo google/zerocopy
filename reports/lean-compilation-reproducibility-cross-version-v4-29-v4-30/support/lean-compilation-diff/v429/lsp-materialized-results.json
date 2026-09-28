@@ -1,0 +1,180 @@
+{
+  "initialize": {
+    "id": 1,
+    "jsonrpc": "2.0",
+    "result": {
+      "capabilities": {
+        "callHierarchyProvider": true,
+        "codeActionProvider": {
+          "codeActionKinds": [
+            "quickfix",
+            "refactor",
+            "source.organizeImports"
+          ],
+          "resolveProvider": true,
+          "workDoneProgress": false
+        },
+        "colorProvider": {
+          "workDoneProgress": false
+        },
+        "completionProvider": {
+          "resolveProvider": true,
+          "triggerCharacters": [
+            "."
+          ]
+        },
+        "declarationProvider": true,
+        "definitionProvider": true,
+        "documentHighlightProvider": true,
+        "documentSymbolProvider": true,
+        "experimental": {
+          "moduleHierarchyProvider": {},
+          "rpcProvider": {
+            "highlightMatchesProvider": {}
+          }
+        },
+        "foldingRangeProvider": true,
+        "hoverProvider": true,
+        "inlayHintProvider": {
+          "resolveProvider": false,
+          "workDoneProgress": false
+        },
+        "referencesProvider": true,
+        "renameProvider": {
+          "prepareProvider": true
+        },
+        "semanticTokensProvider": {
+          "full": true,
+          "legend": {
+            "tokenModifiers": [
+              "declaration",
+              "definition",
+              "readonly",
+              "static",
+              "deprecated",
+              "abstract",
+              "async",
+              "modification",
+              "documentation",
+              "defaultLibrary"
+            ],
+            "tokenTypes": [
+              "keyword",
+              "variable",
+              "property",
+              "function",
+              "namespace",
+              "type",
+              "class",
+              "enum",
+              "interface",
+              "struct",
+              "typeParameter",
+              "parameter",
+              "enumMember",
+              "event",
+              "method",
+              "macro",
+              "modifier",
+              "comment",
+              "string",
+              "number",
+              "regexp",
+              "operator",
+              "decorator",
+              "leanSorryLike"
+            ]
+          },
+          "range": true
+        },
+        "signatureHelpProvider": {
+          "triggerCharacters": [
+            " "
+          ],
+          "workDoneProgress": false
+        },
+        "textDocumentSync": {
+          "change": 2,
+          "openClose": true,
+          "save": {
+            "includeText": true
+          },
+          "willSave": false,
+          "willSaveWaitUntil": false
+        },
+        "typeDefinitionProvider": true,
+        "workspaceSymbolProvider": true
+      },
+      "serverInfo": {
+        "name": "Lean 4 Server",
+        "version": "0.3.0"
+      }
+    }
+  },
+  "wait_v1": {
+    "id": 11,
+    "jsonrpc": "2.0",
+    "result": {}
+  },
+  "goal_v1_before": {
+    "id": 21,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+      ],
+      "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+    }
+  },
+  "goal_v1_after": {
+    "id": 31,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+      ],
+      "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+    }
+  },
+  "wait_v2": {
+    "id": 12,
+    "jsonrpc": "2.0",
+    "result": {}
+  },
+  "goal_v2_before": {
+    "id": 22,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+      ],
+      "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+    }
+  },
+  "goal_v2_after": {
+    "id": 32,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [],
+      "rendered": "no goals"
+    }
+  },
+  "goal_outside_tactic": {
+    "id": 40,
+    "jsonrpc": "2.0",
+    "result": null
+  },
+  "unsupported_method": {
+    "error": {
+      "code": -32601,
+      "message": "No request handler found for '$/lean/nonexistentProbe'"
+    },
+    "id": 41,
+    "jsonrpc": "2.0"
+  },
+  "shutdown": {
+    "id": 99,
+    "jsonrpc": "2.0",
+    "result": null
+  }
+}

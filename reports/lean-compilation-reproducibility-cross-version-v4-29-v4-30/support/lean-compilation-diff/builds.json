@@ -1,0 +1,344 @@
+{
+  "clean-1": {
+    "build": {
+      "name": "clean-1",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+      "exit": 0,
+      "elapsed_s": 3.008,
+      "stdout": "\u2714 [2/4] Built Probe.Base (191ms)\n\u2139 [3/4] Built Probe (178ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stderr": ""
+    },
+    "artifacts": {
+      "ir/Probe/Base.c": {
+        "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+        "bytes": 1744
+      },
+      "ir/Probe/Base.c.hash": {
+        "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+        "bytes": 16
+      },
+      "ir/Probe/Base.setup.json": {
+        "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+        "bytes": 142
+      },
+      "ir/Probe.c": {
+        "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+        "bytes": 1297
+      },
+      "ir/Probe.c.hash": {
+        "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+        "bytes": 16
+      },
+      "ir/Probe.setup.json": {
+        "sha256": "57d25a4c4afd4683f39a9a7e1c24c6af28403c73b8d0e705ee52b5f0428818b0",
+        "bytes": 289
+      },
+      "lib/lean/Probe/Base.ilean": {
+        "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+        "bytes": 489
+      },
+      "lib/lean/Probe/Base.ilean.hash": {
+        "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.olean": {
+        "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+        "bytes": 8720
+      },
+      "lib/lean/Probe/Base.olean.hash": {
+        "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.trace": {
+        "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+        "bytes": 2031
+      },
+      "lib/lean/Probe.ilean": {
+        "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+        "bytes": 393
+      },
+      "lib/lean/Probe.ilean.hash": {
+        "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+        "bytes": 16
+      },
+      "lib/lean/Probe.olean": {
+        "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+        "bytes": 4680
+      },
+      "lib/lean/Probe.olean.hash": {
+        "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+        "bytes": 16
+      },
+      "lib/lean/Probe.trace": {
+        "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+        "bytes": 2256
+      }
+    },
+    "cache_files": 0
+  },
+  "clean-2": {
+    "build": {
+      "name": "clean-2",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+      "exit": 0,
+      "elapsed_s": 0.813,
+      "stdout": "\u2714 [2/4] Built Probe.Base (183ms)\n\u2139 [3/4] Built Probe (177ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stderr": ""
+    },
+    "artifacts": {
+      "ir/Probe/Base.c": {
+        "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+        "bytes": 1744
+      },
+      "ir/Probe/Base.c.hash": {
+        "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+        "bytes": 16
+      },
+      "ir/Probe/Base.setup.json": {
+        "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+        "bytes": 142
+      },
+      "ir/Probe.c": {
+        "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+        "bytes": 1297
+      },
+      "ir/Probe.c.hash": {
+        "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+        "bytes": 16
+      },
+      "ir/Probe.setup.json": {
+        "sha256": "57d25a4c4afd4683f39a9a7e1c24c6af28403c73b8d0e705ee52b5f0428818b0",
+        "bytes": 289
+      },
+      "lib/lean/Probe/Base.ilean": {
+        "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+        "bytes": 489
+      },
+      "lib/lean/Probe/Base.ilean.hash": {
+        "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.olean": {
+        "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+        "bytes": 8720
+      },
+      "lib/lean/Probe/Base.olean.hash": {
+        "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.trace": {
+        "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+        "bytes": 2031
+      },
+      "lib/lean/Probe.ilean": {
+        "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+        "bytes": 393
+      },
+      "lib/lean/Probe.ilean.hash": {
+        "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+        "bytes": 16
+      },
+      "lib/lean/Probe.olean": {
+        "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+        "bytes": 4680
+      },
+      "lib/lean/Probe.olean.hash": {
+        "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+        "bytes": 16
+      },
+      "lib/lean/Probe.trace": {
+        "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+        "bytes": 2256
+      }
+    },
+    "cache_files": 0
+  },
+  "cache-seed": {
+    "build": {
+      "name": "cache-seed",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+      "exit": 0,
+      "elapsed_s": 0.796,
+      "stdout": "\u2714 [2/4] Built Probe.Base (178ms)\n\u2139 [3/4] Built Probe (174ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+      "stderr": ""
+    },
+    "artifacts": {
+      "ir/Probe/Base.c": {
+        "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+        "bytes": 1744
+      },
+      "ir/Probe/Base.c.hash": {
+        "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+        "bytes": 16
+      },
+      "ir/Probe/Base.setup.json": {
+        "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+        "bytes": 142
+      },
+      "ir/Probe.c": {
+        "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+        "bytes": 1297
+      },
+      "ir/Probe.c.hash": {
+        "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+        "bytes": 16
+      },
+      "ir/Probe.setup.json": {
+        "sha256": "be1e1c83e70c3c86397484dc64a4b1b5a2db602a02d5ab87b37e5c2bc0b8f91c",
+        "bytes": 282
+      },
+      "lib/lean/Probe/Base.ilean": {
+        "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+        "bytes": 489
+      },
+      "lib/lean/Probe/Base.ilean.hash": {
+        "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.olean": {
+        "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+        "bytes": 8720
+      },
+      "lib/lean/Probe/Base.olean.hash": {
+        "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.trace": {
+        "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+        "bytes": 2031
+      },
+      "lib/lean/Probe.ilean": {
+        "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+        "bytes": 393
+      },
+      "lib/lean/Probe.ilean.hash": {
+        "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+        "bytes": 16
+      },
+      "lib/lean/Probe.olean": {
+        "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+        "bytes": 4680
+      },
+      "lib/lean/Probe.olean.hash": {
+        "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+        "bytes": 16
+      },
+      "lib/lean/Probe.trace": {
+        "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+        "bytes": 2256
+      }
+    },
+    "cache_files": 8
+  },
+  "cache-reuse-1": {
+    "build": {
+      "name": "cache-reuse-1",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+      "exit": 0,
+      "elapsed_s": 0.47,
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stderr": ""
+    },
+    "artifacts": {
+      "lib/lean/Probe/Base.ilean": {
+        "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+        "bytes": 489
+      },
+      "lib/lean/Probe/Base.ilean.hash": {
+        "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.trace": {
+        "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d",
+        "bytes": 234
+      },
+      "lib/lean/Probe.ilean": {
+        "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+        "bytes": 393
+      },
+      "lib/lean/Probe.ilean.hash": {
+        "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+        "bytes": 16
+      },
+      "lib/lean/Probe.trace": {
+        "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e",
+        "bytes": 234
+      }
+    },
+    "cache_files": 8
+  },
+  "cache-reuse-2": {
+    "build": {
+      "name": "cache-reuse-2",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--old",
+        "build",
+        "Probe"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+      "exit": 0,
+      "elapsed_s": 0.482,
+      "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+      "stderr": ""
+    },
+    "artifacts": {
+      "lib/lean/Probe/Base.ilean": {
+        "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+        "bytes": 489
+      },
+      "lib/lean/Probe/Base.ilean.hash": {
+        "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+        "bytes": 16
+      },
+      "lib/lean/Probe/Base.trace": {
+        "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d",
+        "bytes": 234
+      },
+      "lib/lean/Probe.ilean": {
+        "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+        "bytes": 393
+      },
+      "lib/lean/Probe.ilean.hash": {
+        "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+        "bytes": 16
+      },
+      "lib/lean/Probe.trace": {
+        "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e",
+        "bytes": 234
+      }
+    },
+    "cache_files": 8
+  }
+}

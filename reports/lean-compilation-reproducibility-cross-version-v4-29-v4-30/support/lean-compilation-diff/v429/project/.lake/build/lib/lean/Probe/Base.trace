@@ -1,0 +1,31 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["5c51d05011527ce1.olean"],
+  "i": "834835f90cae5e82.ilean",
+  "c": "7c75e4f9775d4db2.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/lib/lean $CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean $CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Probe/Base.lean -o $CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/lib/lean/Probe/Base.olean -i $CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/lib/lean/Probe/Base.ilean -c $CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/ir/Probe/Base.c --setup $CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/ir/Probe/Base.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Probe.Base:deps",
+   [["deps",
+     [["compilation_probe/Probe:extraDep",
+       [["@compilation_probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.29.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740",
+   "60bb08ef22408c8a"],
+  ["$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Probe/Base.lean",
+   "20cd4f8b22bdd787"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Probe.Base", "8837bbfaa3dd0531"],
+  ["Package.id?: (some compilation_probe)", "239e0ac49efd9969"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "97228db68887fd57"}

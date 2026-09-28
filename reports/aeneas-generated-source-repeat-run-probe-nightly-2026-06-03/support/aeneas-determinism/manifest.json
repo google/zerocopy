@@ -1,0 +1,257 @@
+{
+  "input": ".anneal-local-tools/scratch/translation-goldens/probe.llbc",
+  "input_bytes": 19827,
+  "input_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098",
+  "records": [
+    {
+      "label": "same-1",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/same-dest",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547493519537000,
+      "finished_ns": 1790547493754437000,
+      "stdout_sha256": "8667af91c60a648b55c59b6c9a6a6c4fbc537536ebf5f9997d9f33cd5a4c4046",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547493752481936
+        }
+      ]
+    },
+    {
+      "label": "same-2",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/same-dest",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547493755351000,
+      "finished_ns": 1790547493993232000,
+      "stdout_sha256": "04ff1523d633f1327b0b464cb722d38f1e2609eeaaf7ac44c206363eb3f4c30d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547493986451260
+        }
+      ]
+    },
+    {
+      "label": "same-3",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/same-dest",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547493994109000,
+      "finished_ns": 1790547494225698000,
+      "stdout_sha256": "a3ebe0348a2b2059c93c94cc76b9a24f614b770ce69e6e1a0dd1a1f890a15a96",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547494223866848
+        }
+      ]
+    },
+    {
+      "label": "same-4",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/same-dest",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547494226484000,
+      "finished_ns": 1790547494466979000,
+      "stdout_sha256": "8049f1530b8224e645453379390d1108fd2fd1f4b5ae907ac8b1340348a1f918",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547494465201529
+        }
+      ]
+    },
+    {
+      "label": "same-5",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/same-dest",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547494467755000,
+      "finished_ns": 1790547494696679000,
+      "stdout_sha256": "5fb369ea70d940d21e59da027ce2c37c0c1d92e11040185570ecd3e8f4f29e71",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547494695039137
+        }
+      ]
+    },
+    {
+      "label": "fresh-1",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/fresh-dest-1",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547494697506000,
+      "finished_ns": 1790547494938080000,
+      "stdout_sha256": "bc7500332ba292e404de184a77066ad8f57305ac157579dab3a8a95f75e02b06",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547494936139320
+        }
+      ]
+    },
+    {
+      "label": "fresh-2",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/fresh-dest-2",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547494938843000,
+      "finished_ns": 1790547495169591000,
+      "stdout_sha256": "7263a2a12b152ce1ab2d12a15b0d0f6ade76e8c8fa09052efcd65418b61ae4e7",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547495167552666
+        }
+      ]
+    },
+    {
+      "label": "fresh-3",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/fresh-dest-3",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547495170435000,
+      "finished_ns": 1790547495412844000,
+      "stdout_sha256": "1124537cfa7542a3c430e38f238e49ccdd3f021be8914ef77eed8cf1c7bd1f2c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547495411078787
+        }
+      ]
+    },
+    {
+      "label": "fresh-4",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/fresh-dest-4",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547495413682000,
+      "finished_ns": 1790547495654100000,
+      "stdout_sha256": "d63ec3756fa416f89bb65e3c21c8ddd4dbb2f9b9ccc932288ac66165e990bb47",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547495652125220
+        }
+      ]
+    },
+    {
+      "label": "fresh-5",
+      "argv": [
+        "aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        ".anneal-local-tools/scratch/aeneas-determinism/fresh-dest-5",
+        "-no-progress-bar",
+        ".anneal-local-tools/scratch/translation-goldens/probe.llbc"
+      ],
+      "returncode": 0,
+      "started_ns": 1790547495654949000,
+      "finished_ns": 1790547495885855000,
+      "stdout_sha256": "100f6950c4400dda709a8f10f509fd29e6b723eccf3e29f7dc187c77a93bf238",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "files": [
+        {
+          "path": "Probe.lean",
+          "bytes": 1219,
+          "sha256": "767acaeb0288a57cfdabdb1c276cbf0f7d9a85a0558f367601f5082c60349bca",
+          "mtime_ns": 1790547495883677064
+        }
+      ]
+    }
+  ]
+}

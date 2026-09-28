@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "probe_consumer",
+ "options": {},
+ "name": "Generated",
+ "isModule": false,
+ "importArts":
+ {"Dep":
+  ["$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-d/producer/.lake/build/lib/lean/Dep.olean"]},
+ "dynlibs": []}

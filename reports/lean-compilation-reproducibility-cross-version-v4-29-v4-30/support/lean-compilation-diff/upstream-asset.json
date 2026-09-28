@@ -1,0 +1,12 @@
+{
+  "release_tag": "v4.29.0",
+  "asset_name": "lean-4.29.0-darwin_aarch64.tar.zst",
+  "asset_url": "https://github.com/leanprover/lean4/releases/download/v4.29.0/lean-4.29.0-darwin_aarch64.tar.zst",
+  "asset_download_bytes": 526040358,
+  "asset_digest": "sha256:74309b8f2312f0e8608e0281fd47b08d213bcd53f3c2099fcd10ce3a1a46f0c8",
+  "existing_4_30_toolchain_disk_bytes_approx": 2665377792,
+  "cap_bytes": 750000000,
+  "download_under_cap": true,
+  "full_install_expected_under_cap": false,
+  "full_install_basis": "Existing nearby official arm64 toolchain occupies more than 2.5 GB; no evidence that 4.29 full extraction fits 750 MB. Installation stopped before download."
+}

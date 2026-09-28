@@ -1,0 +1,7 @@
+{
+  "free_bytes_before": 80733384704,
+  "memory_pressure": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 43%\n",
+  "scratch_cap_bytes": 1073741824,
+  "child_timeout_s": 30,
+  "concurrent_servers": 1
+}

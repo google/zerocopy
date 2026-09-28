@@ -1,0 +1,897 @@
+{
+  "schema": "anneal-lean-compilation-diff-v1",
+  "identity": {
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "lake_version": "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)\n",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+  },
+  "fixture_sha256": {
+    "lakefile.lean": "ba744b92c5524c6c8096aaa38f57da7c1944d7162546945300206027ba7a3674",
+    "lake-manifest.json": "e00985d61f56efe3f912003a1628166119c495ce8c94ede0f09b56436e896072",
+    "Probe/Base.lean": "353b9ceb04f5f739703468c468023da3d3c201a9d3a5398dae5bfa0119b57088",
+    "Probe.lean": "1c6efbb5aafdec02b3f8c876307a6ac18fa59c18875960411ae2d22d932564ba",
+    "Goal.lean": "ca72613130b63f3ceedde54104312a54adc4949b1295b2ae0ee6f2f545799ced"
+  },
+  "toolchain_file_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+  "raw_sha256": {
+    "runs.json": "95e5543bef3e19ca402bcd7b8f6d3d26b97d226bd762be25a4bb59be08a27770",
+    "builds.json": "607b975fc35b4b83416dad29727162b9221b8fe38ef19d7f68660d1188d2e230",
+    "lsp-raw.json": "0255f835279b7731d2d77a838486aecf1a972a2792d51c9ac852b481458756d3",
+    "lsp-results.json": "fa2a3f5059027870a8ad0ce4a7e8ebf4b696f74ae231d0ea215327348b8afe68"
+  },
+  "builds": {
+    "clean-1": {
+      "exit": 0,
+      "timed_out": false,
+      "mode": "built",
+      "artifacts": {
+        "ir/Probe/Base.c": {
+          "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+          "bytes": 1744
+        },
+        "ir/Probe/Base.c.hash": {
+          "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+          "bytes": 16
+        },
+        "ir/Probe/Base.setup.json": {
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+          "bytes": 142
+        },
+        "ir/Probe.c": {
+          "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+          "bytes": 1297
+        },
+        "ir/Probe.c.hash": {
+          "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+          "bytes": 16
+        },
+        "ir/Probe.setup.json": {
+          "sha256": "57d25a4c4afd4683f39a9a7e1c24c6af28403c73b8d0e705ee52b5f0428818b0",
+          "bytes": 289
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+          "bytes": 489
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.olean": {
+          "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+          "bytes": 8720
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.trace": {
+          "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+          "bytes": 2031
+        },
+        "lib/lean/Probe.ilean": {
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+          "bytes": 393
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+          "bytes": 16
+        },
+        "lib/lean/Probe.olean": {
+          "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+          "bytes": 4680
+        },
+        "lib/lean/Probe.olean.hash": {
+          "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+          "bytes": 16
+        },
+        "lib/lean/Probe.trace": {
+          "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+          "bytes": 2256
+        }
+      },
+      "cache_files": 0
+    },
+    "clean-2": {
+      "exit": 0,
+      "timed_out": false,
+      "mode": "built",
+      "artifacts": {
+        "ir/Probe/Base.c": {
+          "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+          "bytes": 1744
+        },
+        "ir/Probe/Base.c.hash": {
+          "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+          "bytes": 16
+        },
+        "ir/Probe/Base.setup.json": {
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+          "bytes": 142
+        },
+        "ir/Probe.c": {
+          "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+          "bytes": 1297
+        },
+        "ir/Probe.c.hash": {
+          "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+          "bytes": 16
+        },
+        "ir/Probe.setup.json": {
+          "sha256": "57d25a4c4afd4683f39a9a7e1c24c6af28403c73b8d0e705ee52b5f0428818b0",
+          "bytes": 289
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+          "bytes": 489
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.olean": {
+          "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+          "bytes": 8720
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.trace": {
+          "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+          "bytes": 2031
+        },
+        "lib/lean/Probe.ilean": {
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+          "bytes": 393
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+          "bytes": 16
+        },
+        "lib/lean/Probe.olean": {
+          "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+          "bytes": 4680
+        },
+        "lib/lean/Probe.olean.hash": {
+          "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+          "bytes": 16
+        },
+        "lib/lean/Probe.trace": {
+          "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+          "bytes": 2256
+        }
+      },
+      "cache_files": 0
+    },
+    "cache-seed": {
+      "exit": 0,
+      "timed_out": false,
+      "mode": "built",
+      "artifacts": {
+        "ir/Probe/Base.c": {
+          "sha256": "d1b3da9b4c5e71e5c8788bf1bae2347bd50e358e6a1c3fc822f13ea4d47048ae",
+          "bytes": 1744
+        },
+        "ir/Probe/Base.c.hash": {
+          "sha256": "40d23cab4eeafbdb0c87c9f342a63c426b26ef1144315662bb5e5d6ea0bc5a3a",
+          "bytes": 16
+        },
+        "ir/Probe/Base.setup.json": {
+          "sha256": "bf7b2fa30fdd47b5c58eade1ca07cbbc30ada22a6459c7aaf84e4323632d1738",
+          "bytes": 142
+        },
+        "ir/Probe.c": {
+          "sha256": "e04ea7174f4bdf205f6ade89b074e3a1e908bd792191d1cbf102c4e8d410e4db",
+          "bytes": 1297
+        },
+        "ir/Probe.c.hash": {
+          "sha256": "7e6a31b329048ace3b7ed0c7c552b3e5f4f1e3ee2733267e6d080f18792d8538",
+          "bytes": 16
+        },
+        "ir/Probe.setup.json": {
+          "sha256": "be1e1c83e70c3c86397484dc64a4b1b5a2db602a02d5ab87b37e5c2bc0b8f91c",
+          "bytes": 282
+        },
+        "lib/lean/Probe/Base.ilean": {
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+          "bytes": 489
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.olean": {
+          "sha256": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861",
+          "bytes": 8720
+        },
+        "lib/lean/Probe/Base.olean.hash": {
+          "sha256": "3d7cf7b1996b353db97f8f9250bf4943080faf9f80b9d58bcb458a3e740ad236",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.trace": {
+          "sha256": "be0b08a24147e8d5ad611b660744cc826f665e447dbfa8c7455de2b4ec31fa34",
+          "bytes": 2031
+        },
+        "lib/lean/Probe.ilean": {
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+          "bytes": 393
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+          "bytes": 16
+        },
+        "lib/lean/Probe.olean": {
+          "sha256": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431",
+          "bytes": 4680
+        },
+        "lib/lean/Probe.olean.hash": {
+          "sha256": "92f84f73a5e3d37bd2d08b2e5adf967c0966e867927c8c1adfea48673d7af199",
+          "bytes": 16
+        },
+        "lib/lean/Probe.trace": {
+          "sha256": "66b169e2b314f8846ec14437c13fa8d74ab3eeceeb8554272408ee89e1f59eb3",
+          "bytes": 2256
+        }
+      },
+      "cache_files": 8
+    },
+    "cache-reuse-1": {
+      "exit": 0,
+      "timed_out": false,
+      "mode": "fetched",
+      "artifacts": {
+        "lib/lean/Probe/Base.ilean": {
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+          "bytes": 489
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.trace": {
+          "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d",
+          "bytes": 234
+        },
+        "lib/lean/Probe.ilean": {
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+          "bytes": 393
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+          "bytes": 16
+        },
+        "lib/lean/Probe.trace": {
+          "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e",
+          "bytes": 234
+        }
+      },
+      "cache_files": 8
+    },
+    "cache-reuse-2": {
+      "exit": 0,
+      "timed_out": false,
+      "mode": "fetched",
+      "artifacts": {
+        "lib/lean/Probe/Base.ilean": {
+          "sha256": "b27cc94c7a1d145c9df0b29531eb236a5d2a30436d7ab3a45aec2200856a0c20",
+          "bytes": 489
+        },
+        "lib/lean/Probe/Base.ilean.hash": {
+          "sha256": "c1bf783c37f38c8e4f2b77a795d9e3084cf07fe1bc3de8683cf2104e387bf0ab",
+          "bytes": 16
+        },
+        "lib/lean/Probe/Base.trace": {
+          "sha256": "3954562edd00621f47c311fc00c7d15856ef03d14da098e51b6ce774e8d3063d",
+          "bytes": 234
+        },
+        "lib/lean/Probe.ilean": {
+          "sha256": "35041f9c03bbbf9318aebc5469258dc0868231ca32d240077f101131d0aad421",
+          "bytes": 393
+        },
+        "lib/lean/Probe.ilean.hash": {
+          "sha256": "f21bd1999dcea3320ad616320f8cc22a864612238976ea62acb21d5b1bbccf4b",
+          "bytes": 16
+        },
+        "lib/lean/Probe.trace": {
+          "sha256": "b95c6a7c6ed49b07d1cb2a71c59681c29c08f9d8e847206b44f0cdf68c1ee17e",
+          "bytes": 234
+        }
+      },
+      "cache_files": 8
+    }
+  },
+  "lake_cells": {
+    "clean-1-setup": {
+      "status": "ok",
+      "name": "Probe",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe.Base": [
+          {
+            "location": "<PROJECT>/.lake/build/lib/lean/Probe/Base.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "clean-1-batch": {
+      "exit": 0,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 4
+            },
+            "end": {
+              "column": 5,
+              "line": 4
+            },
+            "message": "5"
+          }
+        },
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 5
+            },
+            "end": {
+              "column": 6,
+              "line": 5
+            },
+            "message": "'Probe.inc_four' does not depend on any axioms"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "clean-2-setup": {
+      "status": "ok",
+      "name": "Probe",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe.Base": [
+          {
+            "location": "<PROJECT>/.lake/build/lib/lean/Probe/Base.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "clean-2-batch": {
+      "exit": 0,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 4
+            },
+            "end": {
+              "column": 5,
+              "line": 4
+            },
+            "message": "5"
+          }
+        },
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 5
+            },
+            "end": {
+              "column": 6,
+              "line": 5
+            },
+            "message": "'Probe.inc_four' does not depend on any axioms"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "cache-seed-setup": {
+      "status": "ok",
+      "name": "Probe",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe.Base": [
+          {
+            "location": "<CACHE>/artifacts/c478365929d67ada.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "cache-seed-batch": {
+      "exit": 0,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 4
+            },
+            "end": {
+              "column": 5,
+              "line": 4
+            },
+            "message": "5"
+          }
+        },
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 5
+            },
+            "end": {
+              "column": 6,
+              "line": 5
+            },
+            "message": "'Probe.inc_four' does not depend on any axioms"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "cache-reuse-1-setup": {
+      "status": "ok",
+      "name": "Probe",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe.Base": [
+          {
+            "location": "<CACHE>/artifacts/c478365929d67ada.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "cache-reuse-1-batch": {
+      "exit": 1,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "error",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 1
+            },
+            "end": null,
+            "message": "object file '<PROJECT>/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "cache-reuse-2-setup": {
+      "status": "ok",
+      "name": "Probe",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe.Base": [
+          {
+            "location": "<CACHE>/artifacts/c478365929d67ada.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "cache-reuse-2-batch": {
+      "exit": 1,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "error",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 1
+            },
+            "end": null,
+            "message": "object file '<PROJECT>/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "warm-no-build": {
+      "exit": 0,
+      "stdout": "✔ [2/4] Fetched Probe.Base\n✔ [3/4] Fetched Probe\nAll targets up-to-date (4 jobs).\n"
+    },
+    "goal-setup": {
+      "status": "ok",
+      "name": "_unknown",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe": [
+          {
+            "location": "<CACHE>/artifacts/4f64576591449c04.olean",
+            "exists_now": true,
+            "sha256_now": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+          }
+        ],
+        "Probe.Base": [
+          {
+            "location": "<CACHE>/artifacts/c478365929d67ada.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "goal-batch-v1": {
+      "exit": 1,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "error",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 1
+            },
+            "end": null,
+            "message": "object file '<PROJECT>/.lake/build/lib/lean/Probe.olean' of module Probe does not exist"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "materialize-without-cache": {
+      "exit": 0,
+      "stdout": "✔ [2/4] Built Probe.Base (<TIME>)\nℹ [3/4] Built Probe (<TIME>)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n"
+    },
+    "materialized-batch": {
+      "exit": 0,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 4
+            },
+            "end": {
+              "column": 5,
+              "line": 4
+            },
+            "message": "5"
+          }
+        },
+        {
+          "diagnostic": {
+            "severity": "information",
+            "kind": "[anonymous]",
+            "position": {
+              "column": 0,
+              "line": 5
+            },
+            "end": {
+              "column": 6,
+              "line": 5
+            },
+            "message": "'Probe.inc_four' does not depend on any axioms"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "materialized-goal-setup": {
+      "status": "ok",
+      "name": "_unknown",
+      "isModule": false,
+      "options": {},
+      "plugins": [],
+      "dynlibs": [],
+      "importArts": {
+        "Probe": [
+          {
+            "location": "<PROJECT>/.lake/build/lib/lean/Probe.olean",
+            "exists_now": true,
+            "sha256_now": "0f375fc7aa020047550dc27c031f3ddf0b6640215c981205cc75115f26d17431"
+          }
+        ],
+        "Probe.Base": [
+          {
+            "location": "<PROJECT>/.lake/build/lib/lean/Probe/Base.olean",
+            "exists_now": true,
+            "sha256_now": "109eee96fcdf3fea8e492b0e297d5fa73c2447ebc7378805bdda7254f0386861"
+          }
+        ]
+      }
+    },
+    "materialized-goal-batch-v1": {
+      "exit": 1,
+      "timeout": null,
+      "lines": [
+        {
+          "diagnostic": {
+            "severity": "error",
+            "kind": "Elab.synthPlaceholder",
+            "position": {
+              "column": 8,
+              "line": 3
+            },
+            "end": {
+              "column": 10,
+              "line": 3
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 0\n⊢ n + 0 = 0"
+          }
+        },
+        {
+          "diagnostic": {
+            "severity": "error",
+            "kind": "Tactic.unsolvedGoals",
+            "position": {
+              "column": 50,
+              "line": 2
+            },
+            "end": {
+              "column": 10,
+              "line": 3
+            },
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n⊢ n + 0 = 0"
+          }
+        }
+      ],
+      "stderr": ""
+    },
+    "materialized-goal-batch-v2": {
+      "exit": 0,
+      "timeout": null,
+      "lines": [],
+      "stderr": ""
+    }
+  },
+  "lsp": {
+    "initialize": {
+      "status": "ok",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    },
+    "final_diagnostics_by_version": {
+      "1": [
+        {
+          "severity": 1,
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 2
+            },
+            "start": {
+              "character": 50,
+              "line": 1
+            }
+          },
+          "message": "unsolved goals\nn : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        },
+        {
+          "severity": 1,
+          "range": {
+            "end": {
+              "character": 10,
+              "line": 2
+            },
+            "start": {
+              "character": 8,
+              "line": 2
+            }
+          },
+          "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        }
+      ],
+      "2": []
+    },
+    "queries": {
+      "wait_v1": {
+        "status": "ok",
+        "result": {}
+      },
+      "goal_v1_before": {
+        "status": "ok",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+        }
+      },
+      "goal_v1_after": {
+        "status": "ok",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+        }
+      },
+      "wait_v2": {
+        "status": "ok",
+        "result": {}
+      },
+      "goal_v2_before": {
+        "status": "ok",
+        "result": {
+          "goals": [
+            "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+          ],
+          "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+        }
+      },
+      "goal_v2_after": {
+        "status": "ok",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "goal_outside_tactic": {
+        "status": "ok",
+        "result": null
+      },
+      "unsupported_method": {
+        "status": "protocol-error",
+        "code": -32601,
+        "message": "No request handler found for '$/lean/nonexistentProbe'"
+      }
+    },
+    "exception": null
+  }
+}

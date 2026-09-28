@@ -1,0 +1,83 @@
+# Lean tactic-state query lifecycle (4.30.0-rc2)
+
+## Summary
+
+A direct LSP probe opened a Lean file, awaited diagnostics for a document version, and queried local context and goals. An unsaved versioned edit produced an updated solved goal. Batch `lean --json` agreed on the tiny example's diagnostics but cannot answer cursor-goal queries.
+
+## Applicability
+
+Lean 4.30.0-rc2 bare core Lean on macOS arm64, with one small theorem file, exact raw JSON-RPC transcripts, and the local matching Lean binary. Related corpus reports: [lean-server-tactic-state-v4-30-0-rc2](../lean-server-tactic-state-v4-30-0-rc2/REPORT.md).
+
+## Findings
+
+
+Scope: a bounded, Nix-independent study of Lean's language-server goal query for a generated file. I read Anneal's [principles](https://github.com/google/zerocopy/blob/bd0956be95c5f798f0c0484921b9b9d1fc6e9988/anneal/PRINCIPLES.md), [design contract](https://github.com/google/zerocopy/blob/bd0956be95c5f798f0c0484921b9b9d1fc6e9988/anneal/DESIGN.md), and [agent guide](https://github.com/google/zerocopy/blob/bd0956be95c5f798f0c0484921b9b9d1fc6e9988/anneal/AGENTS.md). This is interface evidence only: a displayed goal or an accepted Lean theorem does not by itself establish Rust/Lean correspondence, complete obligation coverage, UB freedom, or Anneal verification success. The historical `v1/` implementation is not the current design authority.
+
+### Identity and retained evidence
+
+- Local Lean/Lake source checkout: `3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc`. `lean --version`: `Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)`; Lake is `5.0.0-src+3dc1a08`.
+- Executable SHA-256: `lean` `b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997`; `lake` `9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb`.
+- [Probe script](support/lean-query-lifecycle/probe.py) SHA-256 `c680ac1a59e9c6e62fbc9378138007c70f986c291cf0a6e13ee8f343cc471b3e`; [full raw transcript](support/lean-query-lifecycle/transcript.json) SHA-256 `af2c3500fde8e86baa8bf93599f6ec3bd95787584f5c48359c47a0fc32c04a41`. The [version 1](support/lean-query-lifecycle/v1.golden.json) and [version 2](support/lean-query-lifecycle/v2.golden.json) protocol slices retain exact messages and paths; they do not normalize timestamps or event order. The full transcript also retains process identity, elapsed times, batch stdout/stderr, and intermediate progress events. An earlier [first run](support/lean-query-lifecycle/transcript-first.json) and [second run](support/lean-query-lifecycle/transcript-second.json) are retained. The final server's [native protocol log](support/lean-query-lifecycle/server-logs/LSP_2026-09-27-18-38-19-9066-0400.log) is retained separately.
+- The fixture ran with one server at a time, no Lake build, no Mathlib copy, and no Nix. Each batch process took less than 20 seconds and the final server completed in under one second; scratch occupied 92 KiB after the probe. Disk had 78 GiB available before writing.
+
+### Source-backed protocol and API facts
+
+Lean requires `textDocument/didOpen` before file requests, even though this is a documented deviation from general LSP expectations. The handshake is `initialize` response, then `initialized`. `rootUri` is ignored in favor of server cwd. The watchdog owns open-file content and per-file workers; `didChange` updates that content and is forwarded to the worker. The protocol overview describes incremental `publishDiagnostics` and `$/lean/fileProgress` notifications ([ProtocolOverview.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/ProtocolOverview.lean#L58), [Watchdog.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/Watchdog.lean#L1240)).
+
+`textDocument/waitForDiagnostics` takes `{uri,version}` and returns `{}` after diagnostics for at least that version have been emitted. Its implementation waits for the reporter **and** all command snapshots. It may wait for a future version, and `version ≤ current` means an old-version request can complete against newer content. The client must therefore track the exact current version and reject responses after a concurrent edit ([Extra.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Data/Lsp/Extra.lean#L35), [RequestHandling.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/FileWorker/RequestHandling.lean#L466)).
+
+`$/lean/plainGoal` takes a text document URI and zero-based LSP position; its result is `null` when no tactic proof is found, or `{goals:[...],rendered:"..."}`. Each goal string includes pretty-printed local context and target. An empty `goals` array is the solved-at-position case. The handler converts LSP position to UTF-8 and locates elaboration `InfoTree` tactic metadata, selecting before/after goals based on cursor position. It is a presentation/query API, not a proof certificate ([Extra.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Data/Lsp/Extra.lean#L100), [RequestHandling.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/FileWorker/RequestHandling.lean#L144), [InfoUtils.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/InfoUtils.lean#L447)). Interactive InfoView instead connects an RPC session and calls `Lean.Widget.getInteractiveGoals`; its RPC object/session lifecycle is separate ([ProtocolOverview.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/ProtocolOverview.lean#L423)). Plain goals are the smaller stable contract for a first Anneal adapter.
+
+The worker cancels its old reporter and pending requests on edit; versioned notifications older than its maximum document version are filtered before output. Requests can fail as content changes while they wait for a snapshot. The watchdog reports a crashed worker and only restarts that worker on a later `didChange`; edits of the document header or imports can also cause a worker restart. Saving an imported file marks dependent open workers stale; those workers may continue to expose the old imported `.olean` until refreshed ([FileWorker.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/FileWorker.lean#L581), [Watchdog.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/Watchdog.lean#L913), [README.md](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/README.md#L39)).
+
+When a Lake project is present, the worker uses `lake setup-file <path> -` with the parsed header on stdin to get dependency artifacts, options, plugins, and dynlibs. Default dependency-build mode may build imports; `.never` adds `--no-build --no-cache`. Lake's edited-module setup is explicitly a top-level build without its own trace state; imported artifacts can still have build traces. `lake serve` starts `lean --server` with workspace environment and server arguments ([SetupFile.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/FileWorker/SetupFile.lean#L25), [Module.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/Build/Module.lean#L1220), [Serve.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lake/Lake/CLI/Serve.lean#L90)). This probe used bare core Lean and exercised none of those project imports.
+
+The CLI `--json` runs the command-line snapshot reporter and prints messages as JSON lines; it does not expose a cursor goal query. The server reports snapshots asynchronously using a different notification schema ([Shell.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/lean/Shell.lean#L171), [Basic.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Language/Basic.lean#L341), [FileWorker.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/FileWorker.lean#L38)).
+
+### Direct protocol observation and goldens
+
+The file was `theorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by` followed by version 1 `  exact ?_`. The client sent `didOpen` version 1, awaited `waitForDiagnostics` version 1, and queried line 1, character 2 and character 10. It then sent a **full-content, unsaved** `didChange` version 2 changing the tactic to `  simpa using h`, awaited version 2, and queried character 2 and character 15. The on-disk file had been restored to version 1 before server startup, so version 2 was genuinely an in-memory server snapshot. Batch `lean --json` was run against both source variants on disk before that server session.
+
+| Snapshot | Batch `lean --json` | Final LSP diagnostics after wait | `plainGoal` before tactic | `plainGoal` after tactic |
+|---|---|---|---|---|
+| v1, `exact ?_` | exit 1; placeholder and unsolved-goals errors, each with `n`, `h`, and `⊢ n + 0 = 0` | two errors containing the same substantive messages and context | one goal: `n : Nat\nh : n = 0\n⊢ n + 0 = 0` | same unsolved goal |
+| v2, `simpa using h` | exit 0; no JSON lines | empty | same initial goal | `goals: []`, `rendered: "no goals"` |
+
+The exact [v1](support/lean-query-lifecycle/v1.golden.json) and [v2](support/lean-query-lifecycle/v2.golden.json) slices include client notifications/requests, intermediate and final diagnostics, and responses. They are **observed wire transcripts**, not byte-stable expected output across machines or Lean revisions. Initial empty diagnostics are provisional; the version 1 final pair arrived before the wait response. A version 2 empty diagnostic notification also arrived after its goal query. The semantic check should compare the last completed diagnostics for the awaited version plus selected goal values, not arbitrary notification count or timing.
+
+### Server trace priming and equivalence boundary
+
+For a long-lived session, prime each generated file by starting `lake serve` in the intended package cwd (or `lean --server` for a bare file), completing `initialize`/`initialized`, opening the exact generated text with a monotonically increasing version, answering `client/registerCapability`, and awaiting `waitForDiagnostics` at that version before reading diagnostics or querying goals. Keep the full text, URI, version, query positions, setup result, and import artifact identity. A new edit needs a new version and a new wait; a response racing with that edit is discarded. A zero-goal result at one position is local to that elaborated snapshot, not a whole-file or Rust verification result.
+
+For a protocol trace, this revision's actual implementation enables logs through `initialize.initializationOptions.logCfg.logDir` ([InitShutdown.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Data/Lsp/InitShutdown.lean#L58), [Logging.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/Logging.lean#L21), [Watchdog.lean](https://github.com/leanprover/lean4/blob/3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc/src/Lean/Server/Watchdog.lean#L1748)). The README still says `LEAN_SERVER_LOG_DIR`; setting that environment variable alone yielded no log in this probe. The first `logCfg` attempt used the wrong JSON key `logDir?` and wrote a log in the cwd; `logDir` directed the final log into `server-logs/`. The log is an audit/debug trace of messages, not the Lake dependency trace or a certificate of complete elaboration. For dependency priming, validate `setup-file` and imported `.olean`/`.ilean` availability separately, as the [Lake concurrency study](../lake-cache-concurrency-execution-probe-v4-30-0-rc2/REPORT.md) found that relocation and manifest state can affect setup.
+
+The two modes can be compared **semantically** only under the same source snapshot, Lean binary, cwd/package, imports and artifacts, options, plugins/dynlibs, and dependency state. Compare normalized diagnostics by severity, range, and message, allowing CLI one-based positions and LSP zero-based positions and their different JSON shapes. Query goals only through the server or an explicit Lean metaprogram; batch `--json` is not a tactic-state oracle. In this bare fixture, batch and server agreed on error content and solved/unsolved status. This is one small observation, not a general equivalence proof.
+
+### Hypotheses to test in a project fixture
+
+The following are predicted divergence states, supported by source behavior but not directly tested here: unsaved LSP edits versus disk input; in-flight elaboration or stale old-version responses; import edits/save without a worker refresh; a missing or out-of-date Lake artifact; differing `lake serve` versus direct CLI environment, flags, options, plugins, and dynlibs; changed header/imports that restart a worker; and a worker crash. Cache warmness, progress-event order, log timestamps, absolute paths, and diagnostic batching can differ even when the same theorem is elaborated. The project-specific Lake cases were not exercised here.
+
+### Proposed Anneal invalidation and restart policy
+
+This is a design proposal, not observed current Anneal behavior. Key a queried result by generated source bytes/hash, URI, document version, cursor position, Lean binary/version, Lake workspace/configuration, setup-file result, imported artifact hashes, options, plugin/dynlib identities, and any generated proof-library/semantic dependencies. On an edit, cancel or discard older requests, send full text or a checked incremental diff with a strictly larger version, await that version, then query. On any imported source or artifact change, re-run setup and restart the affected worker/server as needed; do not use an old goal or old clean diagnostics as evidence for a new input. Surface setup errors, fatal progress, timeout, cancellation, and worker crashes as incomplete verification.
+
+After a worker crash, the watchdog has current text but deliberately waits for `didChange` before restart. Anneal should avoid an implicit retry loop: record the crash and input identity, terminate the stale session, rebuild the same deterministic workspace state from recorded source/config/artifact identities, then start a fresh server and `didOpen` with full text. Retry a fixed, small number of times only for an identified transient failure. If the same snapshot crashes again, return a reproducible tool-failure result with transcript/log references; never treat missing goals as solved. If the watchdog itself dies, a fresh handshake and `didOpen` reconstructs from Anneal-owned text. This restart policy was not crash-tested here.
+
+### Setup and prompt changes
+
+1. Pin the Lean binary/source and record package cwd, `lake setup-file` output, imported artifact identity, and generated source hash for every goal-query result.
+2. Ask goal-query probes to use `didOpen` → versioned `waitForDiagnostics` → position query, then an unsaved `didChange` → new wait → query. Include one pre-tactic and one post-tactic position, exact raw protocol logs, and a separate `lean --json` run against the identical saved bytes.
+3. Require an explicit invalidation event for source, imports, options, plugins, toolchain, or crash; keep the incomplete state distinct from verification success and from TCB/coverage evidence.
+4. For server logging on 4.30.0-rc2, use `initializationOptions.logCfg.logDir` and retain the raw trace before any path normalization. Do not conflate LSP logs, Lake dependency traces, and proof evidence.
+
+## Boundaries
+
+No Aeneas/Mathlib project setup, imported project dependencies, RPC InfoView query, worker-crash recovery, or general server/batch equivalence was exercised. Goal results are not proof certificates.
+
+## Evidence
+
+This report's subject identities are recorded in `REPORT.json`. Source links in the Findings are pinned to immutable upstream or zerocopy revisions where available. Executed-probe support material is included under `support/lean-query-lifecycle/`; local home/checkout prefixes are redacted in text artifacts.
+
+## Revalidation
+
+Replay the retained client probe and protocol transcript. Preserve didOpen/didChange versions, await `waitForDiagnostics` for the same version, and reject results after edits or import/config changes; run batch JSON on identical saved bytes for diagnostics only.

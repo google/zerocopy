@@ -1,0 +1,3 @@
+[[92mInfo[39m ] Imported: .anneal-local-tools/scratch/translation-goldens/probe.llbc
+[[92mInfo[39m ] Generated: .anneal-local-tools/scratch/aeneas-determinism/same-dest/Probe.lean
+[[92mInfo[39m ] Total execution time: 0.143871 seconds

@@ -1,0 +1,1347 @@
+[
+  {
+    "elapsed_ms": 1,
+    "direction": "process",
+    "message": {
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "--keep-toolchain",
+        "serve"
+      ],
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project",
+      "pid": 79929
+    }
+  },
+  {
+    "elapsed_ms": 18,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 79928,
+        "rootUri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2568,
+    "direction": "server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {}
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2568,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 2568,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Probe\ntheorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2568,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2569,
+    "direction": "server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2569,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 2570,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2803,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 2803,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3092,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "\u2139 [3/4] Replayed Probe\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3092,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Probe.lean:4:0: 5\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3092,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "info: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\n",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 3
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3102,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3116,
+    "direction": "server",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "elapsed_ms": 3255,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3256,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3276,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3278,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3278,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3278,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3278,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3279,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3280,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3280,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3280,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3285,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 50,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 50,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3286,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3286,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3286,
+    "direction": "server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 3286,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3287,
+    "direction": "server",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3287,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3288,
+    "direction": "server",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3288,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Probe\ntheorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  simpa using h\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3288,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3499,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3499,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3499,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3499,
+    "direction": "server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 3499,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "server",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 15
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "server",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        },
+        "position": {
+          "line": 0,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "server",
+    "message": {
+      "id": 40,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "$/lean/nonexistentProbe",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "server",
+    "message": {
+      "error": {
+        "code": -32601,
+        "message": "No request handler found for '$/lean/nonexistentProbe'"
+      },
+      "id": 41,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 3501,
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/Goal.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 3507,
+    "direction": "server",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 3507,
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 3530,
+    "direction": "process_exit",
+    "message": {
+      "exit": 0,
+      "stderr": ""
+    }
+  }
+]

@@ -1,0 +1,32 @@
+{
+  "mode": "three",
+  "cmd": [
+    "charon",
+    "rustc",
+    "--preset",
+    "aeneas",
+    "--start-from",
+    "crate::choose",
+    "--start-from",
+    "crate::bump",
+    "--start-from",
+    "crate::checked_add",
+    "--dest-file",
+    ".anneal-local-tools/scratch/charon-scaling/three.llbc",
+    "--",
+    ".anneal-local-tools/scratch/translation-goldens/probe.rs",
+    "--crate-type",
+    "lib",
+    "--crate-name",
+    "probe",
+    "--edition",
+    "2021"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.089999,
+  "child_user_seconds": 0.022145,
+  "child_system_seconds": 0.02468,
+  "child_maxrss_bytes": 106184704,
+  "llbc_bytes": 19874
+}

@@ -1,0 +1,122 @@
+[
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  simpa using h\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 15
+        }
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  }
+]

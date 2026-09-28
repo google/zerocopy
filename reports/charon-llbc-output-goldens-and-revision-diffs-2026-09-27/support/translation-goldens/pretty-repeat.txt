@@ -1,0 +1,73 @@
+// Full name: core::option::Option
+#[lang_item("Option")]
+pub enum Option<T> {
+  None,
+  Some(T),
+}
+
+pub fn core::num::{u32}::checked_add(_1: u32, _2: u32) -> Option<u32>
+= <opaque>
+
+// Full name: core::num::{u32}::wrapping_add
+pub fn wrapping_add(_1: u32, _2: u32) -> u32
+= <opaque>
+
+pub fn probe::checked_add(x_1: u32, y_2: u32) -> Option<u32>
+{
+    let _0: Option<u32>; // return
+    let x_1: u32; // arg #1
+    let y_2: u32; // arg #2
+    let _3: u32; // anonymous local
+    let _4: u32; // anonymous local
+
+    storage_live(_3)
+    _3 = copy x_1
+    storage_live(_4)
+    _4 = copy y_2
+    _0 = core::num::{u32}::checked_add(move _3, move _4)
+    storage_dead(_4)
+    storage_dead(_3)
+    return
+}
+
+// Full name: probe::choose
+pub fn choose(flag_1: bool, left_2: u32, right_3: u32) -> u32
+{
+    let _0: u32; // return
+    let flag_1: bool; // arg #1
+    let left_2: u32; // arg #2
+    let right_3: u32; // arg #3
+    let _4: bool; // anonymous local
+
+    storage_live(_4)
+    _4 = copy flag_1
+    if move _4 {
+        _0 = copy left_2
+    } else {
+        _0 = copy right_3
+    }
+    storage_dead(_4)
+    return
+}
+
+// Full name: probe::bump
+pub fn bump<'_0>(value_1: &'_0 mut u32)
+{
+    let _0: (); // return
+    let value_1: &'1 mut u32; // arg #1
+    let _2: u32; // anonymous local
+    let _3: u32; // anonymous local
+
+    _0 = ()
+    storage_live(_2)
+    storage_live(_3)
+    _3 = copy (*value_1)
+    _2 = wrapping_add(move _3, const 1u32)
+    storage_dead(_3)
+    (*value_1) = move _2
+    storage_dead(_2)
+    _0 = ()
+    return
+}
+
+

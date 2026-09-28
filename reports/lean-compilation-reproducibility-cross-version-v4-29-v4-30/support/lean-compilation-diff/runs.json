@@ -1,0 +1,388 @@
+[
+  {
+    "name": "host_memory_pressure",
+    "argv": [
+      "/usr/bin/memory_pressure",
+      "-Q"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.003,
+    "stdout": "The system has 8589934592 (524288 pages with a page size of 16384).\nSystem-wide memory free percentage: 43%\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-1",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 3.008,
+    "stdout": "\u2714 [2/4] Built Probe.Base (191ms)\n\u2139 [3/4] Built Probe (178ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-1-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.431,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-1-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.497,
+    "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.813,
+    "stdout": "\u2714 [2/4] Built Probe.Base (183ms)\n\u2139 [3/4] Built Probe (177ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-2-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.424,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "clean-2-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.488,
+    "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-seed",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.796,
+    "stdout": "\u2714 [2/4] Built Probe.Base (178ms)\n\u2139 [3/4] Built Probe (174ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-seed-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.422,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-seed-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.489,
+    "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-reuse-1",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.47,
+    "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-reuse-1-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.424,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/3] Fetched Probe.Base\n"
+  },
+  {
+    "name": "cache-reuse-1-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 1,
+    "elapsed_s": 0.414,
+    "stdout": "{\"caption\":\"\",\"data\":\"object file '$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-reuse-2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.482,
+    "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "cache-reuse-2-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.424,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"Probe\",\"options\":{},\"package\":\"compilation_probe\",\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/3] Fetched Probe.Base\n"
+  },
+  {
+    "name": "cache-reuse-2-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 1,
+    "elapsed_s": 0.417,
+    "stdout": "{\"caption\":\"\",\"data\":\"object file '$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe/Base.olean' of module Probe.Base does not exist\",\"endPos\":null,\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "warm-no-build",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-build",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.416,
+    "stdout": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\nAll targets up-to-date (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "goal-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Goal.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.423,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/cache/artifacts/4f64576591449c04.olean\"],\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/cache/artifacts/c478365929d67ada.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "\u2714 [2/4] Fetched Probe.Base\n\u2714 [3/4] Fetched Probe\n"
+  },
+  {
+    "name": "goal-batch-v1",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Goal.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 1,
+    "elapsed_s": 0.415,
+    "stdout": "{\"caption\":\"\",\"data\":\"object file '$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe.olean' of module Probe does not exist\",\"endPos\":null,\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "materialize-without-cache",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Probe"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.744,
+    "stdout": "\u2714 [2/4] Built Probe.Base (178ms)\n\u2139 [3/4] Built Probe (177ms)\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\nBuild completed successfully (4 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "materialized-batch",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Probe.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.483,
+    "stdout": "{\"caption\":\"\",\"data\":\"5\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'Probe.inc_four' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Probe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "materialized-goal-setup",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Goal.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.419,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Probe\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe.olean\"],\"Probe.Base\":[\"$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project/.lake/build/lib/lean/Probe/Base.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+    "stderr": "\u2139 [3/4] Replayed Probe\ninfo: Probe.lean:4:0: 5\ninfo: Probe.lean:5:0: 'Probe.inc_four' does not depend on any axioms\n"
+  },
+  {
+    "name": "materialized-goal-batch-v1",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Goal.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 1,
+    "elapsed_s": 0.489,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Goal.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":50,\"line\":2},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "materialized-goal-batch-v2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Goal.lean"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.473,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "name": "lean-version",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--version"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.029,
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "stderr": ""
+  },
+  {
+    "name": "lake-version",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--version"
+    ],
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/project",
+    "exit": 0,
+    "elapsed_s": 0.029,
+    "stdout": "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)\n",
+    "stderr": ""
+  }
+]

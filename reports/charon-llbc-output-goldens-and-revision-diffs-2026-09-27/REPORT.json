@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "charon",
+    "charon/llbc",
+    "charon/determinism",
+    "aeneas/translation",
+    "reproducibility"
+  ],
+  "subjects": [
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "Aeneas",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "release": "nightly-2026.06.03",
+        "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

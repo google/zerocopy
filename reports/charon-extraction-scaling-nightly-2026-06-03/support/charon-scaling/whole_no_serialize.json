@@ -1,0 +1,25 @@
+{
+  "mode": "whole_no_serialize",
+  "cmd": [
+    "charon",
+    "rustc",
+    "--preset",
+    "aeneas",
+    "--no-serialize",
+    "--",
+    ".anneal-local-tools/scratch/translation-goldens/probe.rs",
+    "--crate-type",
+    "lib",
+    "--crate-name",
+    "probe",
+    "--edition",
+    "2021"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.083657,
+  "child_user_seconds": 0.02252,
+  "child_system_seconds": 0.024997,
+  "child_maxrss_bytes": 106512384,
+  "llbc_bytes": null
+}

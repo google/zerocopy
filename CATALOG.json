@@ -331,6 +331,32 @@
         "anneal/reproducibility"
       ]
     },
+    "aeneas-generated-source-repeat-run-probe-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "aeneas-macos-aarch64.tar.gz",
+            "release": "nightly-2026.06.03",
+            "sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61"
+          },
+          "name": "Aeneas release archive"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas source"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "aeneas/determinism",
+        "lean/code-generation",
+        "reproducibility"
+      ]
+    },
     "aeneas-incremental-translation-feasibility-nightly-2026-06-03": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1567,6 +1593,33 @@
         "lake/dependencies"
       ]
     },
+    "anneal-v1-annotation-diagnostics-history-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1/",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "zerocopy Anneal V1"
+        },
+        {
+          "identity": {
+            "branch": "G4ka5fwcrxku4rfg7rjpfswfmnqxqulql",
+            "repository": "google/zerocopy",
+            "revision": "dc12610c8"
+          },
+          "name": "historical parser experiment"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "rust/doc-comments",
+        "lean/diagnostics",
+        "anneal/parser"
+      ]
+    },
     "anneal-v1-clean-workspace-prebuilt-archive-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1700,6 +1753,53 @@
         "anneal/soundness",
         "lean/typeclasses",
         "rust/unsafe-fields"
+      ]
+    },
+    "anneal-v1-lake-relocation-history-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1/",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "zerocopy Anneal V1"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 Lake"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "lean/lake",
+        "lake/relocation",
+        "lean/server",
+        "anneal/interactive-tools"
+      ]
+    },
+    "anneal-v1-proof-split-and-concat-slices-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1/",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "zerocopy Anneal V1"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "lean/proofs",
+        "anneal/proof-authoring",
+        "verification/progress"
       ]
     },
     "anneal-v1-unsafe-axiom-semantics-41f5b37": {
@@ -2039,6 +2139,33 @@
         "rust/layout"
       ]
     },
+    "charon-extraction-scaling-nightly-2026-06-03": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/performance",
+        "rustc",
+        "cargo/scaling"
+      ]
+    },
     "charon-incremental-capabilities-0-1-210": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -2150,6 +2277,43 @@
         "charon/json",
         "charon/postcard",
         "charon/hash-consing"
+      ]
+    },
+    "charon-llbc-output-goldens-and-revision-diffs-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+          },
+          "name": "Charon"
+        },
+        {
+          "identity": {
+            "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc"
+        }
+      ],
+      "topics": [
+        "charon",
+        "charon/llbc",
+        "charon/determinism",
+        "aeneas/translation",
+        "reproducibility"
       ]
     },
     "charon-multi-target-cargo-behavior-0-1-210": {
@@ -2819,6 +2983,26 @@
         "xdg/cache"
       ]
     },
+    "exocrate-install-state-machine-source-review-2026-09-27": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "crate_version": "0.1.0",
+            "path": "exocrate/",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Exocrate in zerocopy"
+        }
+      ],
+      "topics": [
+        "exocrate",
+        "exocrate/install",
+        "exocrate/concurrency",
+        "anneal/toolchain-setup"
+      ]
+    },
     "exocrate-local-archive-trust-checksum-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3129,6 +3313,33 @@
         "verification/upgrade"
       ]
     },
+    "lake-cache-concurrency-execution-probe-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+          },
+          "name": "Mathlib"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lake/cache",
+        "lake/concurrency",
+        "mathlib/cache",
+        "lean/artifacts"
+      ]
+    },
     "lake-clean-cache-seeded-equivalence-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3259,6 +3470,34 @@
         "lake/registry",
         "lake/manifest",
         "lake/version-ranges"
+      ]
+    },
+    "lake-generated-workspace-readonly-probe-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "path": "anneal/research/lake-probes.md",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "synthetic Lake producer/consumer fixture"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lake/relocation",
+        "lake/read-only",
+        "lake/cache",
+        "lean/server-setup"
       ]
     },
     "lake-git-path-dependencies-v4-30-0-rc2": {
@@ -3667,6 +3906,35 @@
         "lake/concurrency"
       ]
     },
+    "lean-430-rc2-linux-aarch64-leantar-anomaly": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "asset": "lean-4.30.0-rc2-linux_aarch64.tar.zst",
+            "repository": "leanprover/lean4",
+            "sha256": "b196f41da23960e842fc0fc04749d1639d44839feafc0414e53cb2db6b16790f",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 linux_aarch64 archive"
+        },
+        {
+          "identity": {
+            "asset": "leantar-v0.1.16-aarch64-unknown-linux-musl.tar.gz",
+            "repository": "digama0/leangz",
+            "sha256": "26eb775436883e3d5cdad27af35b9c37212c73106316863ea1fc5f8ec2cc9de4",
+            "version": "v0.1.16"
+          },
+          "name": "leantar v0.1.16 native AArch64 archive"
+        }
+      ],
+      "topics": [
+        "lean/toolchain-archive",
+        "lean/cross-architecture",
+        "leantar",
+        "reproducibility"
+      ]
+    },
     "lean-cli-entry-points-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -3706,6 +3974,34 @@
         "lean/determinism",
         "lean/olean",
         "lean/parallelism"
+      ]
+    },
+    "lean-compilation-reproducibility-cross-version-v4-29-v4-30": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/compilation",
+        "lean/determinism",
+        "lean/lake",
+        "lean/server",
+        "reproducibility"
       ]
     },
     "lean-diagnostic-format-controls-v4-30-0-rc2": {
@@ -3915,6 +4211,40 @@
       ]
     },
     "lean-lake-cross-platform-artifact-portability-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas Lean backend selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Mathlib selected by Aeneas"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal toolchain packaging"
+        }
+      ],
       "topics": [
         "lake",
         "lake/artifacts",
@@ -3923,41 +4253,7 @@
         "lean",
         "lean/artifacts",
         "lean/portability"
-      ],
-      "subjects": [
-        {
-          "name": "Lean 4 and Lake",
-          "identity": {
-            "repository": "leanprover/lean4",
-            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
-            "version": "v4.30.0-rc2"
-          }
-        },
-        {
-          "name": "Aeneas Lean backend selected by Anneal",
-          "identity": {
-            "repository": "AeneasVerif/aeneas",
-            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
-            "release": "nightly-2026.06.03"
-          }
-        },
-        {
-          "name": "Mathlib selected by Aeneas",
-          "identity": {
-            "repository": "leanprover-community/mathlib4",
-            "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6",
-            "version": "v4.30.0-rc2"
-          }
-        },
-        {
-          "name": "Anneal toolchain packaging",
-          "identity": {
-            "repository": "google/zerocopy",
-            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
-          }
-        }
-      ],
-      "observed_at": "2026-09-27"
+      ]
     },
     "lean-lake-trace-hash-artifacts-v4-30-0-rc2": {
       "observed_at": "2026-09-26",
@@ -4327,6 +4623,34 @@
         "verification/upgrade"
       ]
     },
+    "lean-server-concurrency-experiment-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "path": "anneal/src",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "zerocopy Anneal current source"
+        }
+      ],
+      "topics": [
+        "lean/server",
+        "lean/lsp",
+        "lean/concurrency",
+        "lean/cancellation",
+        "anneal/provenance"
+      ]
+    },
     "lean-server-multi-workspace-isolation-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -4408,6 +4732,25 @@
         "lean/elaboration",
         "lean/metaprogramming",
         "lean/extensions"
+      ]
+    },
+    "lean-tactic-state-protocol-transcript-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/server",
+        "lean/lsp",
+        "lean/tactic-state",
+        "lean/diagnostics"
       ]
     },
     "lean-termination-checking-v4-30-0-rc2": {

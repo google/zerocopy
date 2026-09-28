@@ -1,0 +1,175 @@
+[
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "direction": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "direction": "server",
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  }
+]

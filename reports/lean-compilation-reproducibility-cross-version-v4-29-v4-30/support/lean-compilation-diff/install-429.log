@@ -1,0 +1,5 @@
+info: downloading https://releases.lean-lang.org/lean4/v4.29.0/lean-4.29.0-darwin_aarch64.tar.zst
+info: installing $CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0
+
+leanprover/lean4:v4.29.0 installed - Lean (version 4.29.0, arm64-apple-darwin24.6.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740, Release)
+

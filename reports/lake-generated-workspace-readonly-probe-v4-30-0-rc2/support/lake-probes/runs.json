@@ -1,0 +1,650 @@
+[
+  {
+    "name": "producer-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-a/producer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 3.306,
+    "stdout": "\u2714 [2/3] Built Dep (200ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: probe_dep: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "consumer-first-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-a/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.589,
+    "stdout": "\u2139 [4/5] Built Generated (180ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "relocated-readonly-no-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.381,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "relocated-readonly-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.3,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "server-setup-file",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.302,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\nFailed to load the Lake workspace.\n"
+  },
+  {
+    "name": "consumer-repeat-no-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.301,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "consumer-lean-json",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "lean",
+      "--json",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.298,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "cache-true-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-c/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/cache-true",
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.586,
+    "stdout": "\u2139 [4/5] Built Generated (192ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "empty-cache-dir-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-d/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.588,
+    "stdout": "\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "source-only-no-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-e/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 3,
+    "seconds": 0.483,
+    "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "source-only-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-e/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.759,
+    "stdout": "\u2714 [3/5] Built Dep (173ms)\n\u2139 [4/5] Built Generated (174ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-writable-primer",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.555,
+    "stdout": "\u2139 [4/5] Built Generated (176ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "relocated-writable-server",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.423,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "primed-readonly-no-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.427,
+    "stdout": "\u2139 [4/5] Replayed Generated\ninfo: Generated.lean:2:0: 7\nAll targets up-to-date (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "primed-readonly-server",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.418,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "primed-readonly-lean-json",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "env",
+      "lean",
+      "--json",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.49,
+    "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "primed-readonly-offline-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--offline",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.416,
+    "stdout": "\u2139 [4/5] Replayed Generated\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "producer-only-relocation-prime",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/producer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 1.075,
+    "stdout": "Build completed successfully (3 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "fresh-consumer-primed-dep-no-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.349,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "fresh-consumer-primed-dep-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.3,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "fresh-consumer-primed-dep-server",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.3,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-f/producer/.lake/config/probe_dep/lakefile.olean.lock\nFailed to load the Lake workspace.\n"
+  },
+  {
+    "name": "second-fresh-consumer-readonly",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.346,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\n"
+  },
+  {
+    "name": "second-fresh-consumer-server",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 1,
+    "seconds": 0.301,
+    "stdout": "",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: $CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/producer/.lake/config/probe_dep/lakefile.olean.lock\nFailed to load the Lake workspace.\n"
+  },
+  {
+    "name": "second-consumer-preseeded-manifest",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-b/consumer2",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.517,
+    "stdout": "\u2139 [4/5] Built Generated (197ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-preseeded-no-build-dep",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-g/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "--no-build",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.451,
+    "stdout": "All targets up-to-date (3 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-preseeded-build",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-g/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.535,
+    "stdout": "\u2139 [4/5] Built Generated (176ms)\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-preseeded-setup-file",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-g/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.423,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-g/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-preseeded-offline",
+    "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/layout-g/consumer",
+    "argv": [
+      "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--offline",
+      "--no-cache",
+      "--old",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "LAKE_CACHE_DIR": "$CHECKOUT/.anneal-local-tools/scratch/lake-probes/system-cache",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1",
+      "LAKE_JOBS": "1"
+    },
+    "exit": 0,
+    "seconds": 0.43,
+    "stdout": "\u2139 [4/5] Replayed Generated\ninfo: Generated.lean:2:0: 7\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  }
+]

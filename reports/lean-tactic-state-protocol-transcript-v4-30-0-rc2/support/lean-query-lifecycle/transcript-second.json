@@ -1,0 +1,658 @@
+[
+  {
+    "elapsed_ms": 193,
+    "kind": "batch_v1",
+    "data": {
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+      ],
+      "returncode": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n\u22a2 n + 0 = 0\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":50,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "file_sha256": "ffe7bc921b860d16c5254ab92bb9eae38946554ccf3a258d32303e9a38e6ec1f"
+    }
+  },
+  {
+    "elapsed_ms": 362,
+    "kind": "batch_v2",
+    "data": {
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": "",
+      "file_sha256": "8b840704cc317a68d5f5a6d2d321a80792dc38480d2f4d7a1713086fbd5794fe"
+    }
+  },
+  {
+    "elapsed_ms": 364,
+    "kind": "server_start",
+    "data": {
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 76327,
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle"
+    }
+  },
+  {
+    "elapsed_ms": 392,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 76324,
+        "rootUri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 392,
+    "kind": "server",
+    "data": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "server",
+    "data": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 393,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 451,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 627,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 627,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 627,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 50,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "elapsed_ms": 627,
+    "kind": "server",
+    "data": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 627,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 628,
+    "kind": "server",
+    "data": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 628,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 628,
+    "kind": "server",
+    "data": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 628,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  simpa using h\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "elapsed_ms": 628,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n\u22a2 n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n\u22a2 n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 15
+        }
+      }
+    }
+  },
+  {
+    "elapsed_ms": 837,
+    "kind": "server",
+    "data": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "elapsed_ms": 838,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "elapsed_ms": 838,
+    "kind": "server",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$CHECKOUT/.anneal-local-tools/scratch/lean-query-lifecycle/Generated.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "elapsed_ms": 844,
+    "kind": "server",
+    "data": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "elapsed_ms": 844,
+    "kind": "client",
+    "data": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "elapsed_ms": 846,
+    "kind": "server_exit",
+    "data": {
+      "returncode": 0,
+      "stderr": ""
+    }
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/v1",
+    "rust/doc-comments",
+    "lean/diagnostics",
+    "anneal/parser"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy Anneal V1",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/v1/"
+      }
+    },
+    {
+      "name": "historical parser experiment",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "dc12610c8",
+        "branch": "G4ka5fwcrxku4rfg7rjpfswfmnqxqulql"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

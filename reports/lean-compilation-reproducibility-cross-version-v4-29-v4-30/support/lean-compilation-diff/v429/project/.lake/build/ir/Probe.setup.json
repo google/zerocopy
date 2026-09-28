@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "compilation_probe",
+ "options": {},
+ "name": "Probe",
+ "isModule": false,
+ "importArts":
+ {"Probe.Base":
+  ["$CHECKOUT/.anneal-local-tools/scratch/lean-compilation-diff/v429/project/.lake/build/lib/lean/Probe/Base.olean"]},
+ "dynlibs": []}

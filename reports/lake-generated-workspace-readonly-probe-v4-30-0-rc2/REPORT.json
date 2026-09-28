@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "lean/lake",
+    "lake/relocation",
+    "lake/read-only",
+    "lake/cache",
+    "lean/server-setup"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 and Lake",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "synthetic Lake producer/consumer fixture",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal/research/lake-probes.md"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

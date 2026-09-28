@@ -1,0 +1,14 @@
+{
+  "producer_before": "feff44a7359080f18d0a64ebe9190a1311de0d587d8754171ba2540916df4e65",
+  "producer_after": "feff44a7359080f18d0a64ebe9190a1311de0d587d8754171ba2540916df4e65",
+  "producer_olean_a": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+  "producer_olean_b": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+  "consumer_oleans": {
+    "layout-a": "260bd52b339001cbd7fa23ad2a656976e007ddecc2f4c5596cb56ba031b4d0ec",
+    "layout-b": null,
+    "layout-c": "260bd52b339001cbd7fa23ad2a656976e007ddecc2f4c5596cb56ba031b4d0ec",
+    "layout-d": "260bd52b339001cbd7fa23ad2a656976e007ddecc2f4c5596cb56ba031b4d0ec",
+    "layout-e": "260bd52b339001cbd7fa23ad2a656976e007ddecc2f4c5596cb56ba031b4d0ec"
+  },
+  "size_bytes": 1507320
+}

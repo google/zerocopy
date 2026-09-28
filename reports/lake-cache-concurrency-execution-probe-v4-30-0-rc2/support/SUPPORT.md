@@ -1,0 +1,1 @@
+Text support files redact local user-home and checkout prefixes as `$HOME` and `$CHECKOUT`; otherwise their bytes/fields are retained. Hashes in the report identify the original pre-redaction files unless the report names a hash for an archived copy. Binary support files are copied unchanged.

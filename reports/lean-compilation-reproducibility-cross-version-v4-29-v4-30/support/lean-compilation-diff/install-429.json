@@ -1,0 +1,14 @@
+{
+  "command": [
+    "$CHECKOUT/.anneal-local-tools/elan/bin/elan",
+    "toolchain",
+    "install",
+    "leanprover/lean4:v4.29.0"
+  ],
+  "elapsed_s": 20.252,
+  "returncode": 0,
+  "reason": null,
+  "target_bytes": 2673149688,
+  "scratch_bytes": 272520,
+  "free_bytes_after": 80742428672
+}

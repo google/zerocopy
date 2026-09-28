@@ -1,0 +1,26 @@
+{
+  "mode": "whole",
+  "cmd": [
+    "charon",
+    "rustc",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    ".anneal-local-tools/scratch/charon-scaling/whole.llbc",
+    "--",
+    ".anneal-local-tools/scratch/translation-goldens/probe.rs",
+    "--crate-type",
+    "lib",
+    "--crate-name",
+    "probe",
+    "--edition",
+    "2021"
+  ],
+  "exit_code": 0,
+  "timed_out": false,
+  "elapsed_seconds": 0.090282,
+  "child_user_seconds": 0.022711,
+  "child_system_seconds": 0.024642,
+  "child_maxrss_bytes": 106381312,
+  "llbc_bytes": 19822
+}

@@ -1,0 +1,13 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages":
+ [{"type": "path",
+   "scope": "",
+   "name": "probe_dep",
+   "manifestFile": "lake-manifest.json",
+   "inherited": false,
+   "dir": "../producer",
+   "configFile": "lakefile.lean"}],
+ "name": "probe_consumer",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

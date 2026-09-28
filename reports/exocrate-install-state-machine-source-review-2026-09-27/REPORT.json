@@ -1,0 +1,20 @@
+{
+  "topics": [
+    "exocrate",
+    "exocrate/install",
+    "exocrate/concurrency",
+    "anneal/toolchain-setup"
+  ],
+  "subjects": [
+    {
+      "name": "Exocrate in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "exocrate/",
+        "crate_version": "0.1.0"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

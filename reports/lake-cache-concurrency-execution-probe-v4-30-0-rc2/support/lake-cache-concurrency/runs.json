@@ -1,0 +1,187 @@
+{
+  "env": {
+    "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+    "LEAN_NUM_THREADS": "1",
+    "LAKE_CACHE_DIR": "",
+    "MATHLIB_NO_CACHE_ON_UPDATE": "1"
+  },
+  "clean_manifest_sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+  "runs": [
+    {
+      "label": "clean-build",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/clean/consumer",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 3.728,
+      "stdout": "\u2714 [3/5] Built Dep (191ms)\n\u2139 [4/5] Built Generated (191ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "clean-setup",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/clean/consumer",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.428,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/clean/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "clean-lean-json",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/clean/consumer",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.578,
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-a-build",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-a",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.728,
+      "stdout": "\u2139 [4/5] Built Generated (263ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-b-build",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-b",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.728,
+      "stdout": "\u2139 [4/5] Built Generated (263ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-a-setup",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-a",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.421,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-b-setup",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-b",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 0.435,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-writable-a",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/shared-writable/consumer-a",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.872,
+      "stdout": "\u2714 [3/5] Built Dep (204ms)\n\u2139 [4/5] Built Generated (209ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "shared-writable-b",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/shared-writable/consumer-b",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "seconds": 0.873,
+      "stdout": "\u2714 [3/5] Built Dep (204ms)\n\u2139 [4/5] Built Generated (209ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-a-lean-json",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-a",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "exit": 0,
+      "seconds": 1.5,
+      "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "seeded-a-no-build-dep",
+      "cwd": "$CHECKOUT/.anneal-local-tools/scratch/lake-cache-concurrency/seeded/consumer-a",
+      "argv": [
+        "$CHECKOUT/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--old",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "exit": 0,
+      "seconds": 0.428,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    }
+  ]
+}

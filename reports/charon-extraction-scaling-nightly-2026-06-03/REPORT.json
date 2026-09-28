@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "charon",
+    "charon/performance",
+    "rustc",
+    "cargo/scaling"
+  ],
+  "subjects": [
+    {
+      "name": "Charon",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "release": "nightly-2026.06.03"
+      }
+    },
+    {
+      "name": "rustc",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}
