@@ -1,0 +1,480 @@
+[
+  {
+    "name": "lake-version",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--version"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/version-cache",
+      "LAKE_ARTIFACT_CACHE": null,
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.031,
+    "stdout": "Lake version 5.0.0-src+3dc1a08 (Lean version 4.30.0-rc2)\n",
+    "stderr": ""
+  },
+  {
+    "name": "lean-version",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--version"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/version-cache",
+      "LAKE_ARTIFACT_CACHE": null,
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.029,
+    "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+    "stderr": ""
+  },
+  {
+    "name": "explicit-true",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/explicit-true",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/explicit-true",
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.785,
+    "stdout": "\u2714 [2/3] Built Probe (231ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "explicit-false",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/explicit-false",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/explicit-false",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.718,
+    "stdout": "\u2714 [2/3] Built Probe (221ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "empty-true",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/empty-true",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "",
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.687,
+    "stdout": "\u2714 [2/3] Built Probe (225ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "empty-false",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/empty-false",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.703,
+    "stdout": "\u2714 [2/3] Built Probe (230ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "unset-true",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/unset-true",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": null,
+      "ELAN": "",
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": null,
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.69,
+    "stdout": "\u2714 [2/3] Built Probe (224ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "unset-false",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/matrix/unset-false",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": null,
+      "ELAN": "",
+      "HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/home",
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": null,
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.587,
+    "stdout": "\u2714 [2/3] Built Probe (198ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "shared-seed",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/shared/seed",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/shared",
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.573,
+    "stdout": "\u2714 [2/3] Built Probe (199ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "shared-fetch",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/shared/fetch",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/shared",
+      "LAKE_ARTIFACT_CACHE": "true",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.466,
+    "stdout": "\u2714 [2/3] Fetched Probe\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "producer-build",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/initial/producer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Dep"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.6,
+    "stdout": "\u2714 [2/3] Built Dep (216ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: probe_dep: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "consumer-build",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/initial/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.735,
+    "stdout": "\u2139 [4/5] Built Generated (237ms)\ninfo: Generated.lean:3:0: 8\nBuild completed successfully (5 jobs).\n",
+    "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "relocated-no-build",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-build",
+      "build",
+      "Generated"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.442,
+    "stdout": "\u2139 [4/5] Replayed Generated\ninfo: Generated.lean:3:0: 8\nAll targets up-to-date (5 jobs).\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-setup",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "setup-file",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.462,
+    "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+    "stderr": ""
+  },
+  {
+    "name": "relocated-batch",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.569,
+    "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "shared-default",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/shared/default",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/shared",
+      "LAKE_ARTIFACT_CACHE": null,
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.525,
+    "stdout": "\u2714 [2/3] Fetched Probe\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "shared-false",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/shared/false",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Probe"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/shared",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.721,
+    "stdout": "\u2714 [2/3] Built Probe (220ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: cache_probe: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "batch-hole",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 1,
+    "timed_out": false,
+    "seconds": 1.449,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 depValue + 1 = 8\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 depValue + 1 = 8\",\"endPos\":{\"column\":10,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":42,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "name": "batch-solved",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/consumer",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "env",
+      "lean",
+      "--json",
+      "Generated.lean"
+    ],
+    "environment": {
+      "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+      "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan",
+      "ELAN": null,
+      "HOME": null,
+      "XDG_CACHE_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/xdg",
+      "LAKE_CACHE_DIR": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/cache/relocate",
+      "LAKE_ARTIFACT_CACHE": "false",
+      "LEAN_NUM_THREADS": "1"
+    },
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.484,
+    "stdout": "{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n",
+    "stderr": ""
+  }
+]

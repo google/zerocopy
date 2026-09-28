@@ -1,0 +1,258 @@
+{
+  "shared": {
+    "seed": {
+      ".lake/build/ir/Probe.c": {
+        "size": 1377,
+        "sha256": "a05eb6ab9e5ca2e1da753282c50d1e74dac90b5fd5c46afc909f31fcb4ee1c92"
+      },
+      ".lake/build/ir/Probe.c.hash": {
+        "size": 16,
+        "sha256": "d398852a2ebd028724ab951371efd3ec950b3ec48e63343ab827969fec402b3d"
+      },
+      ".lake/build/ir/Probe.setup.json": {
+        "size": 131,
+        "sha256": "54318dc9b0317f3a900484ef747bd7d957e10bc6be2a00849d1395118e705463"
+      },
+      ".lake/build/lib/lean/Probe.ilean": {
+        "size": 434,
+        "sha256": "896e8a630a8b2a2871a1afa6cc3312a9da46189cb770f9a28eef0717980ee622"
+      },
+      ".lake/build/lib/lean/Probe.ilean.hash": {
+        "size": 16,
+        "sha256": "e36bb777a34ba408263ef54f11f4b0794db9a763014eaab62cfbc9c8f205112f"
+      },
+      ".lake/build/lib/lean/Probe.olean": {
+        "size": 7360,
+        "sha256": "4818afdd3081feb4e0689ebf429d4caff214a66b02a8fa6dd27f435b14001fd3"
+      },
+      ".lake/build/lib/lean/Probe.olean.hash": {
+        "size": 16,
+        "sha256": "7b4e30298fc493080dadf72174481146fd43cfa666d33f5f238c0426ed15ebf6"
+      },
+      ".lake/build/lib/lean/Probe.trace": {
+        "size": 2134,
+        "sha256": "1977b9b5dfab9d34db689c16661fb3b8fb79fb483acc15da16d8f65375b7145f"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "size": 96672,
+        "sha256": "125d8b1dc879cf01ace7367e327f9d9fd0427afaa27098aece692b4e489a39ca"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "size": 184,
+        "sha256": "2fabc5e00a7419a0ba0a3cfce3a39247bebad025dc703d563568dcb7a5157699"
+      },
+      "Probe.lean": {
+        "size": 69,
+        "sha256": "bc35fae06bd318eed85c56819a457baff5cb3c15e8ced68c74218dd88c630b74"
+      },
+      "lake-manifest.json": {
+        "size": 143,
+        "sha256": "d874a9725e506d8cca1a770b56239a4d2a447428edbf252b43f7d8693f011ee3"
+      },
+      "lakefile.lean": {
+        "size": 79,
+        "sha256": "aa32b6186950c3359d2a16e459dc00482c58e8419d9161ef7c9376c79755e0ec"
+      },
+      "lean-toolchain": {
+        "size": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "default": {
+      ".lake/build/ir/Probe.c": {
+        "size": 1377,
+        "sha256": "a05eb6ab9e5ca2e1da753282c50d1e74dac90b5fd5c46afc909f31fcb4ee1c92"
+      },
+      ".lake/build/ir/Probe.c.hash": {
+        "size": 16,
+        "sha256": "d398852a2ebd028724ab951371efd3ec950b3ec48e63343ab827969fec402b3d"
+      },
+      ".lake/build/lib/lean/Probe.ilean": {
+        "size": 434,
+        "sha256": "896e8a630a8b2a2871a1afa6cc3312a9da46189cb770f9a28eef0717980ee622"
+      },
+      ".lake/build/lib/lean/Probe.ilean.hash": {
+        "size": 16,
+        "sha256": "e36bb777a34ba408263ef54f11f4b0794db9a763014eaab62cfbc9c8f205112f"
+      },
+      ".lake/build/lib/lean/Probe.olean": {
+        "size": 7360,
+        "sha256": "4818afdd3081feb4e0689ebf429d4caff214a66b02a8fa6dd27f435b14001fd3"
+      },
+      ".lake/build/lib/lean/Probe.olean.hash": {
+        "size": 16,
+        "sha256": "7b4e30298fc493080dadf72174481146fd43cfa666d33f5f238c0426ed15ebf6"
+      },
+      ".lake/build/lib/lean/Probe.trace": {
+        "size": 234,
+        "sha256": "a1e78f7436bf8f5c21ce361db58cdd0a6ac13630a999d71e3aa86ec02d222429"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "size": 96672,
+        "sha256": "125d8b1dc879cf01ace7367e327f9d9fd0427afaa27098aece692b4e489a39ca"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "size": 184,
+        "sha256": "2fabc5e00a7419a0ba0a3cfce3a39247bebad025dc703d563568dcb7a5157699"
+      },
+      "Probe.lean": {
+        "size": 69,
+        "sha256": "bc35fae06bd318eed85c56819a457baff5cb3c15e8ced68c74218dd88c630b74"
+      },
+      "lake-manifest.json": {
+        "size": 143,
+        "sha256": "d874a9725e506d8cca1a770b56239a4d2a447428edbf252b43f7d8693f011ee3"
+      },
+      "lakefile.lean": {
+        "size": 79,
+        "sha256": "aa32b6186950c3359d2a16e459dc00482c58e8419d9161ef7c9376c79755e0ec"
+      },
+      "lean-toolchain": {
+        "size": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "fetch": {
+      ".lake/build/lib/lean/Probe.ilean": {
+        "size": 434,
+        "sha256": "896e8a630a8b2a2871a1afa6cc3312a9da46189cb770f9a28eef0717980ee622"
+      },
+      ".lake/build/lib/lean/Probe.ilean.hash": {
+        "size": 16,
+        "sha256": "e36bb777a34ba408263ef54f11f4b0794db9a763014eaab62cfbc9c8f205112f"
+      },
+      ".lake/build/lib/lean/Probe.trace": {
+        "size": 234,
+        "sha256": "a1e78f7436bf8f5c21ce361db58cdd0a6ac13630a999d71e3aa86ec02d222429"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "size": 96672,
+        "sha256": "125d8b1dc879cf01ace7367e327f9d9fd0427afaa27098aece692b4e489a39ca"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "size": 184,
+        "sha256": "2fabc5e00a7419a0ba0a3cfce3a39247bebad025dc703d563568dcb7a5157699"
+      },
+      "Probe.lean": {
+        "size": 69,
+        "sha256": "bc35fae06bd318eed85c56819a457baff5cb3c15e8ced68c74218dd88c630b74"
+      },
+      "lake-manifest.json": {
+        "size": 143,
+        "sha256": "d874a9725e506d8cca1a770b56239a4d2a447428edbf252b43f7d8693f011ee3"
+      },
+      "lakefile.lean": {
+        "size": 79,
+        "sha256": "aa32b6186950c3359d2a16e459dc00482c58e8419d9161ef7c9376c79755e0ec"
+      },
+      "lean-toolchain": {
+        "size": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    },
+    "false": {
+      ".lake/build/ir/Probe.c": {
+        "size": 1377,
+        "sha256": "a05eb6ab9e5ca2e1da753282c50d1e74dac90b5fd5c46afc909f31fcb4ee1c92"
+      },
+      ".lake/build/ir/Probe.c.hash": {
+        "size": 16,
+        "sha256": "d398852a2ebd028724ab951371efd3ec950b3ec48e63343ab827969fec402b3d"
+      },
+      ".lake/build/ir/Probe.setup.json": {
+        "size": 131,
+        "sha256": "54318dc9b0317f3a900484ef747bd7d957e10bc6be2a00849d1395118e705463"
+      },
+      ".lake/build/lib/lean/Probe.ilean": {
+        "size": 434,
+        "sha256": "896e8a630a8b2a2871a1afa6cc3312a9da46189cb770f9a28eef0717980ee622"
+      },
+      ".lake/build/lib/lean/Probe.ilean.hash": {
+        "size": 16,
+        "sha256": "e36bb777a34ba408263ef54f11f4b0794db9a763014eaab62cfbc9c8f205112f"
+      },
+      ".lake/build/lib/lean/Probe.olean": {
+        "size": 7360,
+        "sha256": "4818afdd3081feb4e0689ebf429d4caff214a66b02a8fa6dd27f435b14001fd3"
+      },
+      ".lake/build/lib/lean/Probe.olean.hash": {
+        "size": 16,
+        "sha256": "7b4e30298fc493080dadf72174481146fd43cfa666d33f5f238c0426ed15ebf6"
+      },
+      ".lake/build/lib/lean/Probe.trace": {
+        "size": 2141,
+        "sha256": "21326c668a61d456992e0a544053b55aecd3b46c877fd4090be775e89220e9cf"
+      },
+      ".lake/config/[anonymous]/lakefile.olean": {
+        "size": 96672,
+        "sha256": "125d8b1dc879cf01ace7367e327f9d9fd0427afaa27098aece692b4e489a39ca"
+      },
+      ".lake/config/[anonymous]/lakefile.olean.trace": {
+        "size": 184,
+        "sha256": "2fabc5e00a7419a0ba0a3cfce3a39247bebad025dc703d563568dcb7a5157699"
+      },
+      "Probe.lean": {
+        "size": 69,
+        "sha256": "bc35fae06bd318eed85c56819a457baff5cb3c15e8ced68c74218dd88c630b74"
+      },
+      "lake-manifest.json": {
+        "size": 143,
+        "sha256": "d874a9725e506d8cca1a770b56239a4d2a447428edbf252b43f7d8693f011ee3"
+      },
+      "lakefile.lean": {
+        "size": 79,
+        "sha256": "aa32b6186950c3359d2a16e459dc00482c58e8419d9161ef7c9376c79755e0ec"
+      },
+      "lean-toolchain": {
+        "size": 29,
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    }
+  },
+  "cache": {
+    "artifacts/7ef947cd1fb912db.ilean": {
+      "size": 434,
+      "sha256": "896e8a630a8b2a2871a1afa6cc3312a9da46189cb770f9a28eef0717980ee622"
+    },
+    "artifacts/dbf9fbd15fd25361.c": {
+      "size": 1377,
+      "sha256": "a05eb6ab9e5ca2e1da753282c50d1e74dac90b5fd5c46afc909f31fcb4ee1c92"
+    },
+    "artifacts/e9cf60694bce952c.olean": {
+      "size": 7360,
+      "sha256": "4818afdd3081feb4e0689ebf429d4caff214a66b02a8fa6dd27f435b14001fd3"
+    },
+    "outputs/cache_probe/a2d47b8a467e350c.json": {
+      "size": 170,
+      "sha256": "d90763315c7893c105405eddf08682a89768feabb5ca6d034cc4f3b63520127d"
+    }
+  },
+  "cache_mapping": {
+    "outputs/cache_probe/a2d47b8a467e350c.json": {
+      "service": null,
+      "schemaVersion": "2026-02-25",
+      "data": {
+        "o": [
+          "e9cf60694bce952c.olean"
+        ],
+        "m": false,
+        "i": "7ef947cd1fb912db.ilean",
+        "c": "dbf9fbd15fd25361.c"
+      }
+    }
+  },
+  "relative_manifest": "{\"version\": \"1.2.0\",\n \"packagesDir\": \".lake/packages\",\n \"packages\":\n [{\"type\": \"path\",\n   \"scope\": \"\",\n   \"name\": \"probe_dep\",\n   \"manifestFile\": \"lake-manifest.json\",\n   \"inherited\": false,\n   \"dir\": \"../producer\",\n   \"configFile\": \"lakefile.lean\"}],\n \"name\": \"probe_consumer\",\n \"lakeDir\": \".lake\",\n \"fixedToolchain\": false}\n",
+  "relocated_setup": {
+    "dynlibs": [],
+    "importArts": {
+      "Dep": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_lean/relocate/moved/producer/.lake/build/lib/lean/Dep.olean"
+      ]
+    },
+    "isModule": false,
+    "name": "Generated",
+    "options": {},
+    "package": "probe_consumer",
+    "plugins": []
+  }
+}

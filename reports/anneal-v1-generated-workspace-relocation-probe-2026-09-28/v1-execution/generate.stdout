@@ -1,0 +1,5 @@
+Lean workspace generated at: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/v1-relocation/cargo-target/anneal/4cd41b90a2c48efa/lean
+
+To manually build and experiment:
+  1. cd /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/v1-relocation/cargo-target/anneal/4cd41b90a2c48efa/lean
+  2. LAKE_CACHE_DIR=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/v1-relocation/toolchain/anneal/toolchain/f44ae6414b534f9610dc52f7356cf8ddd4d173d555fcdb99a33d43bce5cf3e9e/lake-cache /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/v1-relocation/toolchain/anneal/toolchain/f44ae6414b534f9610dc52f7356cf8ddd4d173d555fcdb99a33d43bce5cf3e9e/lean/bin/lake --keep-toolchain build

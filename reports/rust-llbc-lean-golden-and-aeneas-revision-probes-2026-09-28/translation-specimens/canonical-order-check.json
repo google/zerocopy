@@ -1,0 +1,10 @@
+{
+  "method": "JSON object keys sorted; only translated.item_names, short_names, assoc_item_names sorted by serialized key; no other arrays normalized",
+  "hashes": [
+    "cd54e5a7737122c1e960113abf54fc9e07b772de79518ca058dbdd3679fa560d",
+    "cd54e5a7737122c1e960113abf54fc9e07b772de79518ca058dbdd3679fa560d",
+    "cd54e5a7737122c1e960113abf54fc9e07b772de79518ca058dbdd3679fa560d",
+    "cd54e5a7737122c1e960113abf54fc9e07b772de79518ca058dbdd3679fa560d"
+  ],
+  "equal": true
+}

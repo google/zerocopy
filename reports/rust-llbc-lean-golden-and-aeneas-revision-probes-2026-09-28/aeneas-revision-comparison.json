@@ -1,0 +1,32 @@
+{
+  "input": {
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc",
+    "bytes": 12458,
+    "sha256": "a0ffca0d00acf3dca64fd508c850c457491cf9797ddfc43cb37ad7c483af6d89"
+  },
+  "runs": {
+    "nightly-2026.06.01": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/nightly-2026.06.01/lean",
+        "-no-progress-bar",
+        "-abort-on-error",
+        "-warnings-as-errors",
+        "-sequential",
+        "-namespace",
+        "refprobe",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision",
+      "exit": 1,
+      "wall_seconds": 0.934,
+      "binary_sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22",
+      "stdout_sha256": "ed925ee2702e3b6e70c1fbb0bf48d9c31c1c5490a010695d94818182f3cda49c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "outputs": []
+    }
+  }
+}

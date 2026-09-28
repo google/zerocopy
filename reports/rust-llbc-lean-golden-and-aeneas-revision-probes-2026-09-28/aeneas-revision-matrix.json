@@ -1,0 +1,110 @@
+[
+  {
+    "aeneas": "nightly-2026.06.01",
+    "charon_input": "aeneas-pin-charon-2026.06.01",
+    "llbc_sha256": "455145d05f5fe72926187d5bdac74e92cbb36f8064847ba27c74aa27ed0140a9",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/matrix/nightly-2026.06.01__aeneas-pin-charon-2026.06.01/lean",
+      "-no-progress-bar",
+      "-abort-on-error",
+      "-warnings-as-errors",
+      "-sequential",
+      "-namespace",
+      "refprobe",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/aeneas-2026.06.01-charon-pin/baseline.llbc"
+    ],
+    "exit": 0,
+    "wall_seconds": 0.279,
+    "aeneas_binary_sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22",
+    "stderr": "",
+    "outputs": [
+      {
+        "relative": "Baseline.lean",
+        "bytes": 1120,
+        "sha256": "3d854188c5820b9d08f9d767a7af2efb520140017243afa9cdcc3eb0b1cd503f"
+      }
+    ]
+  },
+  {
+    "aeneas": "nightly-2026.06.01",
+    "charon_input": "charon-2026.06.03",
+    "llbc_sha256": "3e081d738c43278050a6de5a1eafa88cb94bde319458a8d0ad6bef92bc6fa838",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/matrix/nightly-2026.06.01__charon-2026.06.03/lean",
+      "-no-progress-bar",
+      "-abort-on-error",
+      "-warnings-as-errors",
+      "-sequential",
+      "-namespace",
+      "refprobe",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc"
+    ],
+    "exit": 1,
+    "wall_seconds": 0.094,
+    "aeneas_binary_sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22",
+    "stderr": "",
+    "outputs": []
+  },
+  {
+    "aeneas": "nightly-2026.06.03",
+    "charon_input": "aeneas-pin-charon-2026.06.01",
+    "llbc_sha256": "455145d05f5fe72926187d5bdac74e92cbb36f8064847ba27c74aa27ed0140a9",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/matrix/nightly-2026.06.03__aeneas-pin-charon-2026.06.01/lean",
+      "-no-progress-bar",
+      "-abort-on-error",
+      "-warnings-as-errors",
+      "-sequential",
+      "-namespace",
+      "refprobe",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/aeneas-2026.06.01-charon-pin/baseline.llbc"
+    ],
+    "exit": 1,
+    "wall_seconds": 0.136,
+    "aeneas_binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "stderr": "",
+    "outputs": []
+  },
+  {
+    "aeneas": "nightly-2026.06.03",
+    "charon_input": "charon-2026.06.03",
+    "llbc_sha256": "3e081d738c43278050a6de5a1eafa88cb94bde319458a8d0ad6bef92bc6fa838",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/matrix/nightly-2026.06.03__charon-2026.06.03/lean",
+      "-no-progress-bar",
+      "-abort-on-error",
+      "-warnings-as-errors",
+      "-sequential",
+      "-namespace",
+      "refprobe",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc"
+    ],
+    "exit": 0,
+    "wall_seconds": 0.244,
+    "aeneas_binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "stderr": "",
+    "outputs": [
+      {
+        "relative": "Baseline.lean",
+        "bytes": 1120,
+        "sha256": "3d854188c5820b9d08f9d767a7af2efb520140017243afa9cdcc3eb0b1cd503f"
+      }
+    ]
+  }
+]

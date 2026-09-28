@@ -1,0 +1,164 @@
+[
+  {
+    "name": "seed-same-parent-dep",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/same_parent/dep",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Dep"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/seed1",
+    "artifact_cache": false,
+    "pid": 92037,
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 3.489,
+    "stdout": "\u2714 [2/3] Built Dep (191ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: tiny_dep: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "same-parent-a",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/same_parent/consumer_a",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/same-a",
+    "artifact_cache": false,
+    "pid": 92041,
+    "exit": 1,
+    "timed_out": false,
+    "seconds": 0.398,
+    "stdout": "",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/same_parent/dep/.lake/config/tiny_dep\n"
+  },
+  {
+    "name": "same-parent-b",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/same_parent/consumer_b",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/same-b",
+    "artifact_cache": false,
+    "pid": 92042,
+    "exit": 1,
+    "timed_out": false,
+    "seconds": 0.398,
+    "stdout": "",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/same_parent/dep/.lake/config/tiny_dep\n"
+  },
+  {
+    "name": "seed-isolated-dep",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/isolated/shared_dep",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Dep"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/seed2",
+    "artifact_cache": false,
+    "pid": 92043,
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.545,
+    "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: tiny_dep: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "isolated-a",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/isolated/workspace_a",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/isolated-a",
+    "artifact_cache": false,
+    "pid": 92045,
+    "exit": 1,
+    "timed_out": false,
+    "seconds": 0.398,
+    "stdout": "",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/isolated/shared_dep/.lake/config/tiny_dep\n"
+  },
+  {
+    "name": "isolated-b",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/isolated/workspace_b",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache/isolated-b",
+    "artifact_cache": false,
+    "pid": 92046,
+    "exit": 1,
+    "timed_out": false,
+    "seconds": 0.397,
+    "stdout": "",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\nerror: permission denied (error code: 13)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/isolated/shared_dep/.lake/config/tiny_dep\n"
+  },
+  {
+    "name": "cache-race-a",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache_race/a",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/shared_cache",
+    "artifact_cache": true,
+    "pid": 92051,
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.708,
+    "stdout": "\u2714 [2/3] Built Generated (240ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "cache-race-b",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache_race/b",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/shared_cache",
+    "artifact_cache": true,
+    "pid": 92052,
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.708,
+    "stdout": "\u2714 [2/3] Built Generated (240ms)\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\n"
+  },
+  {
+    "name": "cache-fetch-after-race",
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/cache_race/fetch",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "build",
+      "Generated"
+    ],
+    "cache": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/lake_concurrency/shared_cache",
+    "artifact_cache": true,
+    "pid": 92062,
+    "exit": 0,
+    "timed_out": false,
+    "seconds": 0.483,
+    "stdout": "\u2714 [2/3] Fetched Generated\nBuild completed successfully (3 jobs).\n",
+    "stderr": "info: tiny_consumer: no previous manifest, creating one from scratch\n"
+  }
+]

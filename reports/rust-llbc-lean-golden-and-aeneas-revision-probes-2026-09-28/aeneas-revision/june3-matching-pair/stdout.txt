@@ -1,0 +1,3 @@
+[[92mInfo[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc
+[[92mInfo[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/matrix/nightly-2026.06.03__charon-2026.06.03/lean/Baseline.lean
+[[92mInfo[39m ] Total execution time: 0.155153 seconds

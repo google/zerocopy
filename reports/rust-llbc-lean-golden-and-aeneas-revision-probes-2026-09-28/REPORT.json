@@ -1,0 +1,41 @@
+{
+  "topics": [
+    "rust",
+    "charon/llbc",
+    "aeneas/translation",
+    "aeneas/determinism",
+    "lean"
+  ],
+  "subjects": [
+    {
+      "name": "Aeneas June 3",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+      }
+    },
+    {
+      "name": "Aeneas June 1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "f95a80abaf554d4612cb60ef9ec8e849139bec44"
+      }
+    },
+    {
+      "name": "Charon June 3",
+      "identity": {
+        "repository": "charon-lang/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-28"
+}

@@ -1,0 +1,76 @@
+{
+  "charon": {
+    "argv": [
+      "charon",
+      "rustc",
+      "--preset",
+      "aeneas",
+      "--start-from",
+      "crate::choose",
+      "--dest-file",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/coverage/choose.llbc",
+      "--",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/cases/baseline/baseline.rs",
+      "--crate-type",
+      "lib",
+      "--crate-name",
+      "baseline",
+      "--edition",
+      "2021"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon",
+    "status": 0,
+    "error": null,
+    "seconds": 0.264,
+    "stdout": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-charon.stdout",
+    "stderr": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-charon.stderr",
+    "artifact": {
+      "has_errors": false,
+      "ordered_decls": 1,
+      "local_names": [],
+      "item_names_count": 1,
+      "bytes": 5756,
+      "sha256": "3ea0c60138f49d26cede3491fdc47c6756a1b4abdcbcbd79138c201009a49c55"
+    }
+  },
+  "aeneas": {
+    "argv": [
+      "aeneas",
+      "-backend",
+      "lean",
+      "-dest",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/coverage/lean",
+      "-no-progress-bar",
+      "-abort-on-error",
+      "-warnings-as-errors",
+      "-sequential",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/coverage/choose.llbc"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon",
+    "status": 0,
+    "error": null,
+    "seconds": 0.254,
+    "stdout": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-aeneas.stdout",
+    "stderr": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-aeneas.stderr",
+    "files": [
+      {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/coverage/lean/Choose.lean",
+        "sha256": "1412a94c3c6135c6c445f7e0341498a80835fe4cdf0cbfe0b622c195ac1986e1"
+      }
+    ]
+  },
+  "lean": {
+    "argv": [
+      "lake",
+      "env",
+      "lean",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/coverage/lean/Choose.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean",
+    "status": 0,
+    "error": null,
+    "seconds": 11.538,
+    "stdout": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-lean.stdout",
+    "stderr": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/logs/coverage-lean.stderr"
+  }
+}

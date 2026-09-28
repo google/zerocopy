@@ -1,0 +1,1857 @@
+[
+  {
+    "elapsed_ms": 1727,
+    "kind": "build_dep",
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "olean_bytes": 4552
+  },
+  {
+    "elapsed_ms": 1727,
+    "kind": "dependency",
+    "sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71",
+    "mode": "0o444"
+  },
+  {
+    "elapsed_ms": 1732,
+    "kind": "memory_sample",
+    "label": "baseline-no-servers",
+    "active_servers": 0,
+    "aggregate_tree_rss_bytes": 0,
+    "servers": [],
+    "memory_free_percent": 48,
+    "disk_free_bytes": 59867734016
+  },
+  {
+    "elapsed_ms": 1733,
+    "kind": "start",
+    "server": "job1",
+    "pid": 2394,
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/server-memory/job1",
+    "source_sha256": "2f1b9d3265d9685448c8e45d7e9da6a7e8c4eea51111fe333f913ed0268eac09"
+  },
+  {
+    "elapsed_ms": 2130,
+    "kind": "memory_sample",
+    "label": "1-concurrent-server(s)-loaded",
+    "active_servers": 1,
+    "aggregate_tree_rss_bytes": 67747840,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 67747840,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 67747840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 48,
+    "disk_free_bytes": 59867439104
+  },
+  {
+    "elapsed_ms": 2131,
+    "kind": "start",
+    "server": "job2",
+    "pid": 2399,
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/server-memory/job2",
+    "source_sha256": "2f1b9d3265d9685448c8e45d7e9da6a7e8c4eea51111fe333f913ed0268eac09"
+  },
+  {
+    "elapsed_ms": 2517,
+    "kind": "memory_sample",
+    "label": "2-concurrent-server(s)-loaded",
+    "active_servers": 2,
+    "aggregate_tree_rss_bytes": 172933120,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 94404608,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 94404608
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 78528512,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 78528512
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 47,
+    "disk_free_bytes": 59867435008
+  },
+  {
+    "elapsed_ms": 2519,
+    "kind": "start",
+    "server": "job3",
+    "pid": 2405,
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/server-memory/job3",
+    "source_sha256": "2f1b9d3265d9685448c8e45d7e9da6a7e8c4eea51111fe333f913ed0268eac09"
+  },
+  {
+    "elapsed_ms": 2804,
+    "kind": "memory_sample",
+    "label": "3-concurrent-server(s)-loaded",
+    "active_servers": 3,
+    "aggregate_tree_rss_bytes": 281657344,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 113672192,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 113672192
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 98697216,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 98697216
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 69287936,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 69287936
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 46,
+    "disk_free_bytes": 59867430912
+  },
+  {
+    "elapsed_ms": 2807,
+    "kind": "start",
+    "server": "job4",
+    "pid": 2413,
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/server-memory/job4",
+    "source_sha256": "2f1b9d3265d9685448c8e45d7e9da6a7e8c4eea51111fe333f913ed0268eac09"
+  },
+  {
+    "elapsed_ms": 3422,
+    "kind": "memory_sample",
+    "label": "4-concurrent-server(s)-loaded",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 484147200,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 144359424,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 144359424
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 139575296,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 139575296
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 111607808,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 111607808
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 88604672,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 88604672
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 43,
+    "disk_free_bytes": 59867426816
+  },
+  {
+    "elapsed_ms": 4505,
+    "kind": "memory_sample",
+    "label": "after-1-edit-rounds",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 709705728,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 182960128,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 182960128
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 188612608,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 188612608
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 175849472,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 175849472
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 162283520,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 162283520
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 41,
+    "disk_free_bytes": 59867426816
+  },
+  {
+    "elapsed_ms": 9219,
+    "kind": "memory_sample",
+    "label": "after-5-edit-rounds",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 801865728,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 190185472,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 190185472
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 185434112,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 185434112
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 204800000,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 204800000
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 221446144,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 221446144
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867328512
+  },
+  {
+    "elapsed_ms": 15121,
+    "kind": "memory_sample",
+    "label": "after-10-edit-rounds",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639369216,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151699456,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151699456
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867222016
+  },
+  {
+    "elapsed_ms": 15140,
+    "kind": "memory_sample",
+    "label": "idle-0",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639369216,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151699456,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151699456
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867222016
+  },
+  {
+    "elapsed_ms": 15432,
+    "kind": "memory_sample",
+    "label": "idle-1",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867222016
+  },
+  {
+    "elapsed_ms": 15719,
+    "kind": "memory_sample",
+    "label": "idle-2",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867222016
+  },
+  {
+    "elapsed_ms": 16011,
+    "kind": "memory_sample",
+    "label": "idle-3",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867111424
+  },
+  {
+    "elapsed_ms": 16299,
+    "kind": "memory_sample",
+    "label": "idle-4",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867111424
+  },
+  {
+    "elapsed_ms": 16592,
+    "kind": "memory_sample",
+    "label": "idle-5",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59867111424
+  },
+  {
+    "elapsed_ms": 16883,
+    "kind": "memory_sample",
+    "label": "idle-6",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59866980352
+  },
+  {
+    "elapsed_ms": 17173,
+    "kind": "memory_sample",
+    "label": "idle-7",
+    "active_servers": 4,
+    "aggregate_tree_rss_bytes": 639385600,
+    "servers": [
+      {
+        "server": "job1",
+        "pid": 2394,
+        "descendant_count": 1,
+        "tree_rss_bytes": 167837696,
+        "processes": [
+          {
+            "pid": 2394,
+            "name": "lean",
+            "rss_bytes": 167837696
+          }
+        ]
+      },
+      {
+        "server": "job2",
+        "pid": 2399,
+        "descendant_count": 1,
+        "tree_rss_bytes": 163905536,
+        "processes": [
+          {
+            "pid": 2399,
+            "name": "lean",
+            "rss_bytes": 163905536
+          }
+        ]
+      },
+      {
+        "server": "job3",
+        "pid": 2405,
+        "descendant_count": 1,
+        "tree_rss_bytes": 155926528,
+        "processes": [
+          {
+            "pid": 2405,
+            "name": "lean",
+            "rss_bytes": 155926528
+          }
+        ]
+      },
+      {
+        "server": "job4",
+        "pid": 2413,
+        "descendant_count": 1,
+        "tree_rss_bytes": 151715840,
+        "processes": [
+          {
+            "pid": 2413,
+            "name": "lean",
+            "rss_bytes": 151715840
+          }
+        ]
+      }
+    ],
+    "memory_free_percent": 38,
+    "disk_free_bytes": 59866980352
+  },
+  {
+    "elapsed_ms": 17594,
+    "kind": "exit",
+    "server": "job1",
+    "status": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 17852,
+    "kind": "exit",
+    "server": "job2",
+    "status": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 18109,
+    "kind": "exit",
+    "server": "job3",
+    "status": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 18371,
+    "kind": "exit",
+    "server": "job4",
+    "status": 0,
+    "stderr": ""
+  },
+  {
+    "elapsed_ms": 18375,
+    "kind": "memory_sample",
+    "label": "after-stop",
+    "active_servers": 0,
+    "aggregate_tree_rss_bytes": 0,
+    "servers": [],
+    "memory_free_percent": 44,
+    "disk_free_bytes": 59866935296
+  },
+  {
+    "elapsed_ms": 18375,
+    "kind": "summary",
+    "samples": [
+      {
+        "elapsed_ms": 1732,
+        "kind": "memory_sample",
+        "label": "baseline-no-servers",
+        "active_servers": 0,
+        "aggregate_tree_rss_bytes": 0,
+        "servers": [],
+        "memory_free_percent": 48,
+        "disk_free_bytes": 59867734016
+      },
+      {
+        "elapsed_ms": 2130,
+        "kind": "memory_sample",
+        "label": "1-concurrent-server(s)-loaded",
+        "active_servers": 1,
+        "aggregate_tree_rss_bytes": 67747840,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 67747840,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 67747840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 48,
+        "disk_free_bytes": 59867439104
+      },
+      {
+        "elapsed_ms": 2517,
+        "kind": "memory_sample",
+        "label": "2-concurrent-server(s)-loaded",
+        "active_servers": 2,
+        "aggregate_tree_rss_bytes": 172933120,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 94404608,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 94404608
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 78528512,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 78528512
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 47,
+        "disk_free_bytes": 59867435008
+      },
+      {
+        "elapsed_ms": 2804,
+        "kind": "memory_sample",
+        "label": "3-concurrent-server(s)-loaded",
+        "active_servers": 3,
+        "aggregate_tree_rss_bytes": 281657344,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 113672192,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 113672192
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 98697216,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 98697216
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 69287936,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 69287936
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 46,
+        "disk_free_bytes": 59867430912
+      },
+      {
+        "elapsed_ms": 3422,
+        "kind": "memory_sample",
+        "label": "4-concurrent-server(s)-loaded",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 484147200,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 144359424,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 144359424
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 139575296,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 139575296
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 111607808,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 111607808
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 88604672,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 88604672
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 43,
+        "disk_free_bytes": 59867426816
+      },
+      {
+        "elapsed_ms": 4505,
+        "kind": "memory_sample",
+        "label": "after-1-edit-rounds",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 709705728,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 182960128,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 182960128
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 188612608,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 188612608
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 175849472,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 175849472
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 162283520,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 162283520
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 41,
+        "disk_free_bytes": 59867426816
+      },
+      {
+        "elapsed_ms": 9219,
+        "kind": "memory_sample",
+        "label": "after-5-edit-rounds",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 801865728,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 190185472,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 190185472
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 185434112,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 185434112
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 204800000,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 204800000
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 221446144,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 221446144
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867328512
+      },
+      {
+        "elapsed_ms": 15121,
+        "kind": "memory_sample",
+        "label": "after-10-edit-rounds",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639369216,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151699456,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151699456
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867222016
+      },
+      {
+        "elapsed_ms": 15140,
+        "kind": "memory_sample",
+        "label": "idle-0",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639369216,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151699456,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151699456
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867222016
+      },
+      {
+        "elapsed_ms": 15432,
+        "kind": "memory_sample",
+        "label": "idle-1",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867222016
+      },
+      {
+        "elapsed_ms": 15719,
+        "kind": "memory_sample",
+        "label": "idle-2",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867222016
+      },
+      {
+        "elapsed_ms": 16011,
+        "kind": "memory_sample",
+        "label": "idle-3",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867111424
+      },
+      {
+        "elapsed_ms": 16299,
+        "kind": "memory_sample",
+        "label": "idle-4",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867111424
+      },
+      {
+        "elapsed_ms": 16592,
+        "kind": "memory_sample",
+        "label": "idle-5",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59867111424
+      },
+      {
+        "elapsed_ms": 16883,
+        "kind": "memory_sample",
+        "label": "idle-6",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59866980352
+      },
+      {
+        "elapsed_ms": 17173,
+        "kind": "memory_sample",
+        "label": "idle-7",
+        "active_servers": 4,
+        "aggregate_tree_rss_bytes": 639385600,
+        "servers": [
+          {
+            "server": "job1",
+            "pid": 2394,
+            "descendant_count": 1,
+            "tree_rss_bytes": 167837696,
+            "processes": [
+              {
+                "pid": 2394,
+                "name": "lean",
+                "rss_bytes": 167837696
+              }
+            ]
+          },
+          {
+            "server": "job2",
+            "pid": 2399,
+            "descendant_count": 1,
+            "tree_rss_bytes": 163905536,
+            "processes": [
+              {
+                "pid": 2399,
+                "name": "lean",
+                "rss_bytes": 163905536
+              }
+            ]
+          },
+          {
+            "server": "job3",
+            "pid": 2405,
+            "descendant_count": 1,
+            "tree_rss_bytes": 155926528,
+            "processes": [
+              {
+                "pid": 2405,
+                "name": "lean",
+                "rss_bytes": 155926528
+              }
+            ]
+          },
+          {
+            "server": "job4",
+            "pid": 2413,
+            "descendant_count": 1,
+            "tree_rss_bytes": 151715840,
+            "processes": [
+              {
+                "pid": 2413,
+                "name": "lean",
+                "rss_bytes": 151715840
+              }
+            ]
+          }
+        ],
+        "memory_free_percent": 38,
+        "disk_free_bytes": 59866980352
+      },
+      {
+        "elapsed_ms": 18375,
+        "kind": "memory_sample",
+        "label": "after-stop",
+        "active_servers": 0,
+        "aggregate_tree_rss_bytes": 0,
+        "servers": [],
+        "memory_free_percent": 44,
+        "disk_free_bytes": 59866935296
+      }
+    ],
+    "disk_used_bytes": 4975
+  }
+]

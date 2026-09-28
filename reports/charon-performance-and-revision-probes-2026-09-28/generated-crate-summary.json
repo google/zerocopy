@@ -1,0 +1,130 @@
+{
+  "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "charon_version": "0.1.210",
+  "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "cargo_version": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)",
+  "python_version": "3.14.7",
+  "source_generator": "generate.py",
+  "measurement_wrapper": "measure.py",
+  "run_log": "runs.jsonl",
+  "earlier_polling_timing_log": "runs-initial.jsonl",
+  "bounds": {
+    "serial_processes": 1,
+    "wall_seconds_per_case": 60,
+    "memory_free_stop_below_percent": 25,
+    "disk_free_stop_below_bytes": 5368709120
+  },
+  "sha256": {
+    ".anneal-local-tools/aeneas-release/charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    ".anneal-local-tools/aeneas-release/charon-driver": "09a530746044c0ef169f7d0cfa099700c06934163a70b138cafc6d125d08037e",
+    ".anneal-local-tools/bin/charon-driver": "234ec4cd40eeb42fa1f749f653614cfc251a79bb1f53a903160b921b6cf90b90"
+  },
+  "cases": {
+    "10": {
+      "runs": 3,
+      "source_sha256": "17bf0c7979670196ab7c694102beb23ccb386fc492c2d059d1b23c67444ae17f",
+      "source_bytes": 523,
+      "declarations": 11,
+      "function_declarations": 11,
+      "llbc_bytes": 33433,
+      "wall_seconds_each": [
+        0.300472,
+        0.051448,
+        0.051369
+      ],
+      "wall_seconds_median": 0.051448,
+      "child_maxrss_bytes_each": [
+        103464960,
+        103530496,
+        103514112
+      ],
+      "child_maxrss_bytes_range": [
+        103464960,
+        103530496
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "has_errors": [
+        false,
+        false,
+        false
+      ],
+      "memory_free_percent_min": 52,
+      "disk_free_bytes_min": 76274233344
+    },
+    "100": {
+      "runs": 3,
+      "source_sha256": "0d206dfa198fc28df48f59c8415d7fd4d960a6a292fc24b617a592994833e9b0",
+      "source_bytes": 5114,
+      "declarations": 101,
+      "function_declarations": 101,
+      "llbc_bytes": 303310,
+      "wall_seconds_each": [
+        0.062694,
+        0.061642,
+        0.058976
+      ],
+      "wall_seconds_median": 0.061642,
+      "child_maxrss_bytes_each": [
+        106463232,
+        106463232,
+        106217472
+      ],
+      "child_maxrss_bytes_range": [
+        106217472,
+        106463232
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "has_errors": [
+        false,
+        false,
+        false
+      ],
+      "memory_free_percent_min": 52,
+      "disk_free_bytes_min": 76274233344
+    },
+    "1000": {
+      "runs": 3,
+      "source_sha256": "a7242d3ed0681bcaae7121eb11665febcbdfd0b7ae2be325c4d7c7b2d86f64b1",
+      "source_bytes": 51915,
+      "declarations": 1001,
+      "function_declarations": 1001,
+      "llbc_bytes": 3044692,
+      "wall_seconds_each": [
+        0.143379,
+        0.145032,
+        0.145532
+      ],
+      "wall_seconds_median": 0.145032,
+      "child_maxrss_bytes_each": [
+        133136384,
+        132644864,
+        132562944
+      ],
+      "child_maxrss_bytes_range": [
+        132562944,
+        133136384
+      ],
+      "exit_codes": [
+        0,
+        0,
+        0
+      ],
+      "has_errors": [
+        false,
+        false,
+        false
+      ],
+      "memory_free_percent_min": 52,
+      "disk_free_bytes_min": 76274233344
+    }
+  },
+  "limits": "Wall times include the Charon launcher/driver and local filesystem cache; no Cargo build. First 10-function run is a startup outlier. Child ru_maxrss is a process maximum, not summed process-tree RSS. Inputs are independent simple functions only."
+}

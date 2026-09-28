@@ -1,0 +1,73 @@
+{
+  "source": {
+    "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/cases/baseline/baseline.rs",
+    "bytes": 146,
+    "sha256": "aad7eb8d17abc37036cba0be394775f34923725d06146d235d43efa191bcf310"
+  },
+  "runs": {
+    "nightly-2026.06.02": {
+      "argv": [
+        "charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.02/baseline.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/cases/baseline/baseline.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "baseline",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision",
+      "exit": 0,
+      "wall_seconds": 0.307,
+      "binary": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/old/charon",
+      "binary_sha256": "094ba2dc1d23f82be5ad2bb378e94ce8c66ca9d13c551edfeb8597b392558272",
+      "driver": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/old/charon-driver",
+      "driver_sha256": "76fe3a2b6ff9a34e9d7a8c39e065dca6ce93229273df2d9578bc5a2f930d55e8",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "llbc_bytes": 12458,
+      "llbc_sha256": "645004fcc135fc7770ffffef5f739be5fdeacbc5ea3bd65ae107fce8244745ba",
+      "has_errors": false,
+      "ordered_decls": 3,
+      "local_functions": 3
+    },
+    "nightly-2026.06.03": {
+      "argv": [
+        "charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/nightly-2026.06.03/baseline.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/aeneas_charon/cases/baseline/baseline.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "baseline",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision",
+      "exit": 0,
+      "wall_seconds": 0.061,
+      "binary": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "driver": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon-driver",
+      "driver_sha256": "234ec4cd40eeb42fa1f749f653614cfc251a79bb1f53a903160b921b6cf90b90",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "llbc_bytes": 12458,
+      "llbc_sha256": "dc05c607284bedcb2889b3cf749ae2dab207ba0ee20ade2ac63f4f3d009d77e9",
+      "has_errors": false,
+      "ordered_decls": 3,
+      "local_functions": 3
+    }
+  }
+}
