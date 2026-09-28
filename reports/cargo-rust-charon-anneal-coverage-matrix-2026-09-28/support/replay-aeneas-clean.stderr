@@ -1,0 +1,23 @@
+[?25lApplied prepasses:  [----------------------------------------------------] 0/5 ⠋
+
+Applied prepasses:  [##########------------------------------------------] 1/5 ⠋
+Applied prepasses:  [####################################################] 5/5 ✔️
+[?25h[?25lTranslated globals:  [---------------------------------------------------] 0/1 ⠋
+Translated globals:  [###################################################] 1/1 ✔️
+[?25h[?25lTranslated opaque functions:  [------------------------------------------] 0/1 ⠋
+Translated opaque functions:  [##########################################] 1/1 ✔️
+[?25h[?25lTranslated transparent functions:  [-------------------------------------] 0/4 ⠋
+
+Translated transparent functions:  [#########----------------------------] 1/4 ⠋
+Translated transparent functions:  [#####################################] 4/4 ✔️
+[?25h[?25lTranslated trait declarations:  [----------------------------------------] 0/0 ⠋
+Translated trait declarations:  [----------------------------------------] 0/0 ✔️
+[?25h[?25lTranslated trait impls:  [-----------------------------------------------] 0/0 ⠋
+Translated trait impls:  [-----------------------------------------------] 0/0 ✔️
+[?25h[?25lPost-processed translated opaque functions:  [---------------------------] 0/1 ⠋
+
+Post-processed translated opaque functions:  [###########################] 1/1 ⠋
+Post-processed translated opaque functions:  [###########################] 1/1 ✔️
+[?25h[?25lPost-processed translated transparent functions:  [----------------------] 0/4 ⠋
+Post-processed translated transparent functions:  [######################] 4/4 ✔️
+[?25h

@@ -1,0 +1,3 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.00s

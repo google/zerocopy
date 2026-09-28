@@ -1,0 +1,4 @@
+warning: `--dest` is deprecated, use `--dest-file` instead
+
+   Compiling consumer v0.1.0 (<workspace>/consumer)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.23s

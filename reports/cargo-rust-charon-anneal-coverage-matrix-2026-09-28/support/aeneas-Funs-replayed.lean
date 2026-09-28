@@ -20,7 +20,7 @@ noncomputable section
 namespace CoverageApp
 
 /-- [coverage_app::BUILD_VALUE]
-    Source: '<workspace>/target/aarch64-apple-darwin/debug/build/coverage_app-95ecbc77b30b5a91/out/generated.rs', lines 1:0-1:32
+    Source: '<local-tools>/scratch/20260927-reference-experiments/reference-publish/reports/cargo-rust-charon-anneal-coverage-matrix-2026-09-28/support/cargo-target-clean/aarch64-apple-darwin/debug/build/coverage_app-95ecbc77b30b5a91/out/generated.rs', lines 1:0-1:32
     Visibility: public -/
 @[global_simps, irreducible] def BUILD_VALUE : Std.U32 := 17#u32
 
@@ -40,7 +40,7 @@ def library_subject : Result Std.U32 := do
   i1 + i2
 
 /-- [coverage_app::selected_feature_subject]:
-    Source: 'coverage_app/src/lib.rs', lines 7:0-7:48
+    Source: 'coverage_app/src/lib.rs', lines 14:0-14:48
     Visibility: public -/
 def selected_feature_subject : Result Std.U32 := do
   ok 101#u32

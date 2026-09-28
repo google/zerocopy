@@ -59,7 +59,7 @@ The full Cargo build and test establish compilation and test behavior for the fi
 
 ## Evidence
 
-The source workspace and `Cargo.lock` are under `support/workspace/`; it has no external dependencies. The unit-graph JSON paths and rustc wrapper command logs are sanitized. `support/charon-aeneas-functions.json` and `support/charon-consumer-functions.json` preserve relevant declaration locality and opacity without the full LLBC serialization. `support/aeneas-Funs-replayed.lean` preserves the generated model excerpt, and `support/v1-generated-selected-spec.lean` is the V1-generated theorem source. `support/command-results.json` records the result matrix. A later attempt to rerun Charon from a fresh shell did not launch because `charon-driver` could not resolve `librustc_driver` through its dynamic-library search path; the earlier generated LLBC/model artifacts are preserved, and the failed retry is retained in `support/charon-consumer.stderr` as an invocation-environment limit.
+The source workspace and `Cargo.lock` are under `support/workspace/`; it has no external dependencies. The unit-graph JSON paths and rustc wrapper command logs are sanitized. `support/charon-aeneas-functions.json` and `support/charon-consumer-functions.json` preserve relevant declaration locality and opacity without the full LLBC serialization. `support/aeneas-Funs-replayed.lean` preserves the generated model excerpt, and `support/v1-generated-selected-spec.lean` is the V1-generated theorem source. `support/command-results.json` records the result matrix. A replay succeeded after setting `DYLD_LIBRARY_PATH` to the installed Nix Rust toolchain library directory and giving Charon a fresh `CARGO_TARGET_DIR`. With the existing Cargo target state, the same library command exited 0 but emitted no file at the requested destination; with the fresh target, it emitted LLBC. The captured locality/opacity projections matched the earlier run, although raw LLBC and generated `Funs.lean` hashes differed; no byte-level determinism claim is made. `support/replay-results.json` records both runs and hashes.
 
 Executed commands included:
 
@@ -73,7 +73,7 @@ cargo-anneal verify --manifest-path coverage_app/Cargo.toml --features selected 
 charon cargo --preset aeneas --dest charon-consumer -- --package consumer --bin consumer --offline
 ```
 
-The selected V1 verification, Aeneas Lean generation, separate Lake build, and theorem axiom query exited 0. The no-feature verification exited 1. Direct Charon binary/integration extraction exited 101 because Cargo could not locate the expected local rlib. Local build directories and generated caches are not included.
+The selected V1 verification, Aeneas Lean generation, separate Lake build, and theorem axiom query exited 0. A corrected fresh-target replay of Charon and Aeneas also exited 0; its output projections are preserved separately. The no-feature verification exited 1. Direct Charon binary/integration extraction exited 101 because Cargo could not locate the expected local rlib. Local build directories and generated caches are not included.
 
 ## Revalidation
 

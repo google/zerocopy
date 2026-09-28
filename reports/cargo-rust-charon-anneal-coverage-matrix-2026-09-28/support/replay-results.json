@@ -1,0 +1,44 @@
+{
+  "replay_environment": {
+    "host": "aarch64-apple-darwin",
+    "rust_tree": "Nix nightly-2026-05-31",
+    "runtime_library_dir": "<rust-tree>/lib",
+    "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+    "fresh_cargo_target_dir": "support/cargo-target-clean"
+  },
+  "observations": [
+    {
+      "command": "charon cargo --preset aeneas -- --package consumer --bin consumer --offline",
+      "exit": 0,
+      "output": "consumer LLBC emitted"
+    },
+    {
+      "command": "charon cargo --preset aeneas -- --package coverage_app --lib --features selected --offline",
+      "exit": 0,
+      "output": "existing Cargo target state: no LLBC appeared in the requested destination"
+    },
+    {
+      "command": "charon cargo --preset aeneas -- --package coverage_app --lib --features selected --offline",
+      "exit": 0,
+      "output": "fresh CARGO_TARGET_DIR: coverage_app.llbc emitted"
+    },
+    {
+      "command": "aeneas -backend lean -namespace CoverageApp -split-files -dest <output> <coverage_app.llbc>",
+      "exit": 0,
+      "output": "Funs.lean, FunsExternal_Template.lean, Types.lean emitted"
+    }
+  ],
+  "projections_equal_to_prior_run": {
+    "library_function_locality_opacity": true,
+    "consumer_function_locality_opacity": true
+  },
+  "raw_serialized_hashes": {
+    "library_prior": "fa7a439a6af5231334d3228f22dcb43f45969dd9b174774e403b53f23ee5541a",
+    "library_replay": "be3626873db0f41cd63264b46cd036c71991b2f5532880cd0a7915e956cacc55",
+    "consumer_prior": "23e6b09158924c7580b28880185943717d97312d0f2e3c1e2e342c7ff5fd55f4",
+    "consumer_replay": "9470de16665d307e2d3fd416134a3e32f58470c7910714ea45ca45e2f6c37ed0",
+    "aeneas_Funs_prior": "27d5234f5ad41375bfee3404a85df1ff588f7f16569f0224dc04a39756e67849",
+    "aeneas_Funs_replay": "633ffbaa7263a5397ea2ebfb568496771b382abd724053ff0d0bf3b830dfd0ec"
+  },
+  "hash_interpretation": "Raw serialization hashes differ; this report compares only the recorded function-name/locality/opacity projection and does not claim byte-for-byte determinism."
+}
