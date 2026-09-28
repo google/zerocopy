@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "anneal/v1",
+    "anneal/lifetimes",
+    "anneal/soundness",
+    "rust/lifetimes",
+    "verification/erasure"
+  ],
+  "subjects": [
+    {
+      "name": "Retained Anneal V1 lifetime and type translation",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "PtrInner lifetime-dependent invariant used by the historical soundness counterexample",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "c6b794933a8d49481b9dded6ed99bc339202b41d",
+        "issue": "3053"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

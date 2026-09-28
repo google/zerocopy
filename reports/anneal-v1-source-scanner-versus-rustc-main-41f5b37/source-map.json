@@ -1,0 +1,81 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "primary_subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "sources": [
+    {
+      "role": "V1 source scanner and recursive module loader",
+      "path": "anneal/v1/src/scanner.rs",
+      "blob": "44b66417a827192b87d4cad3e62421e8ca497d28"
+    },
+    {
+      "role": "V1 raw-syn parser/visitor and annotation item taxonomy",
+      "path": "anneal/v1/src/parse/mod.rs",
+      "blob": "5f630310199c6abaafa6eee5ea674730bffd773f"
+    },
+    {
+      "role": "V1 Cargo metadata roots/features/target selection",
+      "path": "anneal/v1/src/resolve.rs",
+      "blob": "9a44f652961e0bfe62bc4c2efecd550dea361fab"
+    },
+    {
+      "role": "V1 compiler-backed Charon invocation/start roots/features",
+      "path": "anneal/v1/src/charon.rs",
+      "blob": "7e33bda392770d04397f7172296d9a7f25c6e180"
+    },
+    {
+      "role": "V1 annotation parser",
+      "path": "anneal/v1/src/parse/attr.rs",
+      "blob": "9f352d511ca964e8c58d24206a3088608cb8aaf6"
+    },
+    {
+      "role": "V1 pipeline ordering",
+      "path": "anneal/v1/src/main.rs",
+      "blob": "3d363b977df790b266fe2a0635da1c294ec1b7c2"
+    },
+    {
+      "role": "Historical V1 design context",
+      "path": "anneal/v1/docs/design/design.md",
+      "blob": "f09bf3c9ecd828fb457006853632bc824b1218df"
+    },
+    {
+      "role": "Historical V1 pipeline context",
+      "path": "anneal/v1/docs/agent/01_philosophy_and_pipeline.md",
+      "blob": "39f0e1569e6c9f7d74722c78bdcae550e31bdb9c"
+    }
+  ],
+  "native_reference_evidence": [
+    {
+      "package": "reports/rust-conditional-compilation-nightly-2026-05-31",
+      "report_md_blob": "e3227bc4a5d80086ccba97dcb78e95e5c082c653",
+      "role": "rustc cfg/cfg_attr and compiler-input boundary"
+    },
+    {
+      "package": "reports/rust-module-file-resolution-nightly-2026-05-31",
+      "report_md_blob": "8d9c5e51bddf60ca7395eac29edd48b22218910f",
+      "role": "rustc module/file identity and path resolution"
+    },
+    {
+      "package": "reports/generated-rust-visibility-nightly-2026-05-31",
+      "report_md_blob": "2ac2c513e8242fd547a37d43ed261b92e85f32bc",
+      "role": "build-script/proc-macro generated target Rust before Charon"
+    },
+    {
+      "package": "reports/rust-local-nested-items-nightly-2026-05-31",
+      "report_md_blob": "ed4d22273dc4bedc73ddc4a8a14fcf3ae9e2602e",
+      "role": "local and anonymous compiler definitions"
+    },
+    {
+      "package": "reports/charon-dependency-and-source-coverage-nightly-2026-06-03",
+      "report_md_blob": "c613bc4828bfa769a49f806848ca33028a503abc",
+      "role": "Charon semantic roots and dependency traversal after rustc preprocessing"
+    }
+  ],
+  "observation": {
+    "performed_at": "2026-09-27",
+    "fresh_execution": false,
+    "method": "immutable source inspection plus already-published native reference evidence"
+  }
+}

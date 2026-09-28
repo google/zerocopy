@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/v1",
+    "anneal/source-scanner",
+    "rust/cfg",
+    "rust/modules",
+    "rust/macros",
+    "rust/name-resolution",
+    "verification/source-correspondence"
+  ],
+  "subjects": [
+    {
+      "name": "Retained Anneal V1 source scanner versus rustc/Charon compilation view",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Pinned Rust compilation semantics used by the Anneal/Aeneas/Charon chain",
+      "identity": {
+        "toolchain": "nightly-2026-05-31",
+        "rust_source_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

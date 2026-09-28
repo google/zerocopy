@@ -1,0 +1,192 @@
+{
+  "schema": "anneal-reference/toolchain-archive-semantic-equivalence/v1",
+  "baseline": {
+    "anneal": {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+    },
+    "lean": {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "version": "v4.30.0-rc2"
+    },
+    "aeneas": {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "release": "nightly-2026.06.03"
+    },
+    "charon_from_aeneas": {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+    },
+    "rust": "nightly-2026-05-31",
+    "mathlib": {
+      "repository": "leanprover-community/mathlib4",
+      "revision": "5450b53e5ddc75d46418fabb605edbf36bd0beb6"
+    }
+  },
+  "outcomes": {
+    "archive-byte-identical": "Complete compressed archive bytes are identical.",
+    "payload-identical": "Extracted path/type/link/mode/content graph is identical and all semantically relevant timestamp relations match; container-only differences may remain.",
+    "equivalent-under-declared-consumer-contract": "Identity/platform gates pass; every payload difference has an explicit non-semantic rule; all proof-critical exact-byte gates pass; every required consumer probe passes.",
+    "not-established": "At least one unexplained, proof-critical, platform-changing, or required-but-unprobed difference remains."
+  },
+  "workflow": [
+    "Declare consumer contract and exact baseline before examining differences.",
+    "Compare complete compressed bytes and cryptographic digests.",
+    "If needed, compare decompressed tar bytes and normalized tar-entry metadata.",
+    "Extract independently into fresh roots and inventory the typed filesystem graphs.",
+    "Classify every difference by artifact class.",
+    "Recompute proof-critical cryptographic identities; do not trust Lake .hash sidecars as integrity evidence.",
+    "Parse known Lake trace schemas and compare fields according to consumer role.",
+    "Record Lake hash-current versus old-mode mtime-current reuse and relevant strict timestamp ordering.",
+    "Run contract-specific consumer probes only after static differences are classified.",
+    "Assign the weakest justified outcome and preserve a difference ledger."
+  ],
+  "artifact_classes": [
+    {
+      "class": "container-compression",
+      "automatic_acceptance": "May differ if decompressed tar bytes are identical and compression bytes are outside the declared consumer contract.",
+      "compare": [
+        "complete file size",
+        "SHA-256",
+        "direct bytes when available",
+        "decompressed tar SHA-256"
+      ],
+      "failure_boundary": "A decompressed tar mismatch requires deeper comparison."
+    },
+    {
+      "class": "tar-container-metadata",
+      "automatic_acceptance": "Only fields proven irrelevant to the actual extraction/consumer path may differ.",
+      "compare": [
+        "member order",
+        "path",
+        "entry type",
+        "link target",
+        "mode",
+        "uid/gid metadata",
+        "mtime",
+        "payload digest"
+      ],
+      "failure_boundary": "Unknown metadata differences remain not-established."
+    },
+    {
+      "class": "source-config-manifest",
+      "automatic_acceptance": "Exact bytes by default; schema-aware normalization only with pinned consumer semantics.",
+      "compare": [
+        "SHA-256",
+        "size",
+        "normalized parsed form if explicitly justified"
+      ],
+      "failure_boundary": "Unexplained difference is proof-critical."
+    },
+    {
+      "class": "proof-critical-native-binary",
+      "automatic_acceptance": "Exact bytes on the same platform.",
+      "compare": [
+        "SHA-256",
+        "size",
+        "platform identity"
+      ],
+      "failure_boundary": "Different bytes require a separate upgrade/migration validation and are not accepted by the strict same-contract procedure."
+    },
+    {
+      "class": "lean-module-artifact",
+      "automatic_acceptance": "Exact bytes for the coherent artifact family, with matching Lean and Lake identity.",
+      "compare": [
+        "base .olean",
+        ".olean.server",
+        ".olean.private",
+        ".ilean",
+        "other retained module outputs",
+        "matching Lake state"
+      ],
+      "failure_boundary": "Differing proof-critical module bytes are not accepted by smoke testing alone."
+    },
+    {
+      "class": "lake-artifact-hash-sidecar",
+      "automatic_acceptance": "Never as standalone integrity evidence.",
+      "compare": [
+        "underlying artifact SHA-256",
+        "sidecar value as Lake state",
+        "rehash behavior when execution is available"
+      ],
+      "failure_boundary": "Equal .hash sidecars do not prove equal or authentic artifact bytes."
+    },
+    {
+      "class": "lake-buildmetadata-trace",
+      "automatic_acceptance": "Field-specific.",
+      "compare": [
+        "depHash",
+        "outputs",
+        "synthetic",
+        "artifact identity",
+        "inputs captions",
+        "log"
+      ],
+      "permitted_difference": "Inputs captions may differ when freshness is unchanged and provenance text is outside the contract; logs may differ only if replayed diagnostics are outside the contract.",
+      "failure_boundary": "Unknown or operational field differences remain not-established."
+    },
+    {
+      "class": "lake-configtrace",
+      "automatic_acceptance": "No blanket textual normalization.",
+      "compare": [
+        "identity fields",
+        "platform",
+        "Lean hash",
+        "configuration content hash",
+        "persisted options"
+      ],
+      "failure_boundary": "Differing identity/options are operational unless separately proved irrelevant."
+    },
+    {
+      "class": "filesystem-permissions-links",
+      "automatic_acceptance": "Path/type/symlink/hardlink/execute/write semantics must match the declared consumer contract.",
+      "compare": [
+        "path set",
+        "file type",
+        "symlink target",
+        "hardlink relation",
+        "execute bits",
+        "write bits"
+      ],
+      "failure_boundary": "Current Anneal's recursive read-only payload makes write-bit differences material by default."
+    },
+    {
+      "class": "mtime",
+      "automatic_acceptance": "Exact equality not required generally; compare consumer-relevant ordering predicates.",
+      "compare": [
+        "source/config input mtime",
+        "prepared output mtime",
+        "strict input < output relation for old-mode fallback"
+      ],
+      "failure_boundary": "If old-mode reuse is part of the contract, collapsing the strict ordering is material."
+    },
+    {
+      "class": "platform",
+      "automatic_acceptance": "Same supported system/target by default.",
+      "compare": [
+        "system",
+        "target triple where relevant",
+        "platform-specific tool assets"
+      ],
+      "failure_boundary": "Cross-platform equivalence requires independent artifact-specific evidence."
+    }
+  ],
+  "consumer_probe_requirements": [
+    "Use separate fresh installation/extraction roots; never reuse one Exocrate managed namespace to compare two local archives.",
+    "Make producer/staging roots unavailable before relocation-sensitive probes.",
+    "Use the same controlled environment and source input.",
+    "Record reuse versus rebuild and hash-current versus mtime-current status for prepared Lake outputs.",
+    "Compare contract-visible success/failure, proof-critical generated outputs, and diagnostics.",
+    "If process-wide offline operation is claimed, enforce or observe network access rather than inferring absence from path dependencies."
+  ],
+  "fail_closed_rules": [
+    "Unknown artifact class => not-established.",
+    "Unknown differing trace field => not-established.",
+    "Proof-critical binary/source/config/module bytes differ => not-established under strict same-contract comparison.",
+    "Platform identity differs => not-established under default procedure.",
+    "Required consumer probe missing or fails => not-established.",
+    "Similarity of version strings, directory layout, or smoke-test behavior cannot override a stronger failed gate."
+  ]
+}

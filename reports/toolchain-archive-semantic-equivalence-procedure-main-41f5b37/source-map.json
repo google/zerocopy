@@ -1,0 +1,94 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "id": "anneal-flake",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/flake.nix",
+      "blob": "433fcf5c64da4f51b9fac471f1faf45c1f730cba",
+      "role": "Archive staging, platform cleanup, trace scan, timestamp normalization, permissions, tar/compression, layout checks."
+    },
+    {
+      "id": "version-coupling",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/anneal-toolchain-version-coupling-main-41f5b37/REPORT.md",
+      "blob": "91ac8612cc400e531363fde5c870abaded6b7eb7",
+      "role": "Immutable toolchain and dependency identity graph."
+    },
+    {
+      "id": "archive-byte-repro",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/anneal-omnibus-archive-byte-reproducibility-main-41f5b37/REPORT.md",
+      "blob": "fc8efde016747587d53224b41f3e90c32ba187de",
+      "role": "Container-byte reproducibility boundary and tar/compression distinctions."
+    },
+    {
+      "id": "archive-read-only",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/anneal-archive-read-only-behavior-main-41f5b37/REPORT.md",
+      "blob": "8bf004ea28e08ce855bffcaa47aab1ce6f1cac00",
+      "role": "Permission semantics and read-only payload contract."
+    },
+    {
+      "id": "timestamps-old-mode",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/anneal-archive-timestamps-lake-reuse-v4-30-0-rc2/REPORT.md",
+      "blob": "0c860874507245a88d8aea57ff9b71ef3d200290",
+      "role": "Hash freshness versus old-mode mtime fallback and strict ordering."
+    },
+    {
+      "id": "offline-consumption",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/anneal-offline-installation-execution-main-41f5b37/REPORT.md",
+      "blob": "90b4d82bec82549f786a90d7c52c7cbb68a051c1",
+      "role": "Independent installation, vendored path dependencies, controlled environment, network boundary."
+    },
+    {
+      "id": "local-archive-trust",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/exocrate-local-archive-trust-checksum-main-41f5b37/REPORT.md",
+      "blob": "cfe5e974a792ce82319aab7eda4233da55cb7359",
+      "role": "Local archive bytes outside Exocrate namespace/checksum identity and existing-installation bypass."
+    },
+    {
+      "id": "trace-rewrite-boundaries",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/lake-trace-relocation-rewrite-boundaries-v4-30-0-rc2/REPORT.md",
+      "blob": "96a177e6eccaedd37da4aecec5b8d008f0c312c5",
+      "role": "Field-level BuildMetadata and ConfigTrace semantics."
+    },
+    {
+      "id": "trace-hash-artifacts",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/lean-lake-trace-hash-artifacts-v4-30-0-rc2/REPORT.md",
+      "blob": "0711960b59e1366dcbecdda7764be16bf50501c5",
+      "role": "Lean identity in Lake traces and non-cryptographic Lake artifact-hash sidecars."
+    },
+    {
+      "id": "olean-format",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/lean-olean-format-identity-v4-30-0-rc2/REPORT.md",
+      "blob": "cd5b8d2da578f08b5540d097c20c3e5ff96e408e",
+      "role": "Native .olean serialization, coherent module-part family, and build-freshness boundary."
+    },
+    {
+      "id": "cross-platform-portability",
+      "repository": "google/zerocopy",
+      "ref": "reference",
+      "path": "reports/lean-lake-cross-platform-artifact-portability-v4-30-0-rc2/REPORT.md",
+      "blob": "065d325b6a3e8b34a5f42c04bdaae83c1791df22",
+      "role": "Platform-sensitive native outputs and lack of blanket cross-platform module-artifact portability."
+    }
+  ]
+}

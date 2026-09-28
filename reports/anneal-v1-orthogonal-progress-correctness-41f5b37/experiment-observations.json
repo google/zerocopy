@@ -1,0 +1,56 @@
+{
+  "subject": "Retained Anneal V1 orthogonal progress/correctness experiment",
+  "observations": [
+    {
+      "name": "joint obligations preserve WP.spec strength",
+      "status": "source-derived",
+      "detail": "Anneal's wp_prove_orthogonal requires both existence of an ok result and postcondition correctness for every ok result. For Aeneas Result, WP.spec is false on fail/div and equals the postcondition on ok, so the two generated obligations jointly suffice for the original WP specification."
+    },
+    {
+      "name": "correctness branch is intentionally conditional and vacuous in isolation",
+      "status": "source-derived",
+      "detail": "The correctness goal has shape forall y, m = ok y -> P y. If m is fail or div, this implication has no witness and is vacuous. The separate progress goal exists precisely to rule out those executions in the final theorem."
+    },
+    {
+      "name": "diagnostic independence",
+      "status": "documented-and-source-confirmed",
+      "detail": "Generated Lean applies wp_prove_orthogonal before building the Post structure. This lets correctness fields elaborate independently of whether automatic progress can discharge the existential result obligation, preserving field-local diagnostics."
+    },
+    {
+      "name": "progress facts do not flow into correctness",
+      "status": "source-derived",
+      "detail": "The two goals are sibling proof branches. Facts introduced while proving h_progress are not available in the correctness branch, which receives only the result witness/equality plus ordinary preconditions."
+    },
+    {
+      "name": "proof-context progress limitation",
+      "status": "documented-and-source-confirmed",
+      "detail": "proof context executes on the correctness branch after the split. Its h_returns object is an equality rather than a WP.spec goal, so Aeneas progress tactics cannot be used there. Historical V1 documentation directs operational progress reasoning to proof(h_progress) or individual field proofs."
+    },
+    {
+      "name": "normalization/proof duplication",
+      "status": "source-derived",
+      "detail": "Independent omitted Post fields use separate autoParam tactics; each verify_is_valid/verify_user_bound invocation independently unfolds and splits h_returns before attempting automation. Shared term-mode proof context can factor ordinary logical setup, but progress tactics cannot be factored there. This trades repeated local proof work for independent diagnostics and order-insensitive fields."
+    },
+    {
+      "name": "allow-sorry magnifies the importance of progress",
+      "status": "source-derived",
+      "detail": "eval_progress may fall back through Anneal's allow-sorry mechanism when that mode is enabled. Since correctness alone is conditional, admitting progress removes the branch that excludes fail/div. The resulting theorem is therefore only as trustworthy as the explicit admission policy."
+    },
+    {
+      "name": "unsafe(axiom) is separate",
+      "status": "scope-boundary",
+      "detail": "The theorem/orthogonal path applies to proof-mode generated theorems. unsafe(axiom) emits an axiom and is covered by a separate completed inventory item, including whether that axiom implies progress."
+    }
+  ],
+  "fresh_execution_performed": false,
+  "revalidation_probe": {
+    "goal": "Reproduce historical diagnostics and duplication with the retained exact toolchain.",
+    "cases": [
+      "A function whose Aeneas evaluation is trivial and whose postcondition is false, to show progress succeeds while correctness fails.",
+      "A function whose evaluation stalls at an opaque/unsupported step but whose conditional postcondition is trivial, to show correctness can elaborate while progress fails.",
+      "The same stalled case with --allow-sorry to demonstrate that admitting progress permits completion without converting conditional correctness into an independent termination proof.",
+      "Two omitted Post fields that both require h_returns normalization, to observe repeated autoParam unfolding/splitting and compare with factored proof context.",
+      "A proof context that attempts Aeneas progress, confirming the documented post-split limitation and comparing relocation to proof(h_progress)."
+    ]
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/v1",
+    "anneal/generated-lean",
+    "anneal/abi",
+    "aeneas/lean",
+    "verification/integration-contracts"
+  ],
+  "subjects": [
+    {
+      "name": "Retained Anneal V1 generated-Lean integration",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Aeneas revision consumed by retained Anneal V1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

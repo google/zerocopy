@@ -1,0 +1,86 @@
+{
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/parse/hkd.rs",
+      "blob": "619d1e956ebc230aece4c13c34797d1322b1bb94",
+      "supports": [
+        "reference lifetime omission",
+        "path lifetime-argument omission",
+        "payload-free lifetime generic markers",
+        "payload-free lifetime where-predicate markers"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "supports": [
+        "lifetime generic erasure",
+        "reference-to-referent type mapping",
+        "lifetime-free IsValid generation",
+        "automatic IsValid obligations",
+        "MyStruct<'a, T> to MyStruct T regression expectation"
+      ]
+    },
+    {
+      "role": "documentation",
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/docs/design/design.md",
+      "blob": "f09bf3c9ecd828fb457006853632bc824b1218df",
+      "supports": [
+        "V1 functional reference model",
+        "complex-lifetime limitation"
+      ]
+    },
+    {
+      "role": "issue-evidence",
+      "repository": "google/zerocopy",
+      "issue_number": "3053",
+      "observed_at": "2026-09-27",
+      "supports": [
+        "PtrInner/from_ref lifetime mismatch counterexample",
+        "safe use-after-free consequence",
+        "fail-closed remedy classes"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "c6b794933a8d49481b9dded6ed99bc339202b41d",
+      "path": "src/pointer/inner.rs",
+      "blob": "2f35d5a99d6b62ab40de995ba417b2c33f7634fd",
+      "supports": [
+        "PtrInner allocation-lifetime invariant",
+        "from_ref same-lifetime safety argument"
+      ]
+    },
+    {
+      "role": "source",
+      "repository": "google/zerocopy",
+      "revision": "c6b794933a8d49481b9dded6ed99bc339202b41d",
+      "path": "src/pointer/ptr.rs",
+      "blob": "bb4bacb3fab78ba17584578d3cd214fd38c9c197",
+      "supports": [
+        "safe Ptr::from_ref composition",
+        "Ptr::as_ref materialization of an &'a T"
+      ]
+    },
+    {
+      "role": "related-reference-evidence",
+      "repository": "google/zerocopy",
+      "revision": "6205fb666ad772418a5cf986da062a0e4f838a47",
+      "path": "reports/rust-lifetimes-charon-aeneas-nightly-2026-05-31/REPORT.md",
+      "blob": "75fa9ea86ea9e623c7735484563dc18d6e340e9c",
+      "supports": [
+        "qualification that Aeneas uses signature regions before final pure-language erasure"
+      ]
+    }
+  ]
+}

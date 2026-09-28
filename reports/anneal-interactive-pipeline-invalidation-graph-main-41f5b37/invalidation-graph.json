@@ -1,0 +1,92 @@
+{
+  "schema": "anneal-reference/invalidation-graph/v1",
+  "conservative_nodes": [
+    {
+      "id": "rust-compilation-subject",
+      "identity": "Cargo target plus source/config/features/target/toolchain/build-script-effective inputs"
+    },
+    {
+      "id": "llbc-snapshot",
+      "producer": "Charon 0.1.210",
+      "freshness": "new complete selected-crate translation; stable artifact slug is not freshness"
+    },
+    {
+      "id": "generated-lean-tree",
+      "producer": "Aeneas nightly-2026.06.03",
+      "freshness": "whole normalized LLBC crate recomputation baseline"
+    },
+    {
+      "id": "lake-module-artifacts",
+      "producer": "Lake v4.30.0-rc2",
+      "freshness": "saved dependency trace / matching cache entry"
+    },
+    {
+      "id": "lsp-document",
+      "producer": "LSP client + Lean server",
+      "freshness": "URI plus client-managed version/text"
+    },
+    {
+      "id": "lean-worker-environment",
+      "producer": "Lean/Lake server setup",
+      "freshness": "prepared workspace/toolchain/dependency identity plus refreshed imports"
+    },
+    {
+      "id": "query-result",
+      "producer": "Lean worker",
+      "freshness": "must name coherent document/environment generation"
+    }
+  ],
+  "edges": [
+    {
+      "from": "rust-compilation-subject",
+      "to": "llbc-snapshot",
+      "rule": "material source/build identity changes require a current Charon result; no supported cross-run Charon delta protocol at the pin"
+    },
+    {
+      "from": "llbc-snapshot",
+      "to": "generated-lean-tree",
+      "rule": "new normalized LLBC generation conservatively invalidates the whole Aeneas crate translation"
+    },
+    {
+      "from": "generated-lean-tree",
+      "to": "lake-module-artifacts",
+      "rule": "Lake establishes module artifact freshness from exact source/config/import traces"
+    },
+    {
+      "from": "generated-lean-tree",
+      "to": "lsp-document",
+      "rule": "if directly open, disk replacement requires didChange or close/reopen; pathname equality is insufficient"
+    },
+    {
+      "from": "lake-module-artifacts",
+      "to": "lean-worker-environment",
+      "rule": "changed imported dependencies require server refresh/restart before dependent state is current"
+    },
+    {
+      "from": "lsp-document",
+      "to": "query-result",
+      "rule": "queries must wait for the intended document version to be accepted/elaborated"
+    },
+    {
+      "from": "lean-worker-environment",
+      "to": "query-result",
+      "rule": "queries must use a server prepared for the intended workspace/toolchain/dependency generation"
+    }
+  ],
+  "fast_path": {
+    "change": "proof-body edit only",
+    "path": [
+      "lsp-document",
+      "query-result"
+    ],
+    "rule": "no upstream Rust/Charon/Aeneas recomputation when generated model and setup identity are unchanged"
+  },
+  "prohibited_inferences": [
+    "stable artifact slug => unchanged LLBC",
+    "same generated .lean pathname => same generated model",
+    "same long-lived Aeneas process => prior translation remains valid",
+    "same .olean pathname => current module artifact",
+    "disk overwrite of open .lean => LSP document updated",
+    "same Lean server PID => same valid workspace/environment generation"
+  ]
+}

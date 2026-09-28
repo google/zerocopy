@@ -1,0 +1,30 @@
+{
+  "subject_revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "contracts": [
+    {
+      "contract": "trait annotation defines a safety proposition",
+      "intended": "isSafe expresses the extra safety invariant of an unsafe trait",
+      "implemented": "generate_trait emits Trait.Safe Self inst : Prop with user-authored isSafe fields",
+      "status": "implemented"
+    },
+    {
+      "contract": "unsafe implementation discharges the invariant",
+      "intended": "unsafe impl Trait for T must prove Trait.Safe for its implementation",
+      "implemented": "ImplAnnealBlock has only common context, rejects isSafe, and ParsedItem::Impl is ignored by generation",
+      "status": "missing automatic enforcement"
+    },
+    {
+      "contract": "generic trait bound exposes the invariant",
+      "intended": "T: Trait makes safety evidence available to the generated consumer spec",
+      "implemented": "trait bounds generate only explicit trait dictionaries such as TraitInst : Trait T",
+      "status": "not automatic"
+    },
+    {
+      "contract": "consumer can request the invariant explicitly",
+      "intended": "proof can rely on isSafe when justified",
+      "implemented": "checked-in anatomy example adds requires (h_is_safe): Unaligned.Safe T Inst and applies it to UnalignedInst",
+      "status": "implemented as explicit precondition"
+    }
+  ],
+  "semantic_consequence": "V1 models isSafe as an opt-in logical proposition, not as a globally enforced consequence of Rust unsafe-trait implementation and trait-bound semantics."
+}

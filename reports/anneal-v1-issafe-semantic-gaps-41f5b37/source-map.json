@@ -1,0 +1,57 @@
+{
+  "repository": "google/zerocopy",
+  "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+  "sources": [
+    {
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "ranges": [
+        {"lines": "204-204", "claim": "ParsedItem::Impl is ignored by generator dispatch"},
+        {"lines": "1041-1086", "claim": "trait isSafe annotation becomes Safe class indexed by explicit trait dictionary"},
+        {"lines": "1101-1150", "claim": "trait bounds lower to explicit dictionary parameters"},
+        {"lines": "2767-2788", "claim": "generator tests expect trait dictionaries, not Safe evidence"}
+      ]
+    },
+    {
+      "path": "anneal/v1/src/parse/attr.rs",
+      "blob": "9f352d511ca964e8c58d24206a3088608cb8aaf6",
+      "ranges": [
+        {"lines": "126-131", "claim": "ImplAnnealBlock stores only common context"},
+        {"lines": "623-656", "claim": "trait annotation requires isSafe and permits it only on unsafe traits"},
+        {"lines": "660-669", "claim": "impl annotations reject isSafe"}
+      ]
+    },
+    {
+      "path": "anneal/v1/src/parse/mod.rs",
+      "blob": "5f630310199c6abaafa6eee5ea674730bffd773f",
+      "ranges": [
+        {"lines": "336-382", "claim": "items without Anneal annotations are skipped"},
+        {"lines": "467-478", "claim": "annotated traits are parsed through TraitAnnealBlock"},
+        {"lines": "491-510", "claim": "impl blocks are parsed separately and method visitation continues"}
+      ]
+    },
+    {
+      "path": "anneal/v1/examples/anatomy.rs",
+      "blob": "e77e257b20108989b246d8e9574e14ba11d3cbd6",
+      "ranges": [
+        {"lines": "19-23", "claim": "example unsafe trait carries isSafe annotation"},
+        {"lines": "45-50", "claim": "consumer explicitly requires Unaligned.Safe T Inst"},
+        {"lines": "106-111", "claim": "proof applies explicit Safe hypothesis to Aeneas trait dictionary"}
+      ]
+    },
+    {
+      "path": "anneal/v1/docs/design/design.md",
+      "blob": "f09bf3c9ecd828fb457006853632bc824b1218df",
+      "ranges": [
+        {"lines": "256-259", "claim": "design promises implementation-site proof and automatic call-site hSafe"}
+      ]
+    },
+    {
+      "path": "anneal/v1/docs/agent/04_specifications_and_syntax.md",
+      "blob": "1b5a7a8c9f7cc25b6549bc4f2697040c72e14f71",
+      "ranges": [
+        {"lines": "164-166", "claim": "agent guide says call sites must request isSafe explicitly while still claiming impl-site proof"}
+      ]
+    }
+  ]
+}

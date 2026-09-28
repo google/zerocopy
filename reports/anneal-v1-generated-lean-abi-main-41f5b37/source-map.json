@@ -1,0 +1,69 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/Cargo.toml",
+      "blob": "f545b31c8e15a3cc5b5bbaf277abb9e56afc2e33",
+      "role": "Aeneas and Lean pins"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/scanner.rs",
+      "blob": "44b66417a827192b87d4cad3e62421e8ca497d28",
+      "role": "artifact slug and generated filenames"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "role": "generated Lean imports, naming, type rendering, Pre/Post/spec, tuple prediction, source mappings"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/src/aeneas.rs",
+      "blob": "9b4618a20938315afc290744bbdfa498848620f4",
+      "role": "Aeneas invocation, split-output checks, compatibility patches, external templates, Lake roots, diagnostics"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/Primitives.lean",
+      "blob": "5a73ea5bfae575baf2f26e1d86ea00768d1bccea",
+      "role": "Result carrier"
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "blob": "a599b2b6632fbfdfadbe3dcfb68ee17a6048be5d",
+      "role": "WP.spec and product-postcondition semantics"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/expand_output/expected-all.stdout",
+      "blob": "b4934dc041ad81cca05eeb4aa94a8e22ae39a66f",
+      "role": "preserved paired Aeneas/Anneal generated output"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/extern_never_verified/out.txt",
+      "blob": "9cf7a9e663c0dc77597cbd007bc8917c87e6f9e2",
+      "role": "preserved mutable-reference tuple destructuring"
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/v1/tests/fixtures/missing_output/expected.stderr",
+      "blob": "5255829806d2be2cadf5c87060f17e3b12d9d7cf",
+      "role": "preserved fail-closed missing Funs.lean diagnostic"
+    }
+  ],
+  "fresh_execution": false
+}

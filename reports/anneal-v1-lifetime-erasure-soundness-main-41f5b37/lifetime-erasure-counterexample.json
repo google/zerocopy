@@ -1,0 +1,29 @@
+{
+  "source": {
+    "repository": "google/zerocopy",
+    "issue_number": 3053,
+    "issue_title": "Allow safety invariants and proofs to depend on lifetimes",
+    "issue_created_at": "2026-02-13T17:56:33Z",
+    "issue_updated_at_observed": "2026-03-24T01:40:39Z",
+    "observed_at": "2026-09-27",
+    "historical_revision": "c6b794933a8d49481b9dded6ed99bc339202b41d"
+  },
+  "required_relation": {
+    "type": "PtrInner<'a, T>",
+    "invariant": "For a non-zero-sized referent, the backing allocation lives for at least 'a.",
+    "sound_constructor_shape": "fn from_ref<'a>(ptr: &'a T) -> PtrInner<'a, T>",
+    "reason": "The input reference supplies the allocation-liveness guarantee for the same lifetime carried by the result."
+  },
+  "counterexample_shape": {
+    "unsound_constructor_shape": "fn from_ref<'b>(ptr: &'b T) -> PtrInner<'a, T>",
+    "missing_obligation": "Evidence that 'b outlives 'a.",
+    "consequence": "A safe Ptr can be constructed whose claimed lifetime outlives the allocation, and a later safe as_ref can materialize a dangling reference."
+  },
+  "retained_v1_collision": {
+    "lifetime_generic_parameters": "discarded by extract_generic_params",
+    "reference_lifetimes": "not represented in SafeType::Reference and mapped to the referent type",
+    "path_lifetime_arguments": "filtered out while mirroring syn::PathArguments",
+    "lifetime_where_predicates": "collapsed to an unprocessed marker",
+    "result": "The V1-generated IsValid/type surface has no source lifetime parameter on which the PtrInner allocation-liveness invariant can depend."
+  }
+}

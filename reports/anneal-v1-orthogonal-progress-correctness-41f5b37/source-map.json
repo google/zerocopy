@@ -1,0 +1,48 @@
+{
+  "primary_subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/v1"
+  },
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/v1/src/Anneal.lean",
+      "blob": "727199a54622d56dd429f2b3b178748f2cc5b7f1",
+      "role": "wp_prove_orthogonal theorem, eval_progress, per-field autoParam tactics, and Result-spec helper semantics."
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "role": "Generated theorem shape: apply orthogonal lemma, progress branch, conditional correctness branch, proof context, and independent Post fields."
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/v1/docs/design/named_bounds.md",
+      "blob": "9eca5dab17be5d0818bbeb49c740290680e2bdc7",
+      "role": "Historical design/experiment record for independent evaluation, orthogonal WP motivation, correctness survival, and proof-context limitations."
+    },
+    {
+      "repository": "google/zerocopy",
+      "path": "anneal/v1/Cargo.toml",
+      "blob": "f545b31c8e15a3cc5b5bbaf277abb9e56afc2e33",
+      "role": "Pins retained V1 Aeneas revision 42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4 and Lean v4.30.0-rc2."
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/WP.lean",
+      "blob": "a599b2b6632fbfdfadbe3dcfb68ee17a6048be5d",
+      "role": "WP.spec/theta semantics: ok applies the postcondition; fail and div are false."
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+      "path": "backends/lean/Aeneas/Std/Primitives.lean",
+      "blob": "5a73ea5bfae575baf2f26e1d86ea00768d1bccea",
+      "role": "Result constructors ok/fail/div consumed by WP semantics."
+    }
+  ],
+  "native_inventory_item": "V1 orthogonal progress/correctness experiment — proof duplication and vacuity observations."
+}

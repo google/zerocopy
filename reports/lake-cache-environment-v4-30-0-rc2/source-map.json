@@ -1,0 +1,41 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "blob": "e309253fe8c39aa90ce48de295305d160286a9b1",
+      "path": "src/lake/Lake/Config/InstallPath.lean",
+      "role": "boolean parser"
+    },
+    {
+      "blob": "eed315c538de746a891d18f72564e88aea64e969",
+      "path": "src/lake/Lake/Config/Env.lean",
+      "role": "environment parsing and cache discovery"
+    },
+    {
+      "blob": "27a50fb2a713a6bb590260fd4a82d135c2b84952",
+      "path": "src/lake/Lake/Config/PackageConfig.lean",
+      "role": "package option contract"
+    },
+    {
+      "blob": "b9c01f130240ae7c65ee298778351ddbe312374e",
+      "path": "src/lake/Lake/Config/Workspace.lean",
+      "role": "workspace cache selection and augmented environment"
+    },
+    {
+      "blob": "59e032d7c516298a494c070abb948eafe2474184",
+      "path": "src/lake/Lake/Config/Monad.lean",
+      "role": "per-package read/write predicates"
+    },
+    {
+      "blob": "4cdee6b9ed39234ab584fa0f47697351b2f98f10",
+      "path": "tests/lake/tests/env/test.sh",
+      "role": "same-revision environment tests"
+    },
+    {
+      "blob": "4c0134409f65b9e563cb3d7f26a1e550c013c140",
+      "path": "tests/lake/tests/cache/test.sh",
+      "role": "same-revision artifact-cache enablement tests"
+    }
+  ],
+  "subject_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+}

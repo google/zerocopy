@@ -1,0 +1,66 @@
+{
+  "primary_subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "sources": [
+    {
+      "path": "anneal/v1/src/main.rs",
+      "blob": "3d363b977df790b266fe2a0635da1c294ec1b7c2",
+      "role": "Top-level verify/generate/expand pipeline; zero-package warning and successful early return."
+    },
+    {
+      "path": "anneal/v1/src/scanner.rs",
+      "blob": "44b66417a827192b87d4cad3e62421e8ca497d28",
+      "role": "Annotation-driven item discovery, artifact construction, and start_from root construction."
+    },
+    {
+      "path": "anneal/v1/src/charon.rs",
+      "blob": "7e33bda392770d04397f7172296d9a7f25c6e180",
+      "role": "Translation root plumbing and explicit unsafe(axiom) opacity handling."
+    },
+    {
+      "path": "anneal/v1/src/parse/attr.rs",
+      "blob": "9f352d511ca964e8c58d24206a3088608cb8aaf6",
+      "role": "Recognition of the anneal info token; malformed recognized attributes; recognized-block grammar failures."
+    },
+    {
+      "path": "anneal/v1/src/validate.rs",
+      "blob": "2259c939e4bba4b2c329b9751a2a3e86601c416c",
+      "role": "Validation over already-collected artifacts; proof-coverage rules and boundaries."
+    },
+    {
+      "path": "anneal/v1/src/resolve.rs",
+      "blob": "9a44f652961e0bfe62bc4c2efecd550dea361fab",
+      "role": "Adjacent isValid unsoundness note showing unannotated code is outside some V1 invariant enforcement."
+    },
+    {
+      "path": "anneal/v1/src/generate.rs",
+      "blob": "f087023d08011a90d56bcbdc759e6cbc90c344b5",
+      "role": "Lean generation for scanner-collected items and distinction between theorem/spec and unsafe(axiom) generation."
+    },
+    {
+      "path": "anneal/v1/docs/agent/01_philosophy_and_pipeline.md",
+      "blob": "39f0e1569e6c9f7d74722c78bdcae550e31bdb9c",
+      "role": "Documented start-from/annotation-rooted pipeline and unsafe-leaf model."
+    },
+    {
+      "path": "anneal/v1/docs/design/design.md",
+      "blob": "f09bf3c9ecd828fb457006853632bc824b1218df",
+      "role": "Historical design intent and explicit future-work proposal for a strict mode requiring unsafe annotations."
+    },
+    {
+      "path": "reports/charon-dependency-and-source-coverage-nightly-2026-06-03/REPORT.md",
+      "ref": "reference",
+      "blob": "c613bc4828bfa769a49f806848ca33028a503abc",
+      "role": "Current native corpus evidence that Charon custom start roots include transitive semantic dependencies but narrow the overall theorem domain."
+    },
+    {
+      "path": "CATALOG.json",
+      "ref": "reference",
+      "blob": "6f9ca5618718e41f5ce792fd577a3f159d286e72",
+      "role": "Current native catalog checked for an existing dedicated V1 coverage/totality report."
+    }
+  ],
+  "native_inventory_item": "V1 coverage/totality holes — unannotated unsafe callees, missing annotations, typo/fail-open risks."
+}

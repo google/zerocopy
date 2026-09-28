@@ -1,0 +1,73 @@
+{
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/v1"
+  },
+  "cases": [
+    {
+      "case": "No recognized Anneal annotations in selected targets",
+      "source_behavior": "scan_workspace returns no packages; prepare_and_run logs 'Nothing to verify.' and returns Ok(None) before validation, Charon, Aeneas, or Lean.",
+      "coverage_consequence": "No proof obligation is constructed for the selected targets.",
+      "failure_mode": "warning-only successful no-op",
+      "evidence": ["source"]
+    },
+    {
+      "case": "Recognized annotation on a function/item",
+      "source_behavior": "The scanner records the annotated item and a start_from root; Charon receives the sorted roots via --start-from, and Anneal generates Lean only for collected annotated items.",
+      "coverage_consequence": "The annotated item becomes an explicit proof/specification root; Charon may additionally translate transitive semantic dependencies.",
+      "failure_mode": "not a totality check for the rest of the crate",
+      "evidence": ["source"]
+    },
+    {
+      "case": "Unannotated callee reachable from an annotated root",
+      "source_behavior": "The callee can enter Charon through semantic reachability from --start-from even though the Anneal scanner did not collect an annotation for it.",
+      "coverage_consequence": "Reachability can put the callee in LLBC/Aeneas output, but Anneal does not synthesize a user specification or proof obligation for the callee merely because it is reachable.",
+      "failure_mode": "translation coverage must not be confused with explicit unsafe-contract coverage",
+      "evidence": ["source", "derived", "native-reference-report"]
+    },
+    {
+      "case": "Unannotated item outside every annotated root's semantic closure",
+      "source_behavior": "The item contributes no scanner root, and custom --start-from limits Charon to the selected roots and their semantic dependencies.",
+      "coverage_consequence": "The item is outside this Anneal verification run's theorem domain.",
+      "failure_mode": "silent with respect to annotation completeness",
+      "evidence": ["source", "derived", "native-reference-report"]
+    },
+    {
+      "case": "Unannotated unsafe leaf reachable from an annotated root",
+      "source_behavior": "Only functions carrying an unsafe(axiom) Anneal block are explicitly passed to Charon as --opaque by Anneal; an unannotated unsafe callee is not automatically converted into an Anneal axiom/specification.",
+      "coverage_consequence": "Its treatment depends on Charon/Aeneas support and opacity behavior rather than an Anneal-authored proof of the unsafe contract.",
+      "failure_mode": "possible trust/translation boundary without explicit Anneal contract",
+      "evidence": ["source", "derived"]
+    },
+    {
+      "case": "Misspelled or omitted 'anneal' token in a doc-code-block info string",
+      "source_behavior": "parse_anneal_info_string returns Ok(None); parse_anneal_block_common treats the block as unrelated documentation and continues scanning without an Anneal diagnostic.",
+      "coverage_consequence": "The intended annotation can disappear from the verification root set.",
+      "failure_mode": "fail-open with respect to the author's intended coverage; if no other annotations remain, verification can become the warning-only successful no-op",
+      "evidence": ["source", "derived"]
+    },
+    {
+      "case": "Recognized 'anneal' token with malformed attribute",
+      "source_behavior": "Unsupported attributes, including malformed unsafe forms, produce a parse error.",
+      "coverage_consequence": "The malformed recognized block is not silently accepted.",
+      "failure_mode": "fail-closed parse error",
+      "evidence": ["source", "checked-in-tests"]
+    },
+    {
+      "case": "Recognized Anneal block with malformed/unknown clause syntax",
+      "source_behavior": "The indentation-sensitive body parser rejects invalid structure/keywords and emits diagnostics such as 'Did you misspell a keyword?'.",
+      "coverage_consequence": "Typos inside a recognized block generally fail before verification proceeds.",
+      "failure_mode": "fail-closed parse error",
+      "evidence": ["source"]
+    },
+    {
+      "case": "Missing proof material inside an otherwise recognized spec",
+      "source_behavior": "This is governed by validate/generation/Lean behavior, including autoParam fallback for some named obligations and the --allow-sorry escape hatch.",
+      "coverage_consequence": "This is proof-completeness behavior inside an already selected root, not annotation-totality behavior.",
+      "failure_mode": "separate from this report's root-coverage question",
+      "evidence": ["source"]
+    }
+  ],
+  "overall_conclusion": "Retained Anneal V1 is an opt-in verifier rooted at recognized annotations. It has local fail-closed parsing for many malformed recognized blocks, but it does not establish crate-wide unsafe annotation totality and can silently lose an intended root when the identifying 'anneal' token is absent or misspelled."
+}

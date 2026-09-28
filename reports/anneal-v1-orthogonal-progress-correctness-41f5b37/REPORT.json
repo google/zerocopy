@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/v1",
+    "anneal/progress",
+    "anneal/correctness",
+    "aeneas/wp",
+    "verification/proof-decomposition",
+    "verification/diagnostics"
+  ],
+  "subjects": [
+    {
+      "name": "Retained Anneal V1 orthogonal progress/correctness proof architecture",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+        "path": "anneal/v1"
+      }
+    },
+    {
+      "name": "Aeneas WP Result semantics consumed by retained Anneal V1",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4",
+        "path": "backends/lean/Aeneas/Std/WP.lean"
+      }
+    }
+  ],
+  "observed_at": "2026-09-27"
+}

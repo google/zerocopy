@@ -1,0 +1,103 @@
+{
+  "schema": "anneal-reference/v1-scanner-gap-matrix/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "path": "anneal/v1"
+  },
+  "dimensions": [
+    {
+      "case": "cfg-false module-level annotated item in an existing source file",
+      "scanner_view": "raw syn AST can discover annotation",
+      "compiler_view": "rustc removes item before HIR/MIR",
+      "correspondence": "mismatch",
+      "risk": "scanner can emit a start root/spec for no matching compiler definition"
+    },
+    {
+      "case": "cfg-dependent item selected true",
+      "scanner_view": "discovers raw item without evaluating predicate",
+      "compiler_view": "definition exists for this invocation",
+      "correspondence": "can match if name/module expansion is otherwise unchanged",
+      "risk": "scanner cannot prove the condition that made correspondence valid"
+    },
+    {
+      "case": "cfg_attr(predicate, path = \"...\") external module",
+      "scanner_view": "warns but does not evaluate predicate or apply conditional path",
+      "compiler_view": "configured path attribute selects module file",
+      "correspondence": "not established",
+      "risk": "selected module file/annotations can be missed or wrong file scanned"
+    },
+    {
+      "case": "ordinary top-level mod child; with direct path/default file",
+      "scanner_view": "manual direct path/foo.rs/foo/mod.rs lookup",
+      "compiler_view": "rustc module loader",
+      "correspondence": "common simple cases can match",
+      "risk": "not a general proof of rustc-equivalent module resolution"
+    },
+    {
+      "case": "mod outer { mod child; } inside one physical file",
+      "scanner_view": "UnloadedModule drops visitor current_path; outer recursive loader appends only child",
+      "compiler_view": "child belongs to logical outer module and path lookup reflects that context",
+      "correspondence": "source-defined mismatch",
+      "risk": "scanner can miss file or produce wrong crate module path/start root"
+    },
+    {
+      "case": "macro_rules/proc-macro/include!-generated annotated definition",
+      "scanner_view": "no macro expansion; generated definition absent",
+      "compiler_view": "expanded target definition can exist before Charon",
+      "correspondence": "scanner false negative",
+      "risk": "compiler-visible verification-relevant code has no scanner-discovered Anneal subject"
+    },
+    {
+      "case": "attribute macro transforms scanner-visible item",
+      "scanner_view": "pre-expansion syntax/name",
+      "compiler_view": "post-expansion transformed/replaced definition",
+      "correspondence": "not guaranteed",
+      "risk": "textual start root can fail to identify post-expansion semantic item"
+    },
+    {
+      "case": "use/reexport alias",
+      "scanner_view": "not an Anneal ParsedItem; no rustc name resolution",
+      "compiler_view": "binding resolves to a semantic definition",
+      "correspondence": "definition can still be targeted at original path; alias itself is not modeled",
+      "risk": "annotations/identity expressed through alias/reexport are outside V1 subject model"
+    },
+    {
+      "case": "type alias/const/static",
+      "scanner_view": "no ParsedItem variant/visitor processing as Anneal subject",
+      "compiler_view": "compiler represents semantic item",
+      "correspondence": "not first-class in V1 annotations",
+      "risk": "cannot attach ordinary V1 Anneal subject/spec through this source construct"
+    },
+    {
+      "case": "annotated local item inside a function/block",
+      "scanner_view": "visitor finds supported item shape but explicitly returns NestedItem error",
+      "compiler_view": "rustc may assign local definition identity/body",
+      "correspondence": "intentionally unsupported",
+      "risk": "local definition cannot be an independent V1 annotation root"
+    },
+    {
+      "case": "closure/anonymous const/compiler-synthesized definition",
+      "scanner_view": "no first-class Anneal annotation subject",
+      "compiler_view": "compiler can assign definition/body identities",
+      "correspondence": "not first-class",
+      "risk": "semantic dependencies may exist without scanner-level subject identity"
+    },
+    {
+      "case": "impl/trait/foreign method",
+      "scanner_view": "recognized, but start root falls back to containing module",
+      "compiler_view": "semantic item has compiler identity",
+      "correspondence": "coarse extraction fallback",
+      "risk": "broader Charon coverage mitigates naming difficulty but does not create source/compiler identity equivalence"
+    }
+  ],
+  "interpretation": {
+    "strongest_supported_claim": "V1 verifies scanner-recognized annotations that successfully correspond to compiler definitions under the selected invocation.",
+    "unsupported_stronger_claims": [
+      "the scanner enumerates the same item set as rustc",
+      "scanner source paths are a universal compiler identity",
+      "all configured/generated/local compiler definitions are independently Anneal-annotatable",
+      "semantic reachability in Charon implies Anneal annotation/specification coverage"
+    ]
+  }
+}

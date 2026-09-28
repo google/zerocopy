@@ -1,0 +1,70 @@
+{
+  "schema": "anneal-reference/generated-lean-abi/v1",
+  "anneal": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+  },
+  "aeneas": {
+    "repository": "AeneasVerif/aeneas",
+    "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+  },
+  "artifact_contract": {
+    "llbc": "llbc/<Slug>.llbc",
+    "aeneas_funs": "generated/<Slug>/Funs.lean",
+    "aeneas_types": "generated/<Slug>/Types.lean",
+    "aeneas_funs_external": "generated/<Slug>/FunsExternal.lean",
+    "aeneas_types_external": "generated/<Slug>/TypesExternal.lean",
+    "anneal_spec": "generated/<Slug>/<Slug>.lean",
+    "anneal_source_map": "generated/<Slug>/<Slug>.lean.map"
+  },
+  "anneal_imports": [
+    "Anneal",
+    "Aeneas.Std.Scalar.Core",
+    "«<Slug>».Funs",
+    "«<Slug>».Types"
+  ],
+  "function_contract": {
+    "carrier": "Aeneas Result",
+    "proof_relation": "Aeneas.Std.WP.spec",
+    "spec_name": "spec",
+    "input_reference_rule": "&T and &mut T are rendered as the referent Lean type; mutability is tracked separately",
+    "mutable_result_shapes": {
+      "return_plus_mut_refs": "(ret, x', y', ...)",
+      "unit_plus_one_mut_ref": "x'",
+      "unit_plus_multiple_mut_refs": "(x', y', ...)"
+    },
+    "trait_dictionary_rule": "ordinary trait bounds are emitted as explicit locally-named dictionaries; Sized is special-cased as an Anneal typeclass"
+  },
+  "compatibility_shims": [
+    {
+      "file": "Types.lean",
+      "rewrite": "@[discriminant] -> @[discriminant isize]"
+    },
+    {
+      "file": "Funs.lean",
+      "rewrite": "(show : -> (show1 :"
+    },
+    {
+      "file": "Funs.lean",
+      "rewrite": "insert noncomputable section after imports"
+    }
+  ],
+  "fail_closed_checks": [
+    "missing Funs.lean is fatal when Anneal found function/impl items",
+    "missing Types.lean is fatal when Anneal found type/trait items"
+  ],
+  "evidence_roles": {
+    "source": [
+      "anneal/v1/src/scanner.rs",
+      "anneal/v1/src/generate.rs",
+      "anneal/v1/src/aeneas.rs",
+      "Aeneas/Std/Primitives.lean",
+      "Aeneas/Std/WP.lean"
+    ],
+    "preserved_regression": [
+      "anneal/v1/tests/fixtures/expand_output/expected-all.stdout",
+      "anneal/v1/tests/fixtures/extern_never_verified/out.txt",
+      "anneal/v1/tests/fixtures/missing_output/expected.stderr"
+    ]
+  }
+}

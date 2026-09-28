@@ -1,0 +1,118 @@
+{
+  "schema": "anneal-reference/zerocopy-ffi-surface/v1",
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+    "primary_source_root": "zerocopy/src"
+  },
+  "positive_surface": [
+    {
+      "path": "zerocopy/src/impls.rs",
+      "blob": "4df786fd2104854e1fa259a63c29cd8781f8a404",
+      "constructs": [
+        "Option<extern \"C\" fn(...) -> ...>",
+        "Option<unsafe extern \"C\" fn(...) -> ...>"
+      ],
+      "traits": [
+        "FromZeros",
+        "TryFromBytes",
+        "Immutable"
+      ],
+      "try_from_bytes_predicate": "pointer::is_zeroed"
+    },
+    {
+      "path": "zerocopy/src/util/macros.rs",
+      "blob": "21b9891088c5a07571f789d8d48b8d24395cfaac",
+      "constructs": [
+        "opt_extern_c_fn!",
+        "opt_unsafe_extern_c_fn!"
+      ]
+    }
+  ],
+  "scoped_searches": [
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"extern \\\"C\\\"\"",
+      "result": "2 files: zerocopy/src/impls.rs and zerocopy/src/util/macros.rs; all material production hits are function-pointer types/trait implementation machinery"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"unsafe extern \\\"C\\\"\"",
+      "result": "1 file: zerocopy/src/util/macros.rs; optional unsafe C-ABI function-pointer type constructor"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"extern {\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"#[link\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"#[link_name\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"core::ffi\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"std::ffi\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"::ffi::\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"libc::\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"c_void\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"c_char\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"extern \\\"system\\\"\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"extern \\\"C-unwind\\\"\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy/src \"extern \\\"cdecl\\\"\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy-derive/src \"extern \\\"C\\\"\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy-derive/src \"core::ffi\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy-derive/src \"libc::\"",
+      "result": "0 files"
+    },
+    {
+      "query": "repo:google/zerocopy path:zerocopy-derive/src \"#[link\"",
+      "result": "0 files"
+    }
+  ],
+  "exclusions": [
+    "zerocopy/vendor is not treated as part of zerocopy/src production-source primitive inventory",
+    "repository-wide test fixtures outside zerocopy/src are not production foreign-call evidence",
+    "negative code search is bounded source evidence, not a whole-program or transitive-dependency reachability theorem"
+  ],
+  "rust_representation_basis": {
+    "repository": "rust-lang/rust",
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "path": "library/core/src/option.rs",
+    "blob": "a490a26aa0ff3b3b56bb1f5a3c2a74109cbc839d",
+    "summary": "Option<function-pointer> has the documented NPO; all-zero bytes are a valid None for fn and extern ABI function pointers, including unsafe variants."
+  }
+}

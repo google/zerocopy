@@ -1,0 +1,99 @@
+{
+  "artifact_cache_boolean": {
+    "case_insensitive": true,
+    "empty_or_unrecognized": "unset/none",
+    "false_spellings": [
+      "n",
+      "no",
+      "f",
+      "false",
+      "off",
+      "0"
+    ],
+    "true_spellings": [
+      "y",
+      "yes",
+      "t",
+      "true",
+      "on",
+      "1"
+    ]
+  },
+  "effective_policy": [
+    {
+      "package_explicit": true,
+      "readable": true,
+      "workspace_effective": "any",
+      "writable": true
+    },
+    {
+      "package_explicit": false,
+      "readable": false,
+      "workspace_effective": "any",
+      "writable": false
+    },
+    {
+      "package_explicit": null,
+      "readable": true,
+      "workspace_effective": true,
+      "writable": true
+    },
+    {
+      "package_explicit": null,
+      "readable": false,
+      "workspace_effective": false,
+      "writable": false
+    },
+    {
+      "package_explicit": null,
+      "readable": true,
+      "workspace_effective": null,
+      "writable": false
+    }
+  ],
+  "important_distinctions": [
+    "LAKE_CACHE_DIR selects location; it does not enable cache writes.",
+    "LAKE_ARTIFACT_CACHE selects default package policy; it does not select location.",
+    "LAKE_CACHE_DIR empty selects workspace-local fallback rather than disabling all artifact-cache use.",
+    "LAKE_ARTIFACT_CACHE empty is unset rather than false.",
+    "Unconfigured policy is readable=true, writable=false."
+  ],
+  "lake_cache_dir": [
+    {
+      "incoming": "nonempty P",
+      "shared_state": "lakeCache=P; lakeSystemCache=P",
+      "workspace_cache": "P"
+    },
+    {
+      "incoming": "empty",
+      "shared_state": "noSystemCache=true; no shared cache coordinate",
+      "workspace_cache": "<root>/.lake/cache"
+    },
+    {
+      "incoming": "unset + Elan toolchain cache",
+      "shared_state": "lakeCache=toolchain cache; lakeSystemCache=system cache if available",
+      "workspace_cache": "toolchain cache for ordinary workspace"
+    },
+    {
+      "incoming": "unset + system cache only",
+      "shared_state": "lakeCache=system cache; lakeSystemCache=system cache",
+      "workspace_cache": "system cache"
+    },
+    {
+      "incoming": "unset + no shared cache",
+      "shared_state": "no shared cache coordinate",
+      "workspace_cache": "<root>/.lake/cache"
+    }
+  ],
+  "schema": "anneal-reference/lake-cache-environment-matrix/v1",
+  "subject": {
+    "repository": "leanprover/lean4",
+    "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "version": "v4.30.0-rc2"
+  },
+  "workspace_effective_precedence": [
+    "LAKE_ARTIFACT_CACHE recognized boolean",
+    "root package enableArtifactCache",
+    "unset"
+  ]
+}

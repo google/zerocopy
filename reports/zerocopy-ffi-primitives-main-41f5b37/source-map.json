@@ -1,0 +1,29 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "files": {
+        "zerocopy/src/impls.rs": "4df786fd2104854e1fa259a63c29cd8781f8a404",
+        "zerocopy/src/util/macros.rs": "21b9891088c5a07571f789d8d48b8d24395cfaac",
+        "zerocopy/Cargo.toml": "4d98fb3f96784bbff0c5c7cb72b800b3a65ed765"
+      }
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "files": {
+        "library/core/src/option.rs": "a490a26aa0ff3b3b56bb1f5a3c2a74109cbc839d"
+      }
+    },
+    {
+      "repository": "rust-lang/reference",
+      "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+      "files": {
+        "src/types/function-pointer.md": "08dfbbf235d752de592f4bdf79efa3d355c58eb8",
+        "src/items/functions.md": "362b39b5733c385a18e20a928d75f960f1cd427e"
+      }
+    }
+  ]
+}

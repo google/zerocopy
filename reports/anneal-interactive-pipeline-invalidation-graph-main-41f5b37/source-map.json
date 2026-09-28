@@ -1,0 +1,105 @@
+{
+  "schema": "anneal-reference/source-map/v1",
+  "observed_at": "2026-09-27",
+  "sources": [
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/main.rs",
+      "blob": "b947700606677ea89c7a205f3ffcc75493508f63",
+      "supports": [
+        "current V2 live CLI boundary",
+        "generated-workspace setup test"
+      ]
+    },
+    {
+      "repository": "google/zerocopy",
+      "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9",
+      "path": "anneal/src/scanner.rs",
+      "blob": "7b4884c9ac16cf30146b851894bd7216b0d1edb8",
+      "supports": [
+        "LLBC source-of-truth statement",
+        "stable artifact slug and LLBC pathname"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon/main.rs",
+      "blob": "b4460ce4cd3baa32308718e79b6e194860b042a6",
+      "supports": [
+        "Cargo/rustc orchestration"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/charon",
+      "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "path": "charon/src/bin/charon-driver/translate/translate_crate.rs",
+      "blob": "53536c6df6e241c9655840f6b1f8a4aca2113f90",
+      "supports": [
+        "fresh per-run translation state",
+        "complete translated crate"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/Translate.ml",
+      "blob": "8376e580b542bf3ee28cc9e3d4c170a17b23d379",
+      "supports": [
+        "fresh whole-crate translation",
+        "generated-file emission"
+      ]
+    },
+    {
+      "repository": "AeneasVerif/aeneas",
+      "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "path": "src/interp/Interp.ml",
+      "blob": "7b06ee4d1bdd302d9cbd85fc2e822c1f5324c1e5",
+      "supports": [
+        "whole-crate context construction"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/lake/Lake/Build/Module.lean",
+      "blob": "21c5f343112a1690390188642a05d6092432ab84",
+      "supports": [
+        "module dependency trace",
+        "artifact-cache path"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/Watchdog.lean",
+      "blob": "68ed22f9178c9ae917c595c364d23df902d9478f",
+      "supports": [
+        "open-document retention",
+        "worker restart",
+        "stale dependencies"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Server/FileWorker.lean",
+      "blob": "c803034ed8810f13a5ef38a603a21e610efca2bc",
+      "supports": [
+        "didChange incremental re-elaboration",
+        "edit cancellation"
+      ]
+    },
+    {
+      "repository": "leanprover/lean4",
+      "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "path": "src/Lean/Language/Lean.lean",
+      "blob": "124d4739bc910eb30ec35844348c785bf9f6c70a",
+      "supports": [
+        "syntax-prefix snapshot reuse",
+        "post-edit invalidation"
+      ]
+    }
+  ]
+}

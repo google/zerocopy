@@ -1315,6 +1315,51 @@
         "rust/toolchain"
       ]
     },
+    "anneal-interactive-pipeline-invalidation-graph-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal V2 design and current implementation"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+            "version": "0.1.210"
+          },
+          "name": "Charon selected by Aeneas"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake selected by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal/interactive",
+        "anneal/invalidation",
+        "cargo/incremental",
+        "charon/incremental",
+        "aeneas/incremental",
+        "lean/lsp",
+        "lake/invalidation"
+      ]
+    },
     "anneal-linux-elf-relocation-main-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1658,6 +1703,27 @@
         "lake/cache-reuse"
       ]
     },
+    "anneal-v1-coverage-totality-holes-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 coverage and annotation-totality behavior"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/coverage",
+        "anneal/annotations",
+        "anneal/unsafe-rust",
+        "verification/completeness",
+        "verification/fail-closed"
+      ]
+    },
     "anneal-v1-end-to-end-pipeline-41f5b37": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1687,6 +1753,34 @@
         "lean/verification",
         "lake/build",
         "diagnostics/source-mapping"
+      ]
+    },
+    "anneal-v1-generated-lean-abi-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 generated-Lean integration"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas revision consumed by retained Anneal V1"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/v1",
+        "anneal/generated-lean",
+        "anneal/abi",
+        "aeneas/lean",
+        "verification/integration-contracts"
       ]
     },
     "anneal-v1-integration-test-disk-amplification-f98458e": {
@@ -1724,6 +1818,26 @@
         "anneal/lake",
         "lake/cache",
         "lake/concurrency"
+      ]
+    },
+    "anneal-v1-issafe-semantic-gaps-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 isSafe implementation"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/issafe",
+        "anneal/unsafe-traits",
+        "verification/safety-contracts",
+        "verification/trust-boundary"
       ]
     },
     "anneal-v1-isvalid-unsoundness": {
@@ -1783,6 +1897,63 @@
         "anneal/interactive-tools"
       ]
     },
+    "anneal-v1-lifetime-erasure-soundness-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 lifetime and type translation"
+        },
+        {
+          "identity": {
+            "issue": "3053",
+            "repository": "google/zerocopy",
+            "revision": "c6b794933a8d49481b9dded6ed99bc339202b41d"
+          },
+          "name": "PtrInner lifetime-dependent invariant used by the historical soundness counterexample"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/lifetimes",
+        "anneal/soundness",
+        "rust/lifetimes",
+        "verification/erasure"
+      ]
+    },
+    "anneal-v1-orthogonal-progress-correctness-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 orthogonal progress/correctness proof architecture"
+        },
+        {
+          "identity": {
+            "path": "backends/lean/Aeneas/Std/WP.lean",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "42c0e90dacf486f7d3ed5b6cde3a9a81f04915a4"
+          },
+          "name": "Aeneas WP Result semantics consumed by retained Anneal V1"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/progress",
+        "anneal/correctness",
+        "aeneas/wp",
+        "verification/proof-decomposition",
+        "verification/diagnostics"
+      ]
+    },
     "anneal-v1-proof-split-and-concat-slices-2026-09-27": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -1800,6 +1971,35 @@
         "lean/proofs",
         "anneal/proof-authoring",
         "verification/progress"
+      ]
+    },
+    "anneal-v1-source-scanner-versus-rustc-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/v1",
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Retained Anneal V1 source scanner versus rustc/Charon compilation view"
+        },
+        {
+          "identity": {
+            "rust_source_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Pinned Rust compilation semantics used by the Anneal/Aeneas/Charon chain"
+        }
+      ],
+      "topics": [
+        "anneal/v1",
+        "anneal/source-scanner",
+        "rust/cfg",
+        "rust/modules",
+        "rust/macros",
+        "rust/name-resolution",
+        "verification/source-correspondence"
       ]
     },
     "anneal-v1-unsafe-axiom-semantics-41f5b37": {
@@ -3338,6 +3538,26 @@
         "lake/concurrency",
         "mathlib/cache",
         "lean/artifacts"
+      ]
+    },
+    "lake-cache-environment-v4-30-0-rc2": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake artifact-cache environment configuration"
+        }
+      ],
+      "topics": [
+        "lake",
+        "lake/artifact-cache",
+        "lake/cache",
+        "lake/configuration",
+        "lake/environment"
       ]
     },
     "lake-clean-cache-seeded-equivalence-v4-30-0-rc2": {
@@ -6788,6 +7008,35 @@
         "anneal/trust-model"
       ]
     },
+    "toolchain-archive-semantic-equivalence-procedure-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "Anneal omnibus toolchain archive comparison procedure"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake artifact semantics selected by Anneal"
+        }
+      ],
+      "topics": [
+        "anneal/archive",
+        "anneal/toolchain",
+        "anneal/verification",
+        "lake/artifacts",
+        "lake/traces",
+        "lean/artifacts",
+        "verification/equivalence"
+      ]
+    },
     "translation-validation-techniques-1998-2021": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -6904,6 +7153,41 @@
         "compcert/simulation",
         "translation-validation/verified-validator",
         "verification/refinement"
+      ]
+    },
+    "zerocopy-ffi-primitives-main-41f5b37": {
+      "observed_at": "2026-09-27",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "41f5b37afe7060fd9fe08c00b200672cd76d77b9"
+          },
+          "name": "zerocopy production source"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-05-31"
+          },
+          "name": "Rust compiler and core library selected by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "Rust Reference paired with the selected compiler"
+        }
+      ],
+      "topics": [
+        "zerocopy/ffi",
+        "zerocopy/function-pointers",
+        "rust/ffi",
+        "rust/function-pointers",
+        "rust/abi",
+        "rust/option-representation"
       ]
     },
     "zerocopy-rust-intrinsics-nightly-2026-05-31": {
