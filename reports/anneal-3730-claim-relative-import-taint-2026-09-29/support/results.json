@@ -1,0 +1,96 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "proof_sha256": "a884a54ec5f0a0d9e88c2d7957d8779dd035a8e62fbba6a12d3292e3d404d4fa",
+  "records": [
+    {
+      "artifact_sha256": "8e59f0a4a61e9fb027c772c182b61fc2b600b18fbe7e6434c963cc098df40915",
+      "build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "Dep.olean",
+          "Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "check": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "Proof.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "'caller' depends on axioms: [model]\n'independent' does not depend on any axioms\n"
+      },
+      "label": "axiom",
+      "source_sha256": "1325d1aee8cfc6953d286b0f01a1fdaa543ee0c44382adc0dc4d556657c954bf"
+    },
+    {
+      "artifact_sha256": "8e59f0a4a61e9fb027c772c182b61fc2b600b18fbe7e6434c963cc098df40915",
+      "check": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "Proof.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "'caller' depends on axioms: [model]\n'independent' does not depend on any axioms\n"
+      },
+      "label": "concrete-source-stale-axiom-olean",
+      "source_sha256": "d131a6878962294206d8e0c5f2e9c51e3a09644cab411ab49effa0174508ab03"
+    },
+    {
+      "artifact_sha256": "8d1ed8eda7f6c47e30e7a333c0f9858af3c495da584dff47e66f4a47963bae8e",
+      "build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "Dep.olean",
+          "Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "check": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "Proof.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "'caller' does not depend on any axioms\n'independent' does not depend on any axioms\n"
+      },
+      "label": "concrete",
+      "source_sha256": "d131a6878962294206d8e0c5f2e9c51e3a09644cab411ab49effa0174508ab03"
+    },
+    {
+      "artifact_sha256": "7533b8d38dd4a61c3e58ac1b5c0aaad9c2b9b9374749a7bc53ebfa6113e3a5bd",
+      "build": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "Dep.olean",
+          "Dep.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "Dep.lean:2:8: warning: declaration uses `sorry`\n"
+      },
+      "check": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "Proof.lean"
+        ],
+        "exit": 0,
+        "stderr": "",
+        "stdout": "'caller' depends on axioms: [sorryAx]\n'independent' does not depend on any axioms\n"
+      },
+      "label": "admitted",
+      "source_sha256": "262ee869b1432580efc01b4d21d639e5c616cc448c8b4346c65c6caa283906aa"
+    }
+  ]
+}

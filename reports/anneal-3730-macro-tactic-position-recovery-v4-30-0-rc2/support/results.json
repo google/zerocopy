@@ -1,0 +1,2320 @@
+{
+  "subject": {
+    "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "harness_sha256": "9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7",
+    "probe_sha256": "5036644080d121bcfb674a94dd865144ca286b178db88b65ed31103c2274b8c9",
+    "host_free_percent": 51
+  },
+  "positions": [
+    [
+      3,
+      0
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      3,
+      8
+    ],
+    [
+      3,
+      14
+    ],
+    [
+      3,
+      16
+    ],
+    [
+      3,
+      20
+    ],
+    [
+      4,
+      0
+    ],
+    [
+      4,
+      2
+    ]
+  ],
+  "cases": [
+    {
+      "label": "unsolved-v1",
+      "term": "?_",
+      "version": 1,
+      "source": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro ?_\n",
+      "fresh_batch": {
+        "label": "unsolved-v1",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Macro.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nh : True\\n⊢ True\",\"endPos\":{\"column\":16,\"line\":4},\"fileName\":\"Macro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":14,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nh : True\\n⊢ True\",\"endPos\":{\"column\":16,\"line\":4},\"fileName\":\"Macro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":31,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "source_sha256": "41336038f8a1aa96742b0e7cfbd9716b1dc3dc65a19a55d19595cfbd51b590ac"
+      },
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 14,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nh : True\n⊢ True",
+            "range": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 14,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 31,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nh : True\n⊢ True",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 31,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+        "version": 1
+      },
+      "positions": [
+        {
+          "line": 3,
+          "character": 0,
+          "reply": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 2,
+          "reply": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 8,
+          "reply": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 14,
+          "reply": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 16,
+          "reply": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 20,
+          "reply": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "line": 4,
+          "character": 0,
+          "reply": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 4,
+          "character": 2,
+          "reply": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "solved-v2",
+      "term": "h",
+      "version": 2,
+      "source": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro h\n",
+      "fresh_batch": {
+        "label": "solved-v2",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Macro.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": "",
+        "source_sha256": "1aa1728e5a2d99f1a105de465e584d9bd4cb53a8c65928886d40b0a56bdfd903"
+      },
+      "wait": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "diagnostics": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+        "version": 2
+      },
+      "positions": [
+        {
+          "line": 3,
+          "character": 0,
+          "reply": {
+            "id": 20,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 2,
+          "reply": {
+            "id": 21,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 8,
+          "reply": {
+            "id": 22,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 14,
+          "reply": {
+            "id": 23,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 16,
+          "reply": {
+            "id": 24,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 20,
+          "reply": {
+            "id": 25,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "line": 4,
+          "character": 0,
+          "reply": {
+            "id": 26,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "line": 4,
+          "character": 2,
+          "reply": {
+            "id": 27,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        }
+      ]
+    },
+    {
+      "label": "unsolved-v3",
+      "term": "?_",
+      "version": 3,
+      "source": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro ?_\n",
+      "fresh_batch": {
+        "label": "unsolved-v3",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Macro.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\nh : True\\n⊢ True\",\"endPos\":{\"column\":16,\"line\":4},\"fileName\":\"Macro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":14,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nh : True\\n⊢ True\",\"endPos\":{\"column\":16,\"line\":4},\"fileName\":\"Macro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":31,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": "",
+        "source_sha256": "41336038f8a1aa96742b0e7cfbd9716b1dc3dc65a19a55d19595cfbd51b590ac"
+      },
+      "wait": {
+        "id": 28,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 14,
+                "line": 3
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\nh : True\n⊢ True",
+            "range": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 14,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 16,
+                "line": 3
+              },
+              "start": {
+                "character": 31,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nh : True\n⊢ True",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 31,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+        "version": 3
+      },
+      "positions": [
+        {
+          "line": 3,
+          "character": 0,
+          "reply": {
+            "id": 29,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 2,
+          "reply": {
+            "id": 30,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 8,
+          "reply": {
+            "id": 31,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 14,
+          "reply": {
+            "id": 32,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 16,
+          "reply": {
+            "id": 33,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 3,
+          "character": 20,
+          "reply": {
+            "id": 34,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "line": 4,
+          "character": 0,
+          "reply": {
+            "id": 35,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "h : True\n⊢ True"
+              ],
+              "rendered": "```lean\nh : True\n⊢ True\n```"
+            }
+          }
+        },
+        {
+          "line": 4,
+          "character": 2,
+          "reply": {
+            "id": 36,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        }
+      ]
+    }
+  ],
+  "wire_events": [
+    {
+      "seq": 0,
+      "ms": 21.3,
+      "kind": "launch",
+      "label": "macro-position",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 4050,
+      "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work"
+    },
+    {
+      "seq": 1,
+      "ms": 21.4,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 4048,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 46.7,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 46.7,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 252.0,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro ?_\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 252.0,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 252.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 252.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 252.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 309.9,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 490.5,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 490.6,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 490.6,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 14,
+                  "line": 3
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nh : True\n⊢ True",
+              "range": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 14,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 31,
+                  "line": 2
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nh : True\n⊢ True",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 31,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 491.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 491.1,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 239.1
+    },
+    {
+      "seq": 15,
+      "ms": 491.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 491.4,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 491.4,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 18,
+      "ms": 491.4,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 491.7,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 491.7,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 12,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 21,
+      "ms": 491.7,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 8
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 491.9,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "ms": 491.9,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 13,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 24,
+      "ms": 492.0,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 14
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 492.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 492.2,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 14,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 27,
+      "ms": 492.2,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 16
+          }
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 492.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 492.3,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 15,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 30,
+      "ms": 492.4,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 20
+          }
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "ms": 492.5,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 492.5,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 16,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 33,
+      "ms": 492.5,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 34,
+      "ms": 492.7,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 35,
+      "ms": 492.7,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 17,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 36,
+      "ms": 492.7,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 37,
+      "ms": 492.8,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 38,
+      "ms": 492.8,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 18,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 39,
+      "ms": 682.5,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro h\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 682.5,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 41,
+      "ms": 810.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 893.4,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 43,
+      "ms": 893.4,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 44,
+      "ms": 893.4,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 894.8,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 19,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 894.8,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 19,
+      "elapsed_ms": 212.3
+    },
+    {
+      "seq": 47,
+      "ms": 894.9,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 48,
+      "ms": 895.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 20,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 895.3,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 20,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 50,
+      "ms": 895.3,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 51,
+      "ms": 895.5,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 895.5,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 21,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 53,
+      "ms": 895.6,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 8
+          }
+        }
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 895.7,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 22,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 55,
+      "ms": 895.7,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 22,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 56,
+      "ms": 895.7,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 14
+          }
+        }
+      }
+    },
+    {
+      "seq": 57,
+      "ms": 895.8,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 23,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 58,
+      "ms": 895.8,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 23,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 59,
+      "ms": 895.8,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 16
+          }
+        }
+      }
+    },
+    {
+      "seq": 60,
+      "ms": 896.0,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 24,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 61,
+      "ms": 896.0,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 24,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 62,
+      "ms": 896.0,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 20
+          }
+        }
+      }
+    },
+    {
+      "seq": 63,
+      "ms": 896.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 25,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 64,
+      "ms": 896.1,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 25,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 65,
+      "ms": 896.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 66,
+      "ms": 896.2,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 26,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 67,
+      "ms": 896.2,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 26,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 68,
+      "ms": 896.2,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 27,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 69,
+      "ms": 896.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 27,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 70,
+      "ms": 896.3,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 27,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 71,
+      "ms": 1081.0,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 3
+          },
+          "contentChanges": [
+            {
+              "text": "syntax \"solve_macro\" term : tactic\nmacro_rules | `(tactic| solve_macro $t) => `(tactic| exact $t)\ntheorem q (h : True) : True := by\n  solve_macro ?_\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 72,
+      "ms": 1081.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 28,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 73,
+      "ms": 1292.0,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "seq": 74,
+      "ms": 1292.0,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "seq": 75,
+      "ms": 1292.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 14,
+                  "line": 3
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\nh : True\n⊢ True",
+              "range": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 14,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 16,
+                  "line": 3
+                },
+                "start": {
+                  "character": 31,
+                  "line": 2
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nh : True\n⊢ True",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 31,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 76,
+      "ms": 1292.5,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 28,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 77,
+      "ms": 1292.5,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 28,
+      "elapsed_ms": 211.5
+    },
+    {
+      "seq": 78,
+      "ms": 1292.5,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 29,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "ms": 1292.8,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 29,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 80,
+      "ms": 1292.8,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 29,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 81,
+      "ms": 1292.9,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 30,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 82,
+      "ms": 1293.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 30,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 83,
+      "ms": 1293.1,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 30,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 84,
+      "ms": 1293.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 31,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 8
+          }
+        }
+      }
+    },
+    {
+      "seq": 85,
+      "ms": 1293.3,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 31,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 86,
+      "ms": 1293.3,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 31,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 87,
+      "ms": 1293.4,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 32,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 14
+          }
+        }
+      }
+    },
+    {
+      "seq": 88,
+      "ms": 1293.6,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 32,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 89,
+      "ms": 1293.6,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 32,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 90,
+      "ms": 1293.6,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 33,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 16
+          }
+        }
+      }
+    },
+    {
+      "seq": 91,
+      "ms": 1293.8,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 33,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 92,
+      "ms": 1293.8,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 33,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 93,
+      "ms": 1293.8,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 34,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 20
+          }
+        }
+      }
+    },
+    {
+      "seq": 94,
+      "ms": 1293.9,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 34,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 95,
+      "ms": 1293.9,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 34,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 96,
+      "ms": 1293.9,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 35,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 0
+          }
+        }
+      }
+    },
+    {
+      "seq": 97,
+      "ms": 1294.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 35,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "h : True\n⊢ True"
+          ],
+          "rendered": "```lean\nh : True\n⊢ True\n```"
+        }
+      }
+    },
+    {
+      "seq": 98,
+      "ms": 1294.1,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 35,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 99,
+      "ms": 1294.1,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 36,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean"
+          },
+          "position": {
+            "line": 4,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 100,
+      "ms": 1294.2,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 36,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 101,
+      "ms": 1294.2,
+      "kind": "request_latency",
+      "label": "macro-position",
+      "method": "$/lean/plainGoal",
+      "rid": 36,
+      "elapsed_ms": 0.1
+    },
+    {
+      "seq": 102,
+      "ms": 1294.2,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 103,
+      "ms": 1294.5,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2/support/work/Macro.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 104,
+      "ms": 1301.1,
+      "kind": "server",
+      "label": "macro-position",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 105,
+      "ms": 1301.2,
+      "kind": "client",
+      "label": "macro-position",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 106,
+      "ms": 1306.0,
+      "kind": "stop",
+      "label": "macro-position",
+      "rc": 0,
+      "pid": 4050,
+      "stderr": ""
+    }
+  ]
+}

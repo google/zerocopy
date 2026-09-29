@@ -1,0 +1,704 @@
+{
+  "duplicate_content_groups": [
+    {
+      "extra_logical_bytes": 1084,
+      "logical_bytes_each": 542,
+      "paths": [
+        "consumer/Current/Types.lean",
+        "generated/Types.lean",
+        "lake/Current/Types.lean"
+      ],
+      "sha256": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e"
+    },
+    {
+      "extra_logical_bytes": 2240,
+      "logical_bytes_each": 1120,
+      "paths": [
+        "consumer/Current/Funs.lean",
+        "generated/Funs.lean",
+        "lake/Current/Funs.lean"
+      ],
+      "sha256": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7"
+    },
+    {
+      "extra_logical_bytes": 40,
+      "logical_bytes_each": 20,
+      "paths": [
+        "consumer/Current.lean",
+        "generated/Current.lean",
+        "lake/Current.lean"
+      ],
+      "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+    }
+  ],
+  "grouped": {
+    "aeneas_generated_source": {
+      "allocated_bytes": 12288,
+      "logical_bytes": 1682,
+      "regular_files": 3,
+      "symlinks": 0,
+      "unique_inodes": 3
+    },
+    "charon_llbc": {
+      "allocated_bytes": 16384,
+      "logical_bytes": 16087,
+      "regular_files": 1,
+      "symlinks": 0,
+      "unique_inodes": 1
+    },
+    "direct_lean_consumer_and_artifacts": {
+      "allocated_bytes": 49152,
+      "logical_bytes": 28422,
+      "regular_files": 7,
+      "symlinks": 0,
+      "unique_inodes": 7
+    },
+    "lake_project_source_and_config": {
+      "allocated_bytes": 24576,
+      "logical_bytes": 5829,
+      "regular_files": 6,
+      "symlinks": 0,
+      "unique_inodes": 6
+    },
+    "lake_symlink_or_local_build": {
+      "allocated_bytes": 4583424,
+      "logical_bytes": 4471665,
+      "regular_files": 34,
+      "symlinks": 1,
+      "unique_inodes": 35
+    },
+    "rust_crate_and_target": {
+      "allocated_bytes": 12288,
+      "logical_bytes": 418,
+      "regular_files": 3,
+      "symlinks": 0,
+      "unique_inodes": 3
+    }
+  },
+  "inventory_root": "support/work/one/u0",
+  "rows": [
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547242,
+      "links": 1,
+      "logical_bytes": 1120,
+      "mode": "regular",
+      "path": "consumer/Current/Funs.lean",
+      "sha256": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7"
+    },
+    {
+      "allocated_bytes": 24576,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547247,
+      "links": 1,
+      "logical_bytes": 23512,
+      "mode": "regular",
+      "path": "consumer/Current/Funs.olean",
+      "sha256": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547241,
+      "links": 1,
+      "logical_bytes": 542,
+      "mode": "regular",
+      "path": "consumer/Current/Types.lean",
+      "sha256": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547246,
+      "links": 1,
+      "logical_bytes": 1616,
+      "mode": "regular",
+      "path": "consumer/Current/Types.olean",
+      "sha256": "072b89a043ce77f789e8e69c6afba337a0ad8f6b9a4e241240aeaa3924f52d24"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547243,
+      "links": 1,
+      "logical_bytes": 20,
+      "mode": "regular",
+      "path": "consumer/Current.lean",
+      "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547248,
+      "links": 1,
+      "logical_bytes": 1312,
+      "mode": "regular",
+      "path": "consumer/Current.olean",
+      "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "direct_lean_consumer_and_artifacts",
+      "inode": 24547249,
+      "links": 1,
+      "logical_bytes": 300,
+      "mode": "regular",
+      "path": "consumer/Proof.lean",
+      "sha256": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "rust_crate_and_target",
+      "inode": 24547206,
+      "links": 1,
+      "logical_bytes": 161,
+      "mode": "regular",
+      "path": "crate/Cargo.lock",
+      "sha256": "b5a00c2a91033d879601ba08f791c7faf418067bd19a3d00224ab2f5b5e7f935"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "rust_crate_and_target",
+      "inode": 24547203,
+      "links": 1,
+      "logical_bytes": 72,
+      "mode": "regular",
+      "path": "crate/Cargo.toml",
+      "sha256": "21a8dfb865578432bdf63def7e7238495b8b028e11a9b1af6e321d660487e789"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "rust_crate_and_target",
+      "inode": 24547205,
+      "links": 1,
+      "logical_bytes": 185,
+      "mode": "regular",
+      "path": "crate/src/lib.rs",
+      "sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622"
+    },
+    {
+      "allocated_bytes": 16384,
+      "device": 16777229,
+      "family": "charon_llbc",
+      "inode": 24547232,
+      "links": 1,
+      "logical_bytes": 16087,
+      "mode": "regular",
+      "path": "current.llbc",
+      "sha256": "f1f3a0b3abb41b132fbfa85d0a25259b813176411df21d44c69e3cd2528c0b22"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "aeneas_generated_source",
+      "inode": 24547238,
+      "links": 1,
+      "logical_bytes": 20,
+      "mode": "regular",
+      "path": "generated/Current.lean",
+      "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "aeneas_generated_source",
+      "inode": 24547237,
+      "links": 1,
+      "logical_bytes": 1120,
+      "mode": "regular",
+      "path": "generated/Funs.lean",
+      "sha256": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "aeneas_generated_source",
+      "inode": 24547236,
+      "links": 1,
+      "logical_bytes": 542,
+      "mode": "regular",
+      "path": "generated/Types.lean",
+      "sha256": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e"
+    },
+    {
+      "allocated_bytes": 8192,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547281,
+      "links": 1,
+      "logical_bytes": 5189,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Funs.c",
+      "sha256": "3fa94842679380ca9eb71deb7f0fd59c801ddbb73f051cd0754411ff1f8da425"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547284,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Funs.c.hash",
+      "sha256": "42c410d9be317ce7c61708cc96a1b174d911e322f41bfb27b786a4a23346242d"
+    },
+    {
+      "allocated_bytes": 1073152,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547278,
+      "links": 1,
+      "logical_bytes": 1070984,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Funs.setup.json",
+      "sha256": "d44dc96a50a36346b9467e17a8c05fb9b398743161190f6a6bc184666ee39d82"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547273,
+      "links": 1,
+      "logical_bytes": 1269,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Types.c",
+      "sha256": "1eff019778136467fd999efbe872dbd5cb05710525e4fafafa0e0da49f998eee"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547276,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Types.c.hash",
+      "sha256": "16159b7013753ed3d35cc4231a70929fd81645a7c9bef5a254518dac3a00634f"
+    },
+    {
+      "allocated_bytes": 1073152,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547270,
+      "links": 1,
+      "logical_bytes": 1070726,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current/Types.setup.json",
+      "sha256": "99a15a356716d2e95bd176d934112b97f453dfd4848fc5f4c638f418de993044"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547289,
+      "links": 1,
+      "logical_bytes": 1283,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current.c",
+      "sha256": "d825e8db212a98fd43f430d85ce1c599caa6550c5d5dc66f0a83a37e3f6e1491"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547292,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current.c.hash",
+      "sha256": "598e2507980991e3e4e9450ec8013ba674c18fe0d5bb9a0072854c7dd57620d3"
+    },
+    {
+      "allocated_bytes": 1073152,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547286,
+      "links": 1,
+      "logical_bytes": 1071236,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Current.setup.json",
+      "sha256": "422d1da7708d6179c76bbc2f23300461f2fb5ee0360989a3bdae2461dbd50955"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547297,
+      "links": 1,
+      "logical_bytes": 1264,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Proof.c",
+      "sha256": "2934ccc4635a9f2741fe42a8323494dbf91b67c653f7585768351380cb928a47"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547300,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Proof.c.hash",
+      "sha256": "38e1da6a8bf7c20f7eeb4e245126dc5b4cd88c2835b26d6aba78cca4f2767a22"
+    },
+    {
+      "allocated_bytes": 1073152,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547294,
+      "links": 1,
+      "logical_bytes": 1071481,
+      "mode": "regular",
+      "path": "lake/.lake/build/ir/Proof.setup.json",
+      "sha256": "e5bf8f6143aee3f523118cdc52bcd28072027970e803baa163f8b104cf94781c"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547280,
+      "links": 1,
+      "logical_bytes": 2289,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Funs.ilean",
+      "sha256": "c375d23bce34263f3a2e1d64e018b88160598a8b1ad3f39e3e78359f9bfd1c45"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547283,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Funs.ilean.hash",
+      "sha256": "fa17e1bb8ee576893a90740b3ae21d3f40fb4113ad5434b43141119456bc323d"
+    },
+    {
+      "allocated_bytes": 24576,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547279,
+      "links": 1,
+      "logical_bytes": 23576,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Funs.olean",
+      "sha256": "a5384ea130a6f216f6d2fe965d93cd7020f47751a538d30860836b85c7c972d1"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547282,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Funs.olean.hash",
+      "sha256": "3288281630e2f3b6d74644d953006c6e544637b428931c6250426c9fb527b8c1"
+    },
+    {
+      "allocated_bytes": 8192,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547285,
+      "links": 1,
+      "logical_bytes": 4379,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Funs.trace",
+      "sha256": "8a019ab7e1a69309d90e365ec34d73ebe37cbb21971d5c6a3b4175f067e379e4"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547272,
+      "links": 1,
+      "logical_bytes": 753,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Types.ilean",
+      "sha256": "18b8daa81466228c2b3993a1f96c9c83a74513a589678165e94f06dbc217239d"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547275,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Types.ilean.hash",
+      "sha256": "d3f9342604d59946475e79ea470dbf16e9570a06c2a0c42a3ea62b3987b057e8"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547271,
+      "links": 1,
+      "logical_bytes": 1680,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Types.olean",
+      "sha256": "6f483353fd947d3b7b4c4fb7480055955f2e98062c5e22e82afc88e39ec6db37"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547274,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Types.olean.hash",
+      "sha256": "cf21270ac7202784764d87314395682649d31bc802ddccc6a64e4b7eb09a824d"
+    },
+    {
+      "allocated_bytes": 8192,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547277,
+      "links": 1,
+      "logical_bytes": 4251,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current/Types.trace",
+      "sha256": "5bd460eb218c6652d5f7edcf0536ad1baf9debc050072d57e7f7739c5d7e66a5"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547288,
+      "links": 1,
+      "logical_bytes": 112,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current.ilean",
+      "sha256": "07949ea99b15ce288b85d84a9458f0f61b92e60664e4ab5ba6a705e791838129"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547291,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current.ilean.hash",
+      "sha256": "336dcd40b12c9b29d3887a80e0ceebcabfb65b320c4dc8072af7d3e60c4798df"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547287,
+      "links": 1,
+      "logical_bytes": 1376,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current.olean",
+      "sha256": "bc294aee3de42592fe6aa1c666775ceb34d6ace2fca5709b3212f47326ad6f08"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547290,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current.olean.hash",
+      "sha256": "01e2dc383a6b16890c38b2888720c9558d5fb4c310e81b369ebe21f868004501"
+    },
+    {
+      "allocated_bytes": 8192,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547293,
+      "links": 1,
+      "logical_bytes": 4215,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Current.trace",
+      "sha256": "3815f4e8cfdc79d93992892ed413671f0a91797adaba08590c5b9ac1844e3236"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547296,
+      "links": 1,
+      "logical_bytes": 479,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Proof.ilean",
+      "sha256": "62ae63e8eadb8e3fac23ac28596e8ded2435a21911fb8978d70fd7385b1dbbb5"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547299,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Proof.ilean.hash",
+      "sha256": "1927dd5d0c0865d242dc1ffc7849797b712683f7f5cd83bac8e13d1a8aace5d7"
+    },
+    {
+      "allocated_bytes": 12288,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547295,
+      "links": 1,
+      "logical_bytes": 8288,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Proof.olean",
+      "sha256": "8381a1159f555ae607d3568ff201fe3dfd32c7873fc9cc298101987680918fe5"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547298,
+      "links": 1,
+      "logical_bytes": 16,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Proof.olean.hash",
+      "sha256": "0652d5d53d2749e9e1f450dad2f34f76f438255e43b488c2ca573aaa11b86c61"
+    },
+    {
+      "allocated_bytes": 8192,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547301,
+      "links": 1,
+      "logical_bytes": 4432,
+      "mode": "regular",
+      "path": "lake/.lake/build/lib/lean/Proof.trace",
+      "sha256": "ca11ae848d654abb127efb2c0b5763e028dfae2649dacd49b8a2719418c88e6b"
+    },
+    {
+      "allocated_bytes": 122880,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547263,
+      "links": 1,
+      "logical_bytes": 121928,
+      "mode": "regular",
+      "path": "lake/.lake/config/[anonymous]/lakefile.olean",
+      "sha256": "c8b56c12b0a20f65aae2cd7675e4ec446ea4d202ca27632459a012d0335f73b2"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547262,
+      "links": 1,
+      "logical_bytes": 184,
+      "mode": "regular",
+      "path": "lake/.lake/config/[anonymous]/lakefile.olean.trace",
+      "sha256": "fd409470454a1b29ca52424392cb2c1571879d6074c6fe0317b44ee04b190f51"
+    },
+    {
+      "allocated_bytes": 0,
+      "device": 16777229,
+      "family": "lake_symlink_or_local_build",
+      "inode": 24547259,
+      "link_target": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages",
+      "links": 1,
+      "logical_bytes": 99,
+      "mode": "symlink",
+      "path": "lake/.lake/packages"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547253,
+      "links": 1,
+      "logical_bytes": 1120,
+      "mode": "regular",
+      "path": "lake/Current/Funs.lean",
+      "sha256": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547252,
+      "links": 1,
+      "logical_bytes": 542,
+      "mode": "regular",
+      "path": "lake/Current/Types.lean",
+      "sha256": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547254,
+      "links": 1,
+      "logical_bytes": 20,
+      "mode": "regular",
+      "path": "lake/Current.lean",
+      "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547255,
+      "links": 1,
+      "logical_bytes": 123,
+      "mode": "regular",
+      "path": "lake/Proof.lean",
+      "sha256": "83141de8ac3cf8943ae105e5faf2eb21b0ef78a7408d323e8e0af63112449e73"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547257,
+      "links": 1,
+      "logical_bytes": 3823,
+      "mode": "regular",
+      "path": "lake/lake-manifest.json",
+      "sha256": "201bd340e8a3a13f180dd05ebe69c0b33af270940096132783719bf5d9a845ee"
+    },
+    {
+      "allocated_bytes": 4096,
+      "device": 16777229,
+      "family": "lake_project_source_and_config",
+      "inode": 24547256,
+      "links": 1,
+      "logical_bytes": 201,
+      "mode": "regular",
+      "path": "lake/lakefile.lean",
+      "sha256": "0a1bfdd04091f414e9059c53d6717b1122904eaf50ba618c8afacd3839906028"
+    }
+  ],
+  "source_report": "anneal-3730-full-lake-server-chain-2026-09-29",
+  "source_results_sha256": "8bb8a9d61054e8a6550b102c8985fc1befdac325d701c2814bc9bdc414b50f1c",
+  "timing": {
+    "direct_rust_through_lean_seconds": 17.068,
+    "fresh_batch_seconds": 7.256,
+    "lake_build_seconds": 12.045,
+    "one_worker_wall_seconds": 54.754,
+    "sampled_peak_rss_kib": 2590336,
+    "server_goal_no_independent_elapsed": true,
+    "unattributed_or_overlapping_wall_seconds": 18.385
+  },
+  "totals": {
+    "allocated_bytes": 4698112,
+    "files": 54,
+    "logical_bytes": 4524103,
+    "symlinks": 1,
+    "unique_inodes": 55
+  }
+}

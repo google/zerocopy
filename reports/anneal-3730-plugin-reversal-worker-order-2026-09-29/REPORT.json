@@ -1,0 +1,8 @@
+{
+  "topics": ["lean/native-plugin-lifetime", "lean/worker-contamination", "lake/artifact-identity"],
+  "subjects": [
+    {"name": "Pinned Lean 4.30.0-rc2 direct server", "identity": {"sha256_file": "support/transcript.json#subject.lean_sha256"}},
+    {"name": "Valid native plugin v1 and v2 binaries", "identity": {"artifacts": "support/artifacts/plugin-v1.dylib;support/artifacts/plugin-v2.dylib"}}
+  ],
+  "observed_at": "2026-09-29"
+}

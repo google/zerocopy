@@ -1,0 +1,247 @@
+{
+  "schema": "anneal-aeneas-namespace-move-v1",
+  "tool_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "cases": {
+    "base": {
+      "source_sha256": "0317124067083635dfc9cbe5a4415cfad796ca14600f90e44ea14687ba4b872e",
+      "llbc_sha256": "f8773ecda4a39fe45d22143aeb10b1176a9da68bd9c4589dceaf148e1e82473d",
+      "generated": {
+        "Fixture.lean": {
+          "size": 20,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Funs.lean": {
+          "size": 1300,
+          "sha256": "def8d8a8e261fcb795d34799afb36f3096be98c6ffcacb700c2dae2dbcdc30c6"
+        },
+        "Types.lean": {
+          "size": 521,
+          "sha256": "1ad8006846151a9b1cb2f1d4456384457adbc59123243ea6075db43aac4ba94c"
+        }
+      },
+      "commands": [
+        {
+          "label": "base:charon",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "rustc",
+            "--preset",
+            "aeneas",
+            "--dest-file",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/fixture.llbc",
+            "--",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/fixture.rs",
+            "--crate-type",
+            "lib",
+            "--crate-name",
+            "move_probe",
+            "--edition",
+            "2021"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "base:aeneas",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/generated",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/fixture.llbc"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/fixture.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base/generated/Fixture.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.121785 seconds\n",
+          "stderr": ""
+        },
+        {
+          "label": "base:compile:Fixture/Types",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture/Types.olean",
+            "Fixture/Types.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "base:compile:Fixture/Funs",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture/Funs.olean",
+            "Fixture/Funs.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "base:compile:Fixture",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture.olean",
+            "Fixture.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "base:proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "Proof.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/base",
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'helper' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "stderr": ""
+        }
+      ],
+      "proof_sha256": "d37e4fc76fccf73d096fb68f4b70a15c959d0d13e893ecc3a3266832b0b98e76"
+    },
+    "moved": {
+      "source_sha256": "1b34320de575c02f1fa4b28386fdfce2b51d85d7ff637ca626f0f02e86d1c432",
+      "llbc_sha256": "de097ed2405139bbb12bc36b4d9b93017122479bb84fbd4ec76f8c2577554c42",
+      "generated": {
+        "Fixture.lean": {
+          "size": 20,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Funs.lean": {
+          "size": 1321,
+          "sha256": "3ba4e139bd5f7a0dff194d320ada2c0e96c3e55daa2e47888142599b769e2702"
+        },
+        "Types.lean": {
+          "size": 521,
+          "sha256": "1ad8006846151a9b1cb2f1d4456384457adbc59123243ea6075db43aac4ba94c"
+        }
+      },
+      "commands": [
+        {
+          "label": "moved:charon",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "rustc",
+            "--preset",
+            "aeneas",
+            "--dest-file",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/fixture.llbc",
+            "--",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/fixture.rs",
+            "--crate-type",
+            "lib",
+            "--crate-name",
+            "move_probe",
+            "--edition",
+            "2021"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "moved:aeneas",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+            "-backend",
+            "lean",
+            "-no-progress-bar",
+            "-sequential",
+            "-split-files",
+            "-gen-lib-entry",
+            "-dest",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/generated",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/fixture.llbc"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/fixture.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved/generated/Fixture.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.124017 seconds\n",
+          "stderr": ""
+        },
+        {
+          "label": "moved:compile:Fixture/Types",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture/Types.olean",
+            "Fixture/Types.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "moved:compile:Fixture/Funs",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture/Funs.olean",
+            "Fixture/Funs.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "moved:compile:Fixture",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "-o",
+            "Fixture.olean",
+            "Fixture.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "moved:proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "Proof.lean"
+          ],
+          "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'helper' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "stderr": ""
+        }
+      ],
+      "proof_sha256": "5ad47c6d61b47487329348d18b38490cc70ad38b65aeae8340711f4c066864ac"
+    }
+  },
+  "old_name_negative": {
+    "label": "moved:old-name-negative",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "OldProof.lean"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-namespace-move-proof-context-2026-09-29/support/work/moved",
+    "exit": 1,
+    "stdout": "OldProof.lean:2:7: error(lean.unknownIdentifier): Unknown identifier `move_probe.core.use_step`\n",
+    "stderr": ""
+  }
+}

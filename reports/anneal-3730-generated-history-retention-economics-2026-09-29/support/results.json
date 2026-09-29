@@ -1,0 +1,589 @@
+{
+  "schema": "anneal-generated-history-retention-v1",
+  "tools": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+    "free_memory_percent": 51
+  },
+  "generations": {
+    "g0-base": {
+      "claim": "trait_reuse.core.use_step 1#u32 = .ok 2#u32",
+      "files": {
+        "Fixture/Funs.lean": {
+          "bytes": 2609,
+          "allocated": 4096,
+          "sha256": "95ebe7eceb08b6bad387a2aed200b95dddb47f4289ce69e4b28b0e67d51c6634"
+        },
+        "Fixture/Funs.olean": {
+          "bytes": 28568,
+          "allocated": 28672,
+          "sha256": "4fe2828ac528dc90a9c4dd7d4f23ccac1e4d6f2d3ffb1b1fe1f1c59e00a14676"
+        },
+        "Fixture/Types.lean": {
+          "bytes": 895,
+          "allocated": 4096,
+          "sha256": "1164c147f3b3a875b851e0031504bdcb7700e312bb6988a261223154b588c4f4"
+        },
+        "Fixture/Types.olean": {
+          "bytes": 30192,
+          "allocated": 32768,
+          "sha256": "dd6fac27f4d7eb9e0d81fb1365a6f483f735cabc4f8ee63ad811f593528716a6"
+        },
+        "Fixture.lean": {
+          "bytes": 20,
+          "allocated": 4096,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Fixture.olean": {
+          "bytes": 1312,
+          "allocated": 4096,
+          "sha256": "736ad5bb1a287c7ac6f031ac510a588a6fcbf4a4d3fca82b2b4399cc653fcf4e"
+        },
+        "Historical.lean": {
+          "bytes": 97,
+          "allocated": 4096,
+          "sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "allocated": 4096,
+          "sha256": "ed1253b0fa56125b9df8a9de210c9aa5e6a98e04842be4159d941a174d4e201f"
+        },
+        "provenance/fixture.llbc": {
+          "bytes": 23478,
+          "allocated": 24576,
+          "sha256": "5604623aec7fbe2d2b7705ba1720eb1b252055f6900fd9a2edd357d8edf7f74c"
+        },
+        "provenance/fixture.rs": {
+          "bytes": 364,
+          "allocated": 4096,
+          "sha256": "ed29b097aacbf211949aab72a03c28fbd7aab19bf8cebf18a1100f42a72ef773"
+        }
+      },
+      "source_bytes": 23842,
+      "generated_bytes": 3909,
+      "compiled_bytes": 60072,
+      "rust_source_bytes": 364,
+      "llbc_bytes": 23478
+    },
+    "g1-body": {
+      "claim": "trait_reuse.core.use_step 1#u32 = .ok 3#u32",
+      "files": {
+        "Fixture/Funs.lean": {
+          "bytes": 2609,
+          "allocated": 4096,
+          "sha256": "58da7d09d475c0e7c28ac43f666315d10633d231f5fd03511d9a1efa19b8e95e"
+        },
+        "Fixture/Funs.olean": {
+          "bytes": 28568,
+          "allocated": 28672,
+          "sha256": "0f33276f2e6d5636d1b084f1a58b6019af2b5931d63c9e77b7ec3732dd63d1f1"
+        },
+        "Fixture/Types.lean": {
+          "bytes": 895,
+          "allocated": 4096,
+          "sha256": "1164c147f3b3a875b851e0031504bdcb7700e312bb6988a261223154b588c4f4"
+        },
+        "Fixture/Types.olean": {
+          "bytes": 30192,
+          "allocated": 32768,
+          "sha256": "dd6fac27f4d7eb9e0d81fb1365a6f483f735cabc4f8ee63ad811f593528716a6"
+        },
+        "Fixture.lean": {
+          "bytes": 20,
+          "allocated": 4096,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Fixture.olean": {
+          "bytes": 1312,
+          "allocated": 4096,
+          "sha256": "736ad5bb1a287c7ac6f031ac510a588a6fcbf4a4d3fca82b2b4399cc653fcf4e"
+        },
+        "Historical.lean": {
+          "bytes": 97,
+          "allocated": 4096,
+          "sha256": "5b33b89b122ce73f5f9782e8dc8cc8097501ab0e5f6ad3be39a5c3054ea18494"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "allocated": 4096,
+          "sha256": "7e8f792f3aa033043a23c5bdbe0ba21486e7e3544d119d19cdc2cb0d261b02e0"
+        },
+        "provenance/fixture.llbc": {
+          "bytes": 23478,
+          "allocated": 24576,
+          "sha256": "6b9e369b7250abf67afe6028c30d1525a466452de796c7a4dab986daf705089d"
+        },
+        "provenance/fixture.rs": {
+          "bytes": 364,
+          "allocated": 4096,
+          "sha256": "4d2446f2b6e6fda42783eaecda2c2ff2e9cfec67ed659b423f3fd89d492a1232"
+        }
+      },
+      "source_bytes": 23842,
+      "generated_bytes": 3909,
+      "compiled_bytes": 60072,
+      "rust_source_bytes": 364,
+      "llbc_bytes": 23478
+    },
+    "g2-signature": {
+      "claim": "trait_reuse.core.use_step 1#u32 = .ok 2#u32",
+      "files": {
+        "Fixture/Funs.lean": {
+          "bytes": 2635,
+          "allocated": 4096,
+          "sha256": "32b50304abbabfe8ed524560f59e689e55e8c26ef0b8d4e9a312a6223d7c6987"
+        },
+        "Fixture/Funs.olean": {
+          "bytes": 29352,
+          "allocated": 32768,
+          "sha256": "a1b4b0aeb2086bed6329b4544745dcb50d1ed57707b13a12d6a904ce7d393e32"
+        },
+        "Fixture/Types.lean": {
+          "bytes": 907,
+          "allocated": 4096,
+          "sha256": "42711c5cd2a12df7e3ec5f34ef0340536944b21c71b7bcf871077ab11a67b118"
+        },
+        "Fixture/Types.olean": {
+          "bytes": 30240,
+          "allocated": 32768,
+          "sha256": "969ade6205db0ba6be96aa1eb06b0cd1c492da053080ae84ba43244add501733"
+        },
+        "Fixture.lean": {
+          "bytes": 20,
+          "allocated": 4096,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Fixture.olean": {
+          "bytes": 1312,
+          "allocated": 4096,
+          "sha256": "736ad5bb1a287c7ac6f031ac510a588a6fcbf4a4d3fca82b2b4399cc653fcf4e"
+        },
+        "Historical.lean": {
+          "bytes": 97,
+          "allocated": 4096,
+          "sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "allocated": 4096,
+          "sha256": "ed1253b0fa56125b9df8a9de210c9aa5e6a98e04842be4159d941a174d4e201f"
+        },
+        "provenance/fixture.llbc": {
+          "bytes": 24613,
+          "allocated": 28672,
+          "sha256": "2d189e18c1741db448adce9067859bbb78545c0d2fbe613a1c5ab68bc18e71fc"
+        },
+        "provenance/fixture.rs": {
+          "bytes": 393,
+          "allocated": 4096,
+          "sha256": "85642b32d2c9e34c100b6e87a6854652ecea7b14a228e14ea95a4c686bd5d4eb"
+        }
+      },
+      "source_bytes": 25006,
+      "generated_bytes": 3947,
+      "compiled_bytes": 60904,
+      "rust_source_bytes": 393,
+      "llbc_bytes": 24613
+    },
+    "g3-move": {
+      "claim": "move_probe.moved.core.use_step 1#u32 = .ok 2#u32",
+      "files": {
+        "Fixture/Funs.lean": {
+          "bytes": 1321,
+          "allocated": 4096,
+          "sha256": "3ba4e139bd5f7a0dff194d320ada2c0e96c3e55daa2e47888142599b769e2702"
+        },
+        "Fixture/Funs.olean": {
+          "bytes": 14776,
+          "allocated": 16384,
+          "sha256": "ed6dec7eeb1e1fe69da1736e5c02040c00baf2d38a054955d8dc65a8ae57ce5e"
+        },
+        "Fixture/Types.lean": {
+          "bytes": 521,
+          "allocated": 4096,
+          "sha256": "1ad8006846151a9b1cb2f1d4456384457adbc59123243ea6075db43aac4ba94c"
+        },
+        "Fixture/Types.olean": {
+          "bytes": 1608,
+          "allocated": 4096,
+          "sha256": "af56c6296721854724c8548612ece875c73ab4a33ecac2a425ee433d02debe41"
+        },
+        "Fixture.lean": {
+          "bytes": 20,
+          "allocated": 4096,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Fixture.olean": {
+          "bytes": 1312,
+          "allocated": 4096,
+          "sha256": "736ad5bb1a287c7ac6f031ac510a588a6fcbf4a4d3fca82b2b4399cc653fcf4e"
+        },
+        "Historical.lean": {
+          "bytes": 102,
+          "allocated": 4096,
+          "sha256": "b0fb9328bcd557b231126cc0b899d91d76bb9d2a45cf7a2cfc40cca05011d77e"
+        },
+        "Proof.lean": {
+          "bytes": 196,
+          "allocated": 4096,
+          "sha256": "5ad47c6d61b47487329348d18b38490cc70ad38b65aeae8340711f4c066864ac"
+        },
+        "provenance/fixture.llbc": {
+          "bytes": 9906,
+          "allocated": 12288,
+          "sha256": "de097ed2405139bbb12bc36b4d9b93017122479bb84fbd4ec76f8c2577554c42"
+        },
+        "provenance/fixture.rs": {
+          "bytes": 183,
+          "allocated": 4096,
+          "sha256": "1b34320de575c02f1fa4b28386fdfce2b51d85d7ff637ca626f0f02e86d1c432"
+        }
+      },
+      "source_bytes": 10089,
+      "generated_bytes": 2160,
+      "compiled_bytes": 17696,
+      "rust_source_bytes": 183,
+      "llbc_bytes": 9906
+    }
+  },
+  "retention": {
+    "1": {
+      "generations": [
+        "g3-move"
+      ],
+      "source_bytes": 10089,
+      "source_plus_generated_bytes": 12249,
+      "source_generated_compiled_bytes": 29945,
+      "rust_only_bytes": 183
+    },
+    "2": {
+      "generations": [
+        "g2-signature",
+        "g3-move"
+      ],
+      "source_bytes": 35095,
+      "source_plus_generated_bytes": 41202,
+      "source_generated_compiled_bytes": 119802,
+      "rust_only_bytes": 576
+    },
+    "4": {
+      "generations": [
+        "g0-base",
+        "g1-body",
+        "g2-signature",
+        "g3-move"
+      ],
+      "source_bytes": 82779,
+      "source_plus_generated_bytes": 96704,
+      "source_generated_compiled_bytes": 295448,
+      "rust_only_bytes": 1304
+    }
+  },
+  "sessions": [
+    {
+      "label": "g0-base",
+      "source_sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427",
+      "import_olean_sha256": "4fe2828ac528dc90a9c4dd7d4f23ccac1e4d6f2d3ffb1b1fe1f1c59e00a14676",
+      "startup_seconds": 0.049,
+      "ready_seconds": 1.798,
+      "goal_seconds": 1.818,
+      "sampled_tree_rss_kib": 2046528,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "g1-body",
+      "source_sha256": "5b33b89b122ce73f5f9782e8dc8cc8097501ab0e5f6ad3be39a5c3054ea18494",
+      "import_olean_sha256": "0f33276f2e6d5636d1b084f1a58b6019af2b5931d63c9e77b7ec3732dd63d1f1",
+      "startup_seconds": 0.043,
+      "ready_seconds": 1.949,
+      "goal_seconds": 1.97,
+      "sampled_tree_rss_kib": 2095040,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 3#u32"
+          ],
+          "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 3#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "g2-signature",
+      "source_sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427",
+      "import_olean_sha256": "a1b4b0aeb2086bed6329b4544745dcb50d1ed57707b13a12d6a904ce7d393e32",
+      "startup_seconds": 0.038,
+      "ready_seconds": 2.021,
+      "goal_seconds": 2.042,
+      "sampled_tree_rss_kib": 2108960,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "g3-move",
+      "source_sha256": "b0fb9328bcd557b231126cc0b899d91d76bb9d2a45cf7a2cfc40cca05011d77e",
+      "import_olean_sha256": "ed6dec7eeb1e1fe69da1736e5c02040c00baf2d38a054955d8dc65a8ae57ce5e",
+      "startup_seconds": 0.037,
+      "ready_seconds": 3.143,
+      "goal_seconds": 3.165,
+      "sampled_tree_rss_kib": 2078448,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 move_probe.moved.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 move_probe.moved.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "restart-g0-base",
+      "source_sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427",
+      "import_olean_sha256": "4fe2828ac528dc90a9c4dd7d4f23ccac1e4d6f2d3ffb1b1fe1f1c59e00a14676",
+      "startup_seconds": 0.038,
+      "ready_seconds": 5.324,
+      "goal_seconds": 5.345,
+      "sampled_tree_rss_kib": 2084032,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "restart-g3-move",
+      "source_sha256": "b0fb9328bcd557b231126cc0b899d91d76bb9d2a45cf7a2cfc40cca05011d77e",
+      "import_olean_sha256": "ed6dec7eeb1e1fe69da1736e5c02040c00baf2d38a054955d8dc65a8ae57ce5e",
+      "startup_seconds": 0.039,
+      "ready_seconds": 5.63,
+      "goal_seconds": 5.677,
+      "sampled_tree_rss_kib": 2060928,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 move_probe.moved.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 move_probe.moved.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    },
+    {
+      "label": "recomputed-g0-base",
+      "source_sha256": "e3afd92c96d54290d9c7c859f5b62b4a0bf3cb6ceff1ee71567a479208410427",
+      "import_olean_sha256": "4fe2828ac528dc90a9c4dd7d4f23ccac1e4d6f2d3ffb1b1fe1f1c59e00a14676",
+      "startup_seconds": 0.04,
+      "ready_seconds": 1.925,
+      "goal_seconds": 1.946,
+      "sampled_tree_rss_kib": 2136720,
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+          ],
+          "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+        }
+      },
+      "server_exit": 0
+    }
+  ],
+  "recompute": {
+    "compile_seconds": 4.871,
+    "proof_seconds": 1.569,
+    "generated_olean_sha256": {
+      "Fixture/Types": "dd6fac27f4d7eb9e0d81fb1365a6f483f735cabc4f8ee63ad811f593528716a6",
+      "Fixture/Funs": "4fe2828ac528dc90a9c4dd7d4f23ccac1e4d6f2d3ffb1b1fe1f1c59e00a14676",
+      "Fixture": "736ad5bb1a287c7ac6f031ac510a588a6fcbf4a4d3fca82b2b4399cc653fcf4e"
+    },
+    "historical_goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32"
+        ],
+        "rendered": "```lean\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 2#u32\n```"
+      }
+    }
+  },
+  "commands": [
+    {
+      "label": "g0-base:fresh-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/g0-base",
+      "exit": 0,
+      "seconds": 8.594,
+      "stdout": "{\"caption\":\"\",\"data\":\"'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'side' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "g1-body:fresh-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/g1-body",
+      "exit": 0,
+      "seconds": 1.649,
+      "stdout": "{\"caption\":\"\",\"data\":\"'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'side' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "g2-signature:fresh-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/g2-signature",
+      "exit": 0,
+      "seconds": 1.564,
+      "stdout": "{\"caption\":\"\",\"data\":\"'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'side' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "g3-move:fresh-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/g3-move",
+      "exit": 0,
+      "seconds": 1.596,
+      "stdout": "{\"caption\":\"\",\"data\":\"'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'helper' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "recompute:Fixture/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Types.olean",
+        "Fixture/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/recompute-g0-base",
+      "exit": 0,
+      "seconds": 1.712,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "recompute:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/recompute-g0-base",
+      "exit": 0,
+      "seconds": 1.602,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "recompute:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/recompute-g0-base",
+      "exit": 0,
+      "seconds": 1.557,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "recompute:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-generated-history-retention-economics-2026-09-29/support/work/recompute-g0-base",
+      "exit": 0,
+      "seconds": 1.569,
+      "stdout": "{\"caption\":\"\",\"data\":\"'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'side' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    }
+  ],
+  "peak_sampled_rss_kib": 2136720
+}

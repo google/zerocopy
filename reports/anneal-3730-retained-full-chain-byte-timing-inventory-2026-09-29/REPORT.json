@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "anneal/resource-accounting",
+    "anneal/full-chain-latency",
+    "filesystem/retained-bytes"
+  ],
+  "subjects": [
+    {
+      "name": "Read-only accounting of R48 one-worker Rust-to-Lake-to-server evidence",
+      "identity": {
+        "source_package": "anneal-3730-full-lake-server-chain-2026-09-29",
+        "source_results_sha256": "8bb8a9d61054e8a6550b102c8985fc1befdac325d701c2814bc9bdc414b50f1c",
+        "inventory_script_sha256": "7b843daa6a6396d74d325441fa23f917a6f9f8cbd632b86bf49c5edb6f5d904d"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

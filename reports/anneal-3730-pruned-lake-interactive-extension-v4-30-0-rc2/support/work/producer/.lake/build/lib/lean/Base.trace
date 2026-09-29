@@ -1,0 +1,32 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["af6bb103abefb311.olean"],
+  "m": false,
+  "i": "958984bd688aeb5e.ilean",
+  "c": "19d7d7d117887e31.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/Base.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/Base.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/Base.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/ir/Base.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/ir/Base.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Base:deps",
+   [["deps",
+     [["prune_producer/Base:extraDep",
+       [["@prune_producer:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/Base.lean",
+   "62f5a3264571fd35"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Base", "5bd1892f0c6bdca5"],
+  ["Package.id?: (some prune_producer)", "d287428ed313deb3"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "cb839e01ef924e4e"}

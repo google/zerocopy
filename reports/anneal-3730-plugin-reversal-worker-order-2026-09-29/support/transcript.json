@@ -1,0 +1,4472 @@
+[
+  {
+    "seq": 0,
+    "kind": "subject",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "v1_plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "v2_plugin_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "dep_olean_sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2",
+    "proof_sha256": "b10e4c6b9c7ea3ce6253d4555055dfce6167eba042a952686c32cce486fe1470",
+    "free_memory_percent": 48
+  },
+  {
+    "seq": 1,
+    "kind": "server_start",
+    "label": "retained",
+    "pid": 4647,
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+  },
+  {
+    "seq": 2,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 4645,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 3,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 5,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 9,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 13,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 14,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 16,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": null
+    }
+  },
+  {
+    "seq": 17,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 22,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 23,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 35,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "kind": "phase",
+    "label": "v1-first",
+    "file": "P0.lean",
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "marker": "plugin-v1",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "kind": "replace",
+    "label": "v1-to-v2",
+    "old_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "new_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 39,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "kind": "old_goal_v1_after_v2",
+    "goal": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "marker": "plugin-v1"
+  },
+  {
+    "seq": 42,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 45,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 46,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": null
+    }
+  },
+  {
+    "seq": 47,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 48,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 51,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "seq": 52,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 53,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": null
+    }
+  },
+  {
+    "seq": 54,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 55,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": null
+    }
+  },
+  {
+    "seq": 56,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 57,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": null
+    }
+  },
+  {
+    "seq": 58,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 63,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 65,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 68,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 69,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 71,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 72,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 74,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 75,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 76,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 78,
+    "kind": "phase",
+    "label": "v2-second",
+    "file": "P1.lean",
+    "plugin_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "marker": "plugin-v2",
+    "wait": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "kind": "replace",
+    "label": "v2-to-v1",
+    "old_sha256": "f7b4c875cb1c91a35259462b5034f48ad96f819e519d9414edc68975045f92a9",
+    "new_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "marker": "plugin-v2"
+  },
+  {
+    "seq": 80,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 81,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "kind": "old_goal_v2_after_v1",
+    "goal": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    },
+    "marker": "plugin-v2"
+  },
+  {
+    "seq": 83,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 87,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": null
+    }
+  },
+  {
+    "seq": 88,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 90,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 91,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": null
+    }
+  },
+  {
+    "seq": 92,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 93,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "result": null
+    }
+  },
+  {
+    "seq": 94,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 96,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": null
+    }
+  },
+  {
+    "seq": 97,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "seq": 98,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": null
+    }
+  },
+  {
+    "seq": 99,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 100,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "result": null
+    }
+  },
+  {
+    "seq": 101,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 102,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "result": null
+    }
+  },
+  {
+    "seq": 103,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 104,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 115,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 116,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "kind": "phase",
+    "label": "v1-third",
+    "file": "P2.lean",
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "marker": "plugin-v1",
+    "wait": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 119,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 120,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P0.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P1.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P2.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "kind": "server",
+    "label": "retained",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 124,
+    "kind": "client",
+    "label": "retained",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 125,
+    "kind": "server_stop",
+    "label": "retained",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 126,
+    "kind": "server_start",
+    "label": "fresh",
+    "pid": 4655,
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+  },
+  {
+    "seq": 127,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 4645,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 130,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem checked : selected = 7 := by\n  probe_tac\n#eval selected\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 133,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 134,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 139,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "seq": 140,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 142,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 143,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 144,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 145,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 146,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 147,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 148,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 149,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 14,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 150,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 0,
+                "line": 4
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 151,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 152,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 153,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 154,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 155,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 156,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 157,
+    "kind": "phase",
+    "label": "v1-after-restart",
+    "file": "P3.lean",
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "marker": "plugin-v1",
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 158,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 159,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-plugin-reversal-worker-order-2026-09-29/support/work/live/P3.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 160,
+    "kind": "server",
+    "label": "fresh",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 161,
+    "kind": "client",
+    "label": "fresh",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 162,
+    "kind": "server_stop",
+    "label": "fresh",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "seq": 163,
+    "kind": "final_artifact",
+    "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+    "dep_olean_sha256": "078123f009c35edce8716cda15d83568dfbcb60c8840a0b74c26d47213ae02f2"
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "topics": [
+    "anneal/issue-3730",
+    "anneal/issue-3731",
+    "anneal/coverage-audit"
+  ],
+  "subjects": [
+    {
+      "name": "Current public #3730 and #3731 bodies and extension comments",
+      "identity": {
+        "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "live_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "reference report corpus and v16 local additions",
+      "identity": {
+        "reference_commit": "a749b3e0787754aa00410900821baa4eb11104f6",
+        "validation": "support/validation-v16.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

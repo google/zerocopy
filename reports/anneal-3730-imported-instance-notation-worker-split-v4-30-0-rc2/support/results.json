@@ -1,0 +1,1856 @@
+{
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "harness_sha256": "9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7",
+    "probe_sha256": "2892652c8b123259dc898df667fad29097b49fcccd0d52b01fed3e966d9473d6",
+    "host_free_percent": 52
+  },
+  "cases": [
+    {
+      "label": "instance",
+      "old_source": "class Carrier where\n  number : Nat\ninstance : Carrier := ⟨7⟩\ndef selected : Nat := Carrier.number\n",
+      "new_source": "class Carrier where\n  number : Nat\ninstance : Carrier := ⟨9⟩\ndef selected : Nat := Carrier.number\n",
+      "proof": "import Model\ntheorem q : selected = 7 := by\n  rfl\n",
+      "old_source_sha256": "4cdcf3715900d3fb28c1fdd35734c9acb310a8464828a3380f8c4ea2ccfc3364",
+      "new_source_sha256": "10c1f69fedb2f40e5f7924c99b4da284500cb0d875a0cb459838a376dbb666be",
+      "old_olean_sha256": "01de7cfa1e4450e909f47037f822f0e89828ebf3a13f7471dca5ede2ff8e77d7",
+      "new_olean_sha256": "7c4d734a84783b34a160c81257b6b40d41fa67ef2651ea7791882b408d058971",
+      "build_old": {
+        "label": "build-old",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/.lake/build/lib/lean/Model.olean",
+          "Model.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "batch_old": {
+        "label": "batch-old",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "old_wait": {
+        "id": 1000,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "old_goal": {
+        "id": 1001,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "old_diagnostics": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+        "version": 1
+      },
+      "build_new": {
+        "label": "build-new",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/.lake/build/lib/lean/Model.olean",
+          "Model.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "resident_goal": {
+        "id": 1002,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "resident_diagnostics": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+        "version": 1
+      },
+      "new_wait": {
+        "id": 1003,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "new_goal": {
+        "id": 1004,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      },
+      "new_diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+        "version": 1
+      },
+      "old_after_new": {
+        "id": 1005,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "batch_new": {
+        "label": "batch-new",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  selected\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ selected = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": ""
+      }
+    },
+    {
+      "label": "notation",
+      "old_source": "def left : Nat := 7\ndef right : Nat := 9\nnotation \"selected\" => left\n",
+      "new_source": "def left : Nat := 7\ndef right : Nat := 9\nnotation \"selected\" => right\n",
+      "proof": "import Model\ntheorem q : selected = 7 := by\n  rfl\n",
+      "old_source_sha256": "3d8904d72f4080bc48c34b415a2db45ed537e5117127fab65571467a08ca7d62",
+      "new_source_sha256": "ffac46f9329b3b3789e0b8b59233430bbb4593c03c45373887f42dec6a3f4196",
+      "old_olean_sha256": "370fd60cd8bffa7ff05fea795bcef224d54f5a954af6ff2badbaae65aa04de7b",
+      "new_olean_sha256": "90890898584463cc31c5ec5a5b26cc1bf13384a92c237c5410fe119f34111d42",
+      "build_old": {
+        "label": "build-old",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/.lake/build/lib/lean/Model.olean",
+          "Model.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "batch_old": {
+        "label": "batch-old",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "old_wait": {
+        "id": 1000,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "old_goal": {
+        "id": 1001,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "old_diagnostics": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+        "version": 1
+      },
+      "build_new": {
+        "label": "build-new",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "-o",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/.lake/build/lib/lean/Model.olean",
+          "Model.lean"
+        ],
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "resident_goal": {
+        "id": 1002,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "resident_diagnostics": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+        "version": 1
+      },
+      "new_wait": {
+        "id": 1003,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "new_goal": {
+        "id": 1004,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      },
+      "new_diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+        "version": 1
+      },
+      "old_after_new": {
+        "id": 1005,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "batch_new": {
+        "label": "batch-new",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  selected\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ selected = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+        "stderr": ""
+      }
+    }
+  ],
+  "wire_events": [
+    {
+      "seq": 0,
+      "ms": 347.4,
+      "kind": "launch",
+      "label": "instance",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 5583,
+      "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance"
+    },
+    {
+      "seq": 1,
+      "ms": 369.9,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 5579,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 373.9,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 374.0,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 374.0,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Model\ntheorem q : selected = 7 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 374.0,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1000,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 374.2,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 374.2,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 374.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 430.8,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 611.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 611.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 611.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 611.5,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1000,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 611.5,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 1000,
+      "elapsed_ms": 237.5
+    },
+    {
+      "seq": 15,
+      "ms": 611.5,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1001,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 611.7,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1001,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 611.7,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "$/lean/plainGoal",
+      "rid": 1001,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 18,
+      "ms": 792.7,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1002,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 793.1,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1002,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 793.1,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "$/lean/plainGoal",
+      "rid": 1002,
+      "elapsed_ms": 0.5
+    },
+    {
+      "seq": 21,
+      "ms": 793.2,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Model\ntheorem q : selected = 7 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 793.2,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1003,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "ms": 793.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 24,
+      "ms": 852.6,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 930.5,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 1032.7,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 27,
+      "ms": 1032.8,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 1032.8,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 1032.9,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1003,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 30,
+      "ms": 1032.9,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 1003,
+      "elapsed_ms": 239.7
+    },
+    {
+      "seq": 31,
+      "ms": 1032.9,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1004,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 1033.3,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1004,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      }
+    },
+    {
+      "seq": 33,
+      "ms": 1033.3,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "$/lean/plainGoal",
+      "rid": 1004,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 34,
+      "ms": 1033.3,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1005,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 35,
+      "ms": 1033.6,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 1005,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 36,
+      "ms": 1033.6,
+      "kind": "request_latency",
+      "label": "instance",
+      "method": "$/lean/plainGoal",
+      "rid": 1005,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 37,
+      "ms": 1033.6,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 38,
+      "ms": 1034.0,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 39,
+      "ms": 1034.2,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/instance/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 1040.4,
+      "kind": "server",
+      "label": "instance",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 41,
+      "ms": 1040.5,
+      "kind": "client",
+      "label": "instance",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 1045.1,
+      "kind": "stop",
+      "label": "instance",
+      "rc": 0,
+      "pid": 5583,
+      "stderr": ""
+    },
+    {
+      "seq": 43,
+      "ms": 1568.0,
+      "kind": "launch",
+      "label": "notation",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 5592,
+      "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation"
+    },
+    {
+      "seq": 44,
+      "ms": 1568.1,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 5579,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 1593.3,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 1593.3,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 47,
+      "ms": 1593.4,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Model\ntheorem q : selected = 7 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 48,
+      "ms": 1593.4,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1000,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 1593.5,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 50,
+      "ms": 1593.5,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 51,
+      "ms": 1593.8,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 1649.5,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 53,
+      "ms": 1830.7,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 1830.8,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 55,
+      "ms": 1830.8,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 56,
+      "ms": 1831.1,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1000,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 57,
+      "ms": 1831.1,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 1000,
+      "elapsed_ms": 237.7
+    },
+    {
+      "seq": 58,
+      "ms": 1831.1,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1001,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 59,
+      "ms": 1831.4,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1001,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 60,
+      "ms": 1831.4,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "$/lean/plainGoal",
+      "rid": 1001,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 61,
+      "ms": 2026.3,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1002,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 62,
+      "ms": 2026.7,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1002,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 63,
+      "ms": 2026.7,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "$/lean/plainGoal",
+      "rid": 1002,
+      "elapsed_ms": 0.5
+    },
+    {
+      "seq": 64,
+      "ms": 2026.8,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Model\ntheorem q : selected = 7 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 65,
+      "ms": 2026.8,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1003,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 66,
+      "ms": 2027.0,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 67,
+      "ms": 2085.1,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 68,
+      "ms": 2150.9,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 69,
+      "ms": 2261.6,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 70,
+      "ms": 2261.6,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 71,
+      "ms": 2261.7,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 72,
+      "ms": 2261.7,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1003,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 73,
+      "ms": 2261.7,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 1003,
+      "elapsed_ms": 234.9
+    },
+    {
+      "seq": 74,
+      "ms": 2261.7,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1004,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 75,
+      "ms": 2262.1,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1004,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      }
+    },
+    {
+      "seq": 76,
+      "ms": 2262.1,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "$/lean/plainGoal",
+      "rid": 1004,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 77,
+      "ms": 2262.1,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1005,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 4
+          }
+        }
+      }
+    },
+    {
+      "seq": 78,
+      "ms": 2262.4,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 1005,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "ms": 2262.4,
+      "kind": "request_latency",
+      "label": "notation",
+      "method": "$/lean/plainGoal",
+      "rid": 1005,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 80,
+      "ms": 2262.4,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 81,
+      "ms": 2262.8,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/New.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 82,
+      "ms": 2263.0,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2/support/work/notation/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 83,
+      "ms": 2269.1,
+      "kind": "server",
+      "label": "notation",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 84,
+      "ms": 2269.1,
+      "kind": "client",
+      "label": "notation",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 85,
+      "ms": 2270.7,
+      "kind": "stop",
+      "label": "notation",
+      "rc": 0,
+      "pid": 5592,
+      "stderr": ""
+    }
+  ]
+}

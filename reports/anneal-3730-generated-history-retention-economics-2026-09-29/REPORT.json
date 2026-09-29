@@ -1,0 +1,8 @@
+{
+  "topics": ["aeneas/generated-history", "lean/historical-goals", "anneal/retention-economics"],
+  "subjects": [
+    {"name": "Four cached pinned Charon/Aeneas outputs", "identity": {"inventory": "support/results.json#generations"}},
+    {"name": "Pinned Lean 4.30.0-rc2 direct servers", "identity": {"sha256_file": "support/results.json#tools.lean_sha256"}}
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,271 @@
+{
+  "schema": "anneal-shared-lake-tree-conflict-v1",
+  "tools": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "source_a_sha256": "91f4231747346746189c4216d7e9dbe5bd3c7ff0a75d84a7d80bd7f187acc4d1",
+  "records": [
+    {
+      "label": "A",
+      "exit": -9,
+      "stdout": "",
+      "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+    },
+    {
+      "label": "B",
+      "exit": 0,
+      "stdout": "\u2714 [2/3] Built Dep (753ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "fresh_no_build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 0,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "pre_retry_lean_9",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check9.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 0,
+      "stdout": "9\n",
+      "stderr": ""
+    },
+    {
+      "label": "pre_retry_lean_7",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check7.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 1,
+      "stdout": "Check7.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  7\n\n\u22a2 depValue = 7\n9\n",
+      "stderr": ""
+    },
+    {
+      "label": "ordinary_retry",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "build",
+        "Dep"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 0,
+      "stdout": "Build completed successfully (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "post_retry_no_build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 0,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": ""
+    },
+    {
+      "label": "fresh_lean_9",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check9.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 0,
+      "stdout": "9\n",
+      "stderr": ""
+    },
+    {
+      "label": "fresh_lean_7_negative",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Check7.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work/probe",
+      "exit": 1,
+      "stdout": "Check7.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  7\n\n\u22a2 depValue = 7\n9\n",
+      "stderr": ""
+    }
+  ],
+  "events": [
+    {
+      "kind": "launch_A",
+      "pid": 4183
+    },
+    {
+      "kind": "A_entered"
+    },
+    {
+      "kind": "source_changed_to_9"
+    },
+    {
+      "kind": "launch_B",
+      "pid": 4200
+    },
+    {
+      "kind": "B_entered"
+    },
+    {
+      "kind": "kill_A"
+    },
+    {
+      "kind": "release_B"
+    }
+  ],
+  "A_gate": {
+    "peak_sampled_rss_kib": 1831360,
+    "pids_at_marker": [
+      4183,
+      4190
+    ]
+  },
+  "source_b_sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09",
+  "B_gate": {
+    "peak_sampled_rss_kib": 3619968,
+    "pids_at_marker": [
+      4183,
+      4190,
+      4200,
+      4206
+    ]
+  },
+  "after_writers": {
+    ".lake/build/ir/Dep.c": {
+      "bytes": 1499,
+      "sha256": "198845b9f9beffa11607fba35b1dc65ca50be46072fef6cb6b8dcd50f0bacaed"
+    },
+    ".lake/build/ir/Dep.c.hash": {
+      "bytes": 16,
+      "sha256": "f6a668002608c20ce16305243e557c7018f3102e1a28298fc61350c4c3e388b6"
+    },
+    ".lake/build/ir/Dep.setup.json": {
+      "bytes": 123,
+      "sha256": "040ff500075195b2cd72e2549553f68bb363ed4410123eaca8e75442c6ca9fa4"
+    },
+    ".lake/build/lib/lean/Dep.ilean": {
+      "bytes": 1157,
+      "sha256": "3ea0c99eb26c4d5a9981cf15be401016b11a96aa9f94e929d2fab0285b4e504a"
+    },
+    ".lake/build/lib/lean/Dep.ilean.hash": {
+      "bytes": 16,
+      "sha256": "b47954b4073d2810196ad417f98c0fe7d8509a1499dabc07703fb33d5d125a08"
+    },
+    ".lake/build/lib/lean/Dep.olean": {
+      "bytes": 4896,
+      "sha256": "d934a89791cbb4236eca9f88c4e3f5d7136c47c8f3aecc965f476df32f69b15c"
+    },
+    ".lake/build/lib/lean/Dep.olean.hash": {
+      "bytes": 16,
+      "sha256": "53d55abc41597d5597951be387c01d6674ff71979a1dd46416c1896dbbfd6238"
+    },
+    ".lake/build/lib/lean/Dep.trace": {
+      "bytes": 2672,
+      "sha256": "33e7fb51aa2b8c56a1596c48a486df72871a9a657c40333ab98a4d122182ce35"
+    },
+    ".lake/config/[anonymous]/lakefile.olean": {
+      "bytes": 96664,
+      "sha256": "13b663dfa17c459231b19ff34b9a54ed0f288b44f7ef431836e104913f65bd73"
+    },
+    ".lake/config/[anonymous]/lakefile.olean.trace": {
+      "bytes": 184,
+      "sha256": "1f173544012ba19cda09127e1bf7833c43d1421c716272ec2bfaf19e595292ac"
+    },
+    "Dep.lean": {
+      "bytes": 330,
+      "sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09"
+    },
+    "lake-manifest.json": {
+      "bytes": 137,
+      "sha256": "aa8f6d62cd83a3a21dfbcff2110382eda9493e9b8177f88940c5ca83c3338ab9"
+    },
+    "lakefile.lean": {
+      "bytes": 71,
+      "sha256": "7c0f447362041ad6de6465f849840b9c627e40f3b7821067ce264b1cefbdd3ff"
+    },
+    "lean-toolchain": {
+      "bytes": 29,
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    }
+  },
+  "final_inventory": {
+    ".lake/build/ir/Dep.c": {
+      "bytes": 1499,
+      "sha256": "198845b9f9beffa11607fba35b1dc65ca50be46072fef6cb6b8dcd50f0bacaed"
+    },
+    ".lake/build/ir/Dep.c.hash": {
+      "bytes": 16,
+      "sha256": "f6a668002608c20ce16305243e557c7018f3102e1a28298fc61350c4c3e388b6"
+    },
+    ".lake/build/ir/Dep.setup.json": {
+      "bytes": 123,
+      "sha256": "040ff500075195b2cd72e2549553f68bb363ed4410123eaca8e75442c6ca9fa4"
+    },
+    ".lake/build/lib/lean/Dep.ilean": {
+      "bytes": 1157,
+      "sha256": "3ea0c99eb26c4d5a9981cf15be401016b11a96aa9f94e929d2fab0285b4e504a"
+    },
+    ".lake/build/lib/lean/Dep.ilean.hash": {
+      "bytes": 16,
+      "sha256": "b47954b4073d2810196ad417f98c0fe7d8509a1499dabc07703fb33d5d125a08"
+    },
+    ".lake/build/lib/lean/Dep.olean": {
+      "bytes": 4896,
+      "sha256": "d934a89791cbb4236eca9f88c4e3f5d7136c47c8f3aecc965f476df32f69b15c"
+    },
+    ".lake/build/lib/lean/Dep.olean.hash": {
+      "bytes": 16,
+      "sha256": "53d55abc41597d5597951be387c01d6674ff71979a1dd46416c1896dbbfd6238"
+    },
+    ".lake/build/lib/lean/Dep.trace": {
+      "bytes": 2672,
+      "sha256": "33e7fb51aa2b8c56a1596c48a486df72871a9a657c40333ab98a4d122182ce35"
+    },
+    ".lake/config/[anonymous]/lakefile.olean": {
+      "bytes": 96664,
+      "sha256": "13b663dfa17c459231b19ff34b9a54ed0f288b44f7ef431836e104913f65bd73"
+    },
+    ".lake/config/[anonymous]/lakefile.olean.trace": {
+      "bytes": 184,
+      "sha256": "1f173544012ba19cda09127e1bf7833c43d1421c716272ec2bfaf19e595292ac"
+    },
+    "Check7.lean": {
+      "bytes": 65,
+      "sha256": "ecbf08f02040e4438552d9170e499f3959af895af2b683f1139a237c203a545b"
+    },
+    "Check9.lean": {
+      "bytes": 68,
+      "sha256": "f6a1f60d33f49c48dd474b8a73061b153d87291b700651448b761eadc0f4506d"
+    },
+    "Dep.lean": {
+      "bytes": 330,
+      "sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09"
+    },
+    "lake-manifest.json": {
+      "bytes": 137,
+      "sha256": "aa8f6d62cd83a3a21dfbcff2110382eda9493e9b8177f88940c5ca83c3338ab9"
+    },
+    "lakefile.lean": {
+      "bytes": 71,
+      "sha256": "7c0f447362041ad6de6465f849840b9c627e40f3b7821067ce264b1cefbdd3ff"
+    },
+    "lean-toolchain": {
+      "bytes": 29,
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    }
+  },
+  "source_final_sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09"
+}

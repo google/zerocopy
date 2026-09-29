@@ -1,0 +1,9 @@
+{"plugins": [],
+ "package": "prune_producer",
+ "options": {},
+ "name": "Extra",
+ "isModule": false,
+ "importArts":
+ {"Base":
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/Base.olean"]},
+ "dynlibs": []}

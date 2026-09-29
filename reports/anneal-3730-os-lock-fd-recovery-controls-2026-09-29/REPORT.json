@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "anneal/recovery",
+    "filesystem/advisory-locks",
+    "resources/file-descriptors"
+  ],
+  "subjects": [
+    {
+      "name": "Bounded two-lock and child-only descriptor exhaustion controls",
+      "identity": {
+        "platform": "macOS Darwin 25.6.0 arm64",
+        "python": "3.14.7",
+        "probe_sha256": "f137e4520adc6c793d20b3ecd073c2fed8ee74a1090a763a6c82742fe9aeec0e"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

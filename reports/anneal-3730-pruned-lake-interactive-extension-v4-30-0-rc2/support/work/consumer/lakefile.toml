@@ -1,0 +1,4 @@
+name = "prune_consumer"
+[[require]]
+name = "prune_producer"
+path = "../producer"

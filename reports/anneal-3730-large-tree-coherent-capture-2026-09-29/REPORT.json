@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "anneal/snapshot-capture",
+    "filesystem/concurrent-edits",
+    "filesystem/generation-identity"
+  ],
+  "subjects": [
+    {
+      "name": "Gated multi-file capture fixture on macOS APFS",
+      "identity": {
+        "platform": "macOS 26.6.2 arm64",
+        "filesystem": "APFS",
+        "probe_sha256": "fd362b30590020adbcf5cddcbd469bae78c346180d790cb17be5953ed3fa159c"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

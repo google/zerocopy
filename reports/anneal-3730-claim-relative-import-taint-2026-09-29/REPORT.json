@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "anneal/acceptance-oracle",
+    "lean/axiom-taint",
+    "lean/imported-artifacts"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4.30.0-rc2 claim-relative caller taint through compiled imports",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "probe_sha256": "025d2027c85a7c144738bc8d67de9ed97392717fe076706bd6e3712ba5fa42ca",
+        "platform": "Darwin 25.6.0 arm64"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

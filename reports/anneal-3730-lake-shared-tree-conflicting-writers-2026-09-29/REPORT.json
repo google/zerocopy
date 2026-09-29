@@ -1,0 +1,8 @@
+{
+  "topics": ["lake/shared-writable-package", "lake/concurrent-writers", "lean/freshness-oracle"],
+  "subjects": [
+    {"name": "Pinned Lake and Lean 4.30.0-rc2", "identity": {"sha256_file": "support/results.json#tools"}},
+    {"name": "Two conflicting writer schedules in one package tree", "identity": {"results": "support/results.json;support/results-kill-B.json"}}
+  ],
+  "observed_at": "2026-09-29"
+}

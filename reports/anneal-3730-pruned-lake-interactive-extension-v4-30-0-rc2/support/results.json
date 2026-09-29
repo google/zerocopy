@@ -1,0 +1,2856 @@
+{
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "probe_sha256": "f7773f0e56164bfa2029aae5f78146b6537bd24fd266669a510ecc854902f036",
+    "cached_harness_sha256": "9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7",
+    "host_free_percent": 49,
+    "disk_free_bytes": 52221054976
+  },
+  "build": {
+    "label": "build-full",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "--keep-toolchain",
+      "--no-cache",
+      "build",
+      "Base",
+      "Extra",
+      "Macro",
+      "+Plugin:dynlib"
+    ],
+    "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+    "rc": 0,
+    "stdout": "✔ [1/7] Built Base (184ms)\n✔ [4/10] Built Extra (168ms)\n✔ [6/10] Built Macro (655ms)\n✔ [8/10] Built Plugin (609ms)\n✔ [9/10] Built Plugin:c.o (48ms)\n✔ [10/10] Built Plugin:dynlib (44ms)\nBuild completed successfully (10 jobs).\n",
+    "stderr": "info: prune_producer: no previous manifest, creating one from scratch\n",
+    "seconds": 1.79
+  },
+  "before": {
+    "files": {
+      "ir/Extra.c.hash": {
+        "bytes": 16,
+        "sha256": "249fc48456fa0bb1a114c6f0adc747b893f4c652f244804705422bba673551b0"
+      },
+      "ir/Base.c.hash": {
+        "bytes": 16,
+        "sha256": "89d192f98c75e669577d061368fcd629de8420c751d7ab0ad4847d691fcf805a"
+      },
+      "ir/Extra.c": {
+        "bytes": 1580,
+        "sha256": "daa8171e5ad3bddcc2a596a2a0391975889414ace703f2ef9f5a56bff0f657c2"
+      },
+      "ir/Macro.setup.json": {
+        "bytes": 134,
+        "sha256": "767a79bd811dad4bcb83b13109d3d871e5e53c471ed6dc297aae88c65dacaf18"
+      },
+      "ir/Plugin.c.o.export": {
+        "bytes": 2896,
+        "sha256": "f44daf998b3b89c47e2ceb9e7c991c8f8f0c7544df36fa245a7082d0bdaa6a17"
+      },
+      "ir/Plugin.c.o.export.hash": {
+        "bytes": 16,
+        "sha256": "4eb97fc4bb7bd6ddfcb7e4531ec2d7ec049c970824c68c9e37fe935a5228c1b8"
+      },
+      "ir/Base.c": {
+        "bytes": 1398,
+        "sha256": "0f400952a2b024cb6d8d8437bbee5b6ba5210c9ac4f90357a66919d800983967"
+      },
+      "ir/Plugin.c.hash": {
+        "bytes": 16,
+        "sha256": "8a4ee97f598b2c157fc4756a8c0b79318e676b189f3c6c7959147cca773de01d"
+      },
+      "ir/Base.setup.json": {
+        "bytes": 133,
+        "sha256": "12a9ca28222075d74c4c3ca29c8222cfde27aab7d0c1eeecc40bd8cd9da181b6"
+      },
+      "ir/Extra.setup.json": {
+        "bytes": 381,
+        "sha256": "436c802a5f66ad96ce2a9496b5088c4c9e0198dcad6679efbd9a6478e528a8d9"
+      },
+      "ir/Plugin.c": {
+        "bytes": 4942,
+        "sha256": "b3f4655a86d1b98f0cc754cc1f4c6ffa538f77c76a2a48663616472b7b5699e8"
+      },
+      "ir/Plugin.c.o.export.trace": {
+        "bytes": 1861,
+        "sha256": "da286efd2896494f8984e7b83802ba09af1f1f68f4ae3adefb64af0e1c4b93b8"
+      },
+      "ir/Macro.c.hash": {
+        "bytes": 16,
+        "sha256": "a33048bd11de78511aea8060575eafb39d3be49e4fd71a59e5f2f67ff0ab46d0"
+      },
+      "ir/Plugin.setup.json": {
+        "bytes": 135,
+        "sha256": "f58d2389602cff6deeeb2e9bb3a2c8c4068a0789a4e5c931bcf812605479516b"
+      },
+      "ir/Macro.c": {
+        "bytes": 15431,
+        "sha256": "1c69e13a00d019d3166c52943f2a270c6bc205df0a67d4461204e89de1aaf9b4"
+      },
+      "lib/lean/Plugin.ilean": {
+        "bytes": 758,
+        "sha256": "7797a5b87a4186a8be5fff9a9a438a554efc4290de5f909342ca257e4a08ce02"
+      },
+      "lib/lean/Macro.trace": {
+        "bytes": 2731,
+        "sha256": "9c6908b4fbbfa8db7ce2081196076d80f3d14950e5147540b21cc34e63681546"
+      },
+      "lib/lean/Base.ilean.hash": {
+        "bytes": 16,
+        "sha256": "11c2babdb4a34d3dffa15783a8409563e10c10281eb9cf7ea93ca89f78bcd227"
+      },
+      "lib/lean/prune__producer_Plugin.dylib": {
+        "bytes": 51120,
+        "sha256": "8d97b442c4beb2b07c0d6439368df06580cf233dd2a892394e6d21c72a4d4a73"
+      },
+      "lib/lean/Plugin.olean": {
+        "bytes": 24008,
+        "sha256": "cc95a583c2fb7ee25d5ccfbb374a9c52efa126b4a6dd5b59c4c88fab9216501d"
+      },
+      "lib/lean/Macro.ilean.hash": {
+        "bytes": 16,
+        "sha256": "75dad99076c9d363494fa30f4664e28449570336a2a83a733807dd0ba93a36b7"
+      },
+      "lib/lean/Base.trace": {
+        "bytes": 2722,
+        "sha256": "c99549041307a79708627643045ee2cf850f6511a7d87464c9c86883be7829aa"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.hash": {
+        "bytes": 16,
+        "sha256": "9376c56cb2047b73ef78dcd839913b72ecd9401b6ee892ea03039758079809ef"
+      },
+      "lib/lean/Extra.trace": {
+        "bytes": 2830,
+        "sha256": "6625e4fd11ef97a7d39cf45aa38f9bdbf1a75e2bddc0d00527c0920b616bf71e"
+      },
+      "lib/lean/Extra.ilean": {
+        "bytes": 405,
+        "sha256": "ee379f1a1871208b189e3d3d585951be5ac6383d14d274c82e598b6e2acfd5fd"
+      },
+      "lib/lean/Macro.olean.hash": {
+        "bytes": 16,
+        "sha256": "3e29135c56e438581e2576b1bea2ebf10084f862f3b2e416c75f1be5ba0e1329"
+      },
+      "lib/lean/Macro.olean": {
+        "bytes": 45344,
+        "sha256": "0f414e01966134dd8db0963281c1dddd8f5eb8d3a6551bce26931d3316132c43"
+      },
+      "lib/lean/Base.ilean": {
+        "bytes": 291,
+        "sha256": "06ddb818db894c4c039b9711c29ff5d7c0b8f7ebe4ee23f68ed2e76bb8e4ee80"
+      },
+      "lib/lean/Extra.olean": {
+        "bytes": 5776,
+        "sha256": "46a60832299443360b2728211b0a3baabfe9592d4240f57cbc1fc68f630285a2"
+      },
+      "lib/lean/Macro.ilean": {
+        "bytes": 218,
+        "sha256": "04618d67685a036550e49bc8e0662e7b2ed7b400634ae688272295b6d4c8ace4"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.trace": {
+        "bytes": 1356,
+        "sha256": "a0b4d7b10d25c01ab66adb766284b134804b70a63bf1bb3f90d7ecd5e6de3d29"
+      },
+      "lib/lean/Base.olean": {
+        "bytes": 4616,
+        "sha256": "0e0f014d0a81dde5aed23ddd3ac32f6e59a697909639176e9d60a081d999f43f"
+      },
+      "lib/lean/Plugin.trace": {
+        "bytes": 2740,
+        "sha256": "e76f7697105c37a7a792c957ee3b4d0bae5f0bb58ae16adfabe331098421ba3a"
+      },
+      "lib/lean/Base.olean.hash": {
+        "bytes": 16,
+        "sha256": "0f6c7d73b72db526ab3e67946e6abcb7fd3fd71fa05902c4fd251440e0ba4885"
+      },
+      "lib/lean/Extra.olean.hash": {
+        "bytes": 16,
+        "sha256": "1524842413ba03f2ccfa7300cfb0afb1465e1bed2c1e39cb12ea5f226b33312c"
+      },
+      "lib/lean/Plugin.ilean.hash": {
+        "bytes": 16,
+        "sha256": "550961396cc55855ed51d348f2caf535fb39ccfc62d4681c33f279391d37c920"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.rsp": {
+        "bytes": 836,
+        "sha256": "8aff103a130fe172aec0b02fe60d69f6235d4f4d24609f9e03541b45ae0ab5c9"
+      },
+      "lib/lean/Extra.ilean.hash": {
+        "bytes": 16,
+        "sha256": "142f391994ee887f4c76bea2ac9dacb014640f0d9b0a981a03c8591107d7de12"
+      },
+      "lib/lean/Plugin.olean.hash": {
+        "bytes": 16,
+        "sha256": "9c400578b9c1144542d04144ec99183686484ec615dd31df9953b7ef01a32f27"
+      }
+    },
+    "total_bytes": 174866,
+    "file_count": 39
+  },
+  "removed": {
+    "extra_olean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/Extra.olean",
+      "bytes": 5776,
+      "sha256": "46a60832299443360b2728211b0a3baabfe9592d4240f57cbc1fc68f630285a2"
+    },
+    "macro_olean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/Macro.olean",
+      "bytes": 45344,
+      "sha256": "0f414e01966134dd8db0963281c1dddd8f5eb8d3a6551bce26931d3316132c43"
+    },
+    "plugin_dylib": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib",
+      "bytes": 51120,
+      "sha256": "8d97b442c4beb2b07c0d6439368df06580cf233dd2a892394e6d21c72a4d4a73"
+    }
+  },
+  "after": {
+    "files": {
+      "ir/Extra.c.hash": {
+        "bytes": 16,
+        "sha256": "249fc48456fa0bb1a114c6f0adc747b893f4c652f244804705422bba673551b0"
+      },
+      "ir/Base.c.hash": {
+        "bytes": 16,
+        "sha256": "89d192f98c75e669577d061368fcd629de8420c751d7ab0ad4847d691fcf805a"
+      },
+      "ir/Extra.c": {
+        "bytes": 1580,
+        "sha256": "daa8171e5ad3bddcc2a596a2a0391975889414ace703f2ef9f5a56bff0f657c2"
+      },
+      "ir/Macro.setup.json": {
+        "bytes": 134,
+        "sha256": "767a79bd811dad4bcb83b13109d3d871e5e53c471ed6dc297aae88c65dacaf18"
+      },
+      "ir/Plugin.c.o.export": {
+        "bytes": 2896,
+        "sha256": "f44daf998b3b89c47e2ceb9e7c991c8f8f0c7544df36fa245a7082d0bdaa6a17"
+      },
+      "ir/Plugin.c.o.export.hash": {
+        "bytes": 16,
+        "sha256": "4eb97fc4bb7bd6ddfcb7e4531ec2d7ec049c970824c68c9e37fe935a5228c1b8"
+      },
+      "ir/Base.c": {
+        "bytes": 1398,
+        "sha256": "0f400952a2b024cb6d8d8437bbee5b6ba5210c9ac4f90357a66919d800983967"
+      },
+      "ir/Plugin.c.hash": {
+        "bytes": 16,
+        "sha256": "8a4ee97f598b2c157fc4756a8c0b79318e676b189f3c6c7959147cca773de01d"
+      },
+      "ir/Base.setup.json": {
+        "bytes": 133,
+        "sha256": "12a9ca28222075d74c4c3ca29c8222cfde27aab7d0c1eeecc40bd8cd9da181b6"
+      },
+      "ir/Extra.setup.json": {
+        "bytes": 381,
+        "sha256": "436c802a5f66ad96ce2a9496b5088c4c9e0198dcad6679efbd9a6478e528a8d9"
+      },
+      "ir/Plugin.c": {
+        "bytes": 4942,
+        "sha256": "b3f4655a86d1b98f0cc754cc1f4c6ffa538f77c76a2a48663616472b7b5699e8"
+      },
+      "ir/Plugin.c.o.export.trace": {
+        "bytes": 1861,
+        "sha256": "da286efd2896494f8984e7b83802ba09af1f1f68f4ae3adefb64af0e1c4b93b8"
+      },
+      "ir/Macro.c.hash": {
+        "bytes": 16,
+        "sha256": "a33048bd11de78511aea8060575eafb39d3be49e4fd71a59e5f2f67ff0ab46d0"
+      },
+      "ir/Plugin.setup.json": {
+        "bytes": 135,
+        "sha256": "f58d2389602cff6deeeb2e9bb3a2c8c4068a0789a4e5c931bcf812605479516b"
+      },
+      "ir/Macro.c": {
+        "bytes": 15431,
+        "sha256": "1c69e13a00d019d3166c52943f2a270c6bc205df0a67d4461204e89de1aaf9b4"
+      },
+      "lib/lean/Plugin.ilean": {
+        "bytes": 758,
+        "sha256": "7797a5b87a4186a8be5fff9a9a438a554efc4290de5f909342ca257e4a08ce02"
+      },
+      "lib/lean/Macro.trace": {
+        "bytes": 2731,
+        "sha256": "9c6908b4fbbfa8db7ce2081196076d80f3d14950e5147540b21cc34e63681546"
+      },
+      "lib/lean/Base.ilean.hash": {
+        "bytes": 16,
+        "sha256": "11c2babdb4a34d3dffa15783a8409563e10c10281eb9cf7ea93ca89f78bcd227"
+      },
+      "lib/lean/Plugin.olean": {
+        "bytes": 24008,
+        "sha256": "cc95a583c2fb7ee25d5ccfbb374a9c52efa126b4a6dd5b59c4c88fab9216501d"
+      },
+      "lib/lean/Macro.ilean.hash": {
+        "bytes": 16,
+        "sha256": "75dad99076c9d363494fa30f4664e28449570336a2a83a733807dd0ba93a36b7"
+      },
+      "lib/lean/Base.trace": {
+        "bytes": 2722,
+        "sha256": "c99549041307a79708627643045ee2cf850f6511a7d87464c9c86883be7829aa"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.hash": {
+        "bytes": 16,
+        "sha256": "9376c56cb2047b73ef78dcd839913b72ecd9401b6ee892ea03039758079809ef"
+      },
+      "lib/lean/Extra.trace": {
+        "bytes": 2830,
+        "sha256": "6625e4fd11ef97a7d39cf45aa38f9bdbf1a75e2bddc0d00527c0920b616bf71e"
+      },
+      "lib/lean/Extra.ilean": {
+        "bytes": 405,
+        "sha256": "ee379f1a1871208b189e3d3d585951be5ac6383d14d274c82e598b6e2acfd5fd"
+      },
+      "lib/lean/Macro.olean.hash": {
+        "bytes": 16,
+        "sha256": "3e29135c56e438581e2576b1bea2ebf10084f862f3b2e416c75f1be5ba0e1329"
+      },
+      "lib/lean/Base.ilean": {
+        "bytes": 291,
+        "sha256": "06ddb818db894c4c039b9711c29ff5d7c0b8f7ebe4ee23f68ed2e76bb8e4ee80"
+      },
+      "lib/lean/Macro.ilean": {
+        "bytes": 218,
+        "sha256": "04618d67685a036550e49bc8e0662e7b2ed7b400634ae688272295b6d4c8ace4"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.trace": {
+        "bytes": 1356,
+        "sha256": "a0b4d7b10d25c01ab66adb766284b134804b70a63bf1bb3f90d7ecd5e6de3d29"
+      },
+      "lib/lean/Base.olean": {
+        "bytes": 4616,
+        "sha256": "0e0f014d0a81dde5aed23ddd3ac32f6e59a697909639176e9d60a081d999f43f"
+      },
+      "lib/lean/Plugin.trace": {
+        "bytes": 2740,
+        "sha256": "e76f7697105c37a7a792c957ee3b4d0bae5f0bb58ae16adfabe331098421ba3a"
+      },
+      "lib/lean/Base.olean.hash": {
+        "bytes": 16,
+        "sha256": "0f6c7d73b72db526ab3e67946e6abcb7fd3fd71fa05902c4fd251440e0ba4885"
+      },
+      "lib/lean/Extra.olean.hash": {
+        "bytes": 16,
+        "sha256": "1524842413ba03f2ccfa7300cfb0afb1465e1bed2c1e39cb12ea5f226b33312c"
+      },
+      "lib/lean/Plugin.ilean.hash": {
+        "bytes": 16,
+        "sha256": "550961396cc55855ed51d348f2caf535fb39ccfc62d4681c33f279391d37c920"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.rsp": {
+        "bytes": 836,
+        "sha256": "8aff103a130fe172aec0b02fe60d69f6235d4f4d24609f9e03541b45ae0ab5c9"
+      },
+      "lib/lean/Extra.ilean.hash": {
+        "bytes": 16,
+        "sha256": "142f391994ee887f4c76bea2ac9dacb014640f0d9b0a981a03c8591107d7de12"
+      },
+      "lib/lean/Plugin.olean.hash": {
+        "bytes": 16,
+        "sha256": "9c400578b9c1144542d04144ec99183686484ec615dd31df9953b7ef01a32f27"
+      }
+    },
+    "total_bytes": 72626,
+    "file_count": 36
+  },
+  "full": {
+    "ProofBase.lean": {
+      "label": "full-ProofBase.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "info: prune_consumer: no previous manifest, creating one from scratch\n",
+      "seconds": 0.21
+    },
+    "ProofTactic.lean": {
+      "label": "full-ProofTactic.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofTactic.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.201
+    },
+    "ProofExtra.lean": {
+      "label": "full-ProofExtra.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofExtra.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.201
+    },
+    "ProofMacro.lean": {
+      "label": "full-ProofMacro.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofMacro.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.641
+    },
+    "plugin_load": {
+      "label": "full-plugin",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.445
+    },
+    "plugin_marker": "plugin-loaded"
+  },
+  "pruned": {
+    "ProofBase.lean": {
+      "label": "pruned-ProofBase.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.2
+    },
+    "ProofTactic.lean": {
+      "label": "pruned-ProofTactic.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofTactic.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.203
+    },
+    "ProofExtra.lean": {
+      "label": "pruned-ProofExtra.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofExtra.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Extra'\\n\\nNo directory 'Extra' or file 'Extra.olean' in the search path entries:\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"ProofExtra.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "seconds": 0.128
+    },
+    "ProofMacro.lean": {
+      "label": "pruned-ProofMacro.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofMacro.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Macro'\\n\\nNo directory 'Macro' or file 'Macro.olean' in the search path entries:\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"ProofMacro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "seconds": 0.128
+    },
+    "plugin_load": {
+      "label": "pruned-plugin",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: no such file or directory (error code: 2)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib\n",
+      "seconds": 0.058
+    },
+    "plugin_marker": null
+  },
+  "no_build": {
+    "extra": {
+      "label": "pruned-no-build-extra",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Extra"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+      "rc": 3,
+      "stdout": "✖ [3/4] Building Extra\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Extra\n",
+      "stderr": "",
+      "seconds": 0.139
+    },
+    "macro": {
+      "label": "pruned-no-build-macro",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Macro"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+      "rc": 3,
+      "stdout": "✖ [2/3] Building Macro\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Macro\n",
+      "stderr": "",
+      "seconds": 0.157
+    }
+  },
+  "after_no_build": {
+    "files": {
+      "ir/Extra.c.hash": {
+        "bytes": 16,
+        "sha256": "249fc48456fa0bb1a114c6f0adc747b893f4c652f244804705422bba673551b0"
+      },
+      "ir/Base.c.hash": {
+        "bytes": 16,
+        "sha256": "89d192f98c75e669577d061368fcd629de8420c751d7ab0ad4847d691fcf805a"
+      },
+      "ir/Extra.c": {
+        "bytes": 1580,
+        "sha256": "daa8171e5ad3bddcc2a596a2a0391975889414ace703f2ef9f5a56bff0f657c2"
+      },
+      "ir/Macro.setup.json": {
+        "bytes": 134,
+        "sha256": "767a79bd811dad4bcb83b13109d3d871e5e53c471ed6dc297aae88c65dacaf18"
+      },
+      "ir/Plugin.c.o.export": {
+        "bytes": 2896,
+        "sha256": "f44daf998b3b89c47e2ceb9e7c991c8f8f0c7544df36fa245a7082d0bdaa6a17"
+      },
+      "ir/Plugin.c.o.export.hash": {
+        "bytes": 16,
+        "sha256": "4eb97fc4bb7bd6ddfcb7e4531ec2d7ec049c970824c68c9e37fe935a5228c1b8"
+      },
+      "ir/Base.c": {
+        "bytes": 1398,
+        "sha256": "0f400952a2b024cb6d8d8437bbee5b6ba5210c9ac4f90357a66919d800983967"
+      },
+      "ir/Plugin.c.hash": {
+        "bytes": 16,
+        "sha256": "8a4ee97f598b2c157fc4756a8c0b79318e676b189f3c6c7959147cca773de01d"
+      },
+      "ir/Base.setup.json": {
+        "bytes": 133,
+        "sha256": "12a9ca28222075d74c4c3ca29c8222cfde27aab7d0c1eeecc40bd8cd9da181b6"
+      },
+      "ir/Extra.setup.json": {
+        "bytes": 381,
+        "sha256": "436c802a5f66ad96ce2a9496b5088c4c9e0198dcad6679efbd9a6478e528a8d9"
+      },
+      "ir/Plugin.c": {
+        "bytes": 4942,
+        "sha256": "b3f4655a86d1b98f0cc754cc1f4c6ffa538f77c76a2a48663616472b7b5699e8"
+      },
+      "ir/Plugin.c.o.export.trace": {
+        "bytes": 1861,
+        "sha256": "da286efd2896494f8984e7b83802ba09af1f1f68f4ae3adefb64af0e1c4b93b8"
+      },
+      "ir/Macro.c.hash": {
+        "bytes": 16,
+        "sha256": "a33048bd11de78511aea8060575eafb39d3be49e4fd71a59e5f2f67ff0ab46d0"
+      },
+      "ir/Plugin.setup.json": {
+        "bytes": 135,
+        "sha256": "f58d2389602cff6deeeb2e9bb3a2c8c4068a0789a4e5c931bcf812605479516b"
+      },
+      "ir/Macro.c": {
+        "bytes": 15431,
+        "sha256": "1c69e13a00d019d3166c52943f2a270c6bc205df0a67d4461204e89de1aaf9b4"
+      },
+      "lib/lean/Plugin.ilean": {
+        "bytes": 758,
+        "sha256": "7797a5b87a4186a8be5fff9a9a438a554efc4290de5f909342ca257e4a08ce02"
+      },
+      "lib/lean/Macro.trace.nobuild": {
+        "bytes": 1077,
+        "sha256": "567f46fd3792e92f390d348348601216ee903ac148af84b9df57b23114828269"
+      },
+      "lib/lean/Macro.trace": {
+        "bytes": 2731,
+        "sha256": "9c6908b4fbbfa8db7ce2081196076d80f3d14950e5147540b21cc34e63681546"
+      },
+      "lib/lean/Base.ilean.hash": {
+        "bytes": 16,
+        "sha256": "11c2babdb4a34d3dffa15783a8409563e10c10281eb9cf7ea93ca89f78bcd227"
+      },
+      "lib/lean/Plugin.olean": {
+        "bytes": 24008,
+        "sha256": "cc95a583c2fb7ee25d5ccfbb374a9c52efa126b4a6dd5b59c4c88fab9216501d"
+      },
+      "lib/lean/Macro.ilean.hash": {
+        "bytes": 16,
+        "sha256": "75dad99076c9d363494fa30f4664e28449570336a2a83a733807dd0ba93a36b7"
+      },
+      "lib/lean/Base.trace": {
+        "bytes": 2722,
+        "sha256": "c99549041307a79708627643045ee2cf850f6511a7d87464c9c86883be7829aa"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.hash": {
+        "bytes": 16,
+        "sha256": "9376c56cb2047b73ef78dcd839913b72ecd9401b6ee892ea03039758079809ef"
+      },
+      "lib/lean/Extra.trace": {
+        "bytes": 2830,
+        "sha256": "6625e4fd11ef97a7d39cf45aa38f9bdbf1a75e2bddc0d00527c0920b616bf71e"
+      },
+      "lib/lean/Extra.ilean": {
+        "bytes": 405,
+        "sha256": "ee379f1a1871208b189e3d3d585951be5ac6383d14d274c82e598b6e2acfd5fd"
+      },
+      "lib/lean/Macro.olean.hash": {
+        "bytes": 16,
+        "sha256": "3e29135c56e438581e2576b1bea2ebf10084f862f3b2e416c75f1be5ba0e1329"
+      },
+      "lib/lean/Base.ilean": {
+        "bytes": 291,
+        "sha256": "06ddb818db894c4c039b9711c29ff5d7c0b8f7ebe4ee23f68ed2e76bb8e4ee80"
+      },
+      "lib/lean/Macro.ilean": {
+        "bytes": 218,
+        "sha256": "04618d67685a036550e49bc8e0662e7b2ed7b400634ae688272295b6d4c8ace4"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.trace": {
+        "bytes": 1356,
+        "sha256": "a0b4d7b10d25c01ab66adb766284b134804b70a63bf1bb3f90d7ecd5e6de3d29"
+      },
+      "lib/lean/Base.olean": {
+        "bytes": 4616,
+        "sha256": "0e0f014d0a81dde5aed23ddd3ac32f6e59a697909639176e9d60a081d999f43f"
+      },
+      "lib/lean/Plugin.trace": {
+        "bytes": 2740,
+        "sha256": "e76f7697105c37a7a792c957ee3b4d0bae5f0bb58ae16adfabe331098421ba3a"
+      },
+      "lib/lean/Base.olean.hash": {
+        "bytes": 16,
+        "sha256": "0f6c7d73b72db526ab3e67946e6abcb7fd3fd71fa05902c4fd251440e0ba4885"
+      },
+      "lib/lean/Extra.olean.hash": {
+        "bytes": 16,
+        "sha256": "1524842413ba03f2ccfa7300cfb0afb1465e1bed2c1e39cb12ea5f226b33312c"
+      },
+      "lib/lean/Plugin.ilean.hash": {
+        "bytes": 16,
+        "sha256": "550961396cc55855ed51d348f2caf535fb39ccfc62d4681c33f279391d37c920"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.rsp": {
+        "bytes": 836,
+        "sha256": "8aff103a130fe172aec0b02fe60d69f6235d4f4d24609f9e03541b45ae0ab5c9"
+      },
+      "lib/lean/Extra.trace.nobuild": {
+        "bytes": 1176,
+        "sha256": "792e0244e0743f1eaf271e2bd02193985e8e3f94e627cfeef26892bb726ecb2f"
+      },
+      "lib/lean/Extra.ilean.hash": {
+        "bytes": 16,
+        "sha256": "142f391994ee887f4c76bea2ac9dacb014640f0d9b0a981a03c8591107d7de12"
+      },
+      "lib/lean/Plugin.olean.hash": {
+        "bytes": 16,
+        "sha256": "9c400578b9c1144542d04144ec99183686484ec615dd31df9953b7ef01a32f27"
+      }
+    },
+    "total_bytes": 74879,
+    "file_count": 38
+  },
+  "live_scratch": [
+    {
+      "label": "base",
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+      "text": "import Base\ntheorem scratch : selected = 7 := by\n  exact ?_\n",
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 34,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 34,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+        "version": 1
+      },
+      "physical_exists": false
+    },
+    {
+      "label": "extra",
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+      "text": "import Extra\ntheorem scratch : extra = 8 := by\n  exact ?_\n",
+      "wait": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "goal": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ extra = 8"
+          ],
+          "rendered": "```lean\n⊢ extra = 8\n```"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n⊢ extra = 8",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 31,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n⊢ extra = 8",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 31,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+        "version": 1
+      },
+      "physical_exists": false
+    }
+  ],
+  "after_live": {
+    "files": {
+      "ir/Extra.c.hash": {
+        "bytes": 16,
+        "sha256": "249fc48456fa0bb1a114c6f0adc747b893f4c652f244804705422bba673551b0"
+      },
+      "ir/Base.c.hash": {
+        "bytes": 16,
+        "sha256": "89d192f98c75e669577d061368fcd629de8420c751d7ab0ad4847d691fcf805a"
+      },
+      "ir/Extra.c": {
+        "bytes": 1580,
+        "sha256": "daa8171e5ad3bddcc2a596a2a0391975889414ace703f2ef9f5a56bff0f657c2"
+      },
+      "ir/Macro.setup.json": {
+        "bytes": 134,
+        "sha256": "767a79bd811dad4bcb83b13109d3d871e5e53c471ed6dc297aae88c65dacaf18"
+      },
+      "ir/Plugin.c.o.export": {
+        "bytes": 2896,
+        "sha256": "f44daf998b3b89c47e2ceb9e7c991c8f8f0c7544df36fa245a7082d0bdaa6a17"
+      },
+      "ir/Plugin.c.o.export.hash": {
+        "bytes": 16,
+        "sha256": "4eb97fc4bb7bd6ddfcb7e4531ec2d7ec049c970824c68c9e37fe935a5228c1b8"
+      },
+      "ir/Base.c": {
+        "bytes": 1398,
+        "sha256": "0f400952a2b024cb6d8d8437bbee5b6ba5210c9ac4f90357a66919d800983967"
+      },
+      "ir/Plugin.c.hash": {
+        "bytes": 16,
+        "sha256": "8a4ee97f598b2c157fc4756a8c0b79318e676b189f3c6c7959147cca773de01d"
+      },
+      "ir/Base.setup.json": {
+        "bytes": 133,
+        "sha256": "12a9ca28222075d74c4c3ca29c8222cfde27aab7d0c1eeecc40bd8cd9da181b6"
+      },
+      "ir/Extra.setup.json": {
+        "bytes": 381,
+        "sha256": "436c802a5f66ad96ce2a9496b5088c4c9e0198dcad6679efbd9a6478e528a8d9"
+      },
+      "ir/Plugin.c": {
+        "bytes": 4942,
+        "sha256": "b3f4655a86d1b98f0cc754cc1f4c6ffa538f77c76a2a48663616472b7b5699e8"
+      },
+      "ir/Plugin.c.o.export.trace": {
+        "bytes": 1861,
+        "sha256": "da286efd2896494f8984e7b83802ba09af1f1f68f4ae3adefb64af0e1c4b93b8"
+      },
+      "ir/Macro.c.hash": {
+        "bytes": 16,
+        "sha256": "a33048bd11de78511aea8060575eafb39d3be49e4fd71a59e5f2f67ff0ab46d0"
+      },
+      "ir/Plugin.setup.json": {
+        "bytes": 135,
+        "sha256": "f58d2389602cff6deeeb2e9bb3a2c8c4068a0789a4e5c931bcf812605479516b"
+      },
+      "ir/Macro.c": {
+        "bytes": 15431,
+        "sha256": "1c69e13a00d019d3166c52943f2a270c6bc205df0a67d4461204e89de1aaf9b4"
+      },
+      "lib/lean/Plugin.ilean": {
+        "bytes": 758,
+        "sha256": "7797a5b87a4186a8be5fff9a9a438a554efc4290de5f909342ca257e4a08ce02"
+      },
+      "lib/lean/Macro.trace.nobuild": {
+        "bytes": 1077,
+        "sha256": "567f46fd3792e92f390d348348601216ee903ac148af84b9df57b23114828269"
+      },
+      "lib/lean/Macro.trace": {
+        "bytes": 2731,
+        "sha256": "9c6908b4fbbfa8db7ce2081196076d80f3d14950e5147540b21cc34e63681546"
+      },
+      "lib/lean/Base.ilean.hash": {
+        "bytes": 16,
+        "sha256": "11c2babdb4a34d3dffa15783a8409563e10c10281eb9cf7ea93ca89f78bcd227"
+      },
+      "lib/lean/Plugin.olean": {
+        "bytes": 24008,
+        "sha256": "cc95a583c2fb7ee25d5ccfbb374a9c52efa126b4a6dd5b59c4c88fab9216501d"
+      },
+      "lib/lean/Macro.ilean.hash": {
+        "bytes": 16,
+        "sha256": "75dad99076c9d363494fa30f4664e28449570336a2a83a733807dd0ba93a36b7"
+      },
+      "lib/lean/Base.trace": {
+        "bytes": 2722,
+        "sha256": "c99549041307a79708627643045ee2cf850f6511a7d87464c9c86883be7829aa"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.hash": {
+        "bytes": 16,
+        "sha256": "9376c56cb2047b73ef78dcd839913b72ecd9401b6ee892ea03039758079809ef"
+      },
+      "lib/lean/Extra.trace": {
+        "bytes": 3052,
+        "sha256": "a8e25aa639cdc9a5ca61cf885b8c5131ea00d06befb9ae5277e385c00730c24e"
+      },
+      "lib/lean/Extra.ilean": {
+        "bytes": 405,
+        "sha256": "ee379f1a1871208b189e3d3d585951be5ac6383d14d274c82e598b6e2acfd5fd"
+      },
+      "lib/lean/Macro.olean.hash": {
+        "bytes": 16,
+        "sha256": "3e29135c56e438581e2576b1bea2ebf10084f862f3b2e416c75f1be5ba0e1329"
+      },
+      "lib/lean/Base.ilean": {
+        "bytes": 291,
+        "sha256": "06ddb818db894c4c039b9711c29ff5d7c0b8f7ebe4ee23f68ed2e76bb8e4ee80"
+      },
+      "lib/lean/Extra.olean": {
+        "bytes": 5776,
+        "sha256": "46a60832299443360b2728211b0a3baabfe9592d4240f57cbc1fc68f630285a2"
+      },
+      "lib/lean/Macro.ilean": {
+        "bytes": 218,
+        "sha256": "04618d67685a036550e49bc8e0662e7b2ed7b400634ae688272295b6d4c8ace4"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.trace": {
+        "bytes": 1356,
+        "sha256": "a0b4d7b10d25c01ab66adb766284b134804b70a63bf1bb3f90d7ecd5e6de3d29"
+      },
+      "lib/lean/Base.olean": {
+        "bytes": 4616,
+        "sha256": "0e0f014d0a81dde5aed23ddd3ac32f6e59a697909639176e9d60a081d999f43f"
+      },
+      "lib/lean/Plugin.trace": {
+        "bytes": 2740,
+        "sha256": "e76f7697105c37a7a792c957ee3b4d0bae5f0bb58ae16adfabe331098421ba3a"
+      },
+      "lib/lean/Base.olean.hash": {
+        "bytes": 16,
+        "sha256": "0f6c7d73b72db526ab3e67946e6abcb7fd3fd71fa05902c4fd251440e0ba4885"
+      },
+      "lib/lean/Extra.olean.hash": {
+        "bytes": 16,
+        "sha256": "1524842413ba03f2ccfa7300cfb0afb1465e1bed2c1e39cb12ea5f226b33312c"
+      },
+      "lib/lean/Plugin.ilean.hash": {
+        "bytes": 16,
+        "sha256": "550961396cc55855ed51d348f2caf535fb39ccfc62d4681c33f279391d37c920"
+      },
+      "lib/lean/prune__producer_Plugin.dylib.rsp": {
+        "bytes": 836,
+        "sha256": "8aff103a130fe172aec0b02fe60d69f6235d4f4d24609f9e03541b45ae0ab5c9"
+      },
+      "lib/lean/Extra.ilean.hash": {
+        "bytes": 16,
+        "sha256": "142f391994ee887f4c76bea2ac9dacb014640f0d9b0a981a03c8591107d7de12"
+      },
+      "lib/lean/Plugin.olean.hash": {
+        "bytes": 16,
+        "sha256": "9c400578b9c1144542d04144ec99183686484ec615dd31df9953b7ef01a32f27"
+      }
+    },
+    "total_bytes": 79701,
+    "file_count": 38
+  },
+  "commands": [
+    {
+      "label": "build-full",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Base",
+        "Extra",
+        "Macro",
+        "+Plugin:dynlib"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+      "rc": 0,
+      "stdout": "✔ [1/7] Built Base (184ms)\n✔ [4/10] Built Extra (168ms)\n✔ [6/10] Built Macro (655ms)\n✔ [8/10] Built Plugin (609ms)\n✔ [9/10] Built Plugin:c.o (48ms)\n✔ [10/10] Built Plugin:dynlib (44ms)\nBuild completed successfully (10 jobs).\n",
+      "stderr": "info: prune_producer: no previous manifest, creating one from scratch\n",
+      "seconds": 1.79
+    },
+    {
+      "label": "full-ProofBase.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "info: prune_consumer: no previous manifest, creating one from scratch\n",
+      "seconds": 0.21
+    },
+    {
+      "label": "full-ProofTactic.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofTactic.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.201
+    },
+    {
+      "label": "full-ProofExtra.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofExtra.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.201
+    },
+    {
+      "label": "full-ProofMacro.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofMacro.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.641
+    },
+    {
+      "label": "full-plugin",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.445
+    },
+    {
+      "label": "pruned-ProofBase.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.2
+    },
+    {
+      "label": "pruned-ProofTactic.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofTactic.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.203
+    },
+    {
+      "label": "pruned-ProofExtra.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofExtra.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Extra'\\n\\nNo directory 'Extra' or file 'Extra.olean' in the search path entries:\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"ProofExtra.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "seconds": 0.128
+    },
+    {
+      "label": "pruned-ProofMacro.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "ProofMacro.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Macro'\\n\\nNo directory 'Macro' or file 'Macro.olean' in the search path entries:\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/.lake/build/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"ProofMacro.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "seconds": 0.128
+    },
+    {
+      "label": "pruned-plugin",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "env",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--plugin=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib",
+        "ProofBase.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: no such file or directory (error code: 2)\n  file: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer/.lake/build/lib/lean/prune__producer_Plugin.dylib\n",
+      "seconds": 0.058
+    },
+    {
+      "label": "pruned-no-build-extra",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Extra"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+      "rc": 3,
+      "stdout": "✖ [3/4] Building Extra\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Extra\n",
+      "stderr": "",
+      "seconds": 0.139
+    },
+    {
+      "label": "pruned-no-build-macro",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Macro"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/producer",
+      "rc": 3,
+      "stdout": "✖ [2/3] Building Macro\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Macro\n",
+      "stderr": "",
+      "seconds": 0.157
+    }
+  ],
+  "wire_events": [
+    {
+      "seq": 0,
+      "ms": 4521.3,
+      "kind": "launch",
+      "label": "pruned-scratch",
+      "mode": "lake-serve",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "serve"
+      ],
+      "pid": 4634,
+      "root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer"
+    },
+    {
+      "seq": 1,
+      "ms": 4555.5,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 4602,
+          "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 4598.2,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 4598.3,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 4598.3,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Base\ntheorem scratch : selected = 7 := by\n  exact ?_\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 4598.3,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 4598.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 4598.5,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 4598.7,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 4773.6,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 4839.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 4839.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 4918.8,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 4919.0,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 4919.2,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "ms": 4919.7,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 4919.7,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 4919.7,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 18,
+      "ms": 4919.7,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 4919.8,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 34,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 34,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 4920.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "ms": 4920.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 4920.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 23,
+      "ms": 4920.1,
+      "kind": "request_latency",
+      "label": "pruned-scratch",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 321.8
+    },
+    {
+      "seq": 24,
+      "ms": 4920.1,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 4920.5,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 4920.5,
+      "kind": "request_latency",
+      "label": "pruned-scratch",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 27,
+      "ms": 4920.5,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean"
+          }
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 4920.6,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Extra\ntheorem scratch : extra = 8 := by\n  exact ?_\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 4920.6,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 30,
+      "ms": 4920.8,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/base-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "ms": 4921.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 5163.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 33,
+      "ms": 5163.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 34,
+      "ms": 5206.8,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "message": "✔ [4/5] Built Extra (188ms)\n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              },
+              "severity": 3
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 35,
+      "ms": 5207.9,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 36,
+      "ms": 5353.5,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 37,
+      "ms": 5353.5,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 38,
+      "ms": 5354.0,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 39,
+      "ms": 5354.3,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 5354.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 41,
+      "ms": 5354.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 5354.4,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 43,
+      "ms": 5354.9,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ extra = 8",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 31,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ extra = 8",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 31,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 44,
+      "ms": 5355.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 5355.1,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 5355.6,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 47,
+      "ms": 5355.6,
+      "kind": "request_latency",
+      "label": "pruned-scratch",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 12,
+      "elapsed_ms": 435.1
+    },
+    {
+      "seq": 48,
+      "ms": 5355.7,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean"
+          },
+          "position": {
+            "line": 2,
+            "character": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 5356.0,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ extra = 8"
+          ],
+          "rendered": "```lean\n⊢ extra = 8\n```"
+        }
+      }
+    },
+    {
+      "seq": 50,
+      "ms": 5356.0,
+      "kind": "request_latency",
+      "label": "pruned-scratch",
+      "method": "$/lean/plainGoal",
+      "rid": 13,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 51,
+      "ms": 5356.1,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean"
+          }
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 5356.1,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 53,
+      "ms": 5356.2,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2/support/work/consumer/extra-Scratch.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 5356.2,
+      "kind": "server",
+      "label": "pruned-scratch",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 55,
+      "ms": 5356.3,
+      "kind": "client",
+      "label": "pruned-scratch",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 56,
+      "ms": 5362.0,
+      "kind": "stop",
+      "label": "pruned-scratch",
+      "rc": 0,
+      "pid": 4634,
+      "stderr": ""
+    }
+  ]
+}

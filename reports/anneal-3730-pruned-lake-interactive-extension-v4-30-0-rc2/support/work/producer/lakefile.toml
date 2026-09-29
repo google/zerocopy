@@ -1,0 +1,9 @@
+name = "prune_producer"
+[[lean_lib]]
+name = "Base"
+[[lean_lib]]
+name = "Extra"
+[[lean_lib]]
+name = "Macro"
+[[lean_lib]]
+name = "Plugin"

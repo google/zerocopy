@@ -1,0 +1,19 @@
+{
+  "topics": [
+    "lean/language-server",
+    "lean/imports",
+    "lean/elaboration-context"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 direct server and batch compiler",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

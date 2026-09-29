@@ -1,0 +1,30 @@
+{
+  "consistent_order": {
+    "exits": [
+      0,
+      0
+    ],
+    "first_acquired_both": true,
+    "second_acquired_both": true,
+    "second_waited_for_first": true
+  },
+  "fd_exhaustion": {
+    "last_good_sha256": "d051a4da6ad4bd60265c5c92b9cc2be1ccd32988ab82f6f0e20eaba0245c27f9",
+    "opened_extra_descriptors": 29,
+    "pointer_after_failure": "A",
+    "pointer_after_retry": "B",
+    "retry_artifact_sha256": "2e2a5e486187e00465b70653e7f670cc9b66def0dd844e4c7386143813569459",
+    "soft_nofile": 32,
+    "stage_failed_emfile": true
+  },
+  "lock_order_cycle": {
+    "both_blocked_before_kill": true,
+    "both_first_locks_held": true,
+    "both_second_locks_attempted": true,
+    "survivor_acquired_after_victim_kill": true,
+    "survivor_exit": 0,
+    "victim_exit": -9
+  },
+  "platform": "darwin",
+  "python": "3.14.7"
+}

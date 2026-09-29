@@ -1,0 +1,1128 @@
+{
+  "artifact_sha256_before": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+  "artifact_sha256_restored": "7ae5507721d0d228cfdb0c2399d6ef858bc918e48376470954b3600e40862cb3",
+  "batch_before": {
+    "exit": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "batch_missing": {
+    "exit": 1,
+    "stderr": "",
+    "stdout": "{\"caption\":\"\",\"data\":\"unknown module prefix 'Dep'\\n\\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\\n/tmp/anneal-live-olean-zmnulgej\\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean\",\"endPos\":null,\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"error\"}\n"
+  },
+  "batch_restored": {
+    "exit": 0,
+    "stderr": "",
+    "stdout": ""
+  },
+  "first_server": {
+    "exit": 0,
+    "messages": [
+      {
+        "direction": "client",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "initialize",
+          "params": {
+            "capabilities": {},
+            "initializationOptions": {
+              "hasWidgets": false
+            },
+            "processId": 4103,
+            "rootUri": "file:///tmp/anneal-live-olean-zmnulgej"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "initialized",
+          "params": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "languageId": "lean",
+              "text": "import Dep\ntheorem selected : depValue = 7 := by\n  decide\n",
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "$/lean/plainGoal",
+          "params": {
+            "position": {
+              "character": 2,
+              "line": 2
+            },
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "\u22a2 depValue = 7"
+            ],
+            "rendered": "```lean\n\u22a2 depValue = 7\n```"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "method": "$/lean/plainGoal",
+          "params": {
+            "position": {
+              "character": 2,
+              "line": 2
+            },
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "\u22a2 depValue = 7"
+            ],
+            "rendered": "```lean\n\u22a2 depValue = 7\n```"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "languageId": "lean",
+              "text": "import Dep\ntheorem second : depValue = 7 := by\n  decide\n",
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 2,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 0,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                },
+                "message": "unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n/tmp/anneal-live-olean-zmnulgej\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "method": "$/lean/plainGoal",
+          "params": {
+            "position": {
+              "character": 2,
+              "line": 2
+            },
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 7,
+          "jsonrpc": "2.0",
+          "method": "shutdown",
+          "params": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 7,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "exit",
+          "params": null
+        }
+      }
+    ],
+    "stderr": ""
+  },
+  "fresh_missing": {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n/tmp/anneal-live-olean-zmnulgej\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  "fresh_server": {
+    "exit": 0,
+    "messages": [
+      {
+        "direction": "client",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "initialize",
+          "params": {
+            "capabilities": {},
+            "initializationOptions": {
+              "hasWidgets": false
+            },
+            "processId": 4103,
+            "rootUri": "file:///tmp/anneal-live-olean-zmnulgej"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "initialized",
+          "params": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "languageId": "lean",
+              "text": "import Dep\ntheorem selected : depValue = 7 := by\n  decide\n",
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 2,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 0,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                },
+                "message": "unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n/tmp/anneal-live-olean-zmnulgej\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 0
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "$/lean/plainGoal",
+          "params": {
+            "position": {
+              "character": 2,
+              "line": 2
+            },
+            "textDocument": {
+              "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "method": "shutdown",
+          "params": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "exit",
+          "params": null
+        }
+      }
+    ],
+    "stderr": ""
+  },
+  "live_initial": {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Proof.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 depValue = 7"
+        ],
+        "rendered": "```lean\n\u22a2 depValue = 7\n```"
+      }
+    }
+  },
+  "live_same_after_unlink": {
+    "id": 4,
+    "jsonrpc": "2.0",
+    "result": {
+      "goals": [
+        "\u22a2 depValue = 7"
+      ],
+      "rendered": "```lean\n\u22a2 depValue = 7\n```"
+    }
+  },
+  "live_second_after_unlink": {
+    "diagnostics": [
+      {
+        "diagnostics": [],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "unknown module prefix 'Dep'\n\nNo directory 'Dep' or file 'Dep.olean' in the search path entries:\n/tmp/anneal-live-olean-zmnulgej\n/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///tmp/anneal-live-olean-zmnulgej/Second.lean",
+        "version": 1
+      }
+    ],
+    "goal": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  "pin": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  }
+}

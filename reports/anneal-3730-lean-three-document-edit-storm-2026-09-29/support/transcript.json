@@ -1,0 +1,1964 @@
+[
+  {
+    "ms": 3.98,
+    "kind": "subject",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": {
+      "Slow.lean": "e1b63020c5c2dc27b1f69e475cdee908a65f2c603823bcad2f3940b9320d859c",
+      "Batch.lean": "a96b7ae23a8558d1a483e06ddec1795acc1a4a4a4f5e985d725fc6d4fbb4a788",
+      "FastA.lean": "ca567f47e3e7f22e42f589359c0dc8ca42df0417f7fc2a518329e40ba452af1f"
+    },
+    "free_memory_percent": 45
+  },
+  {
+    "ms": 5.27,
+    "kind": "server_start",
+    "pid": 5193
+  },
+  {
+    "ms": 22.18,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 5191,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "ms": 43.91,
+    "kind": "server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "ms": 43.95,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "ms": 44.05,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\ntheorem slow : True := by\n  run_tac do\n    IO.FS.writeFile \"slow.entered\" \"entered\"\n    while !(\u2190 (System.FilePath.mk \"slow.release\").pathExists) do\n      IO.sleep 10\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "ms": 44.08,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 774.93,
+    "kind": "slow_gate_entered"
+  },
+  {
+    "ms": 775.02,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\ntheorem demo : 1 = 1 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "ms": 775.04,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 797.45,
+    "kind": "server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 797.49,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "ms": 808.68,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 819.62,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 830.56,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 841.54,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 852.43,
+    "kind": "server",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 852.47,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 0,
+      "result": null
+    }
+  },
+  {
+    "ms": 863.33,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 874.24,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 885.05,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 895.65,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 906.43,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 918.08,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 928.94,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 939.55,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 961.23,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 1019.24,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1042.38,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 1129.15,
+    "kind": "server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 1129.19,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "result": null
+    }
+  },
+  {
+    "ms": 1349.66,
+    "kind": "server",
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 1349.7,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": null
+    }
+  },
+  {
+    "ms": 1461.16,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1482.12,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1492.63,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1503.09,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1515.55,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 3
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1526.18,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1536.5,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1547.0,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1557.35,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 1 = 1",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 24,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 1 = 1",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 24,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 1567.91,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1579.37,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 1590.99,
+    "kind": "server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ms": 1591.01,
+    "kind": "fast_initial_ready"
+  },
+  {
+    "ms": 1592.33,
+    "kind": "batch_start",
+    "pid": 5258
+  },
+  {
+    "ms": 2297.52,
+    "kind": "batch_gate_entered"
+  },
+  {
+    "ms": 2297.62,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\ntheorem demo : 2 = 2 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 2297.64,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\ntheorem demo : 4 = 4 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 2297.65,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\ntheorem demo : 40 = 40 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 2297.67,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\ntheorem demo : 3 = 3 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 2297.68,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 5
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\ntheorem demo : 5 = 5 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ms": 2297.68,
+    "kind": "burst_complete",
+    "fastA_final_version": 5
+  },
+  {
+    "ms": 2297.7,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "ms": 2319.82,
+    "kind": "server",
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2319.86,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": null
+    }
+  },
+  {
+    "ms": 2330.05,
+    "kind": "server",
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2330.09,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": null
+    }
+  },
+  {
+    "ms": 2340.21,
+    "kind": "server",
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2340.24,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": null
+    }
+  },
+  {
+    "ms": 2350.53,
+    "kind": "server",
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "ms": 2350.56,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": null
+    }
+  },
+  {
+    "ms": 2372.44,
+    "kind": "server",
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2372.47,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": null
+    }
+  },
+  {
+    "ms": 2519.91,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "ms": 2530.07,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+          "version": 5
+        }
+      }
+    }
+  },
+  {
+    "ms": 2540.26,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 5 = 5",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 8,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 2
+              },
+              "start": {
+                "character": 24,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 5 = 5",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 24,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "ms": 2550.62,
+    "kind": "server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ms": 2550.64,
+    "kind": "fast_final_waits",
+    "responses": {
+      "12": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    "elapsed_since_burst_ms": 252.96
+  },
+  {
+    "ms": 2550.74,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean"
+        },
+        "position": {
+          "line": 2,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "ms": 2571.89,
+    "kind": "server",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 5 = 5"
+        ],
+        "rendered": "```lean\n\u22a2 5 = 5\n```"
+      }
+    }
+  },
+  {
+    "ms": 2571.9,
+    "kind": "fast_final_goals",
+    "responses": {
+      "13": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "\u22a2 5 = 5"
+          ],
+          "rendered": "```lean\n\u22a2 5 = 5\n```"
+        }
+      }
+    },
+    "elapsed_since_burst_ms": 274.22
+  },
+  {
+    "ms": 2821.84,
+    "kind": "batch_end",
+    "exit": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "ms": 2822.23,
+    "kind": "slow_gate_released"
+  },
+  {
+    "ms": 2845.78,
+    "kind": "server",
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2845.82,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "result": null
+    }
+  },
+  {
+    "ms": 2855.91,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 2,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 2865.55,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 8,
+                "line": 6
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 True",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 8,
+                "line": 6
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 6
+              },
+              "start": {
+                "character": 23,
+                "line": 1
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 True",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 23,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 2874.91,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 2884.45,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ms": 2893.85,
+    "kind": "server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ms": 2893.86,
+    "kind": "slow_wait_end",
+    "response": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ms": 2894.86,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "ms": 2917.62,
+    "kind": "server",
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "ms": 2917.66,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "result": null
+    }
+  },
+  {
+    "ms": 2927.76,
+    "kind": "server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "ms": 2927.79,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": null
+    }
+  },
+  {
+    "ms": 2937.33,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/FastA.lean",
+        "version": 5
+      }
+    }
+  },
+  {
+    "ms": 2946.56,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-three-document-edit-storm-2026-09-29/support/work/Slow.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ms": 2965.01,
+    "kind": "server",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "ms": 2965.05,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "ms": 3110.82,
+    "kind": "server_stop",
+    "exit": 0,
+    "stderr": ""
+  },
+  {
+    "ms": 3110.84,
+    "kind": "peak_sampled_rss_kib",
+    "value": 3566256
+  }
+]

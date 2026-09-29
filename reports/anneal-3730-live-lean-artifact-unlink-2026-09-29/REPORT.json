@@ -1,0 +1,18 @@
+{
+  "topics": [
+    "anneal/garbage-collection",
+    "lean/live-imports",
+    "filesystem/artifact-lifetime"
+  ],
+  "subjects": [
+    {
+      "name": "Direct Lean 4.30.0-rc2 server import after local OLean unlink",
+      "identity": {
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "probe_sha256": "d703178dad96db715f3ea59cac50c536ffa830a15fa1f065162c89a4df9edd26",
+        "platform": "Darwin 25.6.0 arm64"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

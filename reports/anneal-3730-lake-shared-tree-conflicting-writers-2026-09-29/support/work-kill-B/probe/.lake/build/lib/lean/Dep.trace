@@ -1,0 +1,31 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["ef364e75531dc8e8.olean"],
+  "m": false,
+  "i": "c81f865c70096b12.ilean",
+  "c": "74bb1e430a192215.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/Dep.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/.lake/build/lib/lean/Dep.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/.lake/build/lib/lean/Dep.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/.lake/build/ir/Dep.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/.lake/build/ir/Dep.setup.json --json",
+   "level": "trace"}],
+ "inputs":
+ [["Dep:deps",
+   [["deps",
+     [["probe/Dep:extraDep", [["@probe:extraDep", "00000000000006bb"]]],
+      ["imports", "00000000000006bb"]]],
+    ["libs",
+     [["import dynlibs", "00000000000006bb"],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29/support/work-kill-B/probe/Dep.lean",
+   "5e6c5d2f4f054843"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Dep", "b5a238a443dfa755"],
+  ["Package.id?: (some probe)", "f279a2614b06d19e"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "414a29e3e544b3f5"}

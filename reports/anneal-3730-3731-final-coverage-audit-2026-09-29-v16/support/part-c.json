@@ -1,0 +1,1668 @@
+{
+  "counts": {
+    "investigations": 53,
+    "suggestions": 45,
+    "total": 98
+  },
+  "new_packages": [
+    "anneal-3730-claim-relative-import-taint-2026-09-29",
+    "anneal-3730-generated-history-retention-economics-2026-09-29",
+    "anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29",
+    "anneal-3730-lean-three-document-edit-storm-2026-09-29",
+    "anneal-3730-live-lean-artifact-unlink-2026-09-29",
+    "anneal-3730-os-lock-fd-recovery-controls-2026-09-29",
+    "anneal-3730-plugin-reversal-worker-order-2026-09-29",
+    "anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2",
+    "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29"
+  ],
+  "range": "I107-I159 and K-O partial/conditional suggestions",
+  "rows": [
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R47 already ran the actual two-owner Cargo process with cancellation/retry; durable Anneal single-flight ownership and cache fan-out require the service.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I107",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Let multiple proofs request the same dependency generation, then cancel or fail individual consumers. Compare shared in-flight jobs with redundant isolated builds. Test ownership, reference counts, retries, and fan-out of failure so one requester neither corrupts nor indefinitely blocks others.",
+      "specific_remaining_delta": "R47 exercised two owners of one actual Cargo process plus one-cancel, both-cancel and failure/retry, but owner/refcount logic was a single Python harness. Actual Anneal single-flight cache/build fan-out and durable cancellation/recovery remain.",
+      "title": "Single-flight builds with several consumers",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "A two-lock OS cycle, ordered control and SIGKILL recovery are new in anneal-3730-os-lock-fd-recovery-controls-2026-09-29; Anneal prepare/cache/publish/restart/GC lock graph is unavailable.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I108",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-writer-recovery-2026-09-29",
+      "new_package": "anneal-3730-os-lock-fd-recovery-controls-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Combine environment preparation, generation publication, cache insertion, worker restart, and garbage collection. Inject pauses after lock acquisition and crashes while waiting. Identify ordering cycles and unbounded waits; compare coarse locks with a simpler ownership model before adding fine-grained coordination.",
+      "specific_remaining_delta": "Build actual preparation/cache/publication/restart/GC lock-order graph under conflicting writers; R19 ran one operation at a time.",
+      "title": "Lock ordering and publication deadlocks",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "Child-only RLIMIT_NOFILE=32 produced actual EMFILE before synthetic pointer replacement, with last-good/retry check; Anneal exhaustion handling and memory/disk/process cases remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I109",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-writer-recovery-2026-09-29",
+      "new_package": "anneal-3730-os-lock-fd-recovery-controls-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Use bounded fixtures that exhaust time, memory, disk, file descriptors, or process slots. Distinguish proof failure from incomplete checking and infrastructure failure. Verify cleanup and recovery while preserving the previous usable generation; do not let empty diagnostics after termination imply success.",
+      "specific_remaining_delta": "Inject memory/disk/fd/process exhaustion with product last-good recovery; R19 only used preflight and command timeouts.",
+      "title": "Timeouts and resource exhaustion",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R38 already killed/restarted one direct Lean peer and reconstructed a saved proof; authoritative Anneal imported generations and durable outputs need its restart owner.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I110",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Kill the worker, watchdog, Anneal process, and build subprocess separately at recorded states. Reconstruct from authoritative inputs without inherited memory. Compare results to fresh checks and distinguish a restartable partial workspace from a generation whose publication never completed.",
+      "specific_remaining_delta": "R38 reconstructed one saved tiny proof in a fresh Lean server after a peer process-group kill; stale rejection was an experiment-side epoch/version/hash model. Still force actual Anneal and build-process restarts and reconcile authoritative imported generations and durable outputs.",
+      "title": "Restart reconstruction under forced failures",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "One direct Lean server held a slow document while another received an edit burst and fresh batch ran; final wait/goal tail was measured under a hard RSS cap. Actual Anneal multi-agent fairness and realistic slow imports remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I111",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-lean-three-document-edit-storm-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Combine expensive batch checks with rapid proof edits, many agents, and a slow document. Compare debouncing, prioritization, bounded queues, and cancellation strategies. Measure tail latency, useful completed work, and starvation; latest-only correctness must not make the interface permanently unresponsive.",
+      "specific_remaining_delta": "Measured edit-storm tail latency/starvation across slow documents, multiple agents and batch load; short resource fixture has four edits only.",
+      "title": "Interactive fairness and edit storms",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "A direct Lean LSP sequence sent skipped/duplicate/late version numbers and reached final v5 state; it does not reveal each intermediate handling or test dropped watcher/MCP delivery/reconnect.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I112",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-lean-three-document-edit-storm-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e",
+      "requested_scope": "Drop, duplicate, and reorder watcher notifications and disconnect transports while work proceeds. Compare event-only invalidation with explicit state reconciliation. Determine how the system detects missed changes and restores freshness without requiring every watcher or client connection to deliver events exactly once.",
+      "specific_remaining_delta": "Dropped/duplicated/reordered actual watcher/MCP/LSP events with reconciliation; synthetic watcher and local broker events are not transport delivery.",
+      "title": "Lost filesystem and transport events",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "Read-only inventory of the retained R48 full chain now accounts for 54 worker-local files, one symlink and allocated blocks; transient/outside writes and exclusive shared bytes remain unmeasured.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I113",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Attribute logical bytes, allocated blocks, inode counts, bytes written, and peak temporary space to Rust products, LLBC, generated Lean, local `.lake` state, dependencies, caches, and logs. Include writes outside the workspace. Identify every term that scales with workers rather than shared inputs.",
+      "specific_remaining_delta": "R34 classified each tiny direct Lean worker byte/inode and R40 compared APFS/overlayfs copy/clone/hardlink counters for a 2.15-MB fixture. Full Rust, LLBC, generated Lean, Lake cache, archive, outside-workspace writes, temporary peaks and exclusive overlayfs physical bytes in an Anneal integration test remain unmeasured.",
+      "title": "Per-consumer disk bill of materials",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "resource_product_gate",
+      "disposition_reason": "R35 already admitted 1/2/4/8 tiny direct Lean workers; representative import and Anneal safe shared mutation need larger memory and service scheduling.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I114",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Increase independent consumers and active proof documents under explicit host limits, with cold and warm environments. Measure correctness, throughput, tail latency, CPU, memory, and disk before further increases. Test the intended high-worker workload without assuming that two successful consumers extrapolate or deliberately exhausting an uncontrolled host.",
+      "specific_remaining_delta": "R34 distinguished copy/symlink/hardlink/APFS-clone accounting, and R35 admitted 1/2/4/8 tiny direct Lean workers; realistic import, CPU/throughput/latency, peak physical memory and safe shared mutation across server/Lake topologies remain unmeasured.",
+      "title": "Safe concurrency scaling sweep",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "resource_product_gate",
+      "disposition_reason": "R48 ran one full Lake/server chain but rejected two-worker admission at the safe memory cap; actual nested Anneal budget is absent.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I115",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Sweep outer job count and supported inner controls for Cargo/rustc, Aeneas, Lake, and Lean. Observe real threads/processes and peak resource use. Determine where one global budget can be enforced and where independently reasonable defaults cause oversubscription or misleading benchmarks.",
+      "specific_remaining_delta": "R46 combined two tiny Charon\u2192Aeneas\u2192batch Lean workflows; R48 added one complete chain through cached Lake and live server with 2,590,336-KiB sampled RSS. Its two-worker cell was skipped. Anneal scheduler, enforced representative nested budget and hard peak/capacity remain.",
+      "title": "Nested parallelism actually enforced",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "resource_product_gate",
+      "disposition_reason": "R39 gave 5.6 minutes/63 edits on tiny direct Lean; hours-long realistic import and daemon retention exceed this safe fixture and need Anneal lifecycle.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I116",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Run long sessions with proof edits, model changes, opened/closed files, scratch attempts, and worker restarts. Track retained environments, generations, handles, and processes. Distinguish bounded warm caches from monotonic leaks and find the conditions under which recycling workers is useful or necessary.",
+      "specific_remaining_delta": "R39 extended a tiny direct Lean proof soak to 5.6 minutes across two orderly restarts, 63 edits/goals and 36 sampled footprint/tree/disk ledgers; sampled footprint plateaued after first elaboration. Hours-long realistic-import retention, cancellation/crash lifecycle, hard peaks and leak classification in an Anneal daemon remain unmeasured.",
+      "title": "Sustained edit/query soak",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "platform_resource_gate",
+      "disposition_reason": "Sequential macOS phys_footprint and summed RSS already retained; unique process-tree physical/PSS requires suitable OS accounting or representative Linux Lean workers.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I117",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Measure platform-appropriate physical/proportional footprint and shared-page behavior alongside per-process RSS. Separate Lean workers, watchdogs, native plugins, and file cache. Establish a resource model suitable for scheduling; summing RSS must not be treated as unique physical memory consumption.",
+      "specific_remaining_delta": "Measure unique physical process-tree memory or Linux PSS for representative workers/plugins; R16 sampled summed RSS and sequential per-PID phys_footprint, neither unique tree bytes.",
+      "title": "Physical memory versus summed RSS",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "R48 retained 17.068s direct, 12.045s Lake, 7.256s fresh batch in 54.754s wall; new inventory labels the 18.385s remainder unattributed, not server latency. Real edit/query decomposition remains.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I118",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Measure capture, projection, extraction, translation, import preparation, elaboration, and query response separately. Compare proof-only, Rust-model, import-header, and toolchain changes at several realistic sizes. Identify whether startup, serialization, generation churn, or actual proof work dominates before choosing an optimization.",
+      "specific_remaining_delta": "Decompose complete Rust extraction, Aeneas, Lake, Lean and query latency under realistic edits; R16 measured direct warm Lean request medians only.",
+      "title": "End-to-end latency decomposition",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R40 APFS/overlayfs copy/clone/hardlink counters exist; actual prepared-tree consumer writes and immutable sharing policy need Anneal workspace implementation.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I119",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Compare direct read-only consumption, symlinks, hardlinks, reflinks, and copies on relevant filesystems. Attempt expected consumer writes in owned fixtures and inspect the producer. Measure disk savings and correctness together; copy-on-write appearance or identical paths do not establish isolation.",
+      "specific_remaining_delta": "R40 demonstrated divergent APFS/overlayfs copy, reflink, hardlink and mutation accounting for a tiny file tree. Actual Anneal prepared-tree sharing under concurrent consumer writes, exclusive overlayfs extent bytes, representative load and immutable-boundary enforcement remain unverified.",
+      "title": "Sharing strategies without mutable aliasing",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "The new cached Lake pruning report measures missing optional import/macro/plugin failures, base proof, scratch serve rebuild and bytes; full Anneal archive and extensibility policy remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Tiny two-package Lean/TOML clean and relocated prepared Lake fixture, no-build checks, isolated home/denied loopback, native facet and cache wrong-object/truncated-map controls. Boundary: No real Anneal archive, server query, complete plugin/native family, network syscall trace, concurrent restore or full integrity oracle."
+        }
+      ],
+      "id": "I120",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+      "new_package": "anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Extend proofs with new imports, tactics, macros, plugins, and scratch documents after preparing a pruned dependency universe. Detect missing closure and compare demand preparation with full installations. Quantify space saved against supported interactions and failure clarity rather than optimizing archive size alone.",
+      "specific_remaining_delta": "R21 showed one already-prepared tactic and plugin. Prune prepared modules and test new imports, tactics, macros, native plugins and scratch documents with space/failure measures.",
+      "title": "Module pruning versus interactive extensibility",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "Direct live Lean OLean unlink retains an old open goal but blocks new/fresh imports until rebuild; actual Anneal GC leases, pending query and replay remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I121",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-live-lean-artifact-unlink-2026-09-29",
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Retire generations while workers, pending queries, scratch forks, and replay records still reference them. Test imported memory maps and later file opens, not just open handles. Determine the safe reclamation condition and whether explicit leases, references, or isolated worker lifetimes provide it.",
+      "specific_remaining_delta": "R26 showed a reader retaining an old immutable Proof.lean path after a pointer swap. Still test actual GC leases for workers, pending queries, scratch forks, later opens and replay; reclamation was not attempted.",
+      "title": "Garbage collection with live readers",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R39 and R38 cover direct Lean orderly restart and peer kill; durable Anneal owner identities/orphan leases and repeated crash reconciliation require the engine.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Direct filesystem/process fixture with nine SIGKILL phases, multi-file staging, late completion, locks/GC/restart and reconciliation. Boundary: Synthetic backend and tiny files; not actual Cargo/Charon/Aeneas/Lake/Lean process groups or crash-durable product state."
+        }
+      ],
+      "id": "I122",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Interrupt cleanup and leave orphan workspaces, incomplete stages, expired RPC objects, and cancelled scratch files. Restart repeatedly and measure reclaimed versus retained space. Separate a live consumer from abandoned state without deleting another process's current generation or losing evidence promised to the user.",
+      "specific_remaining_delta": "R39's two direct Lean restarts were orderly and preserved one tiny proof source; R38's peer kill restarted a saved proof. Durable owner identity, repeated crash/restart cleanup, lease reconciliation and bounded orphan reclaim in an actual Anneal/Lake workspace remain untested.",
+      "title": "Bounded retention across crashes",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Direct APFS/Lean path and URI histories are already probed; two intentional Anneal workspace/module/cache routing decisions are not implemented.",
+      "evidence_scope_reviewed": [],
+      "id": "I123",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Exercise case-insensitive names, Unicode filenames, symlinks, hardlinks, relative paths, and the same tree reached through different roots. Test module identity, document routing, and cache keys. Preserve distinct intentional workspaces while detecting accidental aliases that bypass ownership or freshness checks.",
+      "specific_remaining_delta": "Connect real path aliases to module/document/cache identity and two intentional workspaces; APFS Lean imports and overlayfs byte lifetime do not establish Anneal routing.",
+      "title": "Filesystem identity and path aliases",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "platform_product_gate",
+      "disposition_reason": "APFS and cached Ubuntu overlayfs publication/copy observations exist; native ext4/XFS, Windows/network filesystem and actual Anneal worker cleanup are outside current host scope.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two trials each on host APFS and cached Ubuntu/OrbStack Linux overlayfs: descriptor/rename/unlink/flock and 2,400 sampled reads per trial. Boundary: No mapped Lean artifacts, native Linux ext4/XFS, Windows/network filesystem, indexer or crash durability."
+        }
+      ],
+      "id": "I124",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Repeat publication and cleanup probes on supported operating systems/filesystems; treat Windows or network filesystems as conditional until in scope. Include open mapped artifacts and antivirus/indexer interference where relevant. Do not generalize one platform's atomic rename or deletion behavior to another.",
+      "specific_remaining_delta": "R40 compares host APFS with cached Ubuntu Docker overlayfs copy/clone/hardlink counters, supplementing prior open-file/rename probes. Native ext4/XFS, Windows/network filesystems, mapped live Lean artifacts and filesystem-specific Anneal worker cleanup remain untested; overlayfs exclusive physical extents were not measured.",
+      "title": "Rename, locking, and open-file semantics by platform",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "R22 tested forward v1\u2192v2 plugin replacement; the new v1\u2192v2\u2192v1 same watchdog/fresh restart sentinel adds loaded-order evidence. Search collisions/ABI/product routing remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Tiny two-package Lean/TOML clean and relocated prepared Lake fixture, no-build checks, isolated home/denied loopback, native facet and cache wrong-object/truncated-map controls. Boundary: No real Anneal archive, server query, complete plugin/native family, network syscall trace, concurrent restore or full integrity oracle."
+        }
+      ],
+      "id": "I125",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+      "new_package": "anneal-3730-plugin-reversal-worker-order-2026-09-29",
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Vary library lookup paths, plugin revisions, initialization state, and ABI-compatible-looking replacements. Observe loaded binaries and restart needs. Determine whether read-only `.olean` sharing is sufficient when executable extensions retain process state or access additional runtime files.",
+      "specific_remaining_delta": "R21 freshly loaded v2 plugin beside v1 OLean and recorded initializer identity. Vary plugin search paths, compatible-looking ABI replacements and retained worker state with loaded-binary attestation.",
+      "title": "Native plugin and dynamic-library identity",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R44 executed selected paired-bundle Rust\u2192LLBC\u2192Lean cases; actual Anneal-generated obligations and full import/assumption trust boundary need its generator.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I126",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Inventory execution by build scripts, proc macros, Lake configuration, Lean commands/tactics, and native extensions. Test local containment and resource limits with benign controlled fixtures. Determine what inspection requires execution and what user authorization is needed before opening an untrusted project.",
+      "specific_remaining_delta": "R44 checked four selected Rust\u2192LLBC\u2192Aeneas\u2192fresh Lean cases across two cached compatible bundles; obligations were manually chosen. Anneal-generated obligations, broader constructs, import/assumption/axiom contracts and independent environment remain.",
+      "title": "Workspace trust and code execution boundary",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Report corpus uses selected tiny synthetic sources and hashes; reproducible private-source sanitization and complete product golden corpus need the real evidence pipeline. A filename scan would not validate leakage controls.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I127",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Capture diagnostic logs, protocol transcripts, generated files, and replay packages from private test workspaces. Identify source, path, credential, and environment exposure. Compare local full evidence with shareable minimized fixtures, preserving the ability to validate conclusions without publishing user data.",
+      "specific_remaining_delta": "R44 preserved two small compatible bundle outputs and fresh selected Lean checks; it does not supply a complete product-generated golden pattern corpus or broader toolchain matrix.",
+      "title": "Reproducible evidence without private-source leakage",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_human_gate",
+      "disposition_reason": "Untrusted text interface safeguards require an implemented agent/editor/tool authority boundary and controlled independent user/agent trials; prior local prototypes are not that interface.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I128",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-multi-workspace-isolation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lean-lake-cross-platform-artifact-portability-v4-30-0-rc2",
+      "requested_scope": "Place synthetic misleading instructions in comments, generated text, diagnostics, and retrieved proof context. Test that agent tooling treats them as data, not authorization to edit another workspace, change trust policy, or execute unrelated actions. Evaluate both interface safeguards and agent interpretation.",
+      "specific_remaining_delta": "Independent worker trials and actual interface safeguards for untrusted retrieved proof/tool text.",
+      "title": "Untrusted source text versus tool authority",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R12 weak/missing/sorry/stale/import negatives already falsify Lean-exit-only status; an authenticated Anneal status machine is not present.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel. | Direct Lean valid declarations around unfinished proof, unknown tactic, heartbeat timeout and recoverable syntax error; goal positions, diagnostics and batch failures. Boundary: No integrated Anneal status; nested/macros/EOF and stronger concurrency not tested. I046 requested direct-Lean fixture is satisfied."
+        }
+      ],
+      "id": "I129",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Distinguish no tactic at the cursor, no remaining local goals, incomplete elaboration, admitted declarations, checked obligations, and a covered Rust-level result. Test machine classifications and user/agent interpretation. Include stale model contexts so a locally solved goal cannot imply a current whole-program claim.",
+      "specific_remaining_delta": "Implement Anneal machine status with authenticated source/model/obligation identities and interrupted verification states; R12 manual weaker/missing/sorry/stale/import controls show Lean exit 0 is insufficient.",
+      "title": "Goal status versus verification status",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "Pinned Lean caller/import experiment adds axiom, sorry and independent-claim control plus stale compiled artifact reuse; native/external-model/adapter taint remains outside the fixture.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I130",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-claim-relative-import-taint-2026-09-29",
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Change axioms, admissions, native evaluation, external models, and development-only options while reusing otherwise identical artifacts. Track the affected theorem and callers. Test that cached success does not drop assumptions or launder a tainted result when displayed through a different adapter.",
+      "specific_remaining_delta": "Propagate claim-relative axiom/admission/native/external-model taint through callers and reused artifacts; R12 distinguishes external axiom versus concrete model and sorryAx in selected proofs only.",
+      "title": "Claim-relative trust and taint through reuse",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R44 fresh batch acceptance used two Charon/Aeneas pairs; matching long-lived Anneal server and exact generated artifact identity under those changes remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I131",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Check exact captured proof bytes and intended imported artifacts in a fresh controlled process. Distinguish re-elaborating local source from importing previously compiled dependencies and from independent kernel rechecking. State which shared dependencies and translators remain trusted so the oracle is not described as stronger than it is.",
+      "specific_remaining_delta": "R44's fresh selected Lean checker passed under two compatible Charon/Aeneas bundles with one Lean pin; long-lived server equivalence under those bundle changes remains untested.",
+      "title": "A genuinely independent batch oracle",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Prior direct Lean batch/live and cache-seeded cases exist separately; full matched dirty-workspace parity across paired translators needs an Anneal generated workspace.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I132",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Define separate comparisons for text, declaration identity, proposition, assumptions, obligations, and diagnostic classes. Insert changes each comparator must detect, including a weaker theorem with the same proof status. Retain raw evidence; normalization must not erase the discrepancy under investigation.",
+      "specific_remaining_delta": "R44 used fresh batch Lean after paired translator changes; matched live server, cache-seeded and dirty-workspace parity for those four cross-version cases remains untested.",
+      "title": "Semantic and diagnostic comparator calibration",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "The fake process/state model already has crash schedules and replay; comparing it with an actual Anneal engine is impossible in this checkout.",
+      "evidence_scope_reviewed": [],
+      "id": "I133",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Model the engine with controllable fake stages and enumerate bounded schedules of edits, publications, failures, cancellation, and restarts. Check explicit invariants and save minimal counterexamples. Replay selected schedules against real tools; a passing model alone does not establish implementation conformance.",
+      "specific_remaining_delta": "Broader model schedules plus replay against a real engine rather than only a fake subprocess adapter.",
+      "title": "Fault-injection state-machine harness",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R25/R26 have real process barriers and stale late completion with model IDs; actual cross-tool Anneal request/worker correlations need the service.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I134",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Use controllable handshakes or instrumentation to place edits and rebuilds inside actual in-flight requests. Preserve ordering evidence and request/worker identities. Separate deterministic sequential demonstrations from genuine races, then repeat and minimize failures rather than relying only on nondeterministic sleeps.",
+      "specific_remaining_delta": "R25 supplied sequential model identity cutoff; R26 supplied a two-process candidate barrier and one stale loser. Still exercise real Anneal request/worker IDs through in-flight cross-tool rebuild/editor interleavings and late completion.",
+      "title": "Real concurrency transcripts with causal barriers",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Selected pairwise source/import/cache/axiom controls exist; exhaustive soundness or product obligation/assumption matrix is not a bounded local component experiment.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel."
+        }
+      ],
+      "id": "I135",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Cover pairwise combinations of source changes, import changes, cache states, launch modes, and lifecycle events, adding higher-order cases suggested by failures. Seed stale outputs, missing obligations, wrong subjects, and changed assumptions. Verify the harness detects them before trusting green runs.",
+      "specific_remaining_delta": "R44 checked selected proof/axiom outputs over two paired bundles; no independent proof of translation soundness or exhaustive obligation/assumption manifest follows.",
+      "title": "Interaction matrix and negative controls",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "external_gate",
+      "disposition_reason": "Independent-machine reproduction and an upgraded compatible cross-tool tuple cannot be supplied by another same-host temp copy; two cached pairs already tested locally.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Second worker wrote a new driver and reran A/F/B live/batch/gated-late controls; 33/33 exact comparison fields matched. Boundary: Same host/toolchain and prior source exposure; no independent machine/operator blind study or compatible-upgrade matrix."
+        }
+      ],
+      "id": "I136",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2;anneal-v1-contract-mutation-adequacy-2026-09-28;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Reproduce the highest-consequence findings with an independent environment/operator and exact pins, then compare deliberately selected compatible toolchain upgrades. Classify fixes, regressions, unsupported tuples, and untested cells separately. Preserve old findings about old subjects rather than marking them obsolete because a new version differs.",
+      "specific_remaining_delta": "Reproduce on an independent machine/operator and selected compatible upgraded cross-tool tuple; the new separate clean Cargo target is on the same host and same pins.",
+      "title": "Independent reproduction and cross-version boundaries",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Synthetic Rust-hosted projection and manual full golden chain exist; actual annotation parser/host editor/Anneal live query implementation is absent.",
+      "evidence_scope_reviewed": [],
+      "id": "I137",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Build one disposable prototype that opens an unsaved Lean annotation, projects it, queries goals, applies a version-checked edit, and checks the captured result in batch. Use a prepared generated model and retain all context identities. This tests the scaffolding seam without requiring interactive Charon or Aeneas.",
+      "specific_remaining_delta": "Real Rust-hosted annotation with parser, projection, prepared model, exact live query/edit, and batch check.",
+      "title": "Minimal embedded-proof vertical slice",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Actual Aeneas model changes and separate Lean state probes exist, but before/during/after generations through one Anneal owner are not implemented.",
+      "evidence_scope_reviewed": [],
+      "id": "I138",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Extend the prototype with a Rust edit that changes the generated model, including a failing intermediate generation and a late obsolete result. Query before/during/after publication and compare fresh checks. Require explicit old/new/provisional states and no accidental mixture of source or imports.",
+      "specific_remaining_delta": "Real Charon/Aeneas model-change sequence with pending/failing/late generations and before/during/after queries.",
+      "title": "Full model-change vertical slice",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "resource_product_gate",
+      "disposition_reason": "R38 isolated four direct Lean workers and denied eight by admission; actual parallel generated-project acceptance needs Anneal plus representative imports under a measured budget.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I139",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Run isolated generated projects against the actual shared read-only toolchain, with model edits, scratch trials, forced restarts, and cleanup. Combine the disk inventory and concurrency sweep. Define acceptable bounds from measurements and host budgets, not a promise of zero overhead or a fixed universal worker count.",
+      "specific_remaining_delta": "R38 admitted four independent tiny Lean servers, isolated one malformed buffer, killed/restarted one peer and verified the other peers; eight was denied by admission. Actual parallel Anneal generated-project tests with shared imports, model edit, scratch publication, cancellation, restart and budget/fence enforcement remain unrun.",
+      "title": "Real parallel-test acceptance scenario",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_study_gate",
+      "disposition_reason": "Prior V1 concat_slices agent trial and protocol controls exist; matched counterbalanced tasks over the intended V2 agent interface require its implementation and controlled evaluation.",
+      "evidence_scope_reviewed": [],
+      "id": "I140",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Give controlled authoring and repair tasks with known contracts and allowed assumptions. Compare exact goal/context access with simpler batch feedback under matched budgets. Score intended-statement preservation, stale-query errors, conflicts, intervention, and resource use\u2014not just accepted Lean or tool-call count.",
+      "specific_remaining_delta": "Multiple controlled agent tasks with counterbalanced feedback order, matched cognitive budgets, and broader contracts.",
+      "title": "Agent proof-edit correctness and maintenance",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "human_gate",
+      "disposition_reason": "The validated scenario/assignment protocol has no frozen Anneal UI, consented participants or responses; this cannot be replaced with synthetic participants.",
+      "evidence_scope_reviewed": [],
+      "id": "I141",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Evaluate presentation of stale models, pending imports, cancelled work, unsupported translation, approximate locations, and expired goal handles. Test whether readers choose the intended subject and a sound repair. Improve the interface without weakening result semantics or forcing ordinary Rust users into generated Lean internals.",
+      "specific_remaining_delta": "The validated study protocol has eight keyed scenarios and balanced empty assignments, but no rendered/frozen Anneal UI, consenting participants or outcome data; execute the human trial before classifying comprehension.",
+      "title": "Human understanding of freshness and failure",
+      "v15_experiment_packages": "",
+      "v15_status": "conditional"
+    },
+    {
+      "disposition": "product_workload_gate",
+      "disposition_reason": "M06 gives small real Lake replay; matched workload economics and a chosen optional optimization/workaround decision need the actual V2 workflow and representative jobs.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Pinned architecture precedent/source comparison and three runnable toy process topologies with failure, restart and collision controls. Boundary: Toy hash-and-sleep backend; not matched real Charon/Aeneas/Lean cost, upstream patch, or adopted design."
+        }
+      ],
+      "id": "I142",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Use prior results to compare subprocess reuse, finer-grained invalidation, incremental projection, shared brokers, and historical snapshot retention with their simpler baselines. Record benefits, added invariants, and failure cases. Reject or defer optimizations whose complexity is not justified by measured workloads.",
+      "specific_remaining_delta": "M06 adds a small Lake replay/rebuild trace but no matched real-workload adoption economics for reuse, fine invalidation, projection, broker and history; no workaround was selected for deletion.",
+      "title": "Measured adoption gates for optional optimizations",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "conditional",
+      "disposition_reason": "Remote durability is conditional on a measured local need; no remote service, deployment or user authorization is implied by current component evidence.",
+      "evidence_scope_reviewed": [],
+      "id": "I143",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "Test a small versioned proof job across an isolated remote/local boundary, including retries, authentication, cancellation, artifact identity, and result validation. Determine which local contracts already suffice. Do not introduce distributed orchestration or persistent sessions unless an actual workflow justifies them.",
+      "specific_remaining_delta": "Remote durable job is conditional on an actual measured local workflow need; no remote deployment justified by this corpus.",
+      "title": "Remote and durable execution, only if needed",
+      "v15_experiment_packages": "",
+      "v15_status": "conditional"
+    },
+    {
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Existing decision ledgers specify candidate invariants; adopting a final V2 design/regressions depends on remaining integrated service/workload evidence and owner choice.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel. | Pinned architecture precedent/source comparison and three runnable toy process topologies with failure, restart and collision controls. Boundary: Toy hash-and-sleep backend; not matched real Charon/Aeneas/Lean cost, upstream patch, or adopted design."
+        }
+      ],
+      "id": "I144",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lsp-proof-assistant-architecture-2026-09-27;anneal-v1-end-to-end-pipeline-41f5b37;anneal-3725-recommendation-coverage-audit-2026-09-28",
+      "requested_scope": "For each tested hypothesis, record supporting evidence, counterexamples, untested stronger claims, chosen fallback, and the smallest regression probe. Identify the v2 interfaces that must change now versus later options. Keep factual reports in `reference` and adopted design in its proper authority; this synthesis must not silently adopt every prototype.",
+      "specific_remaining_delta": "After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "title": "Decision and regression synthesis",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R25/G15 and R44 manual full-chain hashes show selected identity cuts; producer-authenticated end-to-end keys through a real Anneal MCP response are absent.",
+      "evidence_scope_reviewed": [],
+      "id": "I145",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-identity-state-mutation-model-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "anneal-interactive-pipeline-invalidation-graph-main-41f5b37;lean-server-tactic-state-v4-30-0-rc2;anneal-v1-interactive-dependency-invalidation-2026-09-28",
+      "requested_scope": "Prototype an identity tuple containing Cargo subject, exact source snapshot, Charon tool/configuration, LLBC digest, Aeneas tool/configuration, generated-tree digest, prepared Lake environment, import traces/hashes, projected URI/version/hash, server generation, file-worker incarnation, and RPC-session incarnation. Remove one dimension at a time and seek a counterexample. Keep locators constant while changing payloads at every stage; compare A\u2192B\u2192A, byte-identical output from different upstream histories, semantically equivalent but byte-different output, and unchanged proof text with changed imports. Distinguish monotonic causality from reusable content identity. Test a thin-adapter response envelope carrying workspace/generation, source/projected positions, current/stale status, actual environment, goal/diagnostic payload, and separately optional verification status.",
+      "specific_remaining_delta": "R25 showed an old A proof exit 0 after B publication would be stale under explicit model identity. Still perform full cross-layer identity ablation through actual Cargo\u2192Charon\u2192Aeneas\u2192Lake\u2192Lean\u2192MCP responses and product freshness routing.",
+      "title": "Minimum cross-layer identity by ablation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "A bounded 1/2/4 tier sweep of four retained Aeneas-generated generations measures source/artifact bytes, historical goals, one reconstruction, restarts and sampled RSS. Real Anneal workloads and 8/16 concurrent retention economics remain.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I146",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-generated-history-retention-economics-2026-09-29",
+      "prior_evidence_packages": "lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;anneal-v1-integration-test-disk-amplification-f98458e;lean-generated-file-interactive-workflows-v4-30-0-rc2",
+      "requested_scope": "Compare retaining source only; source plus projection; generated Lean; workspace-local Lake state; compiled generated modules; and live workers. Sweep 1/2/4/8/16 retained generations within host budgets. Measure disk, memory, reconstruction latency, and correctness of historical goals against old imports. Compare retained worker, reconstructed projection, fresh worker over retained artifacts, and refusal. Determine when a revision handle should expire rather than implying durable historical-query support.",
+      "specific_remaining_delta": "Retention tiers on actual generated outputs with memory, historical-goal latency, recomputation, and restart costs.",
+      "title": "Retention versus recomputation economics",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R33 fixed source and perturbed model/OLean/worker; real producer-generation clock and cross-version source/artifact decoupling need integrated generation ownership.",
+      "evidence_scope_reviewed": [],
+      "id": "I147",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-identity-state-mutation-model-2026-09-29;anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "prior_evidence_packages": "anneal-v1-interactive-dependency-invalidation-2026-09-28;lake-olean-invalidation-v4-30-0-rc2;lake-artifact-cache-key-semantics-v4-30-0-rc2",
+      "requested_scope": "Replace an imported `.olean` while leaving source unchanged, varying relevant timestamps; separately change source but obtain byte-identical rebuilt semantic artifacts. Include changed external models with unchanged Aeneas output. Query existing and refreshed workers and compare fresh batch controls. Determine when artifact identity forces reload, when restart is merely conservative, and which additional options/native/setup identities prevent byte equality from establishing an equivalent environment.",
+      "specific_remaining_delta": "R33 fixed Aeneas-generated text while model source/OLean and old/new worker results changed; source/artifact clock and identity perturbations across compatible versions and actual producer generations remain untested.",
+      "title": "Source/artifact changes decoupled from each other",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "representativeness_gate",
+      "disposition_reason": "R42/R43 deterministic LLBC field and Aeneas comparison plus R44 paired bundles/flags exist; arbitrary flags/layouts/revisions and production trace costs cannot be exhaustively inferred from tiny pins.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Pinned one-shot Aeneas CLI input/flag/schema matrix, complete file/declaration manifest, stale output and partial-sorry failure. Boundary: No same-process library call, registered external-model mutation, authenticated cross-layer mapping or second release."
+        }
+      ],
+      "id": "I148",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-charon-concurrency-interruption-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "aeneas-generated-source-determinism-nightly-2026-06-03;aeneas-generated-source-repeat-run-probe-nightly-2026-06-03;charon-performance-and-revision-probes-2026-09-28",
+      "requested_scope": "Repeat identical Charon extractions and Aeneas generations sequentially and concurrently at Anneal's intended flags, split-file layout, and parallel settings. Preserve raw LLBC and Lean and separately compare justified semantic relationships. Investigate ordering/comment/formatting changes that leave the intended model equivalent but invalidate raw hashes, Lake traces, or Lean command-prefix reuse. Measure downstream cost before normalizing keys; retain source/provenance differences that matter to editing or evidence.",
+      "specific_remaining_delta": "R42's five same-input LLBC hashes differed only by short-name array order; R43 obtained identical generated Lean and direct Lean acceptance for all five, plus no same-path Lake local rebuild after byte-identical source replacement. Raw LLBC identity still churns. Other Charon/Aeneas revisions, flags, layouts, parallel settings, substantive model edits and actual Anneal publication/trace cost remain untested; only this field-specific comparison is justified.",
+      "title": "Translation determinism and harmless textual instability",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "G15 hashes and one-to-three helper joins reject stale links, but Charon def_id\u2192Aeneas\u2192obligation associations are manual and not producer-authenticated.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Pinned one-shot Aeneas CLI input/flag/schema matrix, complete file/declaration manifest, stale output and partial-sorry failure. Boundary: No same-process library call, registered external-model mutation, authenticated cross-layer mapping or second release."
+        }
+      ],
+      "id": "I149",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "charon-item-identity-spans-comments-nightly-2026-06-03;rust-source-span-provenance-nightly-2026-05-31;aeneas-generated-function-signatures-nightly-2026-06-03",
+      "requested_scope": "Prototype one machine-readable handoff manifest with subject/tool/configuration identities, source LLBC digest, complete generated file list, module/import graph, declaration identities, and coarse source provenance. Relate compiler-resolved Rust items through Charon declarations and Aeneas pure declarations to generated Lean declarations and Anneal obligations, including one-to-many helpers. Keep exact editable proof ranges separate. Test navigation, deletion, and invalidation consumers; establish what Anneal must supply at its selected Aeneas pin without assuming newer `translation.json` support.",
+      "specific_remaining_delta": "Pinned manifests link real LLBC source/span and Aeneas name/span comments across reorder, same-leaf and one-to-three helper cases, with stale-hash rejection. Charon def_id\u2192Aeneas declaration\u2192Anneal obligation keys are absent; joins are manual, not producer-authenticated.",
+      "title": "Cross-layer declaration and generation manifest",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "R21 covered tiny batch/setup/serve/plugin and new I120 probes pruned no-build versus normal serve; actual immutable prepared archive operation matrix and InfoView/RPC inputs need product packaging.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Tiny two-package Lean/TOML clean and relocated prepared Lake fixture, no-build checks, isolated home/denied loopback, native facet and cache wrong-object/truncated-map controls. Boundary: No real Anneal archive, server query, complete plugin/native family, network syscall trace, concurrent restore or full integrity oracle."
+        }
+      ],
+      "id": "I150",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+      "new_package": "anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2",
+      "prior_evidence_packages": "lake-server-preparation-v4-30-0-rc2;lake-readonly-relocation-offline-concurrency-v4-30-0-rc2;lake-artifact-cache-architecture-v4-30-0-rc2",
+      "requested_scope": "Enumerate required inputs/artifacts/configuration for batch build, `lake env lean --json`, `lake serve`, per-file `setup-file`, InfoView/RPC, and native plugin/dynamic-library use. Classify producer-owned immutable state, consumer-owned mutable state, and any explicitly permitted shared-writable cache. Test the minimum source/control-plane material plus artifact cache as a reconstruction candidate and identify missing classes. Derive the identity under which pooling is valid rather than using a single unqualified \u201cprepared\u201d flag.",
+      "specific_remaining_delta": "R21 covers fresh lake serve/setup and direct batch in one tiny local graph. Complete operation-specific prepared archive inputs for build, JSON batch, InfoView/RPC and native plugin under read-only consumption.",
+      "title": "Prepared-environment contract by operation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "New same-writable-Lake-tree reverse crash schedules show a successful stale survivor can leave no-build failure until retry; actual Anneal shared-tree policy still absent.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Tiny two-package Lean/TOML clean and relocated prepared Lake fixture, no-build checks, isolated home/denied loopback, native facet and cache wrong-object/truncated-map controls. Boundary: No real Anneal archive, server query, complete plugin/native family, network syscall trace, concurrent restore or full integrity oracle."
+        }
+      ],
+      "id": "I151",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lake-writer-recovery-2026-09-29",
+      "new_package": "anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29",
+      "prior_evidence_packages": "lake-cache-concurrency-execution-probe-v4-30-0-rc2;lake-workspace-package-mutable-state-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2",
+      "requested_scope": "In owned disposable fixtures, compare consumers sharing one writable package directory or generated-module build directory with isolated consumers over a frozen producer. Run identical and conflicting builds and interrupt writers at controlled publication points. Check cache maps, partial outputs, subsequent reads/retries, and cross-consumer definitions. Seek the strongest valid shared-writer contract or preserve a minimal failure\u2014not a preselected negative result. Keep artifact-cache publication distinct from shared package-directory mutation.",
+      "specific_remaining_delta": "Force conflicting writers in a shared writable package tree and crash schedules with integrity/recovery oracles; R15 performed only one-command local replacement, and R10 private-root cache pairs remain distinct.",
+      "title": "Shared writable build-tree counterexample study",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "Local event model and MCP wire/Tasks toy bridges already cover drop/reconnect controls; no real Lean MCP adapter and Anneal subscription implementation is installed.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "One direct Lean stdio connection plus two logical local clients: unsaved source, versioned goal/diagnostics, CAS retry, dropped local event/poll, restart/rename and direct cancellation. Boundary: No actual MCP transport, editor extension, separate clients, diagnostic multiplexing or real Anneal bridge."
+        }
+      ],
+      "id": "I152",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-mcp-implementations-2026-09-27;mcp-proof-assistant-architecture-2026-07-28",
+      "requested_scope": "On explicitly supported protocol revisions, prototype subscriptions/change streams for generation changes, diagnostics, proof readiness, and verification completion; compare polling and explicit state reconciliation. Drop or delay notifications, disconnect clients, and retry result retrieval. Determine whether subscriptions improve responsiveness while polling/reconciliation remains the correctness path, and provide a capability fallback rather than presuming every MCP client supports the same mechanism.",
+      "specific_remaining_delta": "Actual MCP subscriptions/listen versus polling under delayed/dropped delivery, reconnect and state reconciliation; new local event model is not MCP transport.",
+      "title": "MCP subscriptions versus polling",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "resource_product_gate",
+      "disposition_reason": "One full Lake/server chain passed R48 and two-worker cell was refused by 8-GiB host cap; actual editor/MCP scratch topology and representative capacity need service plus more headroom.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof. | One direct Lean watchdog versus two on conflicting same-named Dep imports; direct session invalidation after close/reopen and summed RSS. Boundary: No MCP broker, Lake launch matrix, 4/8 document sweep, unique physical memory or delayed internal-worker response."
+        }
+      ],
+      "id": "I153",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-server-concurrency-experiment-v4-30-0-rc2;lean-server-multi-workspace-isolation-v4-30-0-rc2;lean-server-memory-and-protocol-concurrency-v4-30-0-rc2;mcp-proof-assistant-architecture-2026-07-28",
+      "requested_scope": "For one prepared environment, compare N open proof files under one watchdog with N independent servers. Compare one MCP process serving many sessions, environments, or repositories with per-workspace adapters and an external broker. Sweep 1/2/4/8/... prewarmed scratch documents and compare fresh scratch creation, prefix reuse, teardown, memory, latency, and process ownership. Use conflicting definitions/options/plugins to detect cross-workspace reuse; do not pool independently configured projects merely because document APIs accept their URIs.",
+      "specific_remaining_delta": "H08 routed two direct Lean servers; R48 drove one Lake-launched server after the actual tiny Rust\u2192Charon\u2192Aeneas chain, then fresh batch checked the same goal. Two-worker Lake/server admission was skipped; editor/MCP/product topology and realistic capacity remain.",
+      "title": "Server, MCP, and scratch-pool topology",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "new_component",
+      "disposition_reason": "New direct Lean plugin v1\u2192v2\u2192v1 worker-order/restart sentinel adds contamination evidence; real fixture-scoping over imported models and Anneal test runner remains.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Guarded two-Lake-consumer cold/warm run and two-server four-edit sentinel, sampled RSS/phys_footprint/disk with clean shutdown. Boundary: Tiny fixtures, no Anneal generated project, Mathlib, high-worker sweep, long soak, PSS or peak-between-polls proof."
+        }
+      ],
+      "id": "I154",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-plugin-reversal-worker-order-2026-09-29",
+      "prior_evidence_packages": "anneal-v1-integration-test-disk-amplification-f98458e;cargo-rust-charon-anneal-coverage-matrix-2026-09-28",
+      "requested_scope": "Compare one workspace per test, one per fixture with multiple phases, and one per logical suite. Give each test a unique model definition or option that makes accidental reuse observable; include conflicting plugins where supported. Run phases in different orders and parallel schedules, interrupt selected workers, then rerun subsequent tests. Measure disk/setup savings against required reset/isolation guarantees rather than replacing heavyweight sandboxes with untested shared mutable state.",
+      "specific_remaining_delta": "Test per-test/per-fixture/per-suite contamination across plugins, ordering, restarts and imported models; R16 checked file-specific and wrong-import sentinels within tiny direct Lean workers.",
+      "title": "Fixture sharing and contamination sentinels",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Invented Rust-host broker controls cover lifecycle shape; actual editor host and Anneal hidden-document cleanup are absent.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "One direct Lean stdio connection plus two logical local clients: unsaved source, versioned goal/diagnostics, CAS retry, dropped local event/poll, restart/rename and direct cancellation. Boundary: No actual MCP transport, editor extension, separate clients, diagnostic multiplexing or real Anneal bridge."
+        }
+      ],
+      "id": "I155",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "lean-generated-file-interactive-workflows-v4-30-0-rc2;lean-server-tactic-state-v4-30-0-rc2;lsp-proof-assistant-architecture-2026-09-27",
+      "requested_scope": "If Lean/Lake requires physical paths, distinguish internal file-backed URIs from editor-facing logical documents. Independently of backing choice, open/change/save/rename/close a Rust host and trace hidden document creation, workers, updates, and cleanup. Keep unsaved source authoritative while deliberately stale or missing shadow files exist; crash/restart and reconstruct without treating mirrors as canonical. Test whether custom URIs require shadow paths, and whether model regeneration can preserve authored proof identity while changing the environment generation.",
+      "specific_remaining_delta": "Actual Rust editor host open/change/save/rename/close through Anneal projection and hidden Lean cleanup; new invented //% host in a local broker tests only lifecycle shape.",
+      "title": "Shadow files and hidden Lean-document lifecycle",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "Pinned CLI/version/source inventories and toy broker capability checks exist; real Charon/Aeneas/Lean adapter negotiation and fallback need an implemented adapter.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Pinned one-shot Aeneas CLI input/flag/schema matrix, complete file/declaration manifest, stale output and partial-sorry failure. Boundary: No same-process library call, registered external-model mutation, authenticated cross-layer mapping or second release. | One direct Lean stdio connection plus two logical local clients: unsaved source, versioned goal/diagnostics, CAS retry, dropped local event/poll, restart/rename and direct cancellation. Boundary: No actual MCP transport, editor extension, separate clients, diagnostic multiplexing or real Anneal bridge."
+        }
+      ],
+      "id": "I156",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "charon-toolchain-contract-0-1-210;aeneas-release-upgrade-checklist-nightly-2026-06-03;lake-behavior-upgrade-checklist-v4-30-0-rc2",
+      "requested_scope": "Prototype versioned descriptors for accepting unsaved inputs, filesystem materialization requirements, concurrent requests, cancellation, deterministic output, persistent process support, and fine-grained invalidation. Test descriptors against actual implementations and unsupported combinations. Distinguish a documented promise from measured behavior; choose conservative fallback or explicit failure when capabilities are absent rather than letting a uniform logical API imply uniform implementation guarantees.",
+      "specific_remaining_delta": "Versioned executable Charon/Aeneas/Lean capability descriptors with real adapter fallback and unsupported-call behavior; one-shot Aeneas and local broker descriptors are partial.",
+      "title": "Explicit backend capability negotiation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "Current batch CLI and Python live prototypes do not share one Anneal engine; that engine is not present to exercise.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "One direct Lean stdio connection plus two logical local clients: unsaved source, versioned goal/diagnostics, CAS retry, dropped local event/poll, restart/rename and direct cancellation. Boundary: No actual MCP transport, editor extension, separate clients, diagnostic multiplexing or real Anneal bridge."
+        }
+      ],
+      "id": "I157",
+      "kind": "investigation",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "prior_evidence_packages": "anneal-v1-end-to-end-pipeline-41f5b37;lsp-proof-assistant-architecture-2026-09-27",
+      "requested_scope": "Build a small batch shell and an in-process repeated edit/query driver over the same structured engine. Compare the batch shell with current CLI behavior where implemented and the live driver with fresh checks on identical captured inputs. Include model changes, cancellation, and reconstruction before adding an LSP/MCP transport. Identify divergence caused by the engine separately from adapter protocol bugs; the prototype does not claim the current CLI already implements every stage.",
+      "specific_remaining_delta": "One actual Anneal engine driven by current batch CLI and repeated in-process live shell with cancellation/reconstruction and fresh exact-input oracle; current Python prototypes are separate.",
+      "title": "Batch and transport-free live shells over one engine",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "external_product_gate",
+      "disposition_reason": "R44 replayed two compatible cached Charon/Aeneas bundles and Lean acceptance; later Lean/Lake or independent host and Anneal workaround deletion need unavailable pins/product.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Pinned one-shot Aeneas CLI input/flag/schema matrix, complete file/declaration manifest, stale output and partial-sorry failure. Boundary: No same-process library call, registered external-model mutation, authenticated cross-layer mapping or second release."
+        }
+      ],
+      "id": "I158",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "prior_evidence_packages": "charon-release-upgrade-checklist-0-1-210;aeneas-release-upgrade-checklist-nightly-2026-06-03;lake-behavior-upgrade-checklist-v4-30-0-rc2;lean-server-tactic-state-v4-30-0-rc2",
+      "requested_scope": "Derive a small retained replay suite for compatible toolchain tuples. For Lean/Lake, cover configuration ownership, workspace isolation, dependency refresh, goal versioning, server setup, and artifact families. For Charon, cover LLBC schema, span units, process lifecycle, determinism, and subject identity. For Aeneas, cover mutable globals, package layout, naming, provenance, determinism, and library/incremental APIs. Associate every manifest/trace/mtime/rewrite workaround with the exact behavior requiring it and a probe that would justify removal. Compare the examined 4.30 pin with 4.31 or another explicitly selected compatible candidate; retain accurate old-version findings and do not create a competing mutable corpus lifecycle.",
+      "specific_remaining_delta": "R44 replayed a tiny full Rust\u2192Charon\u2192Aeneas\u2192Lean golden with two cached compatible bundles and rejected cross-pairs. Later Lean/Lake, realistic projects, Anneal generated workspace, independent host and explicit workaround deletion remain.",
+      "title": "Minimal interactive upgrade suite and workaround deletion probes",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "disposition": "product_gate",
+      "disposition_reason": "R41 synthetic canonical-Lean challenge and N01-N12 component falsifications exist; matched alternatives inside one implemented Anneal service remain unavailable.",
+      "evidence_scope_reviewed": [
+        {
+          "field": "new_evidence_scope_and_limit",
+          "scope": "Two direct Lean runs: exact imported artifact/fresh proof, weak/admitted/axiom/wrong-import/missing-claim controls, killed consumer, benign tactic IO and fake-token redaction. Boundary: Synthetic Lean proposition and local LSP only; no Anneal obligation graph, human trial or independent kernel. | Pinned architecture precedent/source comparison and three runnable toy process topologies with failure, restart and collision controls. Boundary: Toy hash-and-sleep backend; not matched real Charon/Aeneas/Lean cost, upstream patch, or adopted design."
+        }
+      ],
+      "id": "I159",
+      "kind": "investigation",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "prior_evidence_packages": "anneal-interactive-pipeline-invalidation-graph-main-41f5b37;lean-lsp-old-version-wait-race-v4-30-0-rc2;lake-artifact-cache-publication-restoration-v4-30-0-rc2;lean-batch-diagnostic-normalization-oracle-v4-30-0-rc2",
+      "requested_scope": "Run the following as falsification controls in the relevant existing harnesses, not twelve duplicate surveys. Build the strongest plausible simple alternative; record the smallest counterexample or exact successful preconditions. Do not assume the leading design must win.",
+      "specific_remaining_delta": "R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "title": "Deliberately challenge the proposed architecture",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I025;I026;I149",
+      "disposition": "product_gate",
+      "disposition_reason": "Exact position sidecar needs the real Rust-hosted projection and authenticated producer links; current coordinate and manual map fixtures remain illustrative.",
+      "id": "K01",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I025: Run negotiated byte/UTF-16/scalar position encodings through the actual Rust-hosted Anneal projection; this package measured real compiler/Lean coordinates but its ///| source map is illustrative.; I026: Exercise actual annotation stripping/escaping/scaffolding map inversion and cross-segment edit refusal; invented doc-comment rules cannot establish Anneal's map.; I149: Produce authenticated Rust\u2192Charon\u2192Aeneas\u2192Lean\u2192obligation one-to-many links used for navigation and editing; R09 lexical ranges and R12 manual manifest remain unauthenticated.",
+      "suggestion_scope_basis": "Exact copied Rust doc-comment payload bytes and Unicode coordinate conversions were retained, but the source-owned range sidecar is illustrative rather than Anneal-issued.",
+      "title": "Exact pre-compiler proof-range sidecar",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I149",
+      "disposition": "product_gate",
+      "disposition_reason": "The cross-layer declaration manifest is still manual; producer-authenticated Charon/Aeneas/obligation joins need implementation.",
+      "id": "K02",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I149: Produce authenticated Rust\u2192Charon\u2192Aeneas\u2192Lean\u2192obligation one-to-many links used for navigation and editing; R09 lexical ranges and R12 manual manifest remain unauthenticated.",
+      "suggestion_scope_basis": "Pinned source/LLBC/generated Lean declarations and a three-function manual golden manifest exist; no authenticated producer-issued cross-layer ID/range map exists.",
+      "title": "Cross-layer declaration manifest",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I019;I031",
+      "disposition": "product_gate",
+      "disposition_reason": "Compiler macro-origin specimens exist; attachment to actual Anneal annotations and diagnostic ownership map is absent.",
+      "id": "K03",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29;anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I019: Attach actual Anneal annotations to compiler items across cfg, aliases, trait defaults, locals and generated items; the line-marker ambiguity and Charon spans are not an attachment implementation.; I031: Integrate actual rustc/Charon/Aeneas/Lean diagnostic origins into an Anneal source/ownership map, including ambiguous and missing spans; raw compiler/batch/LSP specimens were acquired but the routing map is illustrative.",
+      "suggestion_scope_basis": "Real Charon macro-generated item spans and missing source text were observed; edit responsibility in the Rust-hosted Anneal projection remains undecided.",
+      "title": "Macro provenance/edit responsibility",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I031;I141",
+      "disposition": "human_product_gate",
+      "disposition_reason": "Synthetic blame/diagnostic cases exist; actual UI rendering and consented comprehension trial are missing.",
+      "id": "K04",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I031: Integrate actual rustc/Charon/Aeneas/Lean diagnostic origins into an Anneal source/ownership map, including ambiguous and missing spans; raw compiler/batch/LSP specimens were acquired but the routing map is illustrative.; I141: The validated study protocol has eight keyed scenarios and balanced empty assignments, but no rendered/frozen Anneal UI, consenting participants or outcome data; execute the human trial before classifying comprehension.",
+      "suggestion_scope_basis": "Real batch/LSP diagnostic specimens and an illustrative source blame map exist; the new human protocol has no participants or outcome data.",
+      "title": "Synthetic-scaffolding blame evaluation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I059;I101;I123",
+      "disposition": "product_platform_gate",
+      "disposition_reason": "APFS direct Lean relocation/URI probes exist; Rust-host navigation and producer-removed archive identity need Anneal; other filesystems unavailable.",
+      "id": "K05",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I059: Map Lean hover, definition/references, semantic tokens, signature and inlay responses from generated Lean to authored Rust, including missing imported source; R18 acquired direct cross-file Lean responses only.; I101: R21 copied a local producer/consumer pair but retained the producer. Relocate a producer-removed prepared Anneal archive with native/setup/server paths and retained workers.; I123: Connect real path aliases to module/document/cache identity and two intentional workspaces; APFS Lean imports and overlayfs byte lifetime do not establish Anneal routing.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Relocation and normalized diagnostic identities",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I021;I029",
+      "disposition": "product_gate",
+      "disposition_reason": "Finite stale/delete/move marker model exists; actual editor transaction and pending-query annotation identity are absent.",
+      "id": "K06",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29;anneal-3730-identity-state-mutation-model-2026-09-29;anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I021: Maintain real annotation identity across move, duplicate, split, reorder and delete while queries are pending; the marker locator and finite alias model give selected counterexamples.; I029: Apply source-owned patches through real editor transactions after source shifts and conflicting writers; the two-range stale/mixed/conflicting rejects were in a local model.",
+      "suggestion_scope_basis": "A live Lean version-1 diagnostic returned after its owner Rust doc-comment line was deleted on disk; a local source-version gate rejected the patch, without an Anneal editor transport.",
+      "title": "Owning range deleted during query",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I032;I063",
+      "disposition": "product_gate",
+      "disposition_reason": "Rustfmt marker and invented incremental projector probes exist; actual annotation grammar/indexed map at size needs product.",
+      "id": "K07",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I032: Fuzz the actual annotation grammar/edit stream and measure full versus incremental maps at useful size; this tiny invented projector's indexed path was slower over 80 steps.; I063: The I063 direct Lean LSP plus Python hash-poll watcher covered dirty buffer versus disk, failing save, external overwrite, reopen, real rustfmt marker stability, duplicate suppression, formatting, cancellation and retry. Still test actual editor and Anneal watcher/generator event ordering, multi-client ownership, mapped generated files and user-visible diagnostics.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Rustfmt and proof-map stability",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I024;I034;I056;I155",
+      "disposition": "product_gate",
+      "disposition_reason": "URI and live proof/body model probes exist; stable proof identity through actual Anneal model regeneration remains.",
+      "id": "K08",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29;anneal-3730-identity-state-mutation-model-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I024: Preserve real unsaved authored proof text through Anneal regeneration, formatter, duplicate/move and external edit; comment-marker source preservation is an illustrative control.; I034: Compare stable URI and generation-path behavior with a real worker across regeneration/reopen; the finite response model has no document routing.; I056: Proof-body/statement/helper/model ablation and sound incremental reuse boundaries on real Lean imports.; I155: Actual Rust editor host open/change/save/rename/close through Anneal projection and hidden Lean cleanup; new invented //% host in a local broker tests only lifecycle shape.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Stable proof identity through model regeneration",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I006;I145",
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "Structured stage result/progress fixture exists; a common real backend adapter across Cargo/Charon/Aeneas/Lean/MCP is not implemented.",
+      "id": "L01",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-identity-state-mutation-model-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I006: A structured Charon/Aeneas/Lean adapter contract with injected progress, stdout/stderr contamination, and shared batch/live use.; I145: R25 showed an old A proof exit 0 after B publication would be stale under explicit model identity. Still perform full cross-layer identity ablation through actual Cargo\u2192Charon\u2192Aeneas\u2192Lake\u2192Lean\u2192MCP responses and product freshness routing.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Structured stage results",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I006;I113",
+      "disposition": "new_component",
+      "disposition_reason": "The retained full-chain worker tree now has a byte/inode inventory, but transient writes and actual adapter filesystem effects remain untraced.",
+      "id": "L02",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29",
+      "specific_remaining_delta": "I006: A structured Charon/Aeneas/Lean adapter contract with injected progress, stdout/stderr contamination, and shared batch/live use.; I113: R34 classified each tiny direct Lean worker byte/inode and R40 compared APFS/overlayfs copy/clone/hardlink counters for a 2.15-MB fixture. Full Rust, LLBC, generated Lean, Lake cache, archive, outside-workspace writes, temporary peaks and exclusive overlayfs physical bytes in an Anneal integration test remain unmeasured.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Backend filesystem-effects inventory",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I006;I095",
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "Selected Lake paths and progress markers exist; UI-independent product stage progress and prepared-scale process traces remain.",
+      "id": "L03",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I006: A structured Charon/Aeneas/Lean adapter contract with injected progress, stdout/stderr contamination, and shared batch/live use.; I095: R21 retained setup paths and stable hashes but no syscall trace. Trace launched process reads/writes and realized parallelism at prepared scale.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Progress independent of UI",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I007;I105",
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "R47 Cargo owner/cancel and direct Lean cancellation controls exist; cancellation abstraction across real Anneal backend stages is absent.",
+      "id": "L04",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-charon-concurrency-interruption-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I007: A shared in-flight real backend with per-consumer cancellation and cache reuse ownership, beyond symbolic/fake stages.; I105: R38 sent one direct Lean cancellation request and then killed only that server group while peers stayed responsive; no cancellation acknowledgment/processed cancellation was observed. Still cancel every real Cargo/Charon/Aeneas/Lake/Lean/Anneal phase with descendant/lock tracing and product recovery.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Cancellation abstraction fit",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I077;I081;I110",
+      "disposition": "dependency_product_gate",
+      "disposition_reason": "Direct Lean restart and Charon fresh processes are covered; same-process Aeneas requires OCaml/Dune/opam not installed and Anneal owner is absent.",
+      "id": "L05",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-charon-concurrency-interruption-2026-09-29;anneal-3730-charon-warm-target-controls-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I077: R36 used isolated Charon processes; same-process reset after error/cancel and a fresh-process equivalence oracle remain untested.; I081: OCaml/Dune/opam toolchain not installed; same-process Aeneas needs user-approved non-local dependency scope.; I110: R38 reconstructed one saved tiny proof in a fresh Lean server after a peer process-group kill; stale rejection was an experiment-side epoch/version/hash model. Still force actual Anneal and build-process restarts and reconcile authoritative imported generations and durable outputs.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Backend crash/retry reconstruction",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I156",
+      "disposition": "product_adapter_gate",
+      "disposition_reason": "CLI help/version and local broker descriptors cannot replace executable adapter capability negotiation/fallback.",
+      "id": "L06",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I156: Versioned executable Charon/Aeneas/Lean capability descriptors with real adapter fallback and unsupported-call behavior; one-shot Aeneas and local broker descriptors are partial.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Backend version/capability negotiation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I157",
+      "disposition": "product_gate",
+      "disposition_reason": "One shared actual Anneal engine for batch shell is absent; Python shells are illustrative.",
+      "id": "L07",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I157: One actual Anneal engine driven by current batch CLI and repeated in-process live shell with cancellation/reconstruction and fresh exact-input oracle; current Python prototypes are separate.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Batch shell over shared engine",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I157",
+      "disposition": "product_gate",
+      "disposition_reason": "One shared actual Anneal engine for transport-free live shell is absent; Python shells are illustrative.",
+      "id": "L08",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I157: One actual Anneal engine driven by current batch CLI and repeated in-process live shell with cancellation/reconstruction and fresh exact-input oracle; current Python prototypes are separate.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Transport-free interactive shell",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I072",
+      "disposition": "dependency_product_gate",
+      "disposition_reason": "No existing Lean MCP adapter was found; stdlib wire/Lean LSP bridge is a toy, not the real two-client adapter.",
+      "id": "L09",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "No existing Lean MCP adapter was found in scoped local inventory; current-wire toy bridge over real Lean LSP still cannot substitute for two-client existing adapter plus Anneal workspace integration.",
+      "suggestion_scope_basis": "No existing Lean MCP adapter was found in scoped local inventory; current-wire toy bridge over real Lean LSP still cannot substitute for two-client existing adapter plus Anneal workspace integration.",
+      "title": "Direct Lean backend versus MCP delegation",
+      "v15_experiment_packages": "",
+      "v15_status": "not-run"
+    },
+    {
+      "destinations": "I081;I086",
+      "disposition": "conditional_dependency",
+      "disposition_reason": "Same-process Aeneas library route is conditional; OCaml/Dune/opam is not installed and the existing one-shot CLI already supplies component controls.",
+      "id": "L10",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I081: OCaml/Dune/opam toolchain not installed; same-process Aeneas needs user-approved non-local dependency scope.; I086: The I086 one-shot file versus Python buffer-then-file Aeneas routes produced byte-identical Lean outputs and fresh proof acceptance; stdin Lean output had different OLean/provenance, and tiny transfer/RSS/corruption/cancel controls were recorded. Still test genuine same-process OCaml or structured-stream Aeneas handoff, large/concurrent workloads and Anneal cancellation/publication.",
+      "suggestion_scope_basis": "Aeneas library embedding depends on the unresolved OCaml/Dune/opam toolchain decision.",
+      "title": "Aeneas library embedding",
+      "v15_experiment_packages": "",
+      "v15_status": "conditional"
+    },
+    {
+      "destinations": "I094;I136;I158",
+      "disposition": "external_product_gate",
+      "disposition_reason": "Two cached Charon/Aeneas tuples already replayed; later Lean/Lake prepared archive migration and independent host need unavailable pins/environment.",
+      "id": "M01",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I094: Read-only prepared consumer behavior on a selected later compatible Lean/Lake tuple; current prepared fixture is 4.30-rc2 only.; I136: Reproduce on an independent machine/operator and selected compatible upgraded cross-tool tuple; the new separate clean Cargo target is on the same host and same pins.; I158: Replay full Rust/Charon/Aeneas/Lean golden across compatible revisions and delete each workaround; R12 uses one pinned cross-tool tuple and clean same-host rerun.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Interactive invariants on upgraded Lean/Lake",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I158",
+      "disposition": "product_gate",
+      "disposition_reason": "The minimal checklist is drafted and paired tuple control exists; actual Anneal upgrade acceptance/workaround deletion remains.",
+      "id": "M02",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I158: Replay full Rust/Charon/Aeneas/Lean golden across compatible revisions and delete each workaround; R12 uses one pinned cross-tool tuple and clean same-host rerun.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Minimal interactive upgrade checklist",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I158",
+      "disposition": "representativeness_gate",
+      "disposition_reason": "R44 executed two compatible cached Charon/Aeneas pairs on four tiny cases; larger corpus and release upgrade/workaround deletion remain.",
+      "id": "M03",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "Two cached compatible Charon/Aeneas pairs passed four tiny full Rust\u2192LLBC\u2192Lean fresh checks and rejected cross-pairs; larger upgrade corpus and workaround deletion remain.",
+      "suggestion_scope_basis": "Two cached compatible Charon/Aeneas pairs passed four tiny full Rust\u2192LLBC\u2192Lean fresh checks and rejected cross-pairs; larger upgrade corpus and workaround deletion remain.",
+      "title": "Charon upgrade checklist",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I158",
+      "disposition": "representativeness_gate",
+      "disposition_reason": "R44 executed two compatible cached Charon/Aeneas pairs on four tiny cases; larger corpus and release upgrade/workaround deletion remain.",
+      "id": "M04",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "Two cached compatible Charon/Aeneas pairs passed four tiny full Rust\u2192LLBC\u2192Lean fresh checks and rejected cross-pairs; larger upgrade corpus and workaround deletion remain.",
+      "suggestion_scope_basis": "Two cached compatible Charon/Aeneas pairs passed four tiny full Rust\u2192LLBC\u2192Lean fresh checks and rejected cross-pairs; larger upgrade corpus and workaround deletion remain.",
+      "title": "Aeneas upgrade checklist",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I136;I158",
+      "disposition": "external_gate",
+      "disposition_reason": "Same-host paired tuples are local evidence; independent host and later compatible cross-tool tuple remain unavailable.",
+      "id": "M05",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I136: Reproduce on an independent machine/operator and selected compatible upgraded cross-tool tuple; the new separate clean Cargo target is on the same host and same pins.; I158: Replay full Rust/Charon/Aeneas/Lean golden across compatible revisions and delete each workaround; R12 uses one pinned cross-tool tuple and clean same-host rerun.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Golden replay across toolchain tuples",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I100;I142;I158",
+      "disposition": "product_workload_gate",
+      "disposition_reason": "Nine actual Aeneas-generated Lake replay/rebuild traces exist; deletion of a product workaround needs V2 workload economics.",
+      "id": "M06",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "Nine Lake runs of real Aeneas-generated source showed no-op/mtime replay and byte-change rebuild/restore; no realistic workload economics or selected workaround deletion.",
+      "suggestion_scope_basis": "Nine Lake runs of real Aeneas-generated source showed no-op/mtime replay and byte-change rebuild/restore; no realistic workload economics or selected workaround deletion.",
+      "title": "Probes for deleting obsolete workarounds",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Path-only identity falsification already has component controls; matched service alternative comparison needs Anneal.",
+      "id": "N01",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Challenge path-only identity",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Document-version-only identity falsification already has Lean protocol controls; matched service comparison needs Anneal.",
+      "id": "N02",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Challenge document-version-only identity",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Direct Lean refresh probes exist; evaluating supported refresh across actual Anneal model regeneration needs product.",
+      "id": "N03",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Watcher, new-file open, close/reopen and fresh worker were tried in three supported launch modes; already-open worker stayed stale in this fixture.",
+      "title": "Try supported refresh without restart",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Shared/conflicting Lean workspace probes exist; matched one-server Anneal topology comparison needs product.",
+      "id": "N04",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Try one server for conflicting workspaces",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "new_component",
+      "disposition_reason": "R10 shared cache and new I151 conflicting same writable Lake tree expose failure modes; matched Anneal topology comparison remains.",
+      "id": "N05",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": "anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29",
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Try shared writable generated build state",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Lake cache false-hit/reconstruction controls exist; actual Anneal prepared archive/cache-only alternative remains.",
+      "id": "N06",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Try artifact-cache-only reconstruction",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "APFS/Lake relocation controls exist; actual prepared generation identity/routing after rename remains.",
+      "id": "N07",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Try renaming a prepared generation",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "R41 tested a synthetic canonical-generated-Lean alternative; real Anneal source authority comparison remains.",
+      "id": "N08",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "R41 executed a synthetic generated-Lean canonical proof with Rust-hosted projection, range/provenance mapping and acceptance controls; no real Anneal V2 generator, editor/MCP bridge or product architecture decision.",
+      "title": "Try generated Lean as canonical proof source",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Span-only editable range counterexamples exist; real Anneal projected editor routing remains.",
+      "id": "N09",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Try span-only editable-range recovery",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Selected proof-only bypass counterexamples exist; exhaustive product import/obligation/freshness matrix remains.",
+      "id": "N10",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Challenge universal proof-only bypass",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I159",
+      "disposition": "product_gate",
+      "disposition_reason": "Cancellation and late-completion counterexamples exist; actual Anneal publication fence remains.",
+      "id": "N12",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lean-cross-version-equivalence-v4-29-v4-30-rc2-2026-09-29;anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I159: R41 executed a synthetic generated-Lean-as-canonical proof authority and Rust-hosted projected edit/range/diagnostic round trip, with a model-change and stale/scaffold rejection. N01\u2013N12 still need matched comparison in an implemented Anneal service using real Charon/Aeneas obligations, cross-file imports, editor/MCP clients and acceptance oracle.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Challenge cancellation-only freshness",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "State-machine candidate invariants are specified; adopting one requires implemented service and owner decision.",
+      "id": "O01",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize state machine and invariants",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Invalidation matrix candidates are specified; product policy and regression acceptance remain.",
+      "id": "O02",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize invalidation matrix",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144;I145",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Identity model candidates and manual manifests exist; authenticated full-chain product keys remain.",
+      "id": "O03",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-identity-state-mutation-model-2026-09-29",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.; I145: R25 showed an old A proof exit 0 after B publication would be stale under explicit model identity. Still perform full cross-layer identity ablation through actual Cargo\u2192Charon\u2192Aeneas\u2192Lake\u2192Lean\u2192MCP responses and product freshness routing.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize stable/ephemeral identity model",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Projection/ownership candidate contract exists; real annotation/editor host implementation remains.",
+      "id": "O04",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize ownership/projection contract",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144;I150",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Lake operation probes including new pruning exist; prepared producer/consumer archive contract needs service packaging.",
+      "id": "O05",
+      "kind": "suggestion",
+      "latest_experiment_packages": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.; I150: R21 covers fresh lake serve/setup and direct batch in one tiny local graph. Complete operation-specific prepared archive inputs for build, JSON batch, InfoView/RPC and native plugin under read-only consumption.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize prepared producer/consumer contract",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Lean exact-query component contract exists; product worker-version response envelope remains.",
+      "id": "O06",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize exact proof-query contract",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Toy MCP wire/Tasks bridges exist; actual adapter/semantic API decision remains.",
+      "id": "O07",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize MCP semantic API",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Direct LSP component probes exist; real projected host/hidden-document API choice remains.",
+      "id": "O08",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize LSP semantic API",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Tiny worker and one full-chain resource results exist; representative product scheduling economics remain.",
+      "id": "O09",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize measured test-resource architecture",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    },
+    {
+      "destinations": "I144",
+      "disposition": "product_decision_gate",
+      "disposition_reason": "Batch/live contract dimensions specified; same-subject Anneal equivalence remains.",
+      "id": "O10",
+      "kind": "suggestion",
+      "latest_experiment_packages": "",
+      "new_package": null,
+      "specific_remaining_delta": "I144: After remaining real integration/workload evidence, synthesize explicit v2 interface choices and smallest regression probes; new decision ledgers do not adopt a design.",
+      "suggestion_scope_basis": "Mapped destination evidence is scoped by its report; this suggestion is not inferred complete from a partial destination.",
+      "title": "Synthesize batch/live equivalence contract",
+      "v15_experiment_packages": "",
+      "v15_status": "partial"
+    }
+  ],
+  "schema": "v16-residual-challenge-part-c-v1",
+  "source_v15": "anneal-3730-3731-final-coverage-audit-2026-09-29-v15"
+}

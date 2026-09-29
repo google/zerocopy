@@ -1440,6 +1440,31 @@
         "lean/lake"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v16": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "live_hashes": "support/live-issue-hashes.json"
+          },
+          "name": "Current public #3730 and #3731 bodies and extension comments"
+        },
+        {
+          "identity": {
+            "reference_commit": "a749b3e0787754aa00410900821baa4eb11104f6",
+            "validation": "support/validation-v16.json"
+          },
+          "name": "reference report corpus and v16 local additions"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/coverage-audit"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -1835,6 +1860,28 @@
         "aeneas/external-model",
         "anneal/cross-tool-provenance",
         "anneal/batch-acceptance"
+      ]
+    },
+    "anneal-3730-aeneas-namespace-move-proof-context-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256_file": "support/raw-results.json#tool_sha256"
+          },
+          "name": "Pinned local Charon, Aeneas, and Lean CLIs"
+        },
+        {
+          "identity": {
+            "source_files": "support/work/base/fixture.rs;support/work/moved/fixture.rs"
+          },
+          "name": "Rust module-move fixture"
+        }
+      ],
+      "topics": [
+        "aeneas/generated-name-stability",
+        "lean/proof-context",
+        "anneal/interactive-architecture"
       ]
     },
     "anneal-3730-aeneas-process-contract-2026-09-29": {
@@ -2456,6 +2503,24 @@
         "charon/incremental-boundaries"
       ]
     },
+    "anneal-3730-claim-relative-import-taint-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "platform": "Darwin 25.6.0 arm64",
+            "probe_sha256": "025d2027c85a7c144738bc8d67de9ed97392717fe076706bd6e3712ba5fa42ca"
+          },
+          "name": "Lean 4.30.0-rc2 claim-relative caller taint through compiled imports"
+        }
+      ],
+      "topics": [
+        "anneal/acceptance-oracle",
+        "lean/axiom-taint",
+        "lean/imported-artifacts"
+      ]
+    },
     "anneal-3730-cli-graceful-cancel-signals-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -2948,6 +3013,28 @@
         "anneal/interactive-verification"
       ]
     },
+    "anneal-3730-generated-history-retention-economics-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "inventory": "support/results.json#generations"
+          },
+          "name": "Four cached pinned Charon/Aeneas outputs"
+        },
+        {
+          "identity": {
+            "sha256_file": "support/results.json#tools.lean_sha256"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 direct servers"
+        }
+      ],
+      "topics": [
+        "aeneas/generated-history",
+        "lean/historical-goals",
+        "anneal/retention-economics"
+      ]
+    },
     "anneal-3730-generated-lean-canonical-source-challenge-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3089,6 +3176,25 @@
         "anneal/identity-model",
         "anneal/freshness",
         "concurrency/cas"
+      ]
+    },
+    "anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server and batch compiler"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/imports",
+        "lean/elaboration-context"
       ]
     },
     "anneal-3730-independent-vertical-reproduction-2026-09-29": {
@@ -3410,6 +3516,28 @@
         "anneal/prepared-environment"
       ]
     },
+    "anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256_file": "support/results.json#tools"
+          },
+          "name": "Pinned Lake and Lean 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "results": "support/results.json;support/results-kill-B.json"
+          },
+          "name": "Two conflicting writer schedules in one package tree"
+        }
+      ],
+      "topics": [
+        "lake/shared-writable-package",
+        "lake/concurrent-writers",
+        "lean/freshness-oracle"
+      ]
+    },
     "anneal-3730-lake-writer-recovery-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3455,6 +3583,24 @@
         "lake/build-tree",
         "lake/freshness",
         "lean/artifacts"
+      ]
+    },
+    "anneal-3730-large-tree-coherent-capture-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "filesystem": "APFS",
+            "platform": "macOS 26.6.2 arm64",
+            "probe_sha256": "fd362b30590020adbcf5cddcbd469bae78c346180d790cb17be5953ed3fa159c"
+          },
+          "name": "Gated multi-file capture fixture on macOS APFS"
+        }
+      ],
+      "topics": [
+        "anneal/snapshot-capture",
+        "filesystem/concurrent-edits",
+        "filesystem/generation-identity"
       ]
     },
     "anneal-3730-last-good-model-after-rust-failure-2026-09-29": {
@@ -3879,6 +4025,28 @@
         "anneal/freshness"
       ]
     },
+    "anneal-3730-lean-three-document-edit-storm-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256_file": "support/transcript.json#subject.lean_sha256"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 direct server and batch CLI"
+        },
+        {
+          "identity": {
+            "source_dir": "support/work"
+          },
+          "name": "Two open documents and one fresh batch source"
+        }
+      ],
+      "topics": [
+        "lean/lsp-edit-order",
+        "lean/interactive-fairness",
+        "lean/concurrent-batch-check"
+      ]
+    },
     "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3958,6 +4126,24 @@
         "anneal/projected-documents"
       ]
     },
+    "anneal-3730-live-lean-artifact-unlink-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "platform": "Darwin 25.6.0 arm64",
+            "probe_sha256": "d703178dad96db715f3ea59cac50c536ffa830a15fa1f065162c89a4df9edd26"
+          },
+          "name": "Direct Lean 4.30.0-rc2 server import after local OLean unlink"
+        }
+      ],
+      "topics": [
+        "anneal/garbage-collection",
+        "lean/live-imports",
+        "filesystem/artifact-lifetime"
+      ]
+    },
     "anneal-3730-live-proof-import-state-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4020,6 +4206,25 @@
         "lake",
         "anneal/invalidation",
         "anneal/performance"
+      ]
+    },
+    "anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server and batch compiler"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/tactic-state",
+        "lean/macros"
       ]
     },
     "anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29": {
@@ -4222,6 +4427,24 @@
         "anneal/interactive"
       ]
     },
+    "anneal-3730-os-lock-fd-recovery-controls-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "platform": "macOS Darwin 25.6.0 arm64",
+            "probe_sha256": "f137e4520adc6c793d20b3ecd073c2fed8ee74a1090a763a6c82742fe9aeec0e",
+            "python": "3.14.7"
+          },
+          "name": "Bounded two-lock and child-only descriptor exhaustion controls"
+        }
+      ],
+      "topics": [
+        "anneal/recovery",
+        "filesystem/advisory-locks",
+        "resources/file-descriptors"
+      ]
+    },
     "anneal-3730-partial-elaboration-queries-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4335,6 +4558,28 @@
         "anneal/platform-portability",
         "filesystem/rename-and-unlink",
         "filesystem/locking"
+      ]
+    },
+    "anneal-3730-plugin-reversal-worker-order-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256_file": "support/transcript.json#subject.lean_sha256"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 direct server"
+        },
+        {
+          "identity": {
+            "artifacts": "support/artifacts/plugin-v1.dylib;support/artifacts/plugin-v2.dylib"
+          },
+          "name": "Valid native plugin v1 and v2 binaries"
+        }
+      ],
+      "topics": [
+        "lean/native-plugin-lifetime",
+        "lean/worker-contamination",
+        "lake/artifact-identity"
       ]
     },
     "anneal-3730-prefix-edit-cancellation-v4-30-0-rc2": {
@@ -4455,6 +4700,26 @@
         "lsp/workspace-edits"
       ]
     },
+    "anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake local producer/consumer fixture"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/prepared-artifacts",
+        "lean/interactive-extensibility"
+      ]
+    },
     "anneal-3730-real-archive-manifest-gate-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4570,6 +4835,24 @@
         "lean/isolation"
       ]
     },
+    "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "inventory_script_sha256": "7b843daa6a6396d74d325441fa23f917a6f9f8cbd632b86bf49c5edb6f5d904d",
+            "source_package": "anneal-3730-full-lake-server-chain-2026-09-29",
+            "source_results_sha256": "8bb8a9d61054e8a6550b102c8985fc1befdac325d701c2814bc9bdc414b50f1c"
+          },
+          "name": "Read-only accounting of R48 one-worker Rust-to-Lake-to-server evidence"
+        }
+      ],
+      "topics": [
+        "anneal/resource-accounting",
+        "anneal/full-chain-latency",
+        "filesystem/retained-bytes"
+      ]
+    },
     "anneal-3730-retention-economics-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4588,6 +4871,25 @@
         "lake/prepared-environment",
         "lean/concurrency",
         "anneal/resource-economics"
+      ]
+    },
+    "anneal-3730-rpc-idle-expiry-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server RPC session"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/rpc",
+        "lean/reference-lifetime"
       ]
     },
     "anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29": {

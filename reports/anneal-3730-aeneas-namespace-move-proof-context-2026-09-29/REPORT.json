@@ -1,0 +1,8 @@
+{
+  "topics": ["aeneas/generated-name-stability", "lean/proof-context", "anneal/interactive-architecture"],
+  "subjects": [
+    {"name": "Pinned local Charon, Aeneas, and Lean CLIs", "identity": {"sha256_file": "support/raw-results.json#tool_sha256"}},
+    {"name": "Rust module-move fixture", "identity": {"source_files": "support/work/base/fixture.rs;support/work/moved/fixture.rs"}}
+  ],
+  "observed_at": "2026-09-29"
+}

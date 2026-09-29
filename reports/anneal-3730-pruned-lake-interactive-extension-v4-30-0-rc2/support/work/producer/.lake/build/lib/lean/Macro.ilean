@@ -1,0 +1,1 @@
+{"decls":{},"directImports":[["Lean",false,false,false]],"module":"Macro","references":{"{\"c\":{\"m\":\"Init.Notation\",\"n\":\"Lean.Parser.Category.tactic\"}}":{"definition":null,"usages":[[1,19,1,25]]}},"version":5}
