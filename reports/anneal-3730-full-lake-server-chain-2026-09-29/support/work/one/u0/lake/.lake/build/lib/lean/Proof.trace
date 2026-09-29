@@ -1,0 +1,42 @@
+{"synthetic": false,
+ "schemaVersion": "2025-09-10",
+ "outputs":
+ {"o": ["3027976e52bf4b9a.olean"],
+  "m": false,
+  "i": "e6f6ba3cef094abc.ilean",
+  "c": "440fe787091d3a43.c"},
+ "log":
+ [{"message":
+   ".> LEAN_PATH=/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Cli/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/batteries/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/Qq/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/aesop/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/proofwidgets/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/importGraph/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/LeanSearchClient/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/plausible/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/packages/mathlib/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean:/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/.lake/build/lib/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean -o /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/.lake/build/lib/lean/Proof.olean -i /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/.lake/build/lib/lean/Proof.ilean -c /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/.lake/build/ir/Proof.c --setup /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/.lake/build/ir/Proof.setup.json --json",
+   "level": "trace"},
+  {"message":
+   "Proof.lean:3:2: ⊢ pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+   "level": "info"},
+  {"message":
+   "Proof.lean:5:0: 'goal_inc' depends on axioms: [propext, Classical.choice, Quot.sound]",
+   "level": "info"}],
+ "inputs":
+ [["Proof:deps",
+   [["deps",
+     [["r48_probe/Proof:extraDep",
+       [["@r48_probe:extraDep", "00000000000006bb"]]],
+      ["imports",
+       [["Current transitive imports (legacy)", "468e7fb11d5c4256"],
+        ["Current:importAllArts", "1b095ff6cb73b746"]]]]],
+    ["libs",
+     [["import dynlibs",
+       [["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/libaeneas_AeneasMeta.dylib",
+         "21104d2812f08813"]]],
+      ["package external libraries", "00000000000006bb"],
+      ["module dynlibs", "00000000000006bb"],
+      ["module plugins", "00000000000006bb"]]]]],
+  ["Lean 4.30.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+   "2c8d2623007dfc36"],
+  ["/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+   "77f9e10c7599ec80"],
+  ["options", "00000000000006bb"],
+  ["isModule: false", "feefd2a0d3a1847e"],
+  ["Module.name: Proof", "649c545cbe46e90a"],
+  ["Package.id?: (some r48_probe)", "b6aec4b6728892cc"],
+  ["Module.leanArgs: #[]", "00000000000006bb"]],
+ "depHash": "91dbd435273aa833"}

@@ -1,0 +1,28 @@
+{
+  "completed_after_initial_nine_package_mapping": [
+    {
+      "suite": "R47",
+      "package": "anneal-3730-shared-cargo-consumer-ownership-2026-09-29",
+      "target": "I007/I107/H09",
+      "observed": "One real offline Cargo build shared by two toy consumers; one cancel preserved survivor, both cancel killed descendants, failure fanned out, and both stopped/failed cases retried successfully.",
+      "boundary": "Single-process toy owner logic, not Anneal scheduler or independent clients."
+    },
+    {
+      "suite": "R48",
+      "package": "anneal-3730-full-lake-server-chain-2026-09-29",
+      "target": "I115/I153/J06/H08",
+      "observed": "One complete tiny pinned Rust→Charon→Aeneas→direct Lean→Lake→live server→fresh batch chain passed; 2,590,336-KiB sampled RSS peak and successful cleanup.",
+      "boundary": "The two-worker cell was rejected by pre-admission at 40% free memory and projected 5,180,672 KiB RSS; no parallel Lake/server result or hard physical peak."
+    }
+  ],
+  "newly_exposed_feasible_cached_only_suite_on_current_host": [],
+  "resource_gated_local_cell": "R48 two-worker Lake/server chain remains unexecuted under the stated safety cap. It would require more available memory or a separately justified lower-footprint design; do not reinterpret the admission skip as a run.",
+  "unavailable_or_product_gates": [
+    "F03 later compatible Lean/Lake release absent locally",
+    "F04 actual prepared Anneal omnibus archive absent in bounded inventory",
+    "G03/L09 existing Lean MCP SDK or adapter absent locally",
+    "G15 and many partial rows require implemented Anneal workspace, editor/MCP or producer-authenticated map",
+    "Same-process Aeneas item API requires OCaml/Dune/opam or new implementation; no installation in this phase",
+    "Human counterbalanced study, independent host and broader native platform/filesystem trials require participants or environments"
+  ]
+}

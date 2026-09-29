@@ -1,0 +1,1 @@
+cargo:rerun-if-env-changed=FAIL_BUILD

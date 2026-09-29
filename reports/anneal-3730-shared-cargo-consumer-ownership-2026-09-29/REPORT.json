@@ -1,0 +1,9 @@
+{
+  "topics": ["anneal/issue-3730", "anneal/issue-3731", "anneal/cancellation", "cargo/concurrency"],
+  "subjects": [
+    {"name": "google/zerocopy issue #3730", "identity": {"repository": "google/zerocopy", "issue": "3730"}},
+    {"name": "google/zerocopy issue #3731", "identity": {"repository": "google/zerocopy", "issue": "3731"}},
+    {"name": "Cargo 1.98.1", "identity": {"version": "1.98.1", "executable_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a"}}
+  ],
+  "observed_at": "2026-09-29"
+}

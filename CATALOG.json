@@ -1310,6 +1310,38 @@
         "anneal/interactive-verification"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v12": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "d3e0e39ab26ddd79d03bea58cfe87813a33ef633",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "anneal/interactive-verification"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -2758,6 +2790,39 @@
         "lean/artifacts",
         "filesystem/sharing",
         "anneal/prepared-environment"
+      ]
+    },
+    "anneal-3730-full-lake-server-chain-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/resource-budget",
+        "lean/lake",
+        "anneal/interactive-verification"
       ]
     },
     "anneal-3730-generated-lean-canonical-source-challenge-2026-09-29": {
@@ -4434,6 +4499,38 @@
         "lean/rpc",
         "lean/memory",
         "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-shared-cargo-consumer-ownership-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "executable_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+            "version": "1.98.1"
+          },
+          "name": "Cargo 1.98.1"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/cancellation",
+        "cargo/concurrency"
       ]
     },
     "anneal-3730-shared-generator-batch-live-sinks-2026-09-29": {

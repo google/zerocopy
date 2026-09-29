@@ -1,0 +1,9 @@
+{
+  "topics": ["anneal/issue-3730", "anneal/issue-3731", "anneal/resource-budget", "lean/lake", "anneal/interactive-verification"],
+  "subjects": [
+    {"name": "google/zerocopy issue #3730", "identity": {"repository": "google/zerocopy", "issue": "3730"}},
+    {"name": "google/zerocopy issue #3731", "identity": {"repository": "google/zerocopy", "issue": "3731"}},
+    {"name": "Lean 4.30.0-rc2", "identity": {"version": "4.30.0-rc2", "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"}}
+  ],
+  "observed_at": "2026-09-29"
+}

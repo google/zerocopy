@@ -1,0 +1,6 @@
+3730_id,suggestion,destinations,remaining_delta
+F03,4.30 versus later Lake ownership,I094;I158,"Later-than-4.30 compatible Lean/Lake pin not cached; R44 changes Charon/Aeneas pairs under the same 4.30.0-rc2 Lean, so it cannot answer later Lake ownership."
+F04,Real-archive missing-manifest control,I089,"Scoped inventory found no built Anneal omnibus archive. One-module read-only Lake missing-manifest control ran, but actual archive, server first goal and producer removal at target scope remain."
+G03,Long-running MCP tasks,I065;I071,Toy stdio bridge now shows async handle/reconnect/expiry/cancel/failure over actual Lean goals; no existing MCP SDK/adapter or client interoperability/revision negotiation was run.
+G15,Agent navigation Rust-to-Lean-and-back,I066;I140;I149,"Hash-gated manually joined navigation covers reorder, ambiguous names, and actual generated-helper fanout; no producer-authenticated mapping, actual Anneal workspace or agent usability trial."
+L09,Direct Lean backend versus MCP delegation,I072,No existing Lean MCP adapter was found in scoped local inventory; toy bridges cannot substitute for two-client real adapter plus Anneal workspace integration.

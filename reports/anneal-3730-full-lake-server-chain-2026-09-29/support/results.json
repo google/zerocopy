@@ -1,0 +1,1750 @@
+{
+  "preflight": {
+    "disk_free_bytes": 53342453760,
+    "memory_free_percent": 53,
+    "ram_bytes": 8589934592
+  },
+  "caps": {
+    "sampled_rss_kib": 4500000,
+    "duration_s": 120,
+    "workers_max": 2
+  },
+  "tools": {
+    "cargo": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+    },
+    "charon": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+    },
+    "aeneas": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+      "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+    },
+    "lean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "lake": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+    },
+    "aeneas_olean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean",
+      "sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+    }
+  },
+  "cells": [
+    {
+      "label": "one",
+      "workers": 1,
+      "parallel": false,
+      "wall_seconds": 54.754,
+      "sampled_peak_rss_kib": 2590336,
+      "sampled_peak_processes": 5,
+      "sample_count": 743,
+      "min_free_percent": 32,
+      "abort": null,
+      "errors": [],
+      "units": [
+        {
+          "unit": 0,
+          "direct": {
+            "unit": 0,
+            "seconds": 17.068,
+            "commands": [
+              {
+                "label": "u0:charon",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                  "cargo",
+                  "--preset",
+                  "aeneas",
+                  "--dest-file",
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/current.llbc",
+                  "--",
+                  "--manifest-path",
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/crate/Cargo.toml",
+                  "--lib",
+                  "--offline",
+                  "--locked",
+                  "-j",
+                  "1"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0",
+                "exit": 0,
+                "seconds": 0.519,
+                "stdout": "",
+                "stderr": "   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s\n"
+              },
+              {
+                "label": "u0:aeneas",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                  "-backend",
+                  "lean",
+                  "-no-progress-bar",
+                  "-sequential",
+                  "-split-files",
+                  "-gen-lib-entry",
+                  "-dest",
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/generated",
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/current.llbc"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0",
+                "exit": 0,
+                "seconds": 0.237,
+                "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.138723 seconds\n",
+                "stderr": ""
+              },
+              {
+                "label": "u0:lean:Current/Types",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                  "-o",
+                  "Current/Types.olean",
+                  "Current/Types.lean"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/consumer",
+                "exit": 0,
+                "seconds": 11.339,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "label": "u0:lean:Current/Funs",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                  "-o",
+                  "Current/Funs.olean",
+                  "Current/Funs.lean"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/consumer",
+                "exit": 0,
+                "seconds": 1.746,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "label": "u0:lean:Current",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                  "-o",
+                  "Current.olean",
+                  "Current.lean"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/consumer",
+                "exit": 0,
+                "seconds": 1.615,
+                "stdout": "",
+                "stderr": ""
+              },
+              {
+                "label": "u0:lean:proof",
+                "argv": [
+                  "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                  "Proof.lean"
+                ],
+                "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/consumer",
+                "exit": 0,
+                "seconds": 1.61,
+                "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+                "stderr": ""
+              }
+            ],
+            "hashes": {
+              "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+              "llbc": "f1f3a0b3abb41b132fbfa85d0a25259b813176411df21d44c69e3cd2528c0b22",
+              "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+              "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+              "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+              "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+              "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+            },
+            "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+          },
+          "lake": {
+            "exit": 0,
+            "seconds": 12.045,
+            "local_jobs": [
+              "\u2139 [1682/1686] Built Current.Types (2.7s)",
+              "\u2139 [1683/1686] Built Current.Funs (1.7s)",
+              "\u2139 [1684/1686] Built Current (2.0s)",
+              "\u2139 [1685/1686] Built Proof (1.7s)"
+            ],
+            "logs": {
+              "stdout_sha256": "f296bc9dc6fa688e9eb734943f50c970deb46f255c772e8c901f045ec9e703c5",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "proof_olean_sha256": "8381a1159f555ae607d3568ff201fe3dfd32c7873fc9cc298101987680918fe5"
+          },
+          "server": {
+            "wait": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+                ],
+                "rendered": "```lean\n\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+              }
+            },
+            "messages": [
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 1,
+                  "method": "initialize",
+                  "params": {
+                    "processId": 95955,
+                    "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake",
+                    "capabilities": {},
+                    "initializationOptions": {
+                      "hasWidgets": false
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 1,
+                  "jsonrpc": "2.0",
+                  "result": {
+                    "capabilities": {
+                      "callHierarchyProvider": true,
+                      "codeActionProvider": {
+                        "codeActionKinds": [
+                          "quickfix",
+                          "refactor",
+                          "source.organizeImports"
+                        ],
+                        "resolveProvider": true,
+                        "workDoneProgress": false
+                      },
+                      "colorProvider": {
+                        "workDoneProgress": false
+                      },
+                      "completionProvider": {
+                        "resolveProvider": true,
+                        "triggerCharacters": [
+                          "."
+                        ]
+                      },
+                      "declarationProvider": true,
+                      "definitionProvider": true,
+                      "documentHighlightProvider": true,
+                      "documentSymbolProvider": true,
+                      "experimental": {
+                        "moduleHierarchyProvider": {},
+                        "rpcProvider": {
+                          "highlightMatchesProvider": {},
+                          "rpcWireFormat": "v1"
+                        }
+                      },
+                      "foldingRangeProvider": true,
+                      "hoverProvider": true,
+                      "inlayHintProvider": {
+                        "resolveProvider": false,
+                        "workDoneProgress": false
+                      },
+                      "referencesProvider": true,
+                      "renameProvider": {
+                        "prepareProvider": true
+                      },
+                      "semanticTokensProvider": {
+                        "full": true,
+                        "legend": {
+                          "tokenModifiers": [
+                            "declaration",
+                            "definition",
+                            "readonly",
+                            "static",
+                            "deprecated",
+                            "abstract",
+                            "async",
+                            "modification",
+                            "documentation",
+                            "defaultLibrary"
+                          ],
+                          "tokenTypes": [
+                            "keyword",
+                            "variable",
+                            "property",
+                            "function",
+                            "namespace",
+                            "type",
+                            "class",
+                            "enum",
+                            "interface",
+                            "struct",
+                            "typeParameter",
+                            "parameter",
+                            "enumMember",
+                            "event",
+                            "method",
+                            "macro",
+                            "modifier",
+                            "comment",
+                            "string",
+                            "number",
+                            "regexp",
+                            "operator",
+                            "decorator",
+                            "leanSorryLike"
+                          ]
+                        },
+                        "range": true
+                      },
+                      "signatureHelpProvider": {
+                        "triggerCharacters": [
+                          " "
+                        ],
+                        "workDoneProgress": false
+                      },
+                      "textDocumentSync": {
+                        "change": 2,
+                        "openClose": true,
+                        "save": {
+                          "includeText": true
+                        },
+                        "willSave": false,
+                        "willSaveWaitUntil": false
+                      },
+                      "typeDefinitionProvider": true,
+                      "workspaceSymbolProvider": true
+                    },
+                    "serverInfo": {
+                      "name": "Lean 4 Server",
+                      "version": "0.3.0"
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "initialized",
+                  "params": {}
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/didOpen",
+                  "params": {
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "languageId": "lean",
+                      "version": 1,
+                      "text": "import Current\ntheorem goal_inc : pipeline_workload.inc 0#u32 = .ok 1#u32 := by\n  trace_state\n  rfl\n#print axioms goal_inc\n"
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 2,
+                  "method": "textDocument/waitForDiagnostics",
+                  "params": {
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": "register_lean_watcher",
+                  "jsonrpc": "2.0",
+                  "method": "client/registerCapability",
+                  "params": {
+                    "registrations": [
+                      {
+                        "id": "lean_watcher",
+                        "method": "workspace/didChangeWatchedFiles",
+                        "registerOptions": {
+                          "watchers": [
+                            {
+                              "globPattern": "**/*.lean"
+                            },
+                            {
+                              "globPattern": "**/*.ilean"
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": "register_lean_watcher",
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 0,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 0,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 1,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 1,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 2,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 2,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 3,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 3,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 4,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 4,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 5,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 5,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 6,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 6,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 7,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 7,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "\u26a0 [1506/1535] Replayed Aeneas.Std.Slice\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "warning: Aeneas/Std/Slice.lean:364:4: declaration uses `sorry`\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "warning: Aeneas/Std/Slice.lean:587:8: declaration uses `sorry`\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "\u26a0 [1568/1672] Replayed Aeneas.Std.String\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "warning: Aeneas/Std/String.lean:11:4: declaration uses `sorry`\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "\u26a0 [1584/1672] Replayed Aeneas.Std.StringIter\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "message": "warning: Aeneas/Std/StringIter.lean:13:4: declaration uses `sorry`\n",
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 0
+                          }
+                        },
+                        "severity": 3
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 8,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 8,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 9,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 9,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 10,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 10,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 11,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/inlayHint/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 11,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 12,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 12,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 13,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 13,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 14,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 14,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 15,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 15,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 16,
+                  "jsonrpc": "2.0",
+                  "method": "workspace/semanticTokens/refresh"
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 16,
+                  "result": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 5,
+                            "line": 3
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 5,
+                            "line": 3
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 5,
+                            "line": 3
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 3
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 5,
+                            "line": 3
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 3
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 5,
+                            "line": 3
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 3
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 22,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 5
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 22,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 5
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "message": "\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+                        "range": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "severity": 3,
+                        "source": "Lean 4"
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "message": "\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+                        "range": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "severity": 3,
+                        "source": "Lean 4"
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "message": "\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+                        "range": {
+                          "end": {
+                            "character": 13,
+                            "line": 2
+                          },
+                          "start": {
+                            "character": 2,
+                            "line": 2
+                          }
+                        },
+                        "severity": 3,
+                        "source": "Lean 4"
+                      },
+                      {
+                        "fullRange": {
+                          "end": {
+                            "character": 6,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        },
+                        "message": "'goal_inc' depends on axioms: [propext, Classical.choice, Quot.sound]",
+                        "range": {
+                          "end": {
+                            "character": 6,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        },
+                        "severity": 3,
+                        "source": "Lean 4"
+                      }
+                    ],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 5
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 4
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 4
+                          }
+                        }
+                      },
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 5
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 5
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [
+                      {
+                        "kind": 1,
+                        "range": {
+                          "end": {
+                            "character": 0,
+                            "line": 1
+                          },
+                          "start": {
+                            "character": 0,
+                            "line": 1
+                          }
+                        }
+                      }
+                    ],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "$/lean/fileProgress",
+                  "params": {
+                    "processing": [],
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 2,
+                  "jsonrpc": "2.0",
+                  "result": {}
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 3,
+                  "method": "$/lean/plainGoal",
+                  "params": {
+                    "textDocument": {
+                      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                      "version": 1
+                    },
+                    "position": {
+                      "line": 2,
+                      "character": 3
+                    }
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 3,
+                  "jsonrpc": "2.0",
+                  "result": {
+                    "goals": [
+                      "\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32"
+                    ],
+                    "rendered": "```lean\n\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\n```"
+                  }
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "id": 4,
+                  "method": "shutdown",
+                  "params": null
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "textDocument/publishDiagnostics",
+                  "params": {
+                    "diagnostics": [],
+                    "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0/lake/Proof.lean",
+                    "version": 1
+                  }
+                }
+              },
+              {
+                "direction": "server",
+                "message": {
+                  "id": 4,
+                  "jsonrpc": "2.0",
+                  "result": null
+                }
+              },
+              {
+                "direction": "client",
+                "message": {
+                  "jsonrpc": "2.0",
+                  "method": "exit"
+                }
+              }
+            ],
+            "source_sha256": "83141de8ac3cf8943ae105e5faf2eb21b0ef78a7408d323e8e0af63112449e73"
+          },
+          "fresh": {
+            "exit": 0,
+            "seconds": 7.256,
+            "logs": {
+              "stdout_sha256": "4d0bb03ea6e07144234d2889cd165d8b59f5b17a91bf39849e4a226b1c42f8e7",
+              "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+            },
+            "stdout_excerpt": "{\"caption\":\"\",\"data\":\"\u22a2 pipeline_workload.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'goal_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n"
+          },
+          "source_hashes": {
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "Current/Types.lean": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "Current/Funs.lean": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "Proof.lean": "83141de8ac3cf8943ae105e5faf2eb21b0ef78a7408d323e8e0af63112449e73"
+          }
+        }
+      ],
+      "cleanup_tree": {
+        "count": 0,
+        "rss_kib": 0,
+        "processes": []
+      }
+    },
+    {
+      "label": "two-parallel",
+      "admission": {
+        "allowed": false,
+        "reason": "requires complete one-worker run, >=45% free, one-worker sampled peak <1.5 GiB, projected two-worker peak <3.0 GiB, >15 GiB disk",
+        "current_free_percent": 40,
+        "one_peak_rss_kib": 2590336,
+        "projected_two_rss_kib": 5180672
+      }
+    }
+  ]
+}

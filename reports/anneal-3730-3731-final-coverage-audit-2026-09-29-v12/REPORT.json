@@ -1,0 +1,9 @@
+{
+  "topics": ["anneal/issue-3730", "anneal/issue-3731", "anneal/research-coverage", "anneal/interactive-verification"],
+  "subjects": [
+    {"name": "google/zerocopy issue #3730", "identity": {"repository": "google/zerocopy", "issue": "3730"}},
+    {"name": "google/zerocopy issue #3731", "identity": {"repository": "google/zerocopy", "issue": "3731"}},
+    {"name": "google/zerocopy reference", "identity": {"repository": "google/zerocopy", "commit": "d3e0e39ab26ddd79d03bea58cfe87813a33ef633"}}
+  ],
+  "observed_at": "2026-09-29"
+}

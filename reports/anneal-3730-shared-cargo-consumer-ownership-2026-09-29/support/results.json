@@ -1,0 +1,309 @@
+{
+  "preflight": {
+    "free_disk_bytes": 53359181824,
+    "free_memory_percent": 53
+  },
+  "cargo": "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo",
+  "cargo_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+  "fixture_sha256": {
+    "Cargo.toml": "0e29321d6c306c3b433544c4f318b57fc63ebfbc9fba1ff56f42d763aa6d451e",
+    "build.rs": "2936b0a40b91ab74e9853cacd2ba086023c2505a78caf145e06de8b4dd72ca0c",
+    "src/lib.rs": "5e0a6af76181b77032ef291474aab99538433cb86eb2b8ad88f3c0cfb2577a51"
+  },
+  "cases": [
+    {
+      "name": "cancel-one",
+      "command": [
+        "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo",
+        "build",
+        "--offline",
+        "-j",
+        "1",
+        "--target-dir",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-one/target"
+      ],
+      "marker": "95808 95809",
+      "events": [
+        {
+          "kind": "start",
+          "owners": {
+            "editor": "active",
+            "agent": "active"
+          },
+          "pid": 95794
+        },
+        {
+          "kind": "marker",
+          "marker": "95808 95809",
+          "group": [
+            {
+              "pid": 95794,
+              "ppid": 95787,
+              "pgid": 95794,
+              "rss_kib": 33008,
+              "comm": "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo"
+            },
+            {
+              "pid": 95808,
+              "ppid": 95794,
+              "pgid": 95794,
+              "rss_kib": 1600,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-one/target/debug/build/shared_job_probe-f37ad3ee2e62c932/build-script-build"
+            },
+            {
+              "pid": 95809,
+              "ppid": 95808,
+              "pgid": 95794,
+              "rss_kib": 1120,
+              "comm": "/bin/sleep"
+            }
+          ],
+          "sampled_rss_kib": 35728
+        },
+        {
+          "kind": "cancel_editor",
+          "owners": {
+            "editor": "cancelled",
+            "agent": "active"
+          },
+          "backend_poll": null
+        },
+        {
+          "kind": "first_result",
+          "consumer_results": {
+            "editor": "cancelled",
+            "agent": "success"
+          },
+          "backend_exit": 0
+        }
+      ],
+      "first": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "   Compiling shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-one)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.33s\n",
+        "artifact_exists": true,
+        "artifact_sha256": "886bb9ff257f37fc6b0f9b54d46c84e5e80eb685dc91b0f17cc6812fca0a5f94",
+        "owners": {
+          "editor": "cancelled",
+          "agent": "active"
+        },
+        "group_after": [],
+        "elapsed_seconds": 3.4133
+      },
+      "consumer_results": {
+        "editor": "cancelled",
+        "agent": "success"
+      },
+      "retry": null,
+      "fixture_sha256": {
+        "Cargo.toml": "0e29321d6c306c3b433544c4f318b57fc63ebfbc9fba1ff56f42d763aa6d451e",
+        "build.rs": "2936b0a40b91ab74e9853cacd2ba086023c2505a78caf145e06de8b4dd72ca0c",
+        "src/lib.rs": "5e0a6af76181b77032ef291474aab99538433cb86eb2b8ad88f3c0cfb2577a51"
+      }
+    },
+    {
+      "name": "cancel-both",
+      "command": [
+        "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo",
+        "build",
+        "--offline",
+        "-j",
+        "1",
+        "--target-dir",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-both/target"
+      ],
+      "marker": "95827 95828",
+      "events": [
+        {
+          "kind": "start",
+          "owners": {
+            "editor": "active",
+            "agent": "active"
+          },
+          "pid": 95813
+        },
+        {
+          "kind": "marker",
+          "marker": "95827 95828",
+          "group": [
+            {
+              "pid": 95813,
+              "ppid": 95787,
+              "pgid": 95813,
+              "rss_kib": 32960,
+              "comm": "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo"
+            },
+            {
+              "pid": 95827,
+              "ppid": 95813,
+              "pgid": 95813,
+              "rss_kib": 1600,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-both/target/debug/build/shared_job_probe-f37ad3ee2e62c932/build-script-build"
+            },
+            {
+              "pid": 95828,
+              "ppid": 95827,
+              "pgid": 95813,
+              "rss_kib": 1120,
+              "comm": "/bin/sleep"
+            }
+          ],
+          "sampled_rss_kib": 35680
+        },
+        {
+          "kind": "cancel_editor",
+          "owners": {
+            "editor": "cancelled",
+            "agent": "active"
+          },
+          "backend_poll": null
+        },
+        {
+          "kind": "cancel_agent",
+          "owners": {
+            "editor": "cancelled",
+            "agent": "cancelled"
+          },
+          "backend_poll": null
+        },
+        {
+          "kind": "signal_last_owner",
+          "signal": "SIGTERM"
+        },
+        {
+          "kind": "first_result",
+          "consumer_results": {
+            "editor": "cancelled",
+            "agent": "cancelled"
+          },
+          "backend_exit": -15
+        },
+        {
+          "kind": "retry_success",
+          "artifact_sha256": "a5295216dd7b86d20033576cd47d0212babaf658e224ebd0182b5567cad830a6"
+        }
+      ],
+      "first": {
+        "exit": -15,
+        "stdout": "",
+        "stderr": "   Compiling shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-both)\n",
+        "artifact_exists": false,
+        "artifact_sha256": null,
+        "owners": {
+          "editor": "cancelled",
+          "agent": "cancelled"
+        },
+        "group_after": [],
+        "elapsed_seconds": 0.5899
+      },
+      "consumer_results": {
+        "editor": "cancelled",
+        "agent": "cancelled"
+      },
+      "retry": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "   Compiling shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/cancel-both)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.31s\n",
+        "artifact_sha256": "a5295216dd7b86d20033576cd47d0212babaf658e224ebd0182b5567cad830a6",
+        "group_after": []
+      },
+      "fixture_sha256": {
+        "Cargo.toml": "0e29321d6c306c3b433544c4f318b57fc63ebfbc9fba1ff56f42d763aa6d451e",
+        "build.rs": "2936b0a40b91ab74e9853cacd2ba086023c2505a78caf145e06de8b4dd72ca0c",
+        "src/lib.rs": "5e0a6af76181b77032ef291474aab99538433cb86eb2b8ad88f3c0cfb2577a51"
+      }
+    },
+    {
+      "name": "failure",
+      "command": [
+        "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo",
+        "build",
+        "--offline",
+        "-j",
+        "1",
+        "--target-dir",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure/target"
+      ],
+      "marker": "95856 95857",
+      "events": [
+        {
+          "kind": "start",
+          "owners": {
+            "editor": "active",
+            "agent": "active"
+          },
+          "pid": 95842
+        },
+        {
+          "kind": "marker",
+          "marker": "95856 95857",
+          "group": [
+            {
+              "pid": 95842,
+              "ppid": 95787,
+              "pgid": 95842,
+              "rss_kib": 32880,
+              "comm": "/opt/homebrew/Cellar/rust/1.98.1/bin/cargo"
+            },
+            {
+              "pid": 95856,
+              "ppid": 95842,
+              "pgid": 95842,
+              "rss_kib": 1616,
+              "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure/target/debug/build/shared_job_probe-f37ad3ee2e62c932/build-script-build"
+            },
+            {
+              "pid": 95857,
+              "ppid": 95856,
+              "pgid": 95842,
+              "rss_kib": 1120,
+              "comm": "/bin/sleep"
+            }
+          ],
+          "sampled_rss_kib": 35616
+        },
+        {
+          "kind": "first_result",
+          "consumer_results": {
+            "editor": "failed",
+            "agent": "failed"
+          },
+          "backend_exit": 101
+        },
+        {
+          "kind": "retry_success",
+          "artifact_sha256": "ee6b5832ef3a61ae2890c49e72e8856b58967b5baf44fa1775a06bca3fc5a7ea"
+        }
+      ],
+      "first": {
+        "exit": 101,
+        "stdout": "",
+        "stderr": "   Compiling shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure)\nerror: failed to run custom build command for `shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure)`\n\nCaused by:\n  process didn't exit successfully: `/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure/target/debug/build/shared_job_probe-f37ad3ee2e62c932/build-script-build` (exit status: 101)\n  --- stderr\n\n  thread 'main' (27538673) panicked at build.rs:7:62:\n  injected build-script failure\n  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n",
+        "artifact_exists": false,
+        "artifact_sha256": null,
+        "owners": {
+          "editor": "active",
+          "agent": "active"
+        },
+        "group_after": [],
+        "elapsed_seconds": 2.499
+      },
+      "consumer_results": {
+        "editor": "failed",
+        "agent": "failed"
+      },
+      "retry": {
+        "exit": 0,
+        "stdout": "",
+        "stderr": "   Compiling shared_job_probe v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-shared-cargo-consumer-ownership-2026-09-29/support/work/failure)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.28s\n",
+        "artifact_sha256": "ee6b5832ef3a61ae2890c49e72e8856b58967b5baf44fa1775a06bca3fc5a7ea",
+        "group_after": []
+      },
+      "fixture_sha256": {
+        "Cargo.toml": "0e29321d6c306c3b433544c4f318b57fc63ebfbc9fba1ff56f42d763aa6d451e",
+        "build.rs": "2936b0a40b91ab74e9853cacd2ba086023c2505a78caf145e06de8b4dd72ca0c",
+        "src/lib.rs": "5e0a6af76181b77032ef291474aab99538433cb86eb2b8ad88f3c0cfb2577a51"
+      }
+    }
+  ]
+}
