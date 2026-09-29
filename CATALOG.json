@@ -1179,6 +1179,30 @@
         "research-traceability"
       ]
     },
+    "anneal-3730-174-row-crosswalk-reaudit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "crosswalk_sha256": "90ee49ce47fff9123c41041c65125a9235caec8306a85a99ae293be345b8007d",
+            "issue_snapshot_sha256": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d"
+          },
+          "name": "Frozen #3730 174-entry crosswalk at reference HEAD 75fa78c1b623ab8db9d9acb4f31ec7958bfb9110"
+        },
+        {
+          "identity": {
+            "audit_sha256": "fc5c747eaf467bf9e473b393e927cac2188a7ab91483d8b37d2973e00faa173c",
+            "checker_runs_sha256": "adda5eb72fe75d6412ba2b68952bfe0da0548a1e6ef92ca744fd95e6af869032"
+          },
+          "name": "Independent 174-row audit and cited-checker run"
+        }
+      ],
+      "topics": [
+        "anneal/research-coverage",
+        "anneal/3730-crosswalk",
+        "lean/lake-prepared-environments"
+      ]
+    },
     "anneal-3730-3731-coverage-audit-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -1669,6 +1693,33 @@
         "anneal/3730-3731"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v23": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "prior_audit": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22",
+            "reference_base_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+            "repository": "google/zerocopy",
+            "validation": "support/validation-v23.json"
+          },
+          "name": "#3730/#3731 central coverage ledger v23"
+        },
+        {
+          "identity": {
+            "issue_3730_suggestions": "174",
+            "issue_3731_investigations": "159",
+            "source": "../anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/issue-scope-snapshot.json"
+          },
+          "name": "Frozen #3730/#3731 issue scope"
+        }
+      ],
+      "topics": [
+        "anneal/coverage",
+        "anneal/3730-3731",
+        "anneal/interactive-architecture"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -1902,6 +1953,25 @@
         "anneal/research-agenda",
         "anneal/coverage-audit",
         "research/gap-analysis"
+      ]
+    },
+    "anneal-3730-3731-v22-independent-rereview-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+            "repository": "google/zerocopy",
+            "review_manifest": "support/review.json",
+            "reviewed_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22"
+          },
+          "name": "#3730/#3731 v22 coverage audit"
+        }
+      ],
+      "topics": [
+        "anneal/review",
+        "anneal/coverage",
+        "anneal/interactive-freshness"
       ]
     },
     "anneal-3730-acceptance-oracle-matrix-2026-09-29": {
@@ -2371,6 +2441,32 @@
         "anneal/batch-live-contract",
         "anneal/orchestration",
         "research/decision-gates"
+      ]
+    },
+    "anneal-3730-c03-proof-resend-refresh-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct language server and batch compiler"
+        },
+        {
+          "identity": {
+            "host": "macOS 26.6.2 arm64",
+            "probe_sha256": "391c1e3a8ea0f6d08eb852ab42e72aabfa8f208604b8084da5282b5b17d20d7f"
+          },
+          "name": "Gated proof-resend imported-artifact fixture on macOS"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "lean/lsp",
+        "lean/import-invalidation"
       ]
     },
     "anneal-3730-charon-aeneas-boundary-2026-09-29": {
@@ -3103,6 +3199,33 @@
         "anneal/handoff"
       ]
     },
+    "anneal-3730-f15-final-versus-moved-lake-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Cached Lean and Lake 4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "probe_sha256": "9db4cc17e93ea169d893c20cd04fec63b8e3e45cee471fead2a49fb7cb553d78",
+            "results_sha256": "a51334657934e866f35d635a0076d18f2a760127a045c49fb9dbe6d8b02b41f8"
+          },
+          "name": "Paired direct-final versus staging-rename Lake project on macOS"
+        }
+      ],
+      "topics": [
+        "anneal/lake-prepared-environment",
+        "lake/path-relocation",
+        "lean/lsp"
+      ]
+    },
     "anneal-3730-fault-model-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3177,6 +3300,28 @@
             "observed_utc": "2026-09-29T16:45:25Z"
           },
           "name": "GitHub issue scope"
+        }
+      ],
+      "topics": [
+        "anneal/review",
+        "anneal/interactive-architecture",
+        "anneal/concurrency",
+        "anneal/lean-server",
+        "anneal/coverage"
+      ]
+    },
+    "anneal-3730-five-original-packages-third-pass-review-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "checkout_base_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+            "historical_second_pass_revision": "c89f1410d4f1cfbd9b654ea5268b38f5c81e115e",
+            "manifest": "support/manifest.json",
+            "prior_review": "../anneal-3730-five-original-packages-rereview-2026-09-29/support/review.json",
+            "repository": "google/zerocopy"
+          },
+          "name": "Five original #3730/#3731 report packages, third review point"
         }
       ],
       "topics": [
@@ -5632,6 +5777,137 @@
         "lean/language-server",
         "lean/batch-checking",
         "anneal/model-change-vertical"
+      ]
+    },
+    "anneal-3731-i001-i053-residual-reaudit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3731",
+            "reference_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+            "repository": "google/zerocopy"
+          },
+          "name": "#3731 investigation agenda I001-I053 and reference evidence corpus"
+        },
+        {
+          "identity": {
+            "filesystem": "APFS",
+            "platform": "macOS 26.6.2 arm64",
+            "probe_sha256": "8378c6aadc89427a9f2f754f8030aeb5c1ca14e93048a510a94df0e7867ecd40"
+          },
+          "name": "APFS pointer-ABA double-collect fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "filesystem/snapshot-capture"
+      ]
+    },
+    "anneal-3731-i054-i106-independent-rereview-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "investigation_csv_sha256": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+            "repository": "google/zerocopy",
+            "revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+            "row_challenge_sha256": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7"
+          },
+          "name": "Reference v22 investigation ledger"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/issue-scope-snapshot.json",
+            "sha256": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d"
+          },
+          "name": "Frozen #3731 issue scope in v22"
+        },
+        {
+          "identity": {
+            "artifact": "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29",
+            "observed_probe_sha256": "8ea5be460e0ce3d1ec99f7f6dfa1cf4ffac9c402eddbbcd6e6f69cb82aab0de1"
+          },
+          "name": "New bounded I080 component control"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/coverage-audit",
+        "anneal/toolchain-boundaries"
+      ]
+    },
+    "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned Charon Cargo extraction"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned nightly Cargo and rustc"
+        },
+        {
+          "identity": {
+            "fixture_source_tree": "af738e8e51a229bdc2940cc1caf176c2bec711b2",
+            "observed_probe_sha256": "8ea5be460e0ce3d1ec99f7f6dfa1cf4ffac9c402eddbbcd6e6f69cb82aab0de1"
+          },
+          "name": "Private two-process shared-target fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "charon/cargo-extraction",
+        "charon/concurrency",
+        "anneal/resource-controls"
+      ]
+    },
+    "anneal-3731-i107-i159-independent-rereview-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "comment_body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_extension_comment": "5884299718"
+          },
+          "name": "Anneal consolidated investigation agenda (#3731), I107\u2013I159"
+        },
+        {
+          "identity": {
+            "branch": "reference",
+            "repository": "google/zerocopy",
+            "revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110"
+          },
+          "name": "Reference corpus baseline for independent I107\u2013I159 review"
+        },
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2 direct server and fresh batch binary"
+        }
+      ],
+      "topics": [
+        "anneal/research-agenda",
+        "research/coverage-audit",
+        "lean/import-freshness",
+        "lake/build-publication"
       ]
     },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {

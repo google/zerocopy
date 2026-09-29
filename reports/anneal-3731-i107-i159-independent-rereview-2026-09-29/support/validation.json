@@ -1,0 +1,36 @@
+{
+  "baseline_reference_head": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+  "counts": {
+    "evidence_files": 232,
+    "package_checkers": 44,
+    "packages": 123,
+    "rows": 53,
+    "status": {
+      "complete": 2,
+      "conditional": 2,
+      "partial": 49
+    }
+  },
+  "generated_sha256": {
+    "cited-evidence-inventory.csv": "eb98668732fe57c4386cae208f3a43c63a0c1077196c914458a3968fe62378a4",
+    "cited-package-inventory.csv": "881b7ad8b3b6303b3eff0ee97220cddc6c701fd1b8de4f0568c62a98fe067bd7",
+    "row-review.csv": "24b96ba12db213b611a49525b7e82f69ef85abebe5d4361fb5df11d2cde20ac9"
+  },
+  "i147_probe_files_sha256": {
+    "i147-comment-equivalence/Check.lean": "32daff8558020d65a241b400c9dff20fe5613a00e2d4ce2509eeb81698c48f10",
+    "i147-comment-equivalence/baseline-Dep.olean": "45ac0f37c8fb48c754c06915761ddb3fde4793735ab0d85e66dc1a31e57cf9b7",
+    "i147-comment-equivalence/comment-Dep.olean": "45ac0f37c8fb48c754c06915761ddb3fde4793735ab0d85e66dc1a31e57cf9b7",
+    "i147-comment-equivalence/fresh-batch.json": "37817f546c53f3da025d8eb8f16cb75d691edbbc1a7e028b2005658b1a8d226a",
+    "i147-comment-equivalence/probe.py": "f84509837a26a21ae9c629ec7ec9b7f4f1e4e61c74e87c0ed9afb3799afc2037",
+    "i147-comment-equivalence/transcript.json": "578f9947303332eea86c0881b4ae09fef9413fb90c57eba006834b1138d481fd",
+    "i147-same-mtime/Check.lean": "32daff8558020d65a241b400c9dff20fe5613a00e2d4ce2509eeb81698c48f10",
+    "i147-same-mtime/baseline-Dep.olean": "c363ec99438400519e766fea241aaee6b7bafc2d593f5db9fd740bb5b7e69f62",
+    "i147-same-mtime/fresh-batch.json": "1cddb3e68dd8a3ea0e1979b1a9f7aca21883598907b35cb0c6f23ffaee3d9049",
+    "i147-same-mtime/probe.py": "403c14689486e338b0d441b0faf7949a816dcd54a3ae9e37be0707fdacb76917",
+    "i147-same-mtime/transcript.json": "942e61fed4bc66debdece17f5bd80dca96a7d1ef1fed4fab2a7a548254f817e1",
+    "i147-same-mtime/value9-Dep.olean": "3b0254045f93c2516915e7a26e2d3928d0472535fd876db2b81312725f8ea008"
+  },
+  "v22_issue_snapshot_sha256": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+  "v22_ledger_sha256": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+  "v22_row_challenge_sha256": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7"
+}

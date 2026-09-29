@@ -1,0 +1,3229 @@
+{
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "baseline_probe_sha256": "d20a5c7b20b71d7fdfec608144934f227c6a48678fc4ebff3487d1d18a7b5a01",
+    "sources_sha256": {
+      "lakefile.lean": "da67b1637b07cc61c7f8b90249c541baf9244de967dc92608295181f9b0683d3",
+      "lean-toolchain": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "Dep.lean": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+      "Proof.lean": "2e779f8895660946c3a0e02aaf8a3df9d259b2efa5c1c8e03407c90fc6c0377e"
+    },
+    "toolchain": "leanprover/lean4:v4.30.0-rc2",
+    "network": "sandbox-exec deny network*",
+    "jobs": 1
+  },
+  "direct": {
+    "build": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "cwd": "<SCRATCH>/final",
+      "rc": 0,
+      "stdout": "✔ [2/3] Built Dep (167ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: reloc_probe: no previous manifest, creating one from scratch\n",
+      "elapsed_ms": 572.6
+    },
+    "before_oracle": [
+      {
+        "path": ".lake/build/ir/Dep.c",
+        "bytes": 1378,
+        "sha256": "a94ef430c54b079502a25dac0f9a37a97dbec705eaf1892fc59f03537a8e81be",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.c.hash",
+        "bytes": 16,
+        "sha256": "c59b5e3d64781c8f6443027b8ee43d0d131a7b101fdc5a24a50f731af79814b3",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.setup.json",
+        "bytes": 129,
+        "sha256": "586f9b8fa4895a7800e3de98b37ba4ac940064c28750d8548d7a8f0ac5399f3b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean",
+        "bytes": 289,
+        "sha256": "421fe1322bfa48a720510f38a7999947ed0c69c6d73b988305d06d848f934b3d",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean.hash",
+        "bytes": 16,
+        "sha256": "c6b313a08063c6fb1378c9e9860c4a5c9e641e898344ffee912d0a00f2b91e08",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean",
+        "bytes": 4616,
+        "sha256": "23b4839b25f09c9a347654e372f2c3ce15b43a4e3aa25fb30f5b508b5f4c897b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean.hash",
+        "bytes": 16,
+        "sha256": "ec35f2f111f55dcd01ca2e3c956dd9bc67acd4cb9955c6bf9bd4e5a06d753236",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.trace",
+        "bytes": 1829,
+        "sha256": "e174bfb52781607f8c18c070be7fd64b35011c8b0dac22475edaf959001a8b16",
+        "path_occurrences": {
+          "final": 7
+        }
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean",
+        "bytes": 96672,
+        "sha256": "bbf82c04218cf157a7b06f7fabcc8b3be7ece3eb8820655a9fa64aedbde8a556",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean.trace",
+        "bytes": 184,
+        "sha256": "2e208e4c983a0a30aedf9f45729c3af8f8b20188b1085048694bc21f7fef5371",
+        "path_occurrences": {}
+      }
+    ],
+    "oracle": {
+      "setup": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "setup-file",
+          "Proof.lean"
+        ],
+        "cwd": "<SCRATCH>/final",
+        "rc": 0,
+        "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"<SCRATCH>/final/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+        "stderr": "",
+        "elapsed_ms": 405.8
+      },
+      "server": {
+        "wait": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [],
+            "rendered": "no goals"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "message": "'checked' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      },
+      "batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "env",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "cwd": "<SCRATCH>/final",
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "elapsed_ms": 460.7
+      }
+    },
+    "no_build_check": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "<SCRATCH>/final",
+      "rc": 0,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 404.0
+    },
+    "after_oracle": [
+      {
+        "path": ".lake/build/ir/Dep.c",
+        "bytes": 1378,
+        "sha256": "a94ef430c54b079502a25dac0f9a37a97dbec705eaf1892fc59f03537a8e81be",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.c.hash",
+        "bytes": 16,
+        "sha256": "c59b5e3d64781c8f6443027b8ee43d0d131a7b101fdc5a24a50f731af79814b3",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.setup.json",
+        "bytes": 129,
+        "sha256": "586f9b8fa4895a7800e3de98b37ba4ac940064c28750d8548d7a8f0ac5399f3b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean",
+        "bytes": 289,
+        "sha256": "421fe1322bfa48a720510f38a7999947ed0c69c6d73b988305d06d848f934b3d",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean.hash",
+        "bytes": 16,
+        "sha256": "c6b313a08063c6fb1378c9e9860c4a5c9e641e898344ffee912d0a00f2b91e08",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean",
+        "bytes": 4616,
+        "sha256": "23b4839b25f09c9a347654e372f2c3ce15b43a4e3aa25fb30f5b508b5f4c897b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean.hash",
+        "bytes": 16,
+        "sha256": "ec35f2f111f55dcd01ca2e3c956dd9bc67acd4cb9955c6bf9bd4e5a06d753236",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.trace",
+        "bytes": 1829,
+        "sha256": "e174bfb52781607f8c18c070be7fd64b35011c8b0dac22475edaf959001a8b16",
+        "path_occurrences": {
+          "final": 7
+        }
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean",
+        "bytes": 96672,
+        "sha256": "bbf82c04218cf157a7b06f7fabcc8b3be7ece3eb8820655a9fa64aedbde8a556",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean.trace",
+        "bytes": 184,
+        "sha256": "2e208e4c983a0a30aedf9f45729c3af8f8b20188b1085048694bc21f7fef5371",
+        "path_occurrences": {}
+      }
+    ]
+  },
+  "staged_moved": {
+    "build": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "cwd": "<SCRATCH>/stage",
+      "rc": 0,
+      "stdout": "✔ [2/3] Built Dep (167ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: reloc_probe: no previous manifest, creating one from scratch\n",
+      "elapsed_ms": 584.9
+    },
+    "at_stage": [
+      {
+        "path": ".lake/build/ir/Dep.c",
+        "bytes": 1378,
+        "sha256": "a94ef430c54b079502a25dac0f9a37a97dbec705eaf1892fc59f03537a8e81be",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.c.hash",
+        "bytes": 16,
+        "sha256": "c59b5e3d64781c8f6443027b8ee43d0d131a7b101fdc5a24a50f731af79814b3",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.setup.json",
+        "bytes": 129,
+        "sha256": "586f9b8fa4895a7800e3de98b37ba4ac940064c28750d8548d7a8f0ac5399f3b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean",
+        "bytes": 289,
+        "sha256": "421fe1322bfa48a720510f38a7999947ed0c69c6d73b988305d06d848f934b3d",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean.hash",
+        "bytes": 16,
+        "sha256": "c6b313a08063c6fb1378c9e9860c4a5c9e641e898344ffee912d0a00f2b91e08",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean",
+        "bytes": 4616,
+        "sha256": "23b4839b25f09c9a347654e372f2c3ce15b43a4e3aa25fb30f5b508b5f4c897b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean.hash",
+        "bytes": 16,
+        "sha256": "ec35f2f111f55dcd01ca2e3c956dd9bc67acd4cb9955c6bf9bd4e5a06d753236",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.trace",
+        "bytes": 1829,
+        "sha256": "266f26aa3543a36e1b26cb40de49c5a46766af0dff39ead96b63d142329d2a7a",
+        "path_occurrences": {
+          "stage": 7
+        }
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean",
+        "bytes": 96672,
+        "sha256": "bbf82c04218cf157a7b06f7fabcc8b3be7ece3eb8820655a9fa64aedbde8a556",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean.trace",
+        "bytes": 184,
+        "sha256": "2e208e4c983a0a30aedf9f45729c3af8f8b20188b1085048694bc21f7fef5371",
+        "path_occurrences": {}
+      }
+    ],
+    "at_final_before_oracle": [
+      {
+        "path": ".lake/build/ir/Dep.c",
+        "bytes": 1378,
+        "sha256": "a94ef430c54b079502a25dac0f9a37a97dbec705eaf1892fc59f03537a8e81be",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.c.hash",
+        "bytes": 16,
+        "sha256": "c59b5e3d64781c8f6443027b8ee43d0d131a7b101fdc5a24a50f731af79814b3",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.setup.json",
+        "bytes": 129,
+        "sha256": "586f9b8fa4895a7800e3de98b37ba4ac940064c28750d8548d7a8f0ac5399f3b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean",
+        "bytes": 289,
+        "sha256": "421fe1322bfa48a720510f38a7999947ed0c69c6d73b988305d06d848f934b3d",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean.hash",
+        "bytes": 16,
+        "sha256": "c6b313a08063c6fb1378c9e9860c4a5c9e641e898344ffee912d0a00f2b91e08",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean",
+        "bytes": 4616,
+        "sha256": "23b4839b25f09c9a347654e372f2c3ce15b43a4e3aa25fb30f5b508b5f4c897b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean.hash",
+        "bytes": 16,
+        "sha256": "ec35f2f111f55dcd01ca2e3c956dd9bc67acd4cb9955c6bf9bd4e5a06d753236",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.trace",
+        "bytes": 1829,
+        "sha256": "266f26aa3543a36e1b26cb40de49c5a46766af0dff39ead96b63d142329d2a7a",
+        "path_occurrences": {
+          "stage": 7
+        }
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean",
+        "bytes": 96672,
+        "sha256": "bbf82c04218cf157a7b06f7fabcc8b3be7ece3eb8820655a9fa64aedbde8a556",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean.trace",
+        "bytes": 184,
+        "sha256": "2e208e4c983a0a30aedf9f45729c3af8f8b20188b1085048694bc21f7fef5371",
+        "path_occurrences": {}
+      }
+    ],
+    "oracle": {
+      "setup": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "setup-file",
+          "Proof.lean"
+        ],
+        "cwd": "<SCRATCH>/final",
+        "rc": 0,
+        "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"<SCRATCH>/final/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+        "stderr": "",
+        "elapsed_ms": 438.1
+      },
+      "server": {
+        "wait": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [],
+            "rendered": "no goals"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "message": "'checked' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      },
+      "batch": {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "env",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "Proof.lean"
+        ],
+        "cwd": "<SCRATCH>/final",
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'checked' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "elapsed_ms": 461.4
+      }
+    },
+    "no_build_check": {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "<SCRATCH>/final",
+      "rc": 0,
+      "stdout": "All targets up-to-date (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 405.6
+    },
+    "after_oracle": [
+      {
+        "path": ".lake/build/ir/Dep.c",
+        "bytes": 1378,
+        "sha256": "a94ef430c54b079502a25dac0f9a37a97dbec705eaf1892fc59f03537a8e81be",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.c.hash",
+        "bytes": 16,
+        "sha256": "c59b5e3d64781c8f6443027b8ee43d0d131a7b101fdc5a24a50f731af79814b3",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/ir/Dep.setup.json",
+        "bytes": 129,
+        "sha256": "586f9b8fa4895a7800e3de98b37ba4ac940064c28750d8548d7a8f0ac5399f3b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean",
+        "bytes": 289,
+        "sha256": "421fe1322bfa48a720510f38a7999947ed0c69c6d73b988305d06d848f934b3d",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.ilean.hash",
+        "bytes": 16,
+        "sha256": "c6b313a08063c6fb1378c9e9860c4a5c9e641e898344ffee912d0a00f2b91e08",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean",
+        "bytes": 4616,
+        "sha256": "23b4839b25f09c9a347654e372f2c3ce15b43a4e3aa25fb30f5b508b5f4c897b",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.olean.hash",
+        "bytes": 16,
+        "sha256": "ec35f2f111f55dcd01ca2e3c956dd9bc67acd4cb9955c6bf9bd4e5a06d753236",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/build/lib/lean/Dep.trace",
+        "bytes": 1829,
+        "sha256": "266f26aa3543a36e1b26cb40de49c5a46766af0dff39ead96b63d142329d2a7a",
+        "path_occurrences": {
+          "stage": 7
+        }
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean",
+        "bytes": 96672,
+        "sha256": "bbf82c04218cf157a7b06f7fabcc8b3be7ece3eb8820655a9fa64aedbde8a556",
+        "path_occurrences": {}
+      },
+      {
+        "path": ".lake/config/[anonymous]/lakefile.olean.trace",
+        "bytes": 184,
+        "sha256": "2e208e4c983a0a30aedf9f45729c3af8f8b20188b1085048694bc21f7fef5371",
+        "path_occurrences": {}
+      }
+    ]
+  },
+  "transcript": [
+    {
+      "seq": 0,
+      "ms": 983.0,
+      "kind": "launch",
+      "label": "direct-final",
+      "mode": "lake-serve",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "serve"
+      ],
+      "pid": 22306,
+      "root": "<SCRATCH>/final"
+    },
+    {
+      "seq": 1,
+      "ms": 1008.0,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 22300,
+          "rootUri": "file://<SCRATCH>/final",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 1308.0,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 1308.0,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 1308.1,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n#print axioms checked\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 1308.1,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 1308.2,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 1308.2,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 1308.4,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 1548.6,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 1548.6,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 1765.1,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 1868.5,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 1903.1,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 14,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 1904.9,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 15,
+      "ms": 1904.9,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 1905.0,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 1905.1,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 18,
+      "ms": 1905.5,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 1905.8,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 1905.8,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "ms": 1905.8,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 1906.4,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 23,
+      "ms": 1906.4,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 24,
+      "ms": 1906.7,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 1906.7,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 1906.7,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 27,
+      "ms": 1906.8,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "message": "'checked' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 1906.9,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 1907.0,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 30,
+      "ms": 1907.0,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "ms": 1907.1,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 1907.1,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 33,
+      "ms": 1907.2,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 34,
+      "ms": 1907.2,
+      "kind": "request_latency",
+      "label": "direct-final",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 599.1
+    },
+    {
+      "seq": 35,
+      "ms": 1907.3,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 36,
+      "ms": 1907.5,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 37,
+      "ms": 1907.5,
+      "kind": "request_latency",
+      "label": "direct-final",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 38,
+      "ms": 1907.5,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 39,
+      "ms": 1907.6,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 1913.3,
+      "kind": "server",
+      "label": "direct-final",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 41,
+      "ms": 1913.3,
+      "kind": "client",
+      "label": "direct-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 1936.0,
+      "kind": "stop",
+      "label": "direct-final",
+      "rc": 0,
+      "pid": 22306,
+      "stderr": ""
+    },
+    {
+      "seq": 43,
+      "ms": 3830.8,
+      "kind": "launch",
+      "label": "stage-moved-final",
+      "mode": "lake-serve",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "serve"
+      ],
+      "pid": 22316,
+      "root": "<SCRATCH>/final"
+    },
+    {
+      "seq": 44,
+      "ms": 3830.9,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 22300,
+          "rootUri": "file://<SCRATCH>/final",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 4155.3,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 4155.4,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 47,
+      "ms": 4155.4,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n#print axioms checked\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 48,
+      "ms": 4155.5,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 4155.5,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 50,
+      "ms": 4155.5,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 51,
+      "ms": 4155.7,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 4395.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 53,
+      "ms": 4395.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 4611.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 55,
+      "ms": 4715.6,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 56,
+      "ms": 4748.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 14,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 57,
+      "ms": 4750.7,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 58,
+      "ms": 4750.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 59,
+      "ms": 4750.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 60,
+      "ms": 4751.0,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 61,
+      "ms": 4751.0,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 62,
+      "ms": 4751.3,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 63,
+      "ms": 4751.4,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 64,
+      "ms": 4751.5,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 65,
+      "ms": 4751.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 66,
+      "ms": 4752.0,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 67,
+      "ms": 4752.0,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 68,
+      "ms": 4752.2,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 69,
+      "ms": 4752.3,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "message": "'checked' does not depend on any axioms",
+              "range": {
+                "end": {
+                  "character": 6,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 4
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 70,
+      "ms": 4752.4,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 71,
+      "ms": 4752.4,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 72,
+      "ms": 4752.5,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 73,
+      "ms": 4752.5,
+      "kind": "request_latency",
+      "label": "stage-moved-final",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 597.0
+    },
+    {
+      "seq": 74,
+      "ms": 4752.6,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/final/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 75,
+      "ms": 4752.8,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 76,
+      "ms": 4752.8,
+      "kind": "request_latency",
+      "label": "stage-moved-final",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 77,
+      "ms": 4752.8,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 78,
+      "ms": 4752.9,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/final/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "ms": 4758.5,
+      "kind": "server",
+      "label": "stage-moved-final",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 80,
+      "ms": 4758.5,
+      "kind": "client",
+      "label": "stage-moved-final",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 81,
+      "ms": 4781.2,
+      "kind": "stop",
+      "label": "stage-moved-final",
+      "rc": 0,
+      "pid": 22316,
+      "stderr": ""
+    }
+  ]
+}

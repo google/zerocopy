@@ -1,0 +1,15 @@
+{
+  "topics": ["anneal/review", "anneal/coverage", "anneal/interactive-freshness"],
+  "subjects": [
+    {
+      "name": "#3730/#3731 v22 coverage audit",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+        "reviewed_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22",
+        "review_manifest": "support/review.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,22 @@
+{
+  "topics": [
+    "anneal/review",
+    "anneal/interactive-architecture",
+    "anneal/concurrency",
+    "anneal/lean-server",
+    "anneal/coverage"
+  ],
+  "subjects": [
+    {
+      "name": "Five original #3730/#3731 report packages, third review point",
+      "identity": {
+        "repository": "google/zerocopy",
+        "checkout_base_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+        "historical_second_pass_revision": "c89f1410d4f1cfbd9b654ea5268b38f5c81e115e",
+        "manifest": "support/manifest.json",
+        "prior_review": "../anneal-3730-five-original-packages-rereview-2026-09-29/support/review.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

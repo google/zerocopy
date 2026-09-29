@@ -24,6 +24,24 @@ def inspect(folder, version, revision, preserve_old):
     events = d["events"]
     kinds = lambda kind: [e for e in events if e["kind"] == kind]
     order = lambda kind: next(i for i, e in enumerate(events) if e["kind"] == kind)
+    def checked_goal(kind, summary_key, name, document_version):
+        summary = d[summary_key]
+        event_index = order(kind)
+        assert events[event_index]["goal"] == summary
+        response_indices = [i for i, e in enumerate(events[:event_index])
+                            if e["kind"] == "server_message" and e["message"] == summary]
+        assert len(response_indices) == 1
+        response_index = response_indices[0]
+        request_indices = [i for i, e in enumerate(events[:response_index])
+                           if e["kind"] == "client_message"
+                           and e["message"].get("id") == summary["id"]
+                           and e["message"].get("method") == "$/lean/plainGoal"]
+        assert len(request_indices) == 1
+        request = events[request_indices[0]]["message"]
+        assert request["params"]["textDocument"] == {
+            "uri": f"file://$FIXTURE/{name}", "version": document_version}
+        assert request["params"]["position"] == {"line": 2, "character": 5}
+        assert request_indices[0] < response_index < event_index
     assert version in d["lean_version"] and revision in d["lean_version"]
     builds = kinds("build_dependency")
     assert [e["value"] for e in builds] == [3, 4]
@@ -36,22 +54,38 @@ def inspect(folder, version, revision, preserve_old):
         assert sha(folder / "fixture/Dep.old.olean") == d["old_olean_sha256"]
     assert sha(folder / "fixture/Dep.lean") == builds[1]["source_sha256"]
     proof = b"import Dep\ntheorem current : sharedValue = 3 := by\n  rfl\n"
+    proof_hash = hashlib.sha256(proof).hexdigest()
     for name in ("OldOpen.lean", "NewOpen.lean"):
         assert (folder / "fixture" / name).read_bytes() == proof
+    opens = [(i, e["message"]["params"]["textDocument"])
+             for i, e in enumerate(events) if e["kind"] == "client_message"
+             and e["message"].get("method") == "textDocument/didOpen"]
+    assert [(doc["uri"], doc["version"], doc["text"]) for _, doc in opens] == [
+        (f"file://$FIXTURE/{name}", version, proof.decode())
+        for name, version in (("OldOpen.lean", 1), ("NewOpen.lean", 1), ("OldOpen.lean", 2))]
+    closes = [(i, e["message"]["params"]["textDocument"]["uri"])
+              for i, e in enumerate(events) if e["kind"] == "client_message"
+              and e["message"].get("method") == "textDocument/didClose"]
+    assert len(closes) == 1 and closes[0][1] == "file://$FIXTURE/OldOpen.lean"
+    assert opens[1][0] < closes[0][0] < opens[2][0]
+    assert not any(e["kind"] == "client_message" and
+                   e["message"].get("method") == "textDocument/didChange" for e in events)
     assert d["old_worker_goal_before"]["result"]["goals"] == []
     assert d["old_worker_goal_after"]["result"]["goals"] == []
     recorded_goals = {
-        "old_worker_goal_before": "old_worker_before_change",
-        "old_worker_goal_after": "old_worker_after_dependency_rebuild",
-        "new_worker_goal_same_server": "new_worker_same_server_after_dependency_rebuild",
-        "reopened_worker_goal_same_server": "closed_reopened_worker_after_dependency_rebuild",
+        "old_worker_goal_before": ("old_worker_before_change", "OldOpen.lean", 1),
+        "old_worker_goal_after": ("old_worker_after_dependency_rebuild", "OldOpen.lean", 1),
+        "new_worker_goal_same_server": ("new_worker_same_server_after_dependency_rebuild", "NewOpen.lean", 1),
+        "reopened_worker_goal_same_server": ("closed_reopened_worker_after_dependency_rebuild", "OldOpen.lean", 2),
     }
     if preserve_old:
-        recorded_goals["old_worker_goal_after_new_worker_ready_and_delay"] = "old_worker_after_new_worker_ready_and_delay"
-    for summary_key, event_kind in recorded_goals.items():
-        goal = d[summary_key]
-        assert kinds(event_kind)[0]["goal"] == goal
-        assert any(e.get("message") == goal for e in kinds("server_message"))
+        recorded_goals["old_worker_goal_after_new_worker_ready_and_delay"] = (
+            "old_worker_after_new_worker_ready_and_delay", "OldOpen.lean", 1)
+    for summary_key, (event_kind, name, document_version) in recorded_goals.items():
+        checked_goal(event_kind, summary_key, name, document_version)
+    for event_kind in ("old_worker_before_change", "new_worker_same_server_after_dependency_rebuild",
+                       "closed_reopened_worker_after_dependency_rebuild", "fresh_batch_after_dependency_rebuild"):
+        assert kinds(event_kind)[0]["source_sha256"] == proof_hash
     for key in ("new_worker_goal_same_server", "reopened_worker_goal_same_server"):
         assert d[key]["result"]["goals"] == ["⊢ sharedValue = 3"]
     for name, document_version in (("NewOpen.lean", 1), ("OldOpen.lean", 2)):
@@ -79,9 +113,22 @@ def inspect(folder, version, revision, preserve_old):
         assert order("old_worker_after_new_worker_ready_and_delay") < order("closed_reopened_worker_after_dependency_rebuild")
         late = kinds("old_worker_after_new_worker_ready_and_delay")[0]
         assert late["delay_seconds"] == .5 and late["barrier"]["result"] == {}
+        late_barrier = late["barrier"]
+        barrier_responses = [i for i, e in enumerate(events[:order("old_worker_after_new_worker_ready_and_delay")])
+                             if e["kind"] == "server_message" and e["message"] == late_barrier]
+        assert len(barrier_responses) == 1
+        barrier_requests = [i for i, e in enumerate(events[:barrier_responses[0]])
+                            if e["kind"] == "client_message"
+                            and e["message"].get("id") == late_barrier["id"]
+                            and e["message"].get("method") == "textDocument/waitForDiagnostics"]
+        assert len(barrier_requests) == 1
+        assert events[barrier_requests[0]]["message"]["params"] == {
+            "uri": "file://$FIXTURE/OldOpen.lean", "version": 1}
+        assert events[barrier_requests[0]]["time_monotonic"] - kinds(
+            "new_worker_same_server_after_dependency_rebuild")[0]["time_monotonic"] >= .5
     return d
 
 inspect(v429, "4.29.0", "98dc76e3c0a9b856c9b98726b713fb04fab16740", True)
 inspect(v430, "4.30.0-rc2", "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc", True)
 inspect(prior_v430, "4.30.0-rc2", "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc", False)
-print("PASS: identical pinned 4.29/4.30 scripts, old/new artifacts, delayed old-document queries, diagnostics and batch failure")
+print("PASS: pinned 4.29/4.30 scripts and binaries, artifacts, URI-bound goals, diagnostics, and batch failure")

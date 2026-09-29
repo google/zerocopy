@@ -1,0 +1,478 @@
+[
+  {
+    "package": "anneal-3730-annotation-gap-probes-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-architecture-contracts-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-charon-scaling-subject-closure-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-charon-subject-identity-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-cross-tool-provenance-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-document-context-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-external-model-without-codegen-change-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-fault-model-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-five-original-packages-rereview-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 1
+  },
+  {
+    "package": "anneal-3730-generation-recovery-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-h08-project-switch-router-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-h09-lsp-to-upstream-cancellation-boundaries-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-identity-state-mutation-model-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lake-plugin-artifact-identity-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-large-tree-coherent-capture-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-last-good-model-after-rust-failure-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-last-good-model-signature-recovery-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lean-artifact-layouts-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-lsp-multifile-actions-hints-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-lsp-navigation-edit-operations-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-lsp-projection-code-actions-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-multiminute-restart-resource-soak-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lean-protocol-import-deletion-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-protocol-races-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-rpc-lifetimes-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-lean-server-soak-context-rpc-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-live-proof-import-state-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-partial-elaboration-queries-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-prefix-edit-cancellation-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-projection-properties-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-projection-provenance-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-rpc-idle-expiry-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-rust-input-snapshot-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-saved-vs-private-rust-overlay-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-scratch-tactic-concurrency-crash-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-server-topology-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-shared-cargo-consumer-ownership-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-shared-generator-batch-live-sinks-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3730-snapshot-capture-jobs-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-source-owned-projection-diagnostic-matrix-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-upstream-api-projection-precedents-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3730-vertical-acceptance-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-3731-real-generation-publication-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": true,
+    "checker_exit": 0
+  },
+  {
+    "package": "anneal-interactive-pipeline-invalidation-graph-main-41f5b37",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-synthesized-scaffolding-diagnostic-provenance-main-41f5b37",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-v1-annotation-diagnostics-history-2026-09-27",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-v1-interactive-dependency-invalidation-2026-09-28",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "anneal-v2-current-source-surface-main-bd0956b-2026-09-29",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "cargo-rust-charon-anneal-coverage-matrix-2026-09-28",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lean-generated-file-interactive-workflows-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lean-lsp-old-version-wait-race-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lean-server-concurrency-experiment-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lean-server-multi-workspace-isolation-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lean-server-tactic-state-v4-30-0-rc2",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "lsp-proof-assistant-architecture-2026-09-27",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  },
+  {
+    "package": "rust-source-span-provenance-nightly-2026-05-31",
+    "report_md": true,
+    "report_json": true,
+    "checker_present": false,
+    "checker_exit": null
+  }
+]

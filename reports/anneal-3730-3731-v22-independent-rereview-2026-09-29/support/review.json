@@ -1,0 +1,49 @@
+{
+  "reviewed_at_utc": "2026-09-29T19:40:06Z",
+  "baseline_head": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+  "counts": {
+    "investigations": 159,
+    "suggestions": 174,
+    "links": 345,
+    "rows": 333,
+    "cited_packages": 175,
+    "complete_investigations": 4,
+    "complete_suggestions_in_v22": 4,
+    "source_mapped": 62,
+    "gated": 13
+  },
+  "finding": {
+    "false_complete_suggestion": "C03",
+    "recommended_status": "partial",
+    "investigation_I049_status": "complete at pinned direct-Lean fixture scope",
+    "later_prerequisite_rows": [
+      "I065",
+      "I071",
+      "I077",
+      "I089",
+      "I094",
+      "I101",
+      "I103"
+    ],
+    "later_stale_residual_rows": [
+      "I147",
+      "I151"
+    ]
+  },
+  "files_sha256": {
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/investigation-final-v22.csv": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/3730-crosswalk-final-v22.csv": "90ee49ce47fff9123c41041c65125a9235caec8306a85a99ae293be345b8007d",
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/row-challenge-v22.json": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7",
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/check.py": "fc0b9fe4fdbcb6de9fd713049fc5953d74c877c85d2ae358be8c9dc579365e48",
+    "anneal-v2-current-source-surface-main-bd0956b-2026-09-29/REPORT.md": "8277543f99c36f099158038dbee22f1300d47e5cb067e2163625376106edc6f2",
+    "anneal-v2-current-source-surface-main-bd0956b-2026-09-29/REPORT.json": "ebe8d135aafcd0a193bb826cb343e37bd0d43f5940d3ae6d84a19da46a4f824a",
+    "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2/REPORT.md": "469f9820f25127577148f614a54821a0c247c036881278aa85f831f2193b9cf6",
+    "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2/support/check.py": "d446e184fa814189b00fe9785fef53e9f0fee463183c4d9949c47e0a67019722",
+    "anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/REPORT.md": "d605f66dd1b245f777ecaf704e239f32fbf88973c8a4fbe2beb280771f1bb178",
+    "anneal-3730-lean-launch-refresh-matrix-v4-30-0-rc2/support/summarize.py": "3a5a90c2d91a41839234a99e3633444dad9ab61a47b3981ee20a99685c763475",
+    "anneal-3730-c03-proof-resend-refresh-2026-09-29/REPORT.md": "ab81204e0d8925346b571f18140b592bfaf367832d645b512e2e220fd48425ff",
+    "anneal-3730-c03-proof-resend-refresh-2026-09-29/support/check.py": "dfbaf6fa3ece4dfeb168613824506bf174586dea4a8f2fe1ec0aa38527b08009",
+    "anneal-3730-c03-proof-resend-refresh-2026-09-29/support/results.json": "7b0b63a3a0e9468937b223317d2a68472fecd9391a111c0437d0ea375af46fa3"
+  }
+}

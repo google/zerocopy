@@ -54,7 +54,7 @@ Basis: **derived** from the paired worker results and fresh batch control.
 - `support/transcript.json` — causal protocol and batch transcript, with local absolute paths scrubbed.
 - `support/revalidation-transcript.json` — independent replay with the same pinned Lean binary. The artifact hashes, four goal results, and batch exit code match the original run.
 - `support/simultaneous-transcript.json` — supplementary replay with one additional old-document query after the new worker's goal result. It returned `no goals` before the old document was closed, while the new document had already returned `⊢ sharedValue = 3`; the original artifact hashes and batch result also matched.
-- `support/check.py` — offline checks for the retained transcripts, final fixture hashes, protocol chronology, goals, diagnostics, and batch result.
+- `support/check.py` — offline checks for the retained transcripts, final fixture hashes, proof text in the open messages, URI/version-bound goal exchanges, diagnostics, and batch result. It checks the recorded Lean revision string, not the local executable's bytes.
 - `support/fixture/Dep.lean`, `Dep.olean`, `OldOpen.lean`, and `NewOpen.lean` — final fixture state; initial `Dep.lean` and artifact are represented by source/hash evidence in the transcript.
 
 Related corpus evidence: `anneal-v1-interactive-dependency-invalidation-2026-09-28` exercises `lake env lean --server` in a generated V1 workspace; `lean-server-tactic-state-v4-30-0-rc2` documents pinned goal-query semantics. This report adds a direct-server launch case rather than replacing those findings.

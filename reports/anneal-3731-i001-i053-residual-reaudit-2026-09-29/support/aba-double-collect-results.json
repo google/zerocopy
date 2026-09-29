@@ -1,0 +1,95 @@
+{
+  "complete_generations": {
+    "A": [
+      "A-x\n",
+      "A-y\n"
+    ],
+    "B": [
+      "B-x\n",
+      "B-y\n"
+    ]
+  },
+  "events": [
+    {
+      "generation": "A",
+      "operation": "select"
+    },
+    {
+      "name": "x",
+      "operation": "read",
+      "selected_before_open": "A",
+      "sha256": "9e618c75983cdfdfbc9c54da9101971ed603fb2944e17ea06531c4c94655fb2c",
+      "value": "A-x\n"
+    },
+    {
+      "generation": "B",
+      "operation": "select"
+    },
+    {
+      "name": "y",
+      "operation": "read",
+      "selected_before_open": "B",
+      "sha256": "3fb38f29c563c3712ea7e5b911214a4bb2cd53d1a80fa763569a6e2c47ece208",
+      "value": "B-y\n"
+    },
+    {
+      "generation": "A",
+      "operation": "select"
+    },
+    {
+      "name": "x",
+      "operation": "read",
+      "selected_before_open": "A",
+      "sha256": "9e618c75983cdfdfbc9c54da9101971ed603fb2944e17ea06531c4c94655fb2c",
+      "value": "A-x\n"
+    },
+    {
+      "generation": "B",
+      "operation": "select"
+    },
+    {
+      "name": "y",
+      "operation": "read",
+      "selected_before_open": "B",
+      "sha256": "3fb38f29c563c3712ea7e5b911214a4bb2cd53d1a80fa763569a6e2c47ece208",
+      "value": "B-y\n"
+    },
+    {
+      "generation": "A",
+      "operation": "select"
+    }
+  ],
+  "filesystem": "APFS on macOS 26.6.2 arm64",
+  "first_collect": [
+    {
+      "name": "x",
+      "sha256": "9e618c75983cdfdfbc9c54da9101971ed603fb2944e17ea06531c4c94655fb2c",
+      "value": "A-x\n"
+    },
+    {
+      "name": "y",
+      "sha256": "3fb38f29c563c3712ea7e5b911214a4bb2cd53d1a80fa763569a6e2c47ece208",
+      "value": "B-y\n"
+    }
+  ],
+  "fixture": "two immutable directories selected by atomic relative symlink replacement",
+  "mixed_collect_equal_to_complete_generation": false,
+  "pinned_generation": "A",
+  "pinned_values": [
+    "A-x\n",
+    "A-y\n"
+  ],
+  "second_collect": [
+    {
+      "name": "x",
+      "sha256": "9e618c75983cdfdfbc9c54da9101971ed603fb2944e17ea06531c4c94655fb2c",
+      "value": "A-x\n"
+    },
+    {
+      "name": "y",
+      "sha256": "3fb38f29c563c3712ea7e5b911214a4bb2cd53d1a80fa763569a6e2c47ece208",
+      "value": "B-y\n"
+    }
+  ],
+  "unfenced_equal_collects_accept": true
+}

@@ -1,0 +1,20 @@
+{
+  "topics": ["anneal/research-coverage", "anneal/3730-crosswalk", "lean/lake-prepared-environments"],
+  "subjects": [
+    {
+      "name": "Frozen #3730 174-entry crosswalk at reference HEAD 75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+      "identity": {
+        "crosswalk_sha256": "90ee49ce47fff9123c41041c65125a9235caec8306a85a99ae293be345b8007d",
+        "issue_snapshot_sha256": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d"
+      }
+    },
+    {
+      "name": "Independent 174-row audit and cited-checker run",
+      "identity": {
+        "audit_sha256": "fc5c747eaf467bf9e473b393e927cac2188a7ab91483d8b37d2973e00faa173c",
+        "checker_runs_sha256": "adda5eb72fe75d6412ba2b68952bfe0da0548a1e6ef92ca744fd95e6af869032"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

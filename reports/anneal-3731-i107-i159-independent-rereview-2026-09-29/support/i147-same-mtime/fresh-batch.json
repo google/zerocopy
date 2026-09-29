@@ -1,0 +1,7 @@
+{
+  "exit": 1,
+  "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  selected\\nis not definitionally equal to the right-hand side\\n  7\\n\\n\u22a2 selected = 7\",\"endPos\":{\"column\":40,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":37,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+  "stderr": "",
+  "source_sha256": "32daff8558020d65a241b400c9dff20fe5613a00e2d4ce2509eeb81698c48f10",
+  "artifact_sha256": "3b0254045f93c2516915e7a26e2d3928d0472535fd876db2b81312725f8ea008"
+}

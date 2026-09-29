@@ -1,0 +1,37 @@
+{
+  "time_monotonic": 1990286.747409666,
+  "process_groups": {
+    "complete-A": {
+      "pgid": 20737,
+      "members": []
+    },
+    "complete-B": {
+      "pgid": 20738,
+      "members": []
+    },
+    "cancel-A": {
+      "pgid": 20867,
+      "members": []
+    },
+    "cancel-B": {
+      "pgid": 20868,
+      "members": []
+    }
+  },
+  "target_trees": {
+    "complete": {
+      "file_count": 35,
+      "total_file_bytes": 1198531,
+      "paths_sha256": "c8b687f24792a9971a45363d32e2f256574dc19287b9dc4537572d9b71913f29"
+    },
+    "cancel": {
+      "file_count": 35,
+      "total_file_bytes": 1198519,
+      "paths_sha256": "c8b687f24792a9971a45363d32e2f256574dc19287b9dc4537572d9b71913f29"
+    }
+  },
+  "cleanup": {
+    "work_tree_exists_after_removal": false,
+    "operation": "shutil.rmtree of private $SCRATCH/work after copying three LLBC outputs to report package"
+  }
+}

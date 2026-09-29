@@ -1,0 +1,7 @@
+{
+  "exit": 0,
+  "stdout": "{\"caption\":\"\",\"data\":\"7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+  "stderr": "",
+  "source_sha256": "32daff8558020d65a241b400c9dff20fe5613a00e2d4ce2509eeb81698c48f10",
+  "artifact_sha256": "45ac0f37c8fb48c754c06915761ddb3fde4793735ab0d85e66dc1a31e57cf9b7"
+}

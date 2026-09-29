@@ -1,0 +1,45 @@
+{
+  "source": "reports/anneal-3730-five-original-packages-rereview-2026-09-29/support/review.json",
+  "mismatches": [
+    {
+      "path": "reports/aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md",
+      "historical_sha256": "db8f5fb7ef40586242c1f067cadc40ee98fb889f1e70b202b195006b0077db63",
+      "current_sha256": "3f54e845af3182420fab5233e178e4ee672d6c2eacf2794a8be18bcf6d5cceda"
+    },
+    {
+      "path": "reports/aeneas-concurrent-generation-determinism-nightly-2026-06-03/support/check.py",
+      "historical_sha256": "eae050189d2ef82116446cf57345f46fbdb5d5826cdf2f1ac64e7f39240d299b",
+      "current_sha256": "74b6eb71de12c2e877a50cfdd3c732e54562f1ab4a33c621dbf615636b1303ab"
+    },
+    {
+      "path": "reports/anneal-interactive-model-probes-2026-09-29/REPORT.md",
+      "historical_sha256": "9a3415bdc0d6040e1b4e470ccdda8d8afc30d33a29f42fcb7915fcec30e0e30a",
+      "current_sha256": "10507036786365715ca85178c209217da74cd1a367955c2541bfd894f904977b"
+    },
+    {
+      "path": "reports/anneal-interactive-model-probes-2026-09-29/support/check.py",
+      "historical_sha256": "0e106a5023544fb2239bb14c1c004a0120adcafc4fa197b4072b1cf2a7e939a9",
+      "current_sha256": "08207bc4d708ede0b6f7a5016f337b5b39275d49b1f8d925b2f91b715308709c"
+    },
+    {
+      "path": "reports/lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/support/check.py",
+      "historical_sha256": "451038ade58a24ec6e7ba8a76e39eaa82e43be8cdc4b3b6cf9ff6da283bb296c",
+      "current_sha256": "e8dc6a44eeb5c90d1128277b1c5b8b9cd81799a3b17abdf15e17a0872d535f20"
+    },
+    {
+      "path": "reports/lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.json",
+      "historical_sha256": "e779303dfd1e1ecf3a6a5603669c2dd4e77f1e90641181d692d983db9afe4b2f",
+      "current_sha256": "24102178e191206d1d8163d1994bd62e0f0c85cdff20d75f4ca5dfd6ed3b6679"
+    },
+    {
+      "path": "reports/lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md",
+      "historical_sha256": "ab40be9d039aef31a71ec5660848bbb54b0caee5e04e006746b166d20beec0be",
+      "current_sha256": "fd0b94226578b28fb8492f1f2b8e1f461ed585ae41958def96387817fb7e9615"
+    },
+    {
+      "path": "reports/lean-same-server-dependency-generation-v4-30-0-rc2/support/check.py",
+      "historical_sha256": "bf0405dc274c99144a195d8646b19aa4059d6999122e8e19d08fa16d6dcd81bf",
+      "current_sha256": "aa35d8d488b4be19fc05805ae59195219ef244d29b86453f827e80865b00d086"
+    }
+  ]
+}

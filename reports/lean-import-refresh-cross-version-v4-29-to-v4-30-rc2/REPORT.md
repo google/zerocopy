@@ -44,7 +44,7 @@ Basis: **derived** from two pinned executions.
 - The probe scripts generate the fixture at run time; their SHA-256 digests in `REPORT.json` identify that procedure. The two Lean revisions and executable hashes identify the observed toolchains.
 - `support/v429/transcript.json` and `support/v430/transcript.json` — versions, artifact hashes, LSP messages, goals, diagnostics, and batch exits.
 - `support/v429/fixture/` and `support/v430/fixture/` — final proof sources and each version's pre/post-rebuild `Dep.olean` artifacts.
-- `support/check.py` — read-only checks of both retained runs, exact local binary/script identities, delayed queries, and the earlier independent 4.30 transcript.
+- `support/check.py` — read-only checks of both retained runs, exact local binary/script identities, proof text in the open messages, URI/version-bound goal exchanges, delayed queries, and the earlier independent 4.30 transcript.
 - `lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md` — the paired v4.30-rc2 observation.
 
 Issue alignment: partial evidence for #3730 C03–C05 and #3731 I049, I131, I147, I158, and I159 N03. The related rows in the coverage audit retain their other untested dimensions.

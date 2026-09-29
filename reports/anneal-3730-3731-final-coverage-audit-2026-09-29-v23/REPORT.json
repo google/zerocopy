@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/3730-3731",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "#3730/#3731 central coverage ledger v23",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_base_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+        "prior_audit": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22",
+        "validation": "support/validation-v23.json"
+      }
+    },
+    {
+      "name": "Frozen #3730/#3731 issue scope",
+      "identity": {
+        "source": "../anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/issue-scope-snapshot.json",
+        "issue_3730_suggestions": "174",
+        "issue_3731_investigations": "159"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

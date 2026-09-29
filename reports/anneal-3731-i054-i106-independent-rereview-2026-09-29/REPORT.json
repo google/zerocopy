@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/coverage-audit",
+    "anneal/toolchain-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "Reference v22 investigation ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+        "investigation_csv_sha256": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+        "row_challenge_sha256": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7"
+      }
+    },
+    {
+      "name": "Frozen #3731 issue scope in v22",
+      "identity": {
+        "artifact": "anneal-3730-3731-final-coverage-audit-2026-09-29-v22/support/issue-scope-snapshot.json",
+        "sha256": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d"
+      }
+    },
+    {
+      "name": "New bounded I080 component control",
+      "identity": {
+        "artifact": "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29",
+        "observed_probe_sha256": "8ea5be460e0ce3d1ec99f7f6dfa1cf4ffac9c402eddbbcd6e6f69cb82aab0de1"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

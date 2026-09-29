@@ -1,0 +1,450 @@
+[
+  {
+    "package": "anneal-3730-aeneas-handoff-memory-vs-files-2026-09-29",
+    "exit": 0,
+    "seconds": 0.064,
+    "stdout_tail": "I086 retained-result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-aeneas-namespace-move-proof-context-2026-09-29",
+    "exit": 0,
+    "seconds": 0.033,
+    "stdout_tail": "PASS: pinned module-move output, two fresh proofs, and old-name rejection\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-aeneas-restricted-reuse-2026-09-29",
+    "exit": 0,
+    "seconds": 0.032,
+    "stdout_tail": "PASS: three whole-crate variants, dependency graph, hybrid policy and stale controls\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29",
+    "exit": 0,
+    "seconds": 0.033,
+    "stdout_tail": "OK: four Charon/Aeneas cases, fresh Lean consumers, exact file/range hashes, stale-output and sorry controls; 36 events\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-annotation-subject-boundary-matrix-2026-09-29",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "d5b4cf8d41a3810c09a6daae584ad58aca69\"\n  },\n  \"charon_function_counts\": {\n    \"baseline-lib\": 5,\n    \"baseline-selected\": 6,\n    \"baseline-tests\": 14,\n    \"moved-lib\": 5,\n    \"duplicated-lib\": 6\n  },\n  \"attachment_manifest_sha256\": \"82626015b38978eaa5f23043908b67807c1719b02592525191b4ce009d285a90\"\n}\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-charon-shortname-aeneas-impact-2026-09-29",
+    "exit": 0,
+    "seconds": 0.089,
+    "stdout_tail": "R43 retained-result checks passed: five Aeneas/Lean/Lake variants and five Lake replay controls\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-claim-relative-import-taint-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "I130 retained claim-relative caller/artifact taint controls passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-cli-graceful-cancel-signals-2026-09-29",
+    "exit": 0,
+    "seconds": 0.092,
+    "stdout_tail": "R22 retained-result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-combined-pipeline-concurrency-2026-09-29",
+    "exit": 0,
+    "seconds": 0.027,
+    "stdout_tail": "PASS: two retained complete workflow runs, resource gates and output identities\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-compatible-bundle-upgrade-golden-2026-09-29",
+    "exit": 0,
+    "seconds": 0.04,
+    "stdout_tail": "PASS: two cached compatible bundles, four fresh goldens, six negative commands, two cross-pair rejections\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-cross-layer-comparator-mutants-2026-09-29",
+    "exit": 0,
+    "seconds": 0.042,
+    "stdout_tail": "OK: five exact artifact inventories, 52 process records, four positive Rust/Lean oracles and seven controls\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-cross-tool-active-cancellation-barriers-2026-09-29",
+    "exit": 0,
+    "seconds": 0.052,
+    "stdout_tail": "R20 retained-result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29",
+    "exit": 0,
+    "seconds": 0.037,
+    "stdout_tail": "PASS: 8 fresh batch oracles per generation, four two-worker direct/Lake stale-versus-fresh waves, artifacts, diagnostics and cleanup\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-external-model-without-codegen-change-2026-09-29",
+    "exit": 0,
+    "seconds": 0.056,
+    "stdout_tail": "E10 retained-result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-five-original-packages-rereview-2026-09-29",
+    "exit": 1,
+    "seconds": 0.346,
+    "stdout_tail": "",
+    "stderr_tail": " (most recent call last):\n  File \"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-five-original-packages-rereview-2026-09-29/support/check.py\", line 41, in <module>\n    assert sha((reports / member).read_bytes()) == expected, (\"second pass\", member)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('second pass', 'aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md')\n"
+  },
+  {
+    "package": "anneal-3730-full-lake-server-chain-2026-09-29",
+    "exit": 0,
+    "seconds": 0.036,
+    "stdout_tail": "PASS: one full pinned chain through Lake and server; two-worker admission skipped under cap\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-generated-history-retention-economics-2026-09-29",
+    "exit": 0,
+    "seconds": 0.035,
+    "stdout_tail": "PASS: four real generated generations, 1/2/4 tier bytes, seven historical sessions and old recompilation\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-generated-lean-canonical-source-challenge-2026-09-29",
+    "exit": 0,
+    "seconds": 0.032,
+    "stdout_tail": "PASS: source authority, Unicode UTF-16 range, CAS/rejection, mapped Lean errors, model/proof provenance, exact view round trips\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-h08-project-switch-router-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "PASS: A\u2192B\u2192A route, import/unsaved-buffer isolation, cold-restart contrast, process trees, cleanup\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-h09-lsp-to-upstream-cancellation-boundaries-2026-09-29",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "PASS: processed Lean cancellation and continued service; Cargo descendant cleanup, peer survival, and retry\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-human-freshness-study-protocol-2026-09-29",
+    "exit": 0,
+    "seconds": 0.028,
+    "stdout_tail": "OK: eight keyed cases; 32 empty participant slots; full order/condition balance; no response rows\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-identity-state-mutation-model-2026-09-29",
+    "exit": 0,
+    "seconds": 0.113,
+    "stdout_tail": "states\": 2710,\n  \"edges\": 11060,\n  \"model_sha256\": \"ef8be2fe88cd027bcdc36cfcabc9b2ebb70fd8317a5525a2d1872afa8fd604ed\",\n  \"results_sha256\": \"0be6d62ae0fbbecdb7f776453001c9120d23df1fdd5f58a8bd62de686869c758\",\n  \"state_space_sha256\": \"1b663b5157d593e70475105e1810760ca6e0f4fe7c7885eb57e63700a30ca6e5\"\n}\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-imported-instance-notation-worker-split-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.027,
+    "stdout_tail": "I050 imported instance/notation retained result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "retained Lake matrix checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-dynamic-config-identity-2026-09-29",
+    "exit": 0,
+    "seconds": 0.035,
+    "stdout_tail": "OK: 5 clean config cells, stale dynamic environment, 3 mtime controls, valid wrong trace/setup, same-mtime source edit, 4 direct servers; 57 commands\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-frozen-index-collision-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "frozen-index retained result: ok\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-key-artifact-family-matrix-2026-09-29",
+    "exit": 0,
+    "seconds": 0.034,
+    "stdout_tail": "OK: 6 input variants, 4 valid mixed artifact families, batch/setup/direct-server oracles, 2 valid plugin generations; 39 command records\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-plugin-combined-family-mix-2026-09-29",
+    "exit": 0,
+    "seconds": 0.033,
+    "stdout_tail": "OK: retained byte hashes, setup paths/options, 3 fresh Lake servers, initializer markers, imported-value diagnostics, batches and unchanged mixed artifacts\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-same-key-artifact-writers-2026-09-29",
+    "exit": 0,
+    "seconds": 0.038,
+    "stdout_tail": "OK: 3 overlapping same-key pairs; 3 genuine partial artifact writes; false-hit and repair oracles validated\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-shared-tree-conflicting-writers-2026-09-29",
+    "exit": 0,
+    "seconds": 0.033,
+    "stdout_tail": "PASS: shared-tree A/B writer overlap, reverse kills, stale pre-retry and repaired fresh Lean oracle\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lake-unprivileged-file-event-observability-2026-09-29",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "PASS: private libc events, parent-child witness, cold/replay/no-build/rebuild, transient artifact, unhooked replay, fresh Lean value\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-large-tree-coherent-capture-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "I010 retained result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-last-good-model-signature-recovery-2026-09-29",
+    "exit": 0,
+    "seconds": 0.053,
+    "stdout_tail": "R25 retained-result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-mcp-adapter-availability-probe-2026-09-29",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "OK: no adapter in scoped inventory; two toy stdio clients, isolated ID cancellation, stale hash rejection, shared-proof refresh, distinct Lean processes\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-multiminute-restart-resource-soak-2026-09-29",
+    "exit": 0,
+    "seconds": 0.038,
+    "stdout_tail": "OK: 1679 events; 4 cells; multi-minute sentinel/RPC/resource/cleanup checks\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-server-resource-drift-soak-2026-09-29",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "PASS: three timed segments, all goals/edits, periodic footprint/tree/disk ledgers, clean restarts\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-server-soak-context-rpc-2026-09-29",
+    "exit": 0,
+    "seconds": 0.034,
+    "stdout_tail": "OK: 646 events; 24 edits, 4 reopens, reference release, wrong import, clean timeout/restart and cleanup\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-transitive-import-rpc-matrix-2026-09-29",
+    "exit": 0,
+    "seconds": 0.034,
+    "stdout_tail": "efore_plugin\": \"d879258ed12eb72c1d605ae9d3fb1a03964b55fb18b0e6d34efe379b2336b7ee\",\n      \"after_plugin\": \"cd560aac09213f9cbba00fab2ce53e2bb10ec02495294d18fa4ca20c01e65703\",\n      \"max_main_rss_bytes\": 3140616192,\n      \"gated_rss_bytes\": 1743552512\n    }\n  },\n  \"max_sampled_rss_bytes\": 3140616192\n}\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "PASS URI/Lake, historical same-versus-separate URI, and imported proof/model ablations\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.03,
+    "stdout_tail": "PASS: seven batch context controls, eleven exact-version prefix controls, diagnostics, hashes, clean server exit\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-live-lean-artifact-unlink-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "I121 retained direct Lean artifact-unlink controls passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-m06-generated-lake-source-order-trace-2026-09-29",
+    "exit": 0,
+    "seconds": 0.192,
+    "stdout_tail": "PASS: 9 Lake runs, real Aeneas source-order comments, 32-artifact inventories, no-op/mtime replay, rebuild/restore, archived bytes\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-macro-tactic-position-recovery-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.027,
+    "stdout_tail": "I043 macro tactic retained result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "PASS: current-wire toy Tasks over real Lean goal, stale/pre-start/forwarded in-flight cancel and fresh batch oracles\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-mcp-2026-task-wire-controls-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "PASS: modern version/task wire controls, negative cases and legacy fallback\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29",
+    "exit": 0,
+    "seconds": 0.033,
+    "stdout_tail": "PASS: four toy tasks, real Lean goal, reconnect retrieval, expiry, cancel, partial failure, recovery, fallback\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-nested-parallelism-budget-2026-09-29",
+    "exit": 0,
+    "seconds": 0.065,
+    "stdout_tail": "R37 retained-result checks passed: 12 cells; no skips; all process trees cleaned\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "PASS: Lean 4.30.0-rc2 batch + 20 nested plainGoal and 3 term-goal positions, UTF-16, diagnostics, cleanup\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "PASS: 3 batch controls; 4 same-URI unsaved versions; 28 exact positions; diagnostics; clean server exit\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-os-lock-fd-recovery-controls-2026-09-29",
+    "exit": 0,
+    "seconds": 0.029,
+    "stdout_tail": "I108/I109 retained OS controls passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-per-worker-copied-byte-inventory-2026-09-29",
+    "exit": 0,
+    "seconds": 0.043,
+    "stdout_tail": "PASS: six cases, all entries and summaries, hashes, exits, inode identities, and 1/2-worker accounting\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29",
+    "exit": 0,
+    "seconds": 0.045,
+    "stdout_tail": "PASS: 15 item links plus six helper links, seven stale controls, actual loop fanout and failed rfl preserved\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-plugin-reversal-worker-order-2026-09-29",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "PASS: v1\u2192v2\u2192v1 marker order, retained old goals, fresh restart and exact plugin bytes\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-pruned-lake-interactive-extension-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.027,
+    "stdout_tail": "I120 pruned Lake retained result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-real-archive-manifest-gate-2026-09-29",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "PASS: availability scope and retained component oracles\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-resource-soak-contamination-2026-09-29",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "OK: 363 events; 1/2/4 completed; 25 sentinel queries; guards and cleanup passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-retained-full-chain-byte-timing-inventory-2026-09-29",
+    "exit": 0,
+    "seconds": 0.038,
+    "stdout_tail": "I113/I118 retained one-chain byte and timing inventory passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-rpc-idle-expiry-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.026,
+    "stdout_tail": "I044 RPC idle expiry retained result checks passed\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-scratch-pool-scaling-2026-09-29",
+    "exit": 0,
+    "seconds": 0.029,
+    "stdout_tail": "PASS: 8 cells, 1/2/4/8 admissions, goals, physical-memory samples, disk/inode attribution, worker cleanup\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3730-shared-cargo-consumer-ownership-2026-09-29",
+    "exit": 0,
+    "seconds": 0.032,
+    "stdout_tail": "PASS: one real shared Cargo job, individual/last-owner cancellation, failure fan-out and retry\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.036,
+    "stdout_tail": "evidence check passed: 66 I137 events, 223 I138 events, 8 mutation commands\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.032,
+    "stdout_tail": "{\"status\": \"ok\", \"generation_ids\": {\"A\": \"bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9\", \"B\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\"}, \"gc_outcomes\": [\"deferred-reader-lease\", \"deferred-reader-lease\", \"deferred-reader-lease\", \"removed\"]}\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3731-real-generation-gc-lease-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.031,
+    "stdout_tail": "{\"status\": \"ok\", \"generation_ids\": {\"A\": \"bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9\", \"B\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\"}, \"cases\": [\"leased\", \"unleased\"]}\n",
+    "stderr_tail": ""
+  },
+  {
+    "package": "anneal-3731-real-generation-publication-v4-30-0-rc2",
+    "exit": 0,
+    "seconds": 0.032,
+    "stdout_tail": "I051 real-artifact publication evidence checked\n",
+    "stderr_tail": ""
+  }
+]

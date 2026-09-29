@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "filesystem/snapshot-capture"
+  ],
+  "subjects": [
+    {
+      "name": "#3731 investigation agenda I001-I053 and reference evidence corpus",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+        "issue": "3731"
+      }
+    },
+    {
+      "name": "APFS pointer-ABA double-collect fixture",
+      "identity": {
+        "platform": "macOS 26.6.2 arm64",
+        "filesystem": "APFS",
+        "probe_sha256": "8378c6aadc89427a9f2f754f8030aeb5c1ca14e93048a510a94df0e7867ecd40"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

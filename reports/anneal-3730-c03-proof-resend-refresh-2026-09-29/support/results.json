@@ -1,0 +1,2063 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "baseline_probe_sha256": "d20a5c7b20b71d7fdfec608144934f227c6a48678fc4ebff3487d1d18a7b5a01",
+  "source7_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc",
+  "source9_sha256": "54beac623471cb8565a3815a7ab7dde4884e67340fc659a8d9e5d1f4893947a5",
+  "artifact7_sha256": "1e9a6a4dc613d2f40aa23301cca0bd9ad919bcbbf000d9d60dc535b321715087",
+  "artifact9_sha256": "3b0254045f93c2516915e7a26e2d3928d0472535fd876db2b81312725f8ea008",
+  "proof_sha256": "10e45d6afc78e784b6324e854a89dfcb5171313cea22e3f51a0596f8b20aeb6e",
+  "builds": [
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "<SCRATCH>/project/.lake/build/lib/lean/Dep.olean",
+        "Dep.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "<SCRATCH>/alt/Dep.olean",
+        "Dep.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "observations": {
+    "initial_wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "initial": {
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 1
+      }
+    },
+    "after_watched": {
+      "goal": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 1
+      }
+    },
+    "same_text_v2_wait": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "same_text_v2": {
+      "goal": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 2
+      }
+    },
+    "whitespace_v3_wait": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "whitespace_v3": {
+      "goal": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 3
+      }
+    },
+    "reopened_wait": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "reopened": {
+      "goal": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 1
+      }
+    },
+    "fresh_wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "fresh": {
+      "goal": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      },
+      "diagnostics": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "9",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 3
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://<SCRATCH>/project/Proof.lean",
+        "version": 1
+      }
+    }
+  },
+  "batch": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "Proof.lean"
+    ],
+    "rc": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  selected\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ selected = 7\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":4},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  "transcript": [
+    {
+      "seq": 0,
+      "ms": 345.3,
+      "kind": "launch",
+      "label": "existing",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 22032,
+      "root": "<SCRATCH>/project"
+    },
+    {
+      "seq": 1,
+      "ms": 363.6,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 22029,
+          "rootUri": "file://<SCRATCH>/project",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 2,
+      "ms": 371.5,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 3,
+      "ms": 371.6,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 4,
+      "ms": 371.6,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 5,
+      "ms": 371.6,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 6,
+      "ms": 371.8,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 7,
+      "ms": 371.8,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 8,
+      "ms": 372.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 9,
+      "ms": 427.4,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 10,
+      "ms": 608.7,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 11,
+      "ms": 608.7,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 12,
+      "ms": 608.8,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 13,
+      "ms": 609.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 14,
+      "ms": 609.0,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 237.3
+    },
+    {
+      "seq": 15,
+      "ms": 609.0,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 16,
+      "ms": 610.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 17,
+      "ms": 610.9,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 1.9
+    },
+    {
+      "seq": 18,
+      "ms": 611.5,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "workspace/didChangeWatchedFiles",
+        "params": {
+          "changes": [
+            {
+              "uri": "file://<SCRATCH>/project/Dep.lean",
+              "type": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 19,
+      "ms": 611.5,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "workspace/didChangeWatchedFiles",
+        "params": {
+          "changes": [
+            {
+              "uri": "file://<SCRATCH>/project/artifacts/Dep.olean",
+              "type": 2
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 20,
+      "ms": 611.5,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 21,
+      "ms": 611.8,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 22,
+      "ms": 611.8,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "$/lean/plainGoal",
+      "rid": 12,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 23,
+      "ms": 611.8,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 2
+          },
+          "contentChanges": [
+            {
+              "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 24,
+      "ms": 611.8,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 25,
+      "ms": 819.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 26,
+      "ms": 819.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "seq": 27,
+      "ms": 819.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "seq": 28,
+      "ms": 819.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 13,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 29,
+      "ms": 819.0,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 13,
+      "elapsed_ms": 207.2
+    },
+    {
+      "seq": 30,
+      "ms": 819.1,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 31,
+      "ms": 819.4,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 14,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 32,
+      "ms": 819.4,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "$/lean/plainGoal",
+      "rid": 14,
+      "elapsed_ms": 0.3
+    },
+    {
+      "seq": 33,
+      "ms": 819.4,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didChange",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 3
+          },
+          "contentChanges": [
+            {
+              "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n\n"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 34,
+      "ms": 819.4,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 35,
+      "ms": 927.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "seq": 36,
+      "ms": 1029.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "seq": 37,
+      "ms": 1029.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 3
+          }
+        }
+      }
+    },
+    {
+      "seq": 38,
+      "ms": 1029.0,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 39,
+      "ms": 1029.1,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 15,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 40,
+      "ms": 1029.1,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 15,
+      "elapsed_ms": 209.7
+    },
+    {
+      "seq": 41,
+      "ms": 1029.1,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 42,
+      "ms": 1029.3,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 16,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    {
+      "seq": 43,
+      "ms": 1029.3,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "$/lean/plainGoal",
+      "rid": 16,
+      "elapsed_ms": 0.2
+    },
+    {
+      "seq": 44,
+      "ms": 1029.3,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didClose",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          }
+        }
+      }
+    },
+    {
+      "seq": 45,
+      "ms": 1029.4,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 46,
+      "ms": 1029.4,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 47,
+      "ms": 1029.6,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 3
+        }
+      }
+    },
+    {
+      "seq": 48,
+      "ms": 1029.8,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 49,
+      "ms": 1087.4,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 50,
+      "ms": 1268.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 51,
+      "ms": 1268.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 52,
+      "ms": 1268.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "9",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 53,
+      "ms": 1268.9,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 17,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 54,
+      "ms": 1268.9,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 17,
+      "elapsed_ms": 239.6
+    },
+    {
+      "seq": 55,
+      "ms": 1269.0,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 56,
+      "ms": 1269.4,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 18,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      }
+    },
+    {
+      "seq": 57,
+      "ms": 1269.4,
+      "kind": "request_latency",
+      "label": "existing",
+      "method": "$/lean/plainGoal",
+      "rid": 18,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 58,
+      "ms": 1269.4,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 59,
+      "ms": 1269.7,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 60,
+      "ms": 1275.5,
+      "kind": "server",
+      "label": "existing",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 61,
+      "ms": 1275.6,
+      "kind": "client",
+      "label": "existing",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 62,
+      "ms": 1277.1,
+      "kind": "stop",
+      "label": "existing",
+      "rc": 0,
+      "pid": 22032,
+      "stderr": ""
+    },
+    {
+      "seq": 63,
+      "ms": 1278.6,
+      "kind": "launch",
+      "label": "fresh",
+      "mode": "direct",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--server"
+      ],
+      "pid": 22037,
+      "root": "<SCRATCH>/project"
+    },
+    {
+      "seq": 64,
+      "ms": 1278.7,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 22029,
+          "rootUri": "file://<SCRATCH>/project",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "seq": 65,
+      "ms": 1303.6,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "seq": 66,
+      "ms": 1303.7,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "seq": 67,
+      "ms": 1303.7,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Dep\n#eval selected\ntheorem checked : selected = 7 := by\n  rfl\n\n"
+          }
+        }
+      }
+    },
+    {
+      "seq": 68,
+      "ms": 1303.7,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 69,
+      "ms": 1303.8,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "seq": 70,
+      "ms": 1303.8,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "seq": 71,
+      "ms": 1304.0,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 72,
+      "ms": 1360.0,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 73,
+      "ms": 1541.2,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 74,
+      "ms": 1541.2,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "seq": 75,
+      "ms": 1541.2,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "message": "9",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              },
+              "severity": 3,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              },
+              "message": "Tactic `rfl` failed: The left-hand side\n  selected\nis not definitionally equal to the right-hand side\n  7\n\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 3
+                },
+                "start": {
+                  "character": 2,
+                  "line": 3
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 76,
+      "ms": 1541.4,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "seq": 77,
+      "ms": 1541.4,
+      "kind": "request_latency",
+      "label": "fresh",
+      "method": "textDocument/waitForDiagnostics",
+      "rid": 10,
+      "elapsed_ms": 237.6
+    },
+    {
+      "seq": 78,
+      "ms": 1541.4,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "$/lean/plainGoal",
+        "params": {
+          "textDocument": {
+            "uri": "file://<SCRATCH>/project/Proof.lean"
+          },
+          "position": {
+            "line": 3,
+            "character": 5
+          }
+        }
+      }
+    },
+    {
+      "seq": 79,
+      "ms": 1541.8,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [
+            "⊢ selected = 7"
+          ],
+          "rendered": "```lean\n⊢ selected = 7\n```"
+        }
+      }
+    },
+    {
+      "seq": 80,
+      "ms": 1541.8,
+      "kind": "request_latency",
+      "label": "fresh",
+      "method": "$/lean/plainGoal",
+      "rid": 11,
+      "elapsed_ms": 0.4
+    },
+    {
+      "seq": 81,
+      "ms": 1541.9,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 99,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "seq": 82,
+      "ms": 1542.1,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://<SCRATCH>/project/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "seq": 83,
+      "ms": 1547.8,
+      "kind": "server",
+      "label": "fresh",
+      "message": {
+        "id": 99,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "seq": 84,
+      "ms": 1547.9,
+      "kind": "client",
+      "label": "fresh",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "seq": 85,
+      "ms": 1549.4,
+      "kind": "stop",
+      "label": "fresh",
+      "rc": 0,
+      "pid": 22037,
+      "stderr": ""
+    }
+  ]
+}

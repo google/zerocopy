@@ -1,0 +1,124 @@
+{
+  "baseline_reference_head": "75fa78c1b623ab8db9d9acb4f31ec7958bfb9110",
+  "challenged_suggestion_ids": [
+    "C03",
+    "D01",
+    "F02",
+    "F12",
+    "F14",
+    "F15",
+    "F19",
+    "I01",
+    "I03",
+    "I04",
+    "I08",
+    "J01",
+    "J02",
+    "J03",
+    "J04",
+    "J05",
+    "J06",
+    "J07",
+    "J08",
+    "J09",
+    "J10",
+    "J12",
+    "J14"
+  ],
+  "changed_investigation_residual_ids": [
+    "I010",
+    "I011",
+    "I052",
+    "I080",
+    "I126",
+    "I129",
+    "I147",
+    "I148",
+    "I151"
+  ],
+  "changed_prerequisite_ids": [
+    "C03",
+    "D01",
+    "F02",
+    "F14",
+    "F15",
+    "F19",
+    "I01",
+    "I03",
+    "I04",
+    "I065",
+    "I071",
+    "I077",
+    "I08",
+    "I089",
+    "I094",
+    "I101",
+    "I103",
+    "I129",
+    "J01",
+    "J02",
+    "J03",
+    "J04",
+    "J05",
+    "J06",
+    "J07",
+    "J08",
+    "J09",
+    "J10",
+    "J12",
+    "J14"
+  ],
+  "changed_status_ids": [
+    "C03"
+  ],
+  "changed_suggestion_residual_ids": [
+    "C03",
+    "F15",
+    "F19",
+    "I01",
+    "I03"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v23.csv": "be56657530e039bfab53f3ef774289a83aeebe80d2741740281b963d78948b12",
+    "investigation-final-v23.csv": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+    "review-package-inventory-v23.csv": "6ec5e6dd9882f2ed314cc8a69ab0d799241b777e3ab4a92801b68051b6592391",
+    "row-challenge-v23.json": "1e89d074400f867ac2df26f94e9931c23692456c46b53c249cdd38173a736500"
+  },
+  "input_sha256": {
+    "anneal-3730-174-row-crosswalk-reaudit-2026-09-29/support/audit.json": "fc5c747eaf467bf9e473b393e927cac2188a7ab91483d8b37d2973e00faa173c",
+    "anneal-3730-3731-v22-independent-rereview-2026-09-29/support/review.json": "020b79c4101c711e2c3c81c5934a3ddb0e009d47293d2a99ad11d96279a89bcc",
+    "anneal-3731-i001-i053-residual-reaudit-2026-09-29/REPORT.md": "0a135d80d61cafbb12b1becfed3689b3c47965ed38083cdd8edc051db7bc90a5",
+    "anneal-3731-i054-i106-independent-rereview-2026-09-29/support/row-review.csv": "c913defe1c32a14d31fb43baf94023e8c89d954178ac8a32d1c8597f066ca879",
+    "anneal-3731-i107-i159-independent-rereview-2026-09-29/support/row-review.csv": "24b96ba12db213b611a49525b7e82f69ef85abebe5d4361fb5df11d2cde20ac9",
+    "v22/3730-crosswalk-final-v22.csv": "90ee49ce47fff9123c41041c65125a9235caec8306a85a99ae293be345b8007d",
+    "v22/investigation-final-v22.csv": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v22/row-challenge-v22.json": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7"
+  },
+  "new_packages": [
+    "anneal-3731-i001-i053-residual-reaudit-2026-09-29",
+    "anneal-3731-i054-i106-independent-rereview-2026-09-29",
+    "anneal-3731-i107-i159-independent-rereview-2026-09-29",
+    "anneal-3730-174-row-crosswalk-reaudit-2026-09-29",
+    "anneal-3730-3731-v22-independent-rereview-2026-09-29",
+    "anneal-3730-c03-proof-resend-refresh-2026-09-29",
+    "anneal-3730-f15-final-versus-moved-lake-2026-09-29",
+    "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29"
+  ],
+  "row_count": 333,
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_destination_links": 345
+}
