@@ -2980,6 +2980,35 @@
         "anneal/prepared-environment"
       ]
     },
+    "anneal-3730-five-original-packages-rereview-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "335cf976f507b1bc65fea2e4742cd41a710e17d8",
+            "repository": "google/zerocopy",
+            "review_manifest": "support/review.json",
+            "source_commits": "41e3f34 and 9641a9e"
+          },
+          "name": "Five original #3730/#3731 report packages"
+        },
+        {
+          "identity": {
+            "body_and_comment_sha256": "support/review.json",
+            "issues": "google/zerocopy#3730 and #3731",
+            "observed_utc": "2026-09-29T16:45:25Z"
+          },
+          "name": "GitHub issue scope"
+        }
+      ],
+      "topics": [
+        "anneal/review",
+        "anneal/interactive-architecture",
+        "anneal/concurrency",
+        "anneal/lean-server",
+        "anneal/coverage"
+      ]
+    },
     "anneal-3730-full-lake-server-chain-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3536,6 +3565,33 @@
         "lake/shared-writable-package",
         "lake/concurrent-writers",
         "lean/freshness-oracle"
+      ]
+    },
+    "anneal-3730-lake-unprivileged-file-event-observability-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        },
+        {
+          "identity": {
+            "artifact": "support/observe.c",
+            "sha256": "cd94f96fbec7749fc71be8f24dc497276588af53490c0b891f681624f09d2a04"
+          },
+          "name": "private libc-call observer"
+        }
+      ],
+      "topics": [
+        "lean/lake",
+        "lean/build-observability",
+        "anneal/prepared-consumer"
       ]
     },
     "anneal-3730-lake-writer-recovery-2026-09-29": {
@@ -5590,7 +5646,7 @@
         {
           "identity": {
             "artifact": "new Python standard-library research harness in this package",
-            "model_probes_sha256": "f848a8f14a9ca6447b0eb0909867155978f913b59c6ecfaf9ff4fdb179527a0a",
+            "model_probes_sha256": "ed7c35407db2f5e9313aeeee7a860e64b2bffb1d781dd57e1e72727e0c1bf212",
             "publication_probe_sha256": "4bc9133703ec349181090d0bf30d850c98a5a0283523e5e1395deb25ed996811",
             "repository": "google/zerocopy",
             "revision": "8c257ec3f4e067963e12441ce5b261714a005c74"

@@ -42,6 +42,12 @@ def inspect(folder, version, revision, preserve_old):
     assert d["old_worker_goal_after"]["result"]["goals"] == []
     for key in ("new_worker_goal_same_server", "reopened_worker_goal_same_server"):
         assert d[key]["result"]["goals"] == ["⊢ sharedValue = 3"]
+    for name, document_version in (("NewOpen.lean", 1), ("OldOpen.lean", 2)):
+        assert any(batch["uri"].endswith("/" + name)
+                   and batch.get("version") == document_version
+                   and any("Tactic `rfl` failed" in item.get("message", "")
+                           for item in batch["diagnostics"])
+                   for batch in d["diagnostics"])
     assert d["fresh_batch_returncode"] == 1
     assert "Tactic `rfl` failed" in kinds("fresh_batch_after_dependency_rebuild")[0]["stdout"]
     assert len(kinds("server_start")) == len(kinds("server_exit")) == 1

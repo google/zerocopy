@@ -4,7 +4,7 @@
 
 Three small experiments support distinct contracts: URI/path or document-version identity alone collides across changed source/import state; source-map edits must reject synthetic gaps and compare the host/projection generation before applying; and replacing a mutable generation pointer does not make a multi-file read coherent unless the consumer pins one immutable generation directory. A forced pointer to an incomplete stage exposes a missing file. These are bounded model/filesystem results, not proof that a specific Anneal implementation follows or violates the contracts.
 
-The Python harness checked ten single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`.
+The Python harness checked ten **distinct** single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`. An independent re-review replaced one duplicated worker-epoch case with a symbolic LLBC-identity change; the other model and filesystem controls are unchanged.
 
 ## Applicability
 

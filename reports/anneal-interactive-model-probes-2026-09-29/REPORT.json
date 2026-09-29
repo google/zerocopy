@@ -13,7 +13,7 @@
         "repository": "google/zerocopy",
         "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
         "artifact": "new Python standard-library research harness in this package",
-        "model_probes_sha256": "f848a8f14a9ca6447b0eb0909867155978f913b59c6ecfaf9ff4fdb179527a0a",
+        "model_probes_sha256": "ed7c35407db2f5e9313aeeee7a860e64b2bffb1d781dd57e1e72727e0c1bf212",
         "publication_probe_sha256": "4bc9133703ec349181090d0bf30d850c98a5a0283523e5e1395deb25ed996811"
       }
     },

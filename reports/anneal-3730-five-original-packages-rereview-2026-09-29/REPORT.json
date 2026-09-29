@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/review",
+    "anneal/interactive-architecture",
+    "anneal/concurrency",
+    "anneal/lean-server",
+    "anneal/coverage"
+  ],
+  "subjects": [
+    {
+      "name": "Five original #3730/#3731 report packages",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "335cf976f507b1bc65fea2e4742cd41a710e17d8",
+        "source_commits": "41e3f34 and 9641a9e",
+        "review_manifest": "support/review.json"
+      }
+    },
+    {
+      "name": "GitHub issue scope",
+      "identity": {
+        "issues": "google/zerocopy#3730 and #3731",
+        "observed_utc": "2026-09-29T16:45:25Z",
+        "body_and_comment_sha256": "support/review.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

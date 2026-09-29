@@ -1,0 +1,1179 @@
+{
+  "subject": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "interposer_sha256": "31f0ca3d4c053d409f8d7125725c52d3114760e81796ad535146e70999309867",
+    "source_sha256": "cd94f96fbec7749fc71be8f24dc497276588af53490c0b891f681624f09d2a04",
+    "disk_free_before": 52002852864,
+    "clang_version": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+    "compile_cmd": [
+      "/usr/bin/clang",
+      "-dynamiclib",
+      "-fPIC",
+      "-O1",
+      "-Wno-deprecated-declarations",
+      "-o",
+      "$SUPPORT/observe.dylib",
+      "$SUPPORT/observe.c"
+    ],
+    "compile_stderr": ""
+  },
+  "runs": [
+    {
+      "name": "cold",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "interposed": true,
+      "exit": 0,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2139 [2/3] Built Dep (209ms)\ntrace: .> LEAN_PATH=$WORK/.lake/build/lib/lean $BIN/lean $WORK/Dep.lean -o $WORK/.lake/build/lib/lean/Dep.olean -i $WORK/.lake/build/lib/lean/Dep.ilean -c $WORK/.lake/build/ir/Dep.c --setup $WORK/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran Probe/Dep:default\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: Probe: no previous manifest, creating one from scratch\n",
+      "elapsed_ms": 4116,
+      "events": [
+        {
+          "pid": 7176,
+          "op": "process-lake",
+          "result": 7171,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16780801,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 9,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7176,
+          "op": "rename-from",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.tmp.7176"
+        },
+        {
+          "pid": 7176,
+          "op": "rename-to",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/lake-manifest.json"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.ltar"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.server"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.private"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ir"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.bc"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.setup.json"
+        },
+        {
+          "pid": 7179,
+          "op": "process-lean",
+          "result": 7176,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7179,
+          "op": "open",
+          "result": 10,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7179,
+          "op": "open",
+          "result": 10,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.setup.json"
+        },
+        {
+          "pid": 7179,
+          "op": "rename-from",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.tmp.7179"
+        },
+        {
+          "pid": 7179,
+          "op": "rename-to",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7179,
+          "op": "open",
+          "result": 10,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7179,
+          "op": "open",
+          "result": 10,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.ltar.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.server.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.private.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ir.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.bc.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        },
+        {
+          "pid": 7176,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7176,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace.nobuild"
+        }
+      ],
+      "event_count": 41,
+      "pids": [
+        7176,
+        7179
+      ],
+      "net_changes": {
+        ".lake/build/ir/Dep.c": {
+          "before": null,
+          "after": {
+            "sha256": "b8c2e7e9d7a20c7980d8284222383d7e65f97fcf9bff0410b8315ba28f6ba196",
+            "size": 1321,
+            "mtime_ns": 1790700151574895124
+          }
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "before": null,
+          "after": {
+            "sha256": "2afe185447dfa5154de9fd4d0f2d7753ef3f96c8c55110c9716fe9e895b02b3e",
+            "size": 16,
+            "mtime_ns": 1790700151581950453
+          }
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "before": null,
+          "after": {
+            "sha256": "be79804bd3eadcf5ee08bf7740f29e17ece009ab1a393944c7ec4fdffc37eace",
+            "size": 123,
+            "mtime_ns": 1790700151374124079
+          }
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "before": null,
+          "after": {
+            "sha256": "bad169ef9120c788f3bbb0dd1fe602f55c1afa74a5d05dd711a7d9418ecce931",
+            "size": 278,
+            "mtime_ns": 1790700151573355644
+          }
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "before": null,
+          "after": {
+            "sha256": "32c6afc0c36199194d3d7b1c5db4f8aa0f4245659a22ee5d7ce5fa3513344024",
+            "size": 16,
+            "mtime_ns": 1790700151581803622
+          }
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "before": null,
+          "after": {
+            "sha256": "f4ce19f0ee30fbe126d89f845aa59bfe83b919feb2073f7fb65c2c6b3c7520a6",
+            "size": 4600,
+            "mtime_ns": 1790700151569933103
+          }
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "before": null,
+          "after": {
+            "sha256": "8ef744bfe7d7169b7479d8547fb2f8a185e65730f007386e10248f42b06fe8e7",
+            "size": 16,
+            "mtime_ns": 1790700151581667082
+          }
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "before": null,
+          "after": {
+            "sha256": "bfc3bd1342aad2ae1c94ba00bf71c0e07d7b08ecda1c03f6b0bb412bc5a065cf",
+            "size": 2672,
+            "mtime_ns": 1790700151582544238
+          }
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "before": null,
+          "after": {
+            "sha256": "2a7bf0e03a0cd56a57053b52f02f9332b16e66987b931ecf22cd4c727f80a45b",
+            "size": 96544,
+            "mtime_ns": 1790700151367429245
+          }
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "before": null,
+          "after": {
+            "sha256": "5f291e842b11bfabea3333ec1ee05ad0d2b8094211705d7e7d0c246214e8f238",
+            "size": 184,
+            "mtime_ns": 1790700147979682698
+          }
+        },
+        "lake-manifest.json": {
+          "before": null,
+          "after": {
+            "sha256": "e89869e7a4ebb8b922c1dbc619aeae42fd520d94bac5ff9a0f7db34cf0909854",
+            "size": 137,
+            "mtime_ns": 1790700151370356668
+          }
+        }
+      }
+    },
+    {
+      "name": "warm",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "interposed": true,
+      "exit": 0,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2139 [2/3] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/.lake/build/lib/lean $BIN/lean $WORK/Dep.lean -o $WORK/.lake/build/lib/lean/Dep.olean -i $WORK/.lake/build/lib/lean/Dep.ilean -c $WORK/.lake/build/ir/Dep.c --setup $WORK/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran Probe/Dep:default\nBuild completed successfully (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 419,
+      "events": [
+        {
+          "pid": 7180,
+          "op": "process-lake",
+          "result": 7171,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 9,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7180,
+          "op": "read",
+          "result": 88,
+          "arg": 88,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lake-manifest.json"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7180,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        }
+      ],
+      "event_count": 11,
+      "pids": [
+        7180
+      ],
+      "net_changes": {}
+    },
+    {
+      "name": "changed_nobuild",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--rehash",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "interposed": true,
+      "exit": 3,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\n\u2714 [3/3] Ran Probe/Dep:default\nSome required targets logged failures:\n- Dep\n",
+      "stderr": "",
+      "elapsed_ms": 423,
+      "events": [
+        {
+          "pid": 7181,
+          "op": "process-lake",
+          "result": 7171,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 9,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7181,
+          "op": "read",
+          "result": 88,
+          "arg": 88,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lake-manifest.json"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7181,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace.nobuild"
+        }
+      ],
+      "event_count": 9,
+      "pids": [
+        7181
+      ],
+      "net_changes": {
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "before": null,
+          "after": {
+            "sha256": "9ebed44bcbdb317ad9175596278e68b9ea37ab7a2f25736022e62fe8d00a2914",
+            "size": 1034,
+            "mtime_ns": 1790700152329710573
+          }
+        }
+      }
+    },
+    {
+      "name": "changed_build",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--rehash",
+        "build",
+        "Dep"
+      ],
+      "interposed": true,
+      "exit": 0,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2139 [2/3] Built Dep (189ms)\ntrace: .> LEAN_PATH=$WORK/.lake/build/lib/lean $BIN/lean $WORK/Dep.lean -o $WORK/.lake/build/lib/lean/Dep.olean -i $WORK/.lake/build/lib/lean/Dep.ilean -c $WORK/.lake/build/ir/Dep.c --setup $WORK/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran Probe/Dep:default\nBuild completed successfully (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 540,
+      "events": [
+        {
+          "pid": 7182,
+          "op": "process-lake",
+          "result": 7171,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 9,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7182,
+          "op": "read",
+          "result": 88,
+          "arg": 88,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lake-manifest.json"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.ltar"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.server"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.private"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ir"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.bc"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.setup.json"
+        },
+        {
+          "pid": 7183,
+          "op": "process-lean",
+          "result": 7182,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7183,
+          "op": "open",
+          "result": 10,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7183,
+          "op": "open",
+          "result": 10,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.setup.json"
+        },
+        {
+          "pid": 7183,
+          "op": "rename-from",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.tmp.7183"
+        },
+        {
+          "pid": 7183,
+          "op": "rename-to",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7183,
+          "op": "open",
+          "result": 10,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7183,
+          "op": "open",
+          "result": 10,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.ltar.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.server.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.private.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ir.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": -1,
+          "arg": 0,
+          "path": "$WORK/.lake/build/ir/Dep.bc.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.c"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        },
+        {
+          "pid": 7182,
+          "op": "open",
+          "result": 8,
+          "arg": 16778753,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7182,
+          "op": "unlink",
+          "result": 0,
+          "arg": 0,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace.nobuild"
+        }
+      ],
+      "event_count": 40,
+      "pids": [
+        7182,
+        7183
+      ],
+      "net_changes": {
+        ".lake/build/ir/Dep.c": {
+          "before": {
+            "sha256": "b8c2e7e9d7a20c7980d8284222383d7e65f97fcf9bff0410b8315ba28f6ba196",
+            "size": 1321,
+            "mtime_ns": 1790700151574895124
+          },
+          "after": {
+            "sha256": "1f3213899310aea3d1137a3113cc2e9f9af46a39200467c109b34a0df34d4d7e",
+            "size": 1321,
+            "mtime_ns": 1790700152944557513
+          }
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "before": {
+            "sha256": "2afe185447dfa5154de9fd4d0f2d7753ef3f96c8c55110c9716fe9e895b02b3e",
+            "size": 16,
+            "mtime_ns": 1790700151581950453
+          },
+          "after": {
+            "sha256": "77a2cd9b38dc8c9813759722fd82d1efc7df0ffec3e75a78c28e933d517a4d68",
+            "size": 16,
+            "mtime_ns": 1790700152950917309
+          }
+        },
+        ".lake/build/ir/Dep.setup.json": {
+          "before": {
+            "sha256": "be79804bd3eadcf5ee08bf7740f29e17ece009ab1a393944c7ec4fdffc37eace",
+            "size": 123,
+            "mtime_ns": 1790700151374124079
+          },
+          "after": {
+            "sha256": "be79804bd3eadcf5ee08bf7740f29e17ece009ab1a393944c7ec4fdffc37eace",
+            "size": 123,
+            "mtime_ns": 1790700152762344487
+          }
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "before": {
+            "sha256": "bad169ef9120c788f3bbb0dd1fe602f55c1afa74a5d05dd711a7d9418ecce931",
+            "size": 278,
+            "mtime_ns": 1790700151573355644
+          },
+          "after": {
+            "sha256": "bad169ef9120c788f3bbb0dd1fe602f55c1afa74a5d05dd711a7d9418ecce931",
+            "size": 278,
+            "mtime_ns": 1790700152944428556
+          }
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "before": {
+            "sha256": "32c6afc0c36199194d3d7b1c5db4f8aa0f4245659a22ee5d7ce5fa3513344024",
+            "size": 16,
+            "mtime_ns": 1790700151581803622
+          },
+          "after": {
+            "sha256": "32c6afc0c36199194d3d7b1c5db4f8aa0f4245659a22ee5d7ce5fa3513344024",
+            "size": 16,
+            "mtime_ns": 1790700152950801894
+          }
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "before": {
+            "sha256": "f4ce19f0ee30fbe126d89f845aa59bfe83b919feb2073f7fb65c2c6b3c7520a6",
+            "size": 4600,
+            "mtime_ns": 1790700151569933103
+          },
+          "after": {
+            "sha256": "6fed4a79fd5e552e81f7db302caae9eba1a654f85aaf3cdbf2eff7519ccd01a5",
+            "size": 4504,
+            "mtime_ns": 1790700152944078144
+          }
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "before": {
+            "sha256": "8ef744bfe7d7169b7479d8547fb2f8a185e65730f007386e10248f42b06fe8e7",
+            "size": 16,
+            "mtime_ns": 1790700151581667082
+          },
+          "after": {
+            "sha256": "51e3fb0120fa6a4fb03cae47f67af5e9e93ae7f30f7d3280a186e2b843bc6056",
+            "size": 16,
+            "mtime_ns": 1790700152950662104
+          }
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "before": {
+            "sha256": "bfc3bd1342aad2ae1c94ba00bf71c0e07d7b08ecda1c03f6b0bb412bc5a065cf",
+            "size": 2672,
+            "mtime_ns": 1790700151582544238
+          },
+          "after": {
+            "sha256": "0843f54ec300fff3b781c21140808c5699a91ee4f200cea6137f0df15b1cec52",
+            "size": 2672,
+            "mtime_ns": 1790700152951151764
+          }
+        },
+        ".lake/build/lib/lean/Dep.trace.nobuild": {
+          "before": {
+            "sha256": "9ebed44bcbdb317ad9175596278e68b9ea37ab7a2f25736022e62fe8d00a2914",
+            "size": 1034,
+            "mtime_ns": 1790700152329710573
+          },
+          "after": null
+        }
+      }
+    },
+    {
+      "name": "post_warm",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "interposed": true,
+      "exit": 0,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2139 [2/3] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/.lake/build/lib/lean $BIN/lean $WORK/Dep.lean -o $WORK/.lake/build/lib/lean/Dep.olean -i $WORK/.lake/build/lib/lean/Dep.ilean -c $WORK/.lake/build/ir/Dep.c --setup $WORK/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran Probe/Dep:default\nBuild completed successfully (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 430,
+      "events": [
+        {
+          "pid": 7184,
+          "op": "process-lake",
+          "result": 7171,
+          "arg": 0,
+          "path": "$WORK"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lakefile.lean"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean.trace"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 9,
+          "arg": 0,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7184,
+          "op": "read",
+          "result": 88,
+          "arg": 88,
+          "path": "$WORK/.lake/config/[anonymous]/lakefile.olean"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/lake-manifest.json"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/Dep.lean"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.trace"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.olean.hash"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/lib/lean/Dep.ilean.hash"
+        },
+        {
+          "pid": 7184,
+          "op": "open",
+          "result": 8,
+          "arg": 16777216,
+          "path": "$WORK/.lake/build/ir/Dep.c.hash"
+        }
+      ],
+      "event_count": 11,
+      "pids": [
+        7184
+      ],
+      "net_changes": {}
+    },
+    {
+      "name": "unhooked_postwarm",
+      "cmd": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "interposed": false,
+      "exit": 0,
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran Probe:extraDep\n\u2139 [2/3] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/.lake/build/lib/lean $BIN/lean $WORK/Dep.lean -o $WORK/.lake/build/lib/lean/Dep.olean -i $WORK/.lake/build/lib/lean/Dep.ilean -c $WORK/.lake/build/ir/Dep.c --setup $WORK/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran Probe/Dep:default\nBuild completed successfully (3 jobs).\n",
+      "stderr": "",
+      "elapsed_ms": 422,
+      "events": [],
+      "event_count": 0,
+      "pids": [],
+      "net_changes": {}
+    },
+    {
+      "name": "fresh_batch",
+      "cmd": [
+        "$BIN/lake",
+        "env",
+        "$BIN/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "interposed": false,
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"9\",\"endPos\":{\"column\":5,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 519,
+      "events": [],
+      "event_count": 0,
+      "pids": [],
+      "net_changes": {}
+    }
+  ],
+  "mutation": {
+    "source_sha256": "949ead1e2f562c67c3773f481759d81c708a0a90e5898f636ffd2dcf7c3fb18f",
+    "mtime_restored_ns": 1790700147199259484
+  }
+}

@@ -102,16 +102,15 @@
         "full_causal_identity_changes": true
       },
       {
-        "scenario": "same document version after worker restart",
+        "scenario": "same generated output path, LLBC identity changes",
         "changed_fields": [
-          "worker"
+          "llbc"
         ],
         "insufficient_keys_colliding": [
           "path",
           "uri_version",
           "proof_hash",
-          "document_imports",
-          "semantic_content"
+          "document_imports"
         ],
         "full_causal_identity_changes": true
       },

@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "lean/lake",
+    "lean/build-observability",
+    "anneal/prepared-consumer"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 and Lake",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "private libc-call observer",
+      "identity": {
+        "artifact": "support/observe.c",
+        "sha256": "cd94f96fbec7749fc71be8f24dc497276588af53490c0b891f681624f09d2a04"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

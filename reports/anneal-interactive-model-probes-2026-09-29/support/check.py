@@ -15,6 +15,7 @@ assert identity["publication_probe_sha256"] == sha(root / "publication_probe.py"
 
 identity_cases = model["identity_ablation"]
 assert len(identity_cases["cases"]) == 10
+assert len({tuple(c["changed_fields"]) for c in identity_cases["cases"]}) == 10
 assert all(c["full_causal_identity_changes"] for c in identity_cases["cases"])
 assert "path" in identity_cases["cases"][0]["insufficient_keys_colliding"]
 assert "uri_version" in identity_cases["cases"][1]["insufficient_keys_colliding"]

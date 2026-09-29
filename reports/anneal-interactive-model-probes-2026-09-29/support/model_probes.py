@@ -18,9 +18,10 @@ scenarios = [
  ('same LLBC, Aeneas configuration changes', {'aeneas':'a1/cfg2'}),
  ('same generated source, Lake environment changes', {'env':'lake2'}),
  ('same bytes, later worker epoch', {'worker':5}),
- ('same document version after worker restart', {'worker':5}),
+ ('same generated output path, LLBC identity changes', {'llbc':'l2'}),
  ('same worker, RPC session reconnected', {'rpc':10}),
 ]
+assert len({tuple(sorted(delta.items())) for _, delta in scenarios}) == len(scenarios)
 keys = {
  'path': ('workspace', 'uri'),
  'uri_version': ('workspace', 'uri', 'doc_version'),
