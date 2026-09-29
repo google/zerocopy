@@ -1,0 +1,179 @@
+   Compiling zerocopy v0.8.57 ($WORK/source)
+     Running `$TOOLS/bin/charon-driver rustc --crate-name build_script_build --edition=2021 build.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("__internal_use_only_features_that_work_on_stable", "alloc", "derive", "float-nightly", "simd", "simd-nightly", "std", "zerocopy-derive"))' -C metadata=678ea4f427fe9fdf -C extra-filename=-ce08ce83918536f8 --out-dir $WORK/run3/target/debug/build/zerocopy-ce08ce83918536f8 -L dependency=$WORK/run3/target/debug/deps --verbose`
+     Running `$WORK/run3/target/debug/build/zerocopy-ce08ce83918536f8/build-script-build`
+     Running `$TOOLS/bin/charon-driver rustc --crate-name zerocopy --edition=2021 src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values("__internal_use_only_features_that_work_on_stable", "alloc", "derive", "float-nightly", "simd", "simd-nightly", "std", "zerocopy-derive"))' -C metadata=9597fec7aab4eed7 -C extra-filename=-d57d3048b45aa82e --out-dir $WORK/run3/target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/run3/target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/run3/target/debug/deps --verbose --check-cfg 'cfg(no_zerocopy_simd_x86_avx12_1_89_0)' --check-cfg 'cfg(rust, values("1.89.0"))' --check-cfg 'cfg(no_zerocopy_core_error_1_81_0)' --check-cfg 'cfg(rust, values("1.81.0"))' --check-cfg 'cfg(no_zerocopy_slice_ptr_len_1_79_0)' --check-cfg 'cfg(rust, values("1.79.0"))' --check-cfg 'cfg(no_zerocopy_diagnostic_on_unimplemented_1_78_0)' --check-cfg 'cfg(rust, values("1.78.0"))' --check-cfg 'cfg(no_zerocopy_generic_bounds_in_const_fn_1_61_0)' --check-cfg 'cfg(rust, values("1.61.0"))' --check-cfg 'cfg(no_zerocopy_target_has_atomics_1_60_0)' --check-cfg 'cfg(rust, values("1.60.0"))' --check-cfg 'cfg(no_zerocopy_aarch64_simd_1_59_0)' --check-cfg 'cfg(rust, values("1.59.0"))' --check-cfg 'cfg(no_zerocopy_aarch64_simd_be_1_87_0)' --check-cfg 'cfg(rust, values("1.87.0"))' --check-cfg 'cfg(no_zerocopy_panic_in_const_and_vec_try_reserve_1_57_0)' --check-cfg 'cfg(rust, values("1.57.0"))' --check-cfg 'cfg(doc_cfg)' --check-cfg 'cfg(kani)' --check-cfg 'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_NIGHTLY_FEATURES_IN_TESTS)' --check-cfg 'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_TOOLCHAIN, values("msrv", "stable", "nightly"))' --check-cfg 'cfg(__ZEROCOPY_INTERNAL_USE_ONLY_DEV_MODE)' --check-cfg 'cfg(coverage_nightly)' --check-cfg 'cfg(zerocopy_inline_always)' --check-cfg 'cfg(zerocopy_unstable_ptr)' --check-cfg 'cfg(zerocopy_unstable_linux)' --check-cfg 'cfg(no_fp_fmt_parse)'`
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+         
+   --> src/byte_slice.rs:112:5
+    |
+112 | /     fn split_at(self, mid: usize) -> Result<(Self, Self), Self> {
+113 | |         if mid <= self.deref().len() {
+...   |
+124 | |     }
+    | |_____^
+
+warning: Could not compute the value of {impl SplitByteSlice for &'_0 [u8]}<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0::Target (on {impl SplitByteSlice for &'_0 [u8]}<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<&'_Bound(1, 0) [u8]>.
+         Constraints in scope:
+         
+   --> src/byte_slice.rs:212:1
+    |
+212 | / unsafe impl SplitByteSlice for &[u8] {
+213 | |     #[inline]
+214 | |     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+...   |
+222 | | }
+    | |_^
+
+warning: Could not compute the value of {impl SplitByteSlice for &'_0 mut [u8]}<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0::Target (on {impl SplitByteSlice for &'_0 mut [u8]}<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<&'_Bound(1, 0) mut [u8]>.
+         Constraints in scope:
+         
+   --> src/byte_slice.rs:243:1
+    |
+243 | / unsafe impl SplitByteSlice for &mut [u8] {
+244 | |     #[inline]
+245 | |     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+246 | |         use core::slice::from_raw_parts_mut;
+...   |
+298 | | }
+    | |_^
+
+warning: Could not compute the value of impl_SplitByteSlice_for_Ref_slice<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0::Target (on impl_SplitByteSlice_for_Ref_slice<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<core::cell::Ref<'_Bound(1, 0), [u8]>>.
+         Constraints in scope:
+         
+   --> src/byte_slice.rs:332:1
+    |
+332 | / unsafe impl SplitByteSlice for cell::Ref<'_, [u8]> {
+333 | |     #[inline]
+334 | |     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+335 | |         cell::Ref::map_split(self, |slice|
+...   |
+342 | | }
+    | |_^
+
+warning: Could not compute the value of impl_SplitByteSlice_for_RefMut_slice<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0::Target (on impl_SplitByteSlice_for_RefMut_slice<'_Bound(1, 0)>::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<RefMut<'_Bound(1, 0), [u8]>>.
+         Constraints in scope:
+         
+   --> src/byte_slice.rs:352:1
+    |
+352 | / unsafe impl SplitByteSlice for cell::RefMut<'_, [u8]> {
+353 | |     #[inline]
+354 | |     unsafe fn split_at_unchecked(self, mid: usize) -> (Self, Self) {
+355 | |         cell::RefMut::map_split(self, |slice|
+...   |
+362 | | }
+    | |_^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+         
+   --> src/ref.rs:228:5
+    |
+228 | /     pub(crate) fn sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+229 | |         if bytes.len() < mem::size_of::<T>() {
+230 | |             return Err(SizeError::new(bytes).into());
+...   |
+245 | |         Ok((r, suffix))
+246 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+         
+   --> src/ref.rs:228:5
+    |
+228 | /     pub(crate) fn sized_from_prefix(bytes: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+229 | |         if bytes.len() < mem::size_of::<T>() {
+230 | |             return Err(SizeError::new(bytes).into());
+...   |
+245 | |         Ok((r, suffix))
+246 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+         
+   --> src/ref.rs:249:5
+    |
+249 | /     pub(crate) fn sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+250 | |         let bytes_len = bytes.len();
+251 | |         let split_at = if let Some(split_at) = bytes_len.checked_sub(mem::size_of::<T>()) {
+252 | |             split_at
+...   |
+267 | |         Ok((prefix, r))
+268 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+         
+   --> src/ref.rs:249:5
+    |
+249 | /     pub(crate) fn sized_from_suffix(bytes: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+250 | |         let bytes_len = bytes.len();
+251 | |         let split_at = if let Some(split_at) = bytes_len.checked_sub(mem::size_of::<T>()) {
+252 | |             split_at
+...   |
+267 | |         Ok((prefix, r))
+268 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+           - ClauseBound(0, 1)::Clause1::Type0 = TraitClauseBound(0, 1)::PointerMetadata
+   --> src/ref.rs:365:5
+    |
+365 | /     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+366 | |         static_assert_dst_is_not_zst!(T);
+367 | |         let remainder = match Ptr::from_ref(source.deref())
+368 | |             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
+...   |
+389 | |         Ok((r, suffix))
+390 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+           - ClauseBound(0, 1)::Clause1::Type0 = TraitClauseBound(0, 1)::PointerMetadata
+   --> src/ref.rs:365:5
+    |
+365 | /     pub fn from_prefix(source: B) -> Result<(Ref<B, T>, B), CastError<B, T>> {
+366 | |         static_assert_dst_is_not_zst!(T);
+367 | |         let remainder = match Ptr::from_ref(source.deref())
+368 | |             .try_cast_into::<T, BecauseImmutable>(CastType::Prefix, None)
+...   |
+389 | |         Ok((r, suffix))
+390 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+           - ClauseBound(0, 1)::Clause1::Type0 = TraitClauseBound(0, 1)::PointerMetadata
+   --> src/ref.rs:430:5
+    |
+430 | /     pub fn from_suffix(source: B) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+431 | |         static_assert_dst_is_not_zst!(T);
+432 | |         let remainder = match Ptr::from_ref(source.deref())
+433 | |             .try_cast_into::<T, BecauseImmutable>(CastType::Suffix, None)
+...   |
+449 | |         Ok((prefix, r))
+450 | |     }
+    | |_____^
+
+warning: Could not compute the value of TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0::Target (on TraitClauseBound(1, 0)::ImpliedClause0::ImpliedClause0) needed to update item reference core::ops::deref::Deref<@TypeBound(1, 0)>.
+         Constraints in scope:
+           - ClauseBound(0, 1)::Type0 = usize
+           - ClauseBound(0, 1)::Clause1::Type0 = TraitClauseBound(0, 1)::PointerMetadata
+   --> src/ref.rs:588:5
+    |
+588 | /     pub fn from_suffix_with_elems(
+589 | |         source: B,
+590 | |         count: usize,
+591 | |     ) -> Result<(B, Ref<B, T>), CastError<B, T>> {
+...   |
+605 | |         Self::from_bytes(suffix).map(move |l| (bytes, l))
+606 | |     }
+    | |_____^
+
+warning: The extraction generated 13 warnings
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.89s

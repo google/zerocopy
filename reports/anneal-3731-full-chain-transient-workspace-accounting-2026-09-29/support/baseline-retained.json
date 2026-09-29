@@ -1,0 +1,280 @@
+{
+  "rows": {
+    "consumer/Current.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 20
+    },
+    "consumer/Current.olean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1312
+    },
+    "consumer/Current/Funs.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1120
+    },
+    "consumer/Current/Funs.olean": {
+      "allocated": 24576,
+      "kind": "file",
+      "size": 23512
+    },
+    "consumer/Current/Types.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 542
+    },
+    "consumer/Current/Types.olean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1616
+    },
+    "consumer/Proof.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 300
+    },
+    "crate/Cargo.lock": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 161
+    },
+    "crate/Cargo.toml": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 72
+    },
+    "crate/src/lib.rs": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 185
+    },
+    "current.llbc": {
+      "allocated": 16384,
+      "kind": "file",
+      "size": 16087
+    },
+    "generated/Current.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 20
+    },
+    "generated/Funs.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1120
+    },
+    "generated/Types.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 542
+    },
+    "lake/.lake/build/ir/Current.c": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1283
+    },
+    "lake/.lake/build/ir/Current.c.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/ir/Current.setup.json": {
+      "allocated": 1073152,
+      "kind": "file",
+      "size": 1071236
+    },
+    "lake/.lake/build/ir/Current/Funs.c": {
+      "allocated": 8192,
+      "kind": "file",
+      "size": 5189
+    },
+    "lake/.lake/build/ir/Current/Funs.c.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/ir/Current/Funs.setup.json": {
+      "allocated": 1073152,
+      "kind": "file",
+      "size": 1070984
+    },
+    "lake/.lake/build/ir/Current/Types.c": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1269
+    },
+    "lake/.lake/build/ir/Current/Types.c.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/ir/Current/Types.setup.json": {
+      "allocated": 1073152,
+      "kind": "file",
+      "size": 1070726
+    },
+    "lake/.lake/build/ir/Proof.c": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1264
+    },
+    "lake/.lake/build/ir/Proof.c.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/ir/Proof.setup.json": {
+      "allocated": 1073152,
+      "kind": "file",
+      "size": 1071481
+    },
+    "lake/.lake/build/lib/lean/Current.ilean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 112
+    },
+    "lake/.lake/build/lib/lean/Current.ilean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current.olean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1376
+    },
+    "lake/.lake/build/lib/lean/Current.olean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current.trace": {
+      "allocated": 8192,
+      "kind": "file",
+      "size": 4215
+    },
+    "lake/.lake/build/lib/lean/Current/Funs.ilean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 2289
+    },
+    "lake/.lake/build/lib/lean/Current/Funs.ilean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current/Funs.olean": {
+      "allocated": 24576,
+      "kind": "file",
+      "size": 23576
+    },
+    "lake/.lake/build/lib/lean/Current/Funs.olean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current/Funs.trace": {
+      "allocated": 8192,
+      "kind": "file",
+      "size": 4379
+    },
+    "lake/.lake/build/lib/lean/Current/Types.ilean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 753
+    },
+    "lake/.lake/build/lib/lean/Current/Types.ilean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current/Types.olean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1680
+    },
+    "lake/.lake/build/lib/lean/Current/Types.olean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Current/Types.trace": {
+      "allocated": 8192,
+      "kind": "file",
+      "size": 4251
+    },
+    "lake/.lake/build/lib/lean/Proof.ilean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 479
+    },
+    "lake/.lake/build/lib/lean/Proof.ilean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Proof.olean": {
+      "allocated": 12288,
+      "kind": "file",
+      "size": 8288
+    },
+    "lake/.lake/build/lib/lean/Proof.olean.hash": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 16
+    },
+    "lake/.lake/build/lib/lean/Proof.trace": {
+      "allocated": 8192,
+      "kind": "file",
+      "size": 4432
+    },
+    "lake/.lake/config/[anonymous]/lakefile.olean": {
+      "allocated": 122880,
+      "kind": "file",
+      "size": 121928
+    },
+    "lake/.lake/config/[anonymous]/lakefile.olean.trace": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 184
+    },
+    "lake/.lake/packages": {
+      "allocated": 0,
+      "kind": "symlink",
+      "size": 99
+    },
+    "lake/Current.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 20
+    },
+    "lake/Current/Funs.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 1120
+    },
+    "lake/Current/Types.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 542
+    },
+    "lake/Proof.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 123
+    },
+    "lake/lake-manifest.json": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 3823
+    },
+    "lake/lakefile.lean": {
+      "allocated": 4096,
+      "kind": "file",
+      "size": 201
+    }
+  },
+  "source": "anneal-3730-full-lake-server-chain-2026-09-29/support/work/one/u0"
+}

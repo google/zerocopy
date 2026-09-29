@@ -1,0 +1,3225 @@
+{
+  "preflight": {
+    "free_disk_bytes": 46609092608,
+    "free_memory_percent": 49,
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "fixture_files": {
+      "Cargo.toml": "379981794b8050c386d9df69d4c71a2c180d99bda5c37d0ddb9e3d4f94603627",
+      "Cargo.lock": "d96950e53ac03685d77feada85aebd69db88b33911ac8d05ff08df9f64eba281",
+      "app/Cargo.toml": "f221b98e1729a66047d75c03b58cd567630ed7f0e4cb312a1136170d1e2b11af",
+      "app/build.rs": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+      "dep/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+      "dep/src/lib.rs": "6eb2539f1956735276e0b3a22ba5ac36b7a6b2a6d274e1119ccc074b81df44f7",
+      "app/src/lib.rs": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+      "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160"
+    },
+    "cell_timeout_seconds": 35,
+    "minimum_free_disk_bytes": 10737418240,
+    "minimum_free_memory_percent": 30
+  },
+  "cells": [
+    {
+      "layout": "private",
+      "incremental": 0,
+      "source_root_paths": {
+        "A": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A",
+        "B": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B"
+      },
+      "phases": [
+        {
+          "phase": "cold",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0164,
+              "headroom": {
+                "free_disk_bytes": 46609010688,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3344
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 1872
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 0,
+                "B": 0
+              }
+            },
+            {
+              "elapsed_seconds": 0.1421,
+              "headroom": {
+                "free_disk_bytes": 46608977920,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 31904
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 31856
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 12,
+                "B": 12
+              }
+            },
+            {
+              "elapsed_seconds": 0.2745,
+              "headroom": {
+                "free_disk_bytes": 46607523840,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.4093,
+              "headroom": {
+                "free_disk_bytes": 46607503360,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 32
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.5393,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.6862,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.8411,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.9957,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.1497,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.3042,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.4583,
+              "headroom": {
+                "free_disk_bytes": 46607499264,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38659,
+                    "rss_kib": 1456
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.5923,
+              "headroom": {
+                "free_disk_bytes": 46607413248,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38618,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38625,
+                    "rss_kib": 32048
+                  },
+                  {
+                    "pid": 38695,
+                    "rss_kib": 10208
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38658,
+                    "rss_kib": 1472
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1244,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.7224,
+              "headroom": {
+                "free_disk_bytes": 46607290368,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [],
+                "B": [
+                  {
+                    "pid": 38619,
+                    "rss_kib": 3872
+                  },
+                  {
+                    "pid": 38624,
+                    "rss_kib": 32000
+                  },
+                  {
+                    "pid": 38701,
+                    "rss_kib": 94816
+                  }
+                ]
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38618,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.56s\n",
+              "output": {
+                "sha256": "c335d815af8fcf53ca49c87f6a0a23a734bf8559a445991e0caf3efe590dffaa",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38619,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/cold-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.67s\n",
+              "output": {
+                "sha256": "178be6fb48f3db905d472fe0167e90a1f31324ce785ef4a682305189da5a9d28",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 35,
+              "file_bytes": 1193497,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            },
+            "B": {
+              "files": 35,
+              "file_bytes": 1193497,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            }
+          }
+        },
+        {
+          "phase": "warm",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0156,
+              "headroom": {
+                "free_disk_bytes": 46607249408,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38708,
+                    "rss_kib": 3616
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38709,
+                    "rss_kib": 3616
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            },
+            {
+              "elapsed_seconds": 0.1481,
+              "headroom": {
+                "free_disk_bytes": 46607196160,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38708,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+              "output": {
+                "sha256": "eb757d6a9863e8b1e711b778c3a5df79dac0cdc95042d8fe6614afe41d227a6e",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38709,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc0/warm-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc0/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+              "output": {
+                "sha256": "d3bc133d8563d07b3409ec1715b1c340b871b4eb2f70c370f6a3e9a6c0cf4f6b",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 35,
+              "file_bytes": 1193497,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            },
+            "B": {
+              "files": 35,
+              "file_bytes": 1193497,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            }
+          }
+        }
+      ],
+      "final_targets": {
+        "A": {
+          "files": 35,
+          "file_bytes": 1193497,
+          "allocated_kib": 1260,
+          "incremental_files": 0,
+          "incremental_bytes": 0
+        },
+        "B": {
+          "files": 35,
+          "file_bytes": 1193497,
+          "allocated_kib": 1260,
+          "incremental_files": 0,
+          "incremental_bytes": 0
+        }
+      }
+    },
+    {
+      "layout": "private",
+      "incremental": 1,
+      "source_root_paths": {
+        "A": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A",
+        "B": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B"
+      },
+      "phases": [
+        {
+          "phase": "cold",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.016,
+              "headroom": {
+                "free_disk_bytes": 46608764928,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3344
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3344
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 0,
+                "B": 0
+              }
+            },
+            {
+              "elapsed_seconds": 0.1427,
+              "headroom": {
+                "free_disk_bytes": 46608703488,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 29424
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 29648
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 12,
+                "B": 12
+              }
+            },
+            {
+              "elapsed_seconds": 0.266,
+              "headroom": {
+                "free_disk_bytes": 46606487552,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38748,
+                    "rss_kib": 117152
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32096
+                  },
+                  {
+                    "pid": 38747,
+                    "rss_kib": 117024
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1340,
+                "B": 1340
+              }
+            },
+            {
+              "elapsed_seconds": 0.3987,
+              "headroom": {
+                "free_disk_bytes": 46604607488,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 32
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.523,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 32
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.6549,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 32
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.8044,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.9531,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.1092,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.2578,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.4104,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.5663,
+              "headroom": {
+                "free_disk_bytes": 46604562432,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38730,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38736,
+                    "rss_kib": 32192
+                  },
+                  {
+                    "pid": 38771,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2436
+              }
+            },
+            {
+              "elapsed_seconds": 1.7036,
+              "headroom": {
+                "free_disk_bytes": 46604308480,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38729,
+                    "rss_kib": 3936
+                  },
+                  {
+                    "pid": 38735,
+                    "rss_kib": 32112
+                  },
+                  {
+                    "pid": 38772,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": []
+              },
+              "exits": {
+                "A": null,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2612
+              }
+            },
+            {
+              "elapsed_seconds": 1.8359,
+              "headroom": {
+                "free_disk_bytes": 46604062720,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 2612,
+                "B": 2612
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38729,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.75s\n",
+              "output": {
+                "sha256": "bc1870346c246a0611b2784cbe54d1ee337680c1911e545eaf7f39a8650d3984",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38730,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/cold-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.60s\n",
+              "output": {
+                "sha256": "7343a05a3ed6b24d4072db0ec659b44e89e45eff71ef169495337ea219e59e3b",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 133,
+              "file_bytes": 2817921,
+              "allocated_kib": 2612,
+              "incremental_files": 56,
+              "incremental_bytes": 1388685
+            },
+            "B": {
+              "files": 133,
+              "file_bytes": 2817921,
+              "allocated_kib": 2612,
+              "incremental_files": 56,
+              "incremental_bytes": 1388685
+            }
+          }
+        },
+        {
+          "phase": "warm",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0156,
+              "headroom": {
+                "free_disk_bytes": 46604062720,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38823,
+                    "rss_kib": 3616
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38824,
+                    "rss_kib": 3616
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2612,
+                "B": 2612
+              }
+            },
+            {
+              "elapsed_seconds": 0.1413,
+              "headroom": {
+                "free_disk_bytes": 46603845632,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 2692,
+                "B": 2692
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38823,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+              "output": {
+                "sha256": "04610f1b19d117af87e541c76f03d198f59d422ec2792b9cac891699195db20a",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38824,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/private-inc1/warm-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/private-inc1/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+              "output": {
+                "sha256": "e73f793d164c396f032b7d4d31b48fd47bb45aabe37663362df415f17ab8a1a4",
+                "bytes": 24115,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 136,
+              "file_bytes": 2897418,
+              "allocated_kib": 2692,
+              "incremental_files": 59,
+              "incremental_bytes": 1468182
+            },
+            "B": {
+              "files": 136,
+              "file_bytes": 2897418,
+              "allocated_kib": 2692,
+              "incremental_files": 59,
+              "incremental_bytes": 1468182
+            }
+          }
+        }
+      ],
+      "final_targets": {
+        "A": {
+          "files": 136,
+          "file_bytes": 2897418,
+          "allocated_kib": 2692,
+          "incremental_files": 59,
+          "incremental_bytes": 1468182
+        },
+        "B": {
+          "files": 136,
+          "file_bytes": 2897418,
+          "allocated_kib": 2692,
+          "incremental_files": 59,
+          "incremental_bytes": 1468182
+        }
+      }
+    },
+    {
+      "layout": "shared",
+      "incremental": 0,
+      "source_root_paths": {
+        "A": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/A",
+        "B": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B"
+      },
+      "phases": [
+        {
+          "phase": "cold",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0162,
+              "headroom": {
+                "free_disk_bytes": 46608416768,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3584
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3392
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 0,
+                "B": 0
+              }
+            },
+            {
+              "elapsed_seconds": 0.1428,
+              "headroom": {
+                "free_disk_bytes": 46608416768,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29392
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 31888
+                  },
+                  {
+                    "pid": 38873,
+                    "rss_kib": 688
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 12,
+                "B": 12
+              }
+            },
+            {
+              "elapsed_seconds": 0.2742,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.4034,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 32
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.5405,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.6876,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.8419,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 0.996,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.1503,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.3061,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1184,
+                "B": 1184
+              }
+            },
+            {
+              "elapsed_seconds": 1.4611,
+              "headroom": {
+                "free_disk_bytes": 46607708160,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38855,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38861,
+                    "rss_kib": 29360
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38856,
+                    "rss_kib": 3680
+                  },
+                  {
+                    "pid": 38862,
+                    "rss_kib": 32016
+                  },
+                  {
+                    "pid": 38884,
+                    "rss_kib": 1456
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1208,
+                "B": 1208
+              }
+            },
+            {
+              "elapsed_seconds": 1.5951,
+              "headroom": {
+                "free_disk_bytes": 46607572992,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38855,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on build directory\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.53s\n",
+              "output": {
+                "sha256": "6628fca5571b3172be624a95e1059c51f0c4dbe6d2c3cf4591626046b19b2429",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38856,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/cold-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.49s\n",
+              "output": {
+                "sha256": "ffff0098e5ea5acffbc384c08b17b2952214a4347957a9142ffbe7684137ad15",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 35,
+              "file_bytes": 1193527,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            },
+            "B": {
+              "files": 35,
+              "file_bytes": 1193527,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            }
+          }
+        },
+        {
+          "phase": "warm",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0156,
+              "headroom": {
+                "free_disk_bytes": 46607572992,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38931,
+                    "rss_kib": 3616
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38932,
+                    "rss_kib": 3616
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            },
+            {
+              "elapsed_seconds": 0.1468,
+              "headroom": {
+                "free_disk_bytes": 46607515648,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 1260,
+                "B": 1260
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38931,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+              "output": {
+                "sha256": "2227d7cae9e6b4af856eb86962db8ef84d0bc765d1af67a41c53399c52f579e9",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38932,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc0/warm-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on build directory\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc0/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s\n",
+              "output": {
+                "sha256": "308bb29597caeb2e1547d2ef94196c0f4553f52fe26212eeeeaec20dfdff8c20",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 35,
+              "file_bytes": 1193527,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            },
+            "B": {
+              "files": 35,
+              "file_bytes": 1193527,
+              "allocated_kib": 1260,
+              "incremental_files": 0,
+              "incremental_bytes": 0
+            }
+          }
+        }
+      ],
+      "final_targets": {
+        "A": {
+          "files": 35,
+          "file_bytes": 1193527,
+          "allocated_kib": 1260,
+          "incremental_files": 0,
+          "incremental_bytes": 0
+        },
+        "B": {
+          "files": 35,
+          "file_bytes": 1193527,
+          "allocated_kib": 1260,
+          "incremental_files": 0,
+          "incremental_bytes": 0
+        }
+      }
+    },
+    {
+      "layout": "shared",
+      "incremental": 1,
+      "source_root_paths": {
+        "A": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A",
+        "B": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/B"
+      },
+      "phases": [
+        {
+          "phase": "cold",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.016,
+              "headroom": {
+                "free_disk_bytes": 46608289792,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3584
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3328
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 0,
+                "B": 0
+              }
+            },
+            {
+              "elapsed_seconds": 0.1417,
+              "headroom": {
+                "free_disk_bytes": 46608285696,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 31888
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29328
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 12,
+                "B": 12
+              }
+            },
+            {
+              "elapsed_seconds": 0.2714,
+              "headroom": {
+                "free_disk_bytes": 46606757888,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 31952
+                  },
+                  {
+                    "pid": 38970,
+                    "rss_kib": 96144
+                  },
+                  {
+                    "pid": 38978,
+                    "rss_kib": 6800
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 1348,
+                "B": 1348
+              }
+            },
+            {
+              "elapsed_seconds": 0.4074,
+              "headroom": {
+                "free_disk_bytes": 46606204928,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 32
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.5492,
+              "headroom": {
+                "free_disk_bytes": 46606204928,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.7006,
+              "headroom": {
+                "free_disk_bytes": 46606204928,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 0.8555,
+              "headroom": {
+                "free_disk_bytes": 46606204928,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.0028,
+              "headroom": {
+                "free_disk_bytes": 46606196736,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.1567,
+              "headroom": {
+                "free_disk_bytes": 46606196736,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.3056,
+              "headroom": {
+                "free_disk_bytes": 46606196736,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.4522,
+              "headroom": {
+                "free_disk_bytes": 46606196736,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 38985,
+                    "rss_kib": 1440
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2412,
+                "B": 2412
+              }
+            },
+            {
+              "elapsed_seconds": 1.5834,
+              "headroom": {
+                "free_disk_bytes": 46606168064,
+                "free_memory_percent": 48
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 38952,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38959,
+                    "rss_kib": 32032
+                  },
+                  {
+                    "pid": 39018,
+                    "rss_kib": 77056
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 38953,
+                    "rss_kib": 3856
+                  },
+                  {
+                    "pid": 38958,
+                    "rss_kib": 29296
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2516,
+                "B": 2516
+              }
+            },
+            {
+              "elapsed_seconds": 1.7168,
+              "headroom": {
+                "free_disk_bytes": 46605852672,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 2692,
+                "B": 2692
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 38952,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.57s\n",
+              "output": {
+                "sha256": "a88dfb98becaa9e70bf636697a33c35889bf26c8b395aa92ffd1d41ad841f1da",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 38953,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/cold-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on build directory\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.61s\n",
+              "output": {
+                "sha256": "2d44c92491f531c398300c61fd08b72ab3b2b3d3b6f84bd7d3fde30cbc2399ac",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 136,
+              "file_bytes": 2897864,
+              "allocated_kib": 2692,
+              "incremental_files": 59,
+              "incremental_bytes": 1468182
+            },
+            "B": {
+              "files": 136,
+              "file_bytes": 2897864,
+              "allocated_kib": 2692,
+              "incremental_files": 59,
+              "incremental_bytes": 1468182
+            }
+          }
+        },
+        {
+          "phase": "warm",
+          "reason": null,
+          "samples": [
+            {
+              "elapsed_seconds": 0.0156,
+              "headroom": {
+                "free_disk_bytes": 46605852672,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [
+                  {
+                    "pid": 39031,
+                    "rss_kib": 3536
+                  }
+                ],
+                "B": [
+                  {
+                    "pid": 39032,
+                    "rss_kib": 3376
+                  }
+                ]
+              },
+              "exits": {
+                "A": null,
+                "B": null
+              },
+              "target_allocated_kib": {
+                "A": 2692,
+                "B": 2692
+              }
+            },
+            {
+              "elapsed_seconds": 0.147,
+              "headroom": {
+                "free_disk_bytes": 46605623296,
+                "free_memory_percent": 49
+              },
+              "groups": {
+                "A": [],
+                "B": []
+              },
+              "exits": {
+                "A": 0,
+                "B": 0
+              },
+              "target_allocated_kib": {
+                "A": 2852,
+                "B": 2852
+              }
+            }
+          ],
+          "results": {
+            "A": {
+              "pid": 39031,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-A.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on build directory\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.07s\n",
+              "output": {
+                "sha256": "6a9a3d7c7841d90ea6f2e903dc8e88b3d3b43705ff8af8260ea7a6838d0fa421",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            },
+            "B": {
+              "pid": 39032,
+              "exit": 0,
+              "command": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/artifacts/shared_-inc1/warm-B.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/B/Cargo.toml",
+                "--package",
+                "warm_probe",
+                "--lib",
+                "--offline",
+                "--locked"
+              ],
+              "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/shared-target",
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-matrix/work/shared_-inc1/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+              "output": {
+                "sha256": "9a99c08c64759bd84f09b2349b01b3ac50f598b23499ac09fc13d36679c92b11",
+                "bytes": 24120,
+                "crate_name": "warm_probe",
+                "has_errors": false,
+                "local_body_sha256": {
+                  "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+                  "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+                  "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+                  "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+                  "warm_probe::SNAPSHOT_VALUE": "26a3a2a880decd00a6fe9e16c34dd0a7f0d0f4a664d55e78aa3cc349eefa7b38"
+                }
+              }
+            }
+          },
+          "targets": {
+            "A": {
+              "files": 142,
+              "file_bytes": 3056858,
+              "allocated_kib": 2852,
+              "incremental_files": 65,
+              "incremental_bytes": 1627176
+            },
+            "B": {
+              "files": 142,
+              "file_bytes": 3056858,
+              "allocated_kib": 2852,
+              "incremental_files": 65,
+              "incremental_bytes": 1627176
+            }
+          }
+        }
+      ],
+      "final_targets": {
+        "A": {
+          "files": 142,
+          "file_bytes": 3056858,
+          "allocated_kib": 2852,
+          "incremental_files": 65,
+          "incremental_bytes": 1627176
+        },
+        "B": {
+          "files": 142,
+          "file_bytes": 3056858,
+          "allocated_kib": 2852,
+          "incremental_files": 65,
+          "incremental_bytes": 1627176
+        }
+      }
+    }
+  ],
+  "cleanup": {
+    "process_groups": {
+      "private-inc0-cold-A": {
+        "pgid": 38618,
+        "members": []
+      },
+      "private-inc0-cold-B": {
+        "pgid": 38619,
+        "members": []
+      },
+      "private-inc0-warm-A": {
+        "pgid": 38708,
+        "members": []
+      },
+      "private-inc0-warm-B": {
+        "pgid": 38709,
+        "members": []
+      },
+      "private-inc1-cold-A": {
+        "pgid": 38729,
+        "members": []
+      },
+      "private-inc1-cold-B": {
+        "pgid": 38730,
+        "members": []
+      },
+      "private-inc1-warm-A": {
+        "pgid": 38823,
+        "members": []
+      },
+      "private-inc1-warm-B": {
+        "pgid": 38824,
+        "members": []
+      },
+      "shared_-inc0-cold-A": {
+        "pgid": 38855,
+        "members": []
+      },
+      "shared_-inc0-cold-B": {
+        "pgid": 38856,
+        "members": []
+      },
+      "shared_-inc0-warm-A": {
+        "pgid": 38931,
+        "members": []
+      },
+      "shared_-inc0-warm-B": {
+        "pgid": 38932,
+        "members": []
+      },
+      "shared_-inc1-cold-A": {
+        "pgid": 38952,
+        "members": []
+      },
+      "shared_-inc1-cold-B": {
+        "pgid": 38953,
+        "members": []
+      },
+      "shared_-inc1-warm-A": {
+        "pgid": 39031,
+        "members": []
+      },
+      "shared_-inc1-warm-B": {
+        "pgid": 39032,
+        "members": []
+      }
+    },
+    "work_exists_after_removal": false,
+    "headroom_after": {
+      "free_disk_bytes": 46608138240,
+      "free_memory_percent": 49
+    }
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "charon/determinism",
+    "charon/cargo-extraction",
+    "aeneas/input-normalization",
+    "anneal/generation-publication"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy library source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "subtree_git_oid": "574add5aabfa15dd2d16a4646f01f6f944d124d8"
+      }
+    },
+    {
+      "name": "Pinned Charon/Cargo/rustc toolchain",
+      "identity": {
+        "charon_repository": "AeneasVerif/charon",
+        "charon_revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "cargo_binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+        "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      }
+    },
+    {
+      "name": "Aeneas short-name importer source",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "src_Main_ml_git_oid": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

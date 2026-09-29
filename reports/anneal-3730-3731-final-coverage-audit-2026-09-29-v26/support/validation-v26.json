@@ -1,0 +1,87 @@
+{
+  "changed_prerequisite_ids": [
+    "D03",
+    "D07",
+    "E07",
+    "I020",
+    "I076",
+    "I080",
+    "I113",
+    "I125",
+    "I148",
+    "J01",
+    "J02",
+    "L02"
+  ],
+  "changed_residual_ids": [
+    "D03",
+    "D07",
+    "E07",
+    "I020",
+    "I076",
+    "I080",
+    "I113",
+    "I125",
+    "I148",
+    "J01",
+    "J02",
+    "L02"
+  ],
+  "changed_status_ids": [],
+  "generated_sha256": {
+    "3730-crosswalk-final-v26.csv": "7cd601ae38e9d699e332e99588e2767d43200740aa3fb4e2c0f59fee34dd0104",
+    "investigation-final-v26.csv": "f003a2ce92e3ebeb5d221654f7df71f19ee1e6d61cff7e228975a9322f890d17",
+    "row-challenge-v26.json": "b5c250d2a8dec9721102f2bd8c0ee3225cf93539806ba2b7827237f2a9ea93b2",
+    "source-package-inventory-v26.csv": "b0298b13ab55fff8beb283f7a792d6c551f1d407b9db9dc1a554c550caf47bf7"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v26.json": "5efe3e5ece396c5f651e4a3b21a3b0a7c4c7b5ae55ccf69aed3fa0c4269e4a05",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v25/3730-crosswalk-final-v25.csv": "46a49784422e3e7c05fc26a943ac91835b987e14fc5dda0ae2cda103a1cc26b9",
+    "v25/investigation-final-v25.csv": "2845b53d89aa9b65f21341b05c2279b62efbd568a58769a12a18953095cdbfea",
+    "v25/row-challenge-v25.json": "2fc5838d06c284abe5c75fa82e133a28b00065da41e8ae9929ffd6165635e77d"
+  },
+  "inventory_files": 133,
+  "investigation_count": 159,
+  "new_evidence_ids": [
+    "D03",
+    "D07",
+    "E07",
+    "I020",
+    "I076",
+    "I080",
+    "I113",
+    "I125",
+    "I148",
+    "J01",
+    "J02",
+    "L02"
+  ],
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-v2-cargo-root-selection-multipackage-2026-09-29",
+    "anneal-v2-feature-subject-slug-collision-2026-09-29",
+    "anneal-3731-i080-incremental-target-layout-matrix-2026-09-29",
+    "charon-zerocopy-library-repeat-order-nightly-2026-05-31",
+    "anneal-3731-full-chain-transient-workspace-accounting-2026-09-29",
+    "anneal-3731-i125-plugin-cwd-path-alias-v4-30-0-rc2"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v25",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

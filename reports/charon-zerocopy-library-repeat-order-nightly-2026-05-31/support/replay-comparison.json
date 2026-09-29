@@ -1,0 +1,45 @@
+{
+  "checks": {
+    "different_short_names_order": true,
+    "same_length": true,
+    "same_other_bytes_after_path_normalization": true,
+    "same_short_names_members": true,
+    "unique_short_names_keys": true
+  },
+  "run1": {
+    "has_errors": true,
+    "non_short_names_path_normalized_sha256": "c90b446e30e8e297f2690cb0b786ac86cb69245a46f4c22eab4955d8e171c71a",
+    "raw_bytes": 173520692,
+    "raw_sha256": "f82b354b4127478a0122b8fc49bd246a2654a18d5d4e693ce4354f1e6f8bc01f",
+    "short_names_bytes": 1540054,
+    "short_names_entries": 17903,
+    "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+    "short_names_offset": 4418002,
+    "short_names_order_sha256": "67fba2e98cc3c4567e46a00fbd9905046b92282de4888f34315538762abd7a56",
+    "short_names_unique_keys": 17903
+  },
+  "run2": {
+    "has_errors": true,
+    "non_short_names_path_normalized_sha256": "c90b446e30e8e297f2690cb0b786ac86cb69245a46f4c22eab4955d8e171c71a",
+    "raw_bytes": 173520692,
+    "raw_sha256": "f3638a9539caeaeb4867b818abfea340926d17db87d65854abdec10268862b36",
+    "short_names_bytes": 1540054,
+    "short_names_entries": 17903,
+    "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+    "short_names_offset": 4418002,
+    "short_names_order_sha256": "1fc184261a16608f253293cee421070af39378edb97e0bfdcfac9494f48079d0",
+    "short_names_unique_keys": 17903
+  },
+  "run3": {
+    "has_errors": true,
+    "non_short_names_path_normalized_sha256": "c90b446e30e8e297f2690cb0b786ac86cb69245a46f4c22eab4955d8e171c71a",
+    "raw_bytes": 173520692,
+    "raw_sha256": "b5d00f3c051a37b4e14aecf6cd59464b419e1c8af32596f1f41bc1dd2a3cff56",
+    "short_names_bytes": 1540054,
+    "short_names_entries": 17903,
+    "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+    "short_names_offset": 4418002,
+    "short_names_order_sha256": "d8ac1b7d72a90e904ae485698515241c985a220717f9629b47fe37c4b0fd5823",
+    "short_names_unique_keys": 17903
+  }
+}

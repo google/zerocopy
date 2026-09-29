@@ -1831,6 +1831,41 @@
         "lean/native-plugins"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v26": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "report": "anneal-3730-3731-final-coverage-audit-2026-09-29-v25",
+            "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Reference v25 investigation and suggestion ledgers"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Live issues 3730 and 3731, bodies and comments"
+        },
+        {
+          "identity": {
+            "report_packages": "anneal-v2-cargo-root-selection-multipackage-2026-09-29;anneal-v2-feature-subject-slug-collision-2026-09-29;anneal-3731-i080-incremental-target-layout-matrix-2026-09-29;charon-zerocopy-library-repeat-order-nightly-2026-05-31;anneal-3731-full-chain-transient-workspace-accounting-2026-09-29;anneal-3731-i125-plugin-cwd-path-alias-v4-30-0-rc2",
+            "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Six bounded Cargo, Charon, Lean and Anneal V2 source experiments"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "rust/charon"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -5890,6 +5925,31 @@
         "anneal/model-change-vertical"
       ]
     },
+    "anneal-3731-full-chain-transient-workspace-accounting-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3731",
+        "anneal/resource-budget",
+        "lean/lake",
+        "anneal/interactive-verification"
+      ]
+    },
     "anneal-3731-i001-i053-postpublication-residual-review-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6018,6 +6078,40 @@
         "rust/compilation-unit-identity"
       ]
     },
+    "anneal-3731-i080-incremental-target-layout-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned Charon Cargo extraction"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned nightly Cargo and rustc"
+        },
+        {
+          "identity": {
+            "fixture_source_tree": "af738e8e51a229bdc2940cc1caf176c2bec711b2",
+            "matrix_probe_sha256": "d7f5d76da27a817d550d380314feb18974c495c3bc1aac2261e3cdc588de26a0"
+          },
+          "name": "Retained two-crate warm-target fixture and matrix probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/resource-controls",
+        "charon/cargo-extraction",
+        "charon/concurrency"
+      ]
+    },
     "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6127,6 +6221,34 @@
         "anneal/research-coverage",
         "lean/lake",
         "anneal/workspace-trust"
+      ]
+    },
+    "anneal-3731-i125-plugin-cwd-path-alias-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256_file": "support/transcript.json#subject.lean_sha256"
+          },
+          "name": "Pinned Lean 4.30.0-rc2 CLI and server"
+        },
+        {
+          "identity": {
+            "sha256_fields": "support/transcript.json#subject.v1_sha256;subject.v2_sha256"
+          },
+          "name": "Compiled v1/v2 same-basename marker plugins"
+        },
+        {
+          "identity": {
+            "sha256": "88941bc513806a35f7a86ee4056e1cecab8af9a8feb596ad01000914d3f570f1"
+          },
+          "name": "Pinned loader source"
+        }
+      ],
+      "topics": [
+        "lean/native-plugin-lifetime",
+        "lean/search-path",
+        "lake/artifact-identity"
       ]
     },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {
@@ -8418,6 +8540,43 @@
         "charon/unsafe-rust",
         "rust/unions",
         "rust/layout"
+      ]
+    },
+    "charon-zerocopy-library-repeat-order-nightly-2026-05-31": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+            "subtree_git_oid": "574add5aabfa15dd2d16a4646f01f6f944d124d8"
+          },
+          "name": "google/zerocopy library source"
+        },
+        {
+          "identity": {
+            "cargo_binary_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "charon_binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "charon_repository": "AeneasVerif/charon",
+            "charon_revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+            "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+          },
+          "name": "Pinned Charon/Cargo/rustc toolchain"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "src_Main_ml_git_oid": "b3f373f8c449eeae0f9a50bb0ce2d2963903eddc"
+          },
+          "name": "Aeneas short-name importer source"
+        }
+      ],
+      "topics": [
+        "charon/determinism",
+        "charon/cargo-extraction",
+        "aeneas/input-normalization",
+        "anneal/generation-publication"
       ]
     },
     "concurrency-memory-model-verification-approaches-2013-2026": {

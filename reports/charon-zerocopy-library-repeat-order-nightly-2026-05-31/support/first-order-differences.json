@@ -1,0 +1,128 @@
+[
+  {
+    "index": 17471,
+    "run1": {
+      "key": {
+        "Type": 3
+      },
+      "value": [
+        {
+          "Ident": [
+            "LittleEndian",
+            0
+          ]
+        }
+      ]
+    },
+    "run2": {
+      "key": {
+        "Fun": 3511
+      },
+      "value": [
+        {
+          "Ident": [
+            "debug_struct",
+            0
+          ]
+        }
+      ]
+    },
+    "run3": {
+      "key": {
+        "TraitDecl": 85
+      },
+      "value": [
+        {
+          "Ident": [
+            "BitXor",
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 17472,
+    "run1": {
+      "key": {
+        "Fun": 2332
+      },
+      "value": [
+        {
+          "Ident": [
+            "as_non_null",
+            0
+          ]
+        }
+      ]
+    },
+    "run2": {
+      "key": {
+        "TraitDecl": 32
+      },
+      "value": [
+        {
+          "Ident": [
+            "Alignment",
+            0
+          ]
+        }
+      ]
+    },
+    "run3": {
+      "key": {
+        "Type": 132
+      },
+      "value": [
+        {
+          "Ident": [
+            "AsInitialized",
+            0
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "index": 17473,
+    "run1": {
+      "key": {
+        "TraitDecl": 69
+      },
+      "value": [
+        {
+          "Ident": [
+            "Hash",
+            0
+          ]
+        }
+      ]
+    },
+    "run2": {
+      "key": {
+        "Fun": 1873
+      },
+      "value": [
+        {
+          "Ident": [
+            "sized_from_suffix",
+            0
+          ]
+        }
+      ]
+    },
+    "run3": {
+      "key": {
+        "Type": 250
+      },
+      "value": [
+        {
+          "Ident": [
+            "MapWindows",
+            0
+          ]
+        }
+      ]
+    }
+  }
+]

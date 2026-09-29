@@ -1,0 +1,9 @@
+{
+  "topics": ["lean/native-plugin-lifetime", "lean/search-path", "lake/artifact-identity"],
+  "subjects": [
+    {"name": "Pinned Lean 4.30.0-rc2 CLI and server", "identity": {"sha256_file": "support/transcript.json#subject.lean_sha256"}},
+    {"name": "Compiled v1/v2 same-basename marker plugins", "identity": {"sha256_fields": "support/transcript.json#subject.v1_sha256;subject.v2_sha256"}},
+    {"name": "Pinned loader source", "identity": {"sha256": "88941bc513806a35f7a86ee4056e1cecab8af9a8feb596ad01000914d3f570f1"}}
+  ],
+  "observed_at": "2026-09-29"
+}

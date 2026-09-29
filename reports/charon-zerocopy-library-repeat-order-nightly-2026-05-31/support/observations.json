@@ -1,0 +1,160 @@
+{
+  "command_template": [
+    "charon",
+    "cargo",
+    "--preset",
+    "aeneas",
+    "--dest-file",
+    "$WORK/runN/zerocopy.llbc",
+    "--",
+    "--manifest-path",
+    "$WORK/source/Cargo.toml",
+    "--package",
+    "zerocopy",
+    "--lib",
+    "--offline",
+    "--locked",
+    "-v"
+  ],
+  "comparison": {
+    "checks": {
+      "different_short_names_order": true,
+      "same_length": true,
+      "same_other_bytes_after_path_normalization": true,
+      "same_short_names_members": true,
+      "unique_short_names_keys": true
+    },
+    "run1": {
+      "has_errors": true,
+      "non_short_names_path_normalized_sha256": "18be28d9c96069266916733aa4336e9473c9c2f727c9670cc4acbfceb8b76d18",
+      "raw_bytes": 173520683,
+      "raw_sha256": "426fa64ab7ee1be150c9d1d063f7a34decfdcf892ecde9b29f5f022d43c83f50",
+      "short_names_bytes": 1540054,
+      "short_names_entries": 17903,
+      "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+      "short_names_offset": 4417993,
+      "short_names_order_sha256": "a1f263497cf7cccc212304c9c78c5ad6793a17c2d7e8bdc3f3a4ca3ddf6484a5",
+      "short_names_unique_keys": 17903
+    },
+    "run2": {
+      "has_errors": true,
+      "non_short_names_path_normalized_sha256": "18be28d9c96069266916733aa4336e9473c9c2f727c9670cc4acbfceb8b76d18",
+      "raw_bytes": 173520683,
+      "raw_sha256": "60d183425f61fdc64ad082168684ea1c04d58416413255a11b3d988786a1502e",
+      "short_names_bytes": 1540054,
+      "short_names_entries": 17903,
+      "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+      "short_names_offset": 4417993,
+      "short_names_order_sha256": "0e2a8b133a43192844a43e07f3ed1c7c0fb7051b0a3e47e92983b58a25148287",
+      "short_names_unique_keys": 17903
+    },
+    "run3": {
+      "has_errors": true,
+      "non_short_names_path_normalized_sha256": "18be28d9c96069266916733aa4336e9473c9c2f727c9670cc4acbfceb8b76d18",
+      "raw_bytes": 173520683,
+      "raw_sha256": "aec93122b46a466c4ff560e369d597dd261cd76b442283d4b3e1426c9a5c35a1",
+      "short_names_bytes": 1540054,
+      "short_names_entries": 17903,
+      "short_names_multiset_sha256": "959066b8e35940df5b72296f77c44a8d3ba4b8fe297b7f2d433e3369f1c947a8",
+      "short_names_offset": 4417993,
+      "short_names_order_sha256": "ff34de8540858f8c2f5a07b415356a62396eb59e0d4837a87e260b75150e69f6",
+      "short_names_unique_keys": 17903
+    }
+  },
+  "environment": {
+    "CARGO_BUILD_JOBS": "1",
+    "CARGO_HOME": "$TOOLS/cargo",
+    "CARGO_INCREMENTAL": "0",
+    "CARGO_TARGET_DIR": "$WORK/runN/target",
+    "CHARON_TOOLCHAIN_IS_IN_PATH": "1",
+    "DYLD_LIBRARY_PATH": [
+      "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib",
+      "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/lib/rustlib/aarch64-apple-darwin/lib"
+    ],
+    "PATH_prefix": [
+      "$TOOLS/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin",
+      "$TOOLS/bin"
+    ],
+    "RAYON_NUM_THREADS": "1",
+    "RUSTUP_HOME": "$TOOLS/rustup"
+  },
+  "input_sha256": {
+    "Cargo.lock": "3166912c9f2f7483d0cc4714e5d4fa5140677408b51e4079f31f411607c53bc8",
+    "Cargo.toml": "bd0e5a02895ac92922b109eaf7255fafd91f50c043690b0686ac8dec12884328",
+    "build.rs": "a45528e5f53be3899e8b0aaf0c523a332a5a816321f29f1c5e6ba0732dc7435d",
+    "src/lib.rs": "bfbed6f7b85371db55db611570dfae4d97058c7ab46dca0a60b987cbf10f9803"
+  },
+  "logs": {
+    "run1": {
+      "charon_warning_count": 13,
+      "raw_stderr_sha256": "0c3f19d1bf9b7dcfb24e2f274144494a6f5300cca6f58996c4267616a8b0cf93",
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted_stderr_sha256": "73d2ef9e68f6ca67fa6a5a13e505d251e2b2141377d38016150ddd94355800a5",
+      "summary_warning_line": true
+    },
+    "run2": {
+      "charon_warning_count": 13,
+      "raw_stderr_sha256": "205bc7e348d05ba7c7b118a2cfab1cad0814f45998292dfc0a223d1ad00c9982",
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted_stderr_sha256": "a8c1406a71437d12b1b5875eebeb095d1989faa7fff2e0997c61d0b9253409c8",
+      "summary_warning_line": true
+    },
+    "run3": {
+      "charon_warning_count": 13,
+      "raw_stderr_sha256": "9b2feeb54ae146edb41d5b9d526089d7809672c26dcdd41d4d95d8ddac55b872",
+      "raw_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "redacted_stderr_sha256": "e1a2d573712a7a257454d07536214aa2e03062e70cd715c3d37dc1e60b5a3499",
+      "summary_warning_line": true
+    }
+  },
+  "runs": {
+    "run1": {
+      "elapsed_seconds": 14.374,
+      "exit": 0,
+      "llbc_bytes": 173520683,
+      "llbc_exists": true,
+      "llbc_sha256": "426fa64ab7ee1be150c9d1d063f7a34decfdcf892ecde9b29f5f022d43c83f50",
+      "max_process_group_rss_kib": 985408,
+      "min_system_free_memory_percent": 40,
+      "stderr_sha256": "0c3f19d1bf9b7dcfb24e2f274144494a6f5300cca6f58996c4267616a8b0cf93",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop_reason": null
+    },
+    "run2": {
+      "elapsed_seconds": 13.347,
+      "exit": 0,
+      "llbc_bytes": 173520683,
+      "llbc_exists": true,
+      "llbc_sha256": "60d183425f61fdc64ad082168684ea1c04d58416413255a11b3d988786a1502e",
+      "max_process_group_rss_kib": 964688,
+      "min_system_free_memory_percent": 42,
+      "stderr_sha256": "205bc7e348d05ba7c7b118a2cfab1cad0814f45998292dfc0a223d1ad00c9982",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop_reason": null
+    },
+    "run3": {
+      "elapsed_seconds": 13.348,
+      "exit": 0,
+      "llbc_bytes": 173520683,
+      "llbc_exists": true,
+      "llbc_sha256": "aec93122b46a466c4ff560e369d597dd261cd76b442283d4b3e1426c9a5c35a1",
+      "max_process_group_rss_kib": 976816,
+      "min_system_free_memory_percent": 45,
+      "stderr_sha256": "9b2feeb54ae146edb41d5b9d526089d7809672c26dcdd41d4d95d8ddac55b872",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop_reason": null
+    }
+  },
+  "subject": {
+    "repository": "google/zerocopy",
+    "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+    "zerocopy_tree_git_oid": "574add5aabfa15dd2d16a4646f01f6f944d124d8"
+  },
+  "tool_sha256": {
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "charon_driver": "09a530746044c0ef169f7d0cfa099700c06934163a70b138cafc6d125d08037e",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  }
+}
