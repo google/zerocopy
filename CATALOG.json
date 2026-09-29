@@ -1374,6 +1374,39 @@
         "mcp/tasks"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v14": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "d88d43c66b9373aadffbfc7dc1c7d9131ee5791e",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "lean/language-server",
+        "lean/lake"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3083,6 +3116,26 @@
         "lean/artifacts"
       ]
     },
+    "anneal-3730-lake-consumer-identity-observability-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake synthetic consumer identity and action probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "lake",
+        "lake/package-identity",
+        "lake/configuration-ownership",
+        "lake/build-observability"
+      ]
+    },
     "anneal-3730-lake-dynamic-config-identity-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3786,6 +3839,47 @@
         "lean/imports"
       ]
     },
+    "anneal-3730-lean-uri-history-import-boundaries-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_binary_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/lake",
+        "lean/projected-documents",
+        "lean/incremental-elaboration"
+      ]
+    },
+    "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean/elaboration",
+        "lean/language-server",
+        "lean/incremental-elaboration",
+        "anneal/projected-documents"
+      ]
+    },
     "anneal-3730-live-proof-import-state-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4011,6 +4105,24 @@
         "lean/server",
         "anneal/resources",
         "anneal/parallelism"
+      ]
+    },
+    "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "anneal/interactive"
       ]
     },
     "anneal-3730-partial-elaboration-queries-v4-30-0-rc2": {

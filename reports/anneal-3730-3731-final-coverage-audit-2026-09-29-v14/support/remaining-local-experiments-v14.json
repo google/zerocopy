@@ -1,0 +1,25 @@
+{
+  "snapshot_utc": "2026-09-29T15:14:21.343336+00:00",
+  "focused_new_component_suites": [
+    "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2",
+    "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2",
+    "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "anneal-3730-lake-consumer-identity-observability-2026-09-29"
+  ],
+  "candidate_dispositions": "See candidate-review-v14.csv: 18 named I/suggestion rows each has existing corpus, host scope, new evidence or gate, and residual.",
+  "explicit_not_run": [
+    "I072 existing real Lean MCP adapter absent",
+    "F03 later-than-4.30 compatible Lean/Lake binary absent",
+    "F04 built actual Anneal omnibus archive absent",
+    "G03 existing current-wire MCP adapter/client interoperability absent",
+    "G15 producer-authenticated navigation map and product/agent trial absent",
+    "L09 real adapter integrated with Anneal workspace absent"
+  ],
+  "further_locally_bounded_work": "The focused review executed available distinct small component deltas; further targeted cells may emerge from later audit or new pins. Prior R48 two-worker Lake/server full-chain admission remained resource-gated. No claim is made that the 153 partial investigations are exhausted by local component experimentation.",
+  "product_human_platform_gates": [
+    "actual Anneal V2 generated workspace, Rust editor and historical-query broker",
+    "actual built prepared archive and consumer",
+    "MCP adapter and independent clients",
+    "human usability study and independent host/platform validation"
+  ]
+}

@@ -1,0 +1,128 @@
+[
+  {
+    "id": "I033",
+    "existing_corpus_scope": "Direct unsaved-file and workspace isolation reports; prior document-context run lacks cross-launch URI/setup-file matrix.",
+    "host_scope": "Cached Lean/Lake 4.30.0-rc2 and disposable Lake project. ",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Real Anneal projection/editor and supported setup path."
+  },
+  {
+    "id": "H01",
+    "existing_corpus_scope": "Prior projection models and direct file URI controls.",
+    "host_scope": "Same cached Lean server.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Stable product URI and source-owner routing."
+  },
+  {
+    "id": "H02",
+    "existing_corpus_scope": "Prior setup-file and unsaved-import controls separately.",
+    "host_scope": "Same cached Lake and Lean.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Product strategy for custom URI versus physical setup-file."
+  },
+  {
+    "id": "H03",
+    "existing_corpus_scope": "Existing editor/MCP shadow-authority fixture modeled divergence and recovery.",
+    "host_scope": "No existing Rust editor host or Anneal projection in checkout.",
+    "v14_new_evidence": "No distinct local probe; product gate.",
+    "remaining_delta": "Actual editor-owned shadow authority and recovery."
+  },
+  {
+    "id": "H04",
+    "existing_corpus_scope": "Prior synthetic hidden-document lifecycle, without Lake URI import matrix.",
+    "host_scope": "Same cached Lean/Lake.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Real editor/Anneal hidden-document cleanup."
+  },
+  {
+    "id": "I047",
+    "existing_corpus_scope": "Old-version wait, RPC lifetime and small retention economics reports; no close/reopen/fresh old-source comparison.",
+    "host_scope": "Cached direct Lean server.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Exact-revision broker, attributable storage, expiry and restart economics."
+  },
+  {
+    "id": "A05",
+    "existing_corpus_scope": "Synthetic retention tiers and small direct-Lean resource reports.",
+    "host_scope": "Cached Lean server; tiny replay feasible.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Equivalent-workload policy economics for actual generated outputs."
+  },
+  {
+    "id": "A06",
+    "existing_corpus_scope": "Old-version wait and separate-transport protocol races.",
+    "host_scope": "Cached Lean server; tiny version sequence feasible.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Latest-at-start/completion/exact-revision API semantics and expiry."
+  },
+  {
+    "id": "I056",
+    "existing_corpus_scope": "V1 graph/source analysis and imported-context refresh probes; no joined proof/statement/helper/model batch matrix.",
+    "host_scope": "Cached Lean/Lake; no Anneal V2 producer.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Sound selective reuse on real generated graph and live server."
+  },
+  {
+    "id": "C10",
+    "existing_corpus_scope": "Existing one-model import/worker experiments, no bounded eight-proof stale-oracle fanout.",
+    "host_scope": "Cached Lean/Lake and eight tiny proof files.",
+    "v14_new_evidence": "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "remaining_delta": "Representative Anneal many-proof concurrency/scheduling."
+  },
+  {
+    "id": "I090",
+    "existing_corpus_scope": "Lake prepared contract, identity matrix and key/family probes; assigned-name/index collisions not yet executed.",
+    "host_scope": "Cached Lake 4.30.0-rc2; synthetic physical path dependency.",
+    "v14_new_evidence": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "remaining_delta": "Same-name rejection and root-manifest selection now tested for a tiny two-version wrapper graph; simultaneous/read-only consumers, broader nested resolution and complete preparation key remain."
+  },
+  {
+    "id": "F01",
+    "existing_corpus_scope": "Prepared-state source/spec and tiny setup probes, no executed name/index collision lower bound.",
+    "host_scope": "Cached Lake; synthetic producer only.",
+    "v14_new_evidence": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "remaining_delta": "Actual archive schema and operation-specific consumers."
+  },
+  {
+    "id": "F02",
+    "existing_corpus_scope": "Read-only relocation/offline fixture and separate real-archive inventory report.",
+    "host_scope": "No built Anneal omnibus archive in scoped inventory.",
+    "v14_new_evidence": "No distinct local probe; existing archive gate.",
+    "remaining_delta": "Actual archive first-goal and producer-removal run."
+  },
+  {
+    "id": "F03",
+    "existing_corpus_scope": "4.31 Lake source review and cached 4.29/4.30 comparisons.",
+    "host_scope": "No compatible later-than-4.30 Lake binary cached.",
+    "v14_new_evidence": "No execution; later-toolchain gate.",
+    "remaining_delta": "Run same ownership/reuse matrix with identified 4.31+ tuple."
+  },
+  {
+    "id": "F04",
+    "existing_corpus_scope": "Existing real-archive missing-manifest availability report already ran synthetic negative.",
+    "host_scope": "No built Anneal omnibus archive in scoped inventory.",
+    "v14_new_evidence": "No distinct local probe; existing archive gate.",
+    "remaining_delta": "Actual archive missing-manifest control."
+  },
+  {
+    "id": "F05",
+    "existing_corpus_scope": "Prior identity matrices cover key families, not assigned-name/index collision.",
+    "host_scope": "Cached Lake 4.30.0-rc2; synthetic graph.",
+    "v14_new_evidence": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "remaining_delta": "Broader version/option/platform/tool collisions and product identity remain beyond this name/index/root-manifest fixture."
+  },
+  {
+    "id": "I095",
+    "existing_corpus_scope": "Prior trace/hash/replay reports; no positive process-child witness or no-build net-write control together.",
+    "host_scope": "Cached Lake and user-level ps; fs_usage requires root.",
+    "v14_new_evidence": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "remaining_delta": "Syscall reads/transient writes and prepared-scale parallelism."
+  },
+  {
+    "id": "F10",
+    "existing_corpus_scope": "Prior cache reuse traces did not distinguish historical logged Lean command from actual child.",
+    "host_scope": "Cached Lake and user-level ps.",
+    "v14_new_evidence": "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "remaining_delta": "Permitted syscall trace and actual archive cache-hit provenance."
+  }
+]

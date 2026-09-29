@@ -1,0 +1,1892 @@
+{
+  "subject": {
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "free_percent": 50,
+    "source_harness_sha256": "d20a5c7b20b71d7fdfec608144934f227c6a48678fc4ebff3487d1d18a7b5a01"
+  },
+  "uri": {
+    "cases": [
+      {
+        "mode": "direct",
+        "case": "shell",
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Shell.lean",
+        "physical_exists": true,
+        "wait": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Shell.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "direct",
+        "case": "file-absent",
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Absent.lean",
+        "physical_exists": false,
+        "wait": {
+          "id": 12,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 13,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Absent.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "direct",
+        "case": "custom",
+        "uri": "anneal://project/Projected.lean",
+        "physical_exists": null,
+        "wait": {
+          "id": 14,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 15,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "anneal://project/Projected.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "direct",
+        "case": "untitled",
+        "uri": "untitled:Projected.lean",
+        "physical_exists": null,
+        "wait": {
+          "id": 16,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 17,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "untitled:Projected.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "lake-serve",
+        "case": "shell",
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Shell.lean",
+        "physical_exists": true,
+        "wait": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Shell.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "lake-serve",
+        "case": "file-absent",
+        "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Absent.lean",
+        "physical_exists": false,
+        "wait": {
+          "id": 12,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 13,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/Absent.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "lake-serve",
+        "case": "custom",
+        "uri": "anneal://project/Projected.lean",
+        "physical_exists": null,
+        "wait": {
+          "id": 14,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 15,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "anneal://project/Projected.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      },
+      {
+        "mode": "lake-serve",
+        "case": "untitled",
+        "uri": "untitled:Projected.lean",
+        "physical_exists": null,
+        "wait": {
+          "id": 16,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 17,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ selected = 7"
+            ],
+            "rendered": "```lean\n⊢ selected = 7\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "message": "don't know how to synthesize placeholder\ncontext:\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 8,
+                  "line": 2
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            },
+            {
+              "fullRange": {
+                "end": {
+                  "character": 10,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\n⊢ selected = 7",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 28,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "untitled:Projected.lean",
+          "version": 1
+        },
+        "source_sha256": "5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067"
+      }
+    ],
+    "setup": [
+      {
+        "label": "setup-Shell.lean",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "setup-file",
+          "Shell.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+        "stderr": "",
+        "ms": 409.9
+      },
+      {
+        "label": "setup-Absent.lean",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+          "--keep-toolchain",
+          "--no-cache",
+          "setup-file",
+          "Absent.lean"
+        ],
+        "rc": 1,
+        "stdout": "",
+        "stderr": "✖ [1/1] Running setup-file Absent.lean\nerror: no such file or directory (error code: 4294967294)\n  file: \nSome required targets logged failures:\n- setup-file Absent.lean\nFailed to build module dependencies.\n",
+        "ms": 421.8
+      }
+    ],
+    "dep_sha256": "a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc"
+  },
+  "history": {
+    "first": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "initial": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 1 = 1"
+        ],
+        "rendered": "```lean\n⊢ 1 = 1\n```"
+      }
+    },
+    "oldwait": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "oldgoal": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 1 = 1"
+        ],
+        "rendered": "```lean\n⊢ 1 = 1\n```"
+      }
+    },
+    "wait2": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "wait3": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "latest": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 3 = 3"
+        ],
+        "rendered": "```lean\n⊢ 3 = 3\n```"
+      }
+    },
+    "stillold": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 1 = 1"
+        ],
+        "rendered": "```lean\n⊢ 1 = 1\n```"
+      }
+    },
+    "afterclose": {
+      "error": {
+        "code": -32801,
+        "message": "Cannot process request to closed file 'file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/history/Rev1.lean'"
+      },
+      "id": 18,
+      "jsonrpc": "2.0"
+    },
+    "reopened_wait": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "reopened_goal": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 1 = 1"
+        ],
+        "rendered": "```lean\n⊢ 1 = 1\n```"
+      }
+    },
+    "resident_old_goal_ms": 0.4,
+    "reopened_old_wait_and_goal_ms": 600.8,
+    "waits_ms": 211.7,
+    "rss_before": {
+      "count": 3,
+      "rss_bytes": 935624704,
+      "processes": [
+        {
+          "pid": 1107,
+          "ppid": 1079,
+          "rss_bytes": 168099840,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        },
+        {
+          "pid": 1108,
+          "ppid": 1107,
+          "rss_bytes": 383926272,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        },
+        {
+          "pid": 1116,
+          "ppid": 1107,
+          "rss_bytes": 383598592,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        }
+      ]
+    },
+    "rss_after": {
+      "count": 3,
+      "rss_bytes": 963575808,
+      "processes": [
+        {
+          "pid": 1107,
+          "ppid": 1079,
+          "rss_bytes": 194527232,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        },
+        {
+          "pid": 1108,
+          "ppid": 1107,
+          "rss_bytes": 384647168,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        },
+        {
+          "pid": 1116,
+          "ppid": 1107,
+          "rss_bytes": 384401408,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        }
+      ]
+    },
+    "source_hashes": {
+      "1": "8cc1bba6e7751c8cc1aa490353c8e333ce240fc989eda4ed995393fd285e3af6",
+      "2": "0c9a94b422510e2ac32b115e61d66a20048c8f1044ed2667fb4c6509f6fda167",
+      "3": "4d8aa1a363a23dc4c0ce3424e49dcb0773fa017906fc6d2e1ee339b921b79213"
+    },
+    "fresh_wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "fresh_goal": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ 1 = 1"
+        ],
+        "rendered": "```lean\n⊢ 1 = 1\n```"
+      }
+    },
+    "fresh_start_wait_goal_ms": 624.1,
+    "fresh_rss": {
+      "count": 2,
+      "rss_bytes": 493961216,
+      "processes": [
+        {
+          "pid": 1122,
+          "ppid": 1079,
+          "rss_bytes": 110903296,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        },
+        {
+          "pid": 1126,
+          "ppid": 1122,
+          "rss_bytes": 383057920,
+          "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+        }
+      ]
+    }
+  },
+  "imports": {
+    "rows": [
+      {
+        "label": "base",
+        "build": {
+          "label": "base-build",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+            "--keep-toolchain",
+            "--no-cache",
+            "build",
+            "Helper"
+          ],
+          "rc": 0,
+          "stdout": "✔ [2/4] Built Model (168ms)\n✔ [3/4] Built Helper (164ms)\nBuild completed successfully (4 jobs).\n",
+          "stderr": "info: import_probe: no previous manifest, creating one from scratch\n",
+          "ms": 786.4
+        },
+        "proof": {
+          "label": "base-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 178.0
+        },
+        "proof2": {
+          "label": "base-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 165.2
+        },
+        "source_hashes": {
+          "Model.lean": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+          "Helper.lean": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+          "Proof.lean": "c50d4448e157d83aef4b932c220343a3c17d135c0d6e85e13a6fe0d47d27c339",
+          "Proof2.lean": "653232e7cde5cf62c14c2e327a01869c29efb3d3bb2a6326d2cb2063812a45b8"
+        },
+        "artifact_hashes": {
+          "Model.olean": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+          "Helper.olean": "07637e7fc2ee02c4535e719e3236a4268ca343613f4fb50c2fdd4c7b545ce75d"
+        }
+      },
+      {
+        "label": "proof-body",
+        "build": null,
+        "proof": {
+          "label": "proof-body-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 164.5
+        },
+        "proof2": {
+          "label": "proof-body-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 164.3
+        },
+        "source_hashes": {
+          "Model.lean": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+          "Helper.lean": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+          "Proof.lean": "0ec8190b33fc894ef764241c4bc8c61eb0d2cedc81e3ab573a43c35788047af3",
+          "Proof2.lean": "653232e7cde5cf62c14c2e327a01869c29efb3d3bb2a6326d2cb2063812a45b8"
+        },
+        "artifact_hashes": {
+          "Model.olean": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+          "Helper.olean": "07637e7fc2ee02c4535e719e3236a4268ca343613f4fb50c2fdd4c7b545ce75d"
+        }
+      },
+      {
+        "label": "statement",
+        "build": null,
+        "proof": {
+          "label": "statement-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 1,
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+          "stderr": "",
+          "ms": 165.0
+        },
+        "proof2": {
+          "label": "statement-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 164.4
+        },
+        "source_hashes": {
+          "Model.lean": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+          "Helper.lean": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+          "Proof.lean": "68e2eb38873dd0492086854665593a8c1557a597777eedab37467ea0a0c518dd",
+          "Proof2.lean": "653232e7cde5cf62c14c2e327a01869c29efb3d3bb2a6326d2cb2063812a45b8"
+        },
+        "artifact_hashes": {
+          "Model.olean": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+          "Helper.olean": "07637e7fc2ee02c4535e719e3236a4268ca343613f4fb50c2fdd4c7b545ce75d"
+        }
+      },
+      {
+        "label": "helper-change",
+        "build": {
+          "label": "helper-change-build",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+            "--keep-toolchain",
+            "--no-cache",
+            "build",
+            "Helper"
+          ],
+          "rc": 0,
+          "stdout": "✔ [3/4] Built Helper (171ms)\nBuild completed successfully (4 jobs).\n",
+          "stderr": "",
+          "ms": 505.8
+        },
+        "proof": {
+          "label": "helper-change-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 1,
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+          "stderr": "",
+          "ms": 169.1
+        },
+        "proof2": {
+          "label": "helper-change-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 1,
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+          "stderr": "",
+          "ms": 164.3
+        },
+        "source_hashes": {
+          "Model.lean": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+          "Helper.lean": "c93eeec1152a2eac4260c1660f5416eba6e1584b5042a301f4cf68124a66a2c5",
+          "Proof.lean": "c50d4448e157d83aef4b932c220343a3c17d135c0d6e85e13a6fe0d47d27c339",
+          "Proof2.lean": "653232e7cde5cf62c14c2e327a01869c29efb3d3bb2a6326d2cb2063812a45b8"
+        },
+        "artifact_hashes": {
+          "Model.olean": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+          "Helper.olean": "727528b71577b25a76a21f8203d49433c127b7cb0c4a8c337b133c53f3ae78b8"
+        }
+      },
+      {
+        "label": "model-change",
+        "build": {
+          "label": "model-change-build",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+            "--keep-toolchain",
+            "--no-cache",
+            "build",
+            "Helper"
+          ],
+          "rc": 0,
+          "stdout": "✔ [2/4] Built Model (168ms)\n✔ [3/4] Built Helper (168ms)\nBuild completed successfully (4 jobs).\n",
+          "stderr": "",
+          "ms": 737.8
+        },
+        "proof": {
+          "label": "model-change-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 1,
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+          "stderr": "",
+          "ms": 177.2
+        },
+        "proof2": {
+          "label": "model-change-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 1,
+          "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+          "stderr": "",
+          "ms": 164.7
+        },
+        "source_hashes": {
+          "Model.lean": "ce31d9ecd66b9978d2e7341d0bb48f588fc15660d3540ca28f25f12c37943b58",
+          "Helper.lean": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+          "Proof.lean": "c50d4448e157d83aef4b932c220343a3c17d135c0d6e85e13a6fe0d47d27c339",
+          "Proof2.lean": "653232e7cde5cf62c14c2e327a01869c29efb3d3bb2a6326d2cb2063812a45b8"
+        },
+        "artifact_hashes": {
+          "Model.olean": "a8235aed4990a33cd287bfa680cc04572a01ad196762aa54efcfad7415a3b870",
+          "Helper.olean": "559e5c144ca6ef83b960b1587b9892dbf2b88fc883028de9370bd5eab0385264"
+        }
+      },
+      {
+        "label": "updated-obligations",
+        "build": null,
+        "proof": {
+          "label": "updated-obligations-proof",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 164.1
+        },
+        "proof2": {
+          "label": "updated-obligations-proof2",
+          "argv": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+            "--json",
+            "Proof2.lean"
+          ],
+          "rc": 0,
+          "stdout": "",
+          "stderr": "",
+          "ms": 164.2
+        },
+        "source_hashes": {
+          "Model.lean": "ce31d9ecd66b9978d2e7341d0bb48f588fc15660d3540ca28f25f12c37943b58",
+          "Helper.lean": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+          "Proof.lean": "68e2eb38873dd0492086854665593a8c1557a597777eedab37467ea0a0c518dd",
+          "Proof2.lean": "7126336e76ab57ad07b0a2b8d0f0e0e61a275cd58a4668634f9297dc4d1db951"
+        },
+        "artifact_hashes": {
+          "Model.olean": "a8235aed4990a33cd287bfa680cc04572a01ad196762aa54efcfad7415a3b870",
+          "Helper.olean": "559e5c144ca6ef83b960b1587b9892dbf2b88fc883028de9370bd5eab0385264"
+        }
+      }
+    ],
+    "fanout": [
+      {
+        "label": "eight-current",
+        "checks": [
+          {
+            "name": "Fan0.lean",
+            "source_sha256": "a1a750132abf233034ae473f938c024e492f5bc39518c596ec6a4631159f8607",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan1.lean",
+            "source_sha256": "70f23204a4d193f515706a352e7658fb4ad33fbe61debf31124e24029b19371d",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan2.lean",
+            "source_sha256": "59d39d60b2a90cfc00c0c6d176193e95e2ca91c1fa946a2fa383a5276e107bc4",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan3.lean",
+            "source_sha256": "fe491ee37d0d118227a5597595eb37423a970a2bc309f205f5a986286b1b8d8b",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan4.lean",
+            "source_sha256": "a69b4e180a657e8e5d05ad69d3baf63028cd39d7522d94dc739dacbe27c24e74",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan5.lean",
+            "source_sha256": "d133b7975993b8cf6bb1eb940f6405ce9f3487d6653b950d97e13c33ab93404c",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan6.lean",
+            "source_sha256": "f94ff3d054ceb4b2182316384916789c59af5d5130b31c90b35f596a2a2906bf",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan7.lean",
+            "source_sha256": "fc54cf2a0fc558a4033ba1eb7a1993641f23d0f7c2cca816ac749412460031df",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "model_sha256": "ce31d9ecd66b9978d2e7341d0bb48f588fc15660d3540ca28f25f12c37943b58",
+        "helper_sha256": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+        "model_olean_sha256": "a8235aed4990a33cd287bfa680cc04572a01ad196762aa54efcfad7415a3b870",
+        "helper_olean_sha256": "559e5c144ca6ef83b960b1587b9892dbf2b88fc883028de9370bd5eab0385264"
+      },
+      {
+        "label": "eight-stale",
+        "checks": [
+          {
+            "name": "Fan0.lean",
+            "source_sha256": "a1a750132abf233034ae473f938c024e492f5bc39518c596ec6a4631159f8607",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan0.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan1.lean",
+            "source_sha256": "70f23204a4d193f515706a352e7658fb4ad33fbe61debf31124e24029b19371d",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan2.lean",
+            "source_sha256": "59d39d60b2a90cfc00c0c6d176193e95e2ca91c1fa946a2fa383a5276e107bc4",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan3.lean",
+            "source_sha256": "fe491ee37d0d118227a5597595eb37423a970a2bc309f205f5a986286b1b8d8b",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan3.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan4.lean",
+            "source_sha256": "a69b4e180a657e8e5d05ad69d3baf63028cd39d7522d94dc739dacbe27c24e74",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan4.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan5.lean",
+            "source_sha256": "d133b7975993b8cf6bb1eb940f6405ce9f3487d6653b950d97e13c33ab93404c",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan5.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan6.lean",
+            "source_sha256": "f94ff3d054ceb4b2182316384916789c59af5d5130b31c90b35f596a2a2906bf",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan6.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          },
+          {
+            "name": "Fan7.lean",
+            "source_sha256": "fc54cf2a0fc558a4033ba1eb7a1993641f23d0f7c2cca816ac749412460031df",
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+            "stderr": ""
+          }
+        ],
+        "model_sha256": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+        "helper_sha256": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+        "model_olean_sha256": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+        "helper_olean_sha256": "07637e7fc2ee02c4535e719e3236a4268ca343613f4fb50c2fdd4c7b545ce75d"
+      },
+      {
+        "label": "eight-updated",
+        "checks": [
+          {
+            "name": "Fan0.lean",
+            "source_sha256": "0f52c36ee401312e6f622f4f8eb2a196629e62ee5d7e9f37f01210fb210ceed0",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan1.lean",
+            "source_sha256": "282ca6ef7ad019b012e5513c93fb178d55086916e5f27d470c609e952d911d3b",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan2.lean",
+            "source_sha256": "2b0681f76cd87bbc8480e087adb6832dfb6353d75b888a830e840a3a5f407e4c",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan3.lean",
+            "source_sha256": "59fb995c5d19ffcadeb2c3541828c166bbecb966fe3bfa1bc5a87110806ba6ea",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan4.lean",
+            "source_sha256": "9404022330bd92717f28b3c074a5f51d87a3f0aae5ba224b6ca6e84acf4e0ca1",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan5.lean",
+            "source_sha256": "fdb85a727aeb1b637251f4db2aa815ddc929eda6874c23b5aba9f4358532a8e6",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan6.lean",
+            "source_sha256": "01a249d7f256f2b84a2e0a29c676a8280c7ceffded270437434c3d27c57ab904",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          },
+          {
+            "name": "Fan7.lean",
+            "source_sha256": "3d3344179436a60881ff312efcbc63bdce78ca7f38a813d110d680a26378180a",
+            "rc": 0,
+            "stdout": "",
+            "stderr": ""
+          }
+        ],
+        "model_sha256": "1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1",
+        "helper_sha256": "981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a",
+        "model_olean_sha256": "6c8fe7780865aa840e2e49b542fad55e0753a0b350c05b373b37d10c2e5d81b6",
+        "helper_olean_sha256": "07637e7fc2ee02c4535e719e3236a4268ca343613f4fb50c2fdd4c7b545ce75d"
+      }
+    ]
+  },
+  "commands": [
+    {
+      "label": "lean-version",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--version"
+      ],
+      "rc": 0,
+      "stdout": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)\n",
+      "stderr": "",
+      "ms": 27.4
+    },
+    {
+      "label": "build-dep",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "rc": 0,
+      "stdout": "✔ [2/3] Built Dep (190ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: uri_probe: no previous manifest, creating one from scratch\n",
+      "ms": 1129.6
+    },
+    {
+      "label": "setup-Shell.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Shell.lean"
+      ],
+      "rc": 0,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-lean-uri-history-import-boundaries-2026-09-29/support/work/uri/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"_unknown\",\"options\":{},\"plugins\":[]}\n",
+      "stderr": "",
+      "ms": 409.9
+    },
+    {
+      "label": "setup-Absent.lean",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "setup-file",
+        "Absent.lean"
+      ],
+      "rc": 1,
+      "stdout": "",
+      "stderr": "✖ [1/1] Running setup-file Absent.lean\nerror: no such file or directory (error code: 4294967294)\n  file: \nSome required targets logged failures:\n- setup-file Absent.lean\nFailed to build module dependencies.\n",
+      "ms": 421.8
+    },
+    {
+      "label": "build-dep",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "rc": 0,
+      "stdout": "✔ [2/3] Built Dep (166ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: uri_probe: no previous manifest, creating one from scratch\n",
+      "ms": 559.5
+    },
+    {
+      "label": "base-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Helper"
+      ],
+      "rc": 0,
+      "stdout": "✔ [2/4] Built Model (168ms)\n✔ [3/4] Built Helper (164ms)\nBuild completed successfully (4 jobs).\n",
+      "stderr": "info: import_probe: no previous manifest, creating one from scratch\n",
+      "ms": 786.4
+    },
+    {
+      "label": "base-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 178.0
+    },
+    {
+      "label": "base-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 165.2
+    },
+    {
+      "label": "proof-body-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.5
+    },
+    {
+      "label": "proof-body-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.3
+    },
+    {
+      "label": "statement-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 165.0
+    },
+    {
+      "label": "statement-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.4
+    },
+    {
+      "label": "helper-change-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Helper"
+      ],
+      "rc": 0,
+      "stdout": "✔ [3/4] Built Helper (171ms)\nBuild completed successfully (4 jobs).\n",
+      "stderr": "",
+      "ms": 505.8
+    },
+    {
+      "label": "helper-change-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 169.1
+    },
+    {
+      "label": "helper-change-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.3
+    },
+    {
+      "label": "model-change-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Helper"
+      ],
+      "rc": 0,
+      "stdout": "✔ [2/4] Built Model (168ms)\n✔ [3/4] Built Helper (168ms)\nBuild completed successfully (4 jobs).\n",
+      "stderr": "",
+      "ms": 737.8
+    },
+    {
+      "label": "model-change-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 177.2
+    },
+    {
+      "label": "model-change-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  7\\n\\n⊢ helper = 7\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.7
+    },
+    {
+      "label": "updated-obligations-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.1
+    },
+    {
+      "label": "updated-obligations-proof2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.2
+    },
+    {
+      "label": "eight-current-fan0",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan0.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.8
+    },
+    {
+      "label": "eight-current-fan1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan1.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.6
+    },
+    {
+      "label": "eight-current-fan2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 162.9
+    },
+    {
+      "label": "eight-current-fan3",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan3.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.3
+    },
+    {
+      "label": "eight-current-fan4",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan4.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.5
+    },
+    {
+      "label": "eight-current-fan5",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan5.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.8
+    },
+    {
+      "label": "eight-current-fan6",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan6.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 167.1
+    },
+    {
+      "label": "eight-current-fan7",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan7.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.5
+    },
+    {
+      "label": "eight-model-change-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Helper"
+      ],
+      "rc": 0,
+      "stdout": "✔ [2/4] Built Model (169ms)\n✔ [3/4] Built Helper (168ms)\nBuild completed successfully (4 jobs).\n",
+      "stderr": "",
+      "ms": 733.4
+    },
+    {
+      "label": "eight-stale-fan0",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan0.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan0.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 183.1
+    },
+    {
+      "label": "eight-stale-fan1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan1.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 163.8
+    },
+    {
+      "label": "eight-stale-fan2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan2.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 163.3
+    },
+    {
+      "label": "eight-stale-fan3",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan3.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan3.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.9
+    },
+    {
+      "label": "eight-stale-fan4",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan4.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan4.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.0
+    },
+    {
+      "label": "eight-stale-fan5",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan5.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan5.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.1
+    },
+    {
+      "label": "eight-stale-fan6",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan6.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan6.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.4
+    },
+    {
+      "label": "eight-stale-fan7",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan7.lean"
+      ],
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  helper\\nis not definitionally equal to the right-hand side\\n  8\\n\\n⊢ helper = 8\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Fan7.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": "",
+      "ms": 164.5
+    },
+    {
+      "label": "eight-updated-fan0",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan0.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.2
+    },
+    {
+      "label": "eight-updated-fan1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan1.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.4
+    },
+    {
+      "label": "eight-updated-fan2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan2.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.4
+    },
+    {
+      "label": "eight-updated-fan3",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan3.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 164.8
+    },
+    {
+      "label": "eight-updated-fan4",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan4.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.9
+    },
+    {
+      "label": "eight-updated-fan5",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan5.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.0
+    },
+    {
+      "label": "eight-updated-fan6",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan6.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.7
+    },
+    {
+      "label": "eight-updated-fan7",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Fan7.lean"
+      ],
+      "rc": 0,
+      "stdout": "",
+      "stderr": "",
+      "ms": 163.7
+    }
+  ]
+}

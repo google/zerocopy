@@ -1,0 +1,51 @@
+{
+  "snapshot_utc": "2026-09-29T15:14:21.343336+00:00",
+  "reference_commit": "d88d43c66b9373aadffbfc7dc1c7d9131ee5791e",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 153,
+    "complete": 2,
+    "not-run": 1,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 161,
+    "complete": 4,
+    "conditional": 4,
+    "not-run": 5
+  },
+  "all_substantive_packages": 108,
+  "prior_accounted_packages": 104,
+  "new_package_count": 4,
+  "new_packages": [
+    "anneal-3730-lake-consumer-identity-observability-2026-09-29",
+    "anneal-3730-lean-uri-history-import-boundaries-2026-09-29",
+    "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2",
+    "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2"
+  ],
+  "new_inspected_file_count": 55,
+  "new_inspected_bytes": 471375,
+  "candidate_review_rows": 18,
+  "source_v13_investigation_sha256": "5c0efe599b7072c4467c2daf7283fa13df6e388186b2a5821325a06fa4034c2b",
+  "source_v13_crosswalk_sha256": "125117bd9add3e584aec31eb5597382e3b3b1b57154a309a0a11749e4700db91",
+  "not_run_investigations": [
+    "I072"
+  ],
+  "not_run_suggestions": [
+    "F03",
+    "F04",
+    "G03",
+    "G15",
+    "L09"
+  ],
+  "status_changes_from_v13": []
+}

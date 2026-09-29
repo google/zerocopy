@@ -1,0 +1,6781 @@
+{
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "version": {
+    "source": "#eval Lean.versionString\n",
+    "source_sha256": "e109cd8fb7238b9b3c66dd1b2cdec0fddccd7f4ef2e5577053c1719d08ceb419",
+    "exit": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"\\\"4.30.0-rc2\\\"\",\"endPos\":{\"column\":5,\"line\":1},\"fileName\":\"$WORK/Version.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":1},\"severity\":\"information\"}\n",
+    "stderr": "",
+    "elapsed_ms": 178
+  },
+  "context": {
+    "instance_in_scope": {
+      "source": "class Marker where\n  value : Nat\ninstance globalMarker : Marker where\n  value := 1\nnamespace N\nsection\nlocal instance : Marker where\n  value := 2\ntheorem proof : (Marker.value : Nat) = 2 := by decide\n#print N.proof\n#print axioms N.proof\nend\nend N\n",
+      "source_sha256": "416ccc3689cc127c6545348286fb0b0b1fa52373c16707a37620cc82a19d1199",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"theorem N.proof : Marker.value = 2 :=\\nof_decide_eq_true (id (Eq.refl true))\",\"endPos\":{\"column\":6,\"line\":10},\"fileName\":\"$WORK/instance_in_scope.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":10},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'N.proof' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":11},\"fileName\":\"$WORK/instance_in_scope.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":11},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 163
+    },
+    "instance_omitted": {
+      "source": "class Marker where\n  value : Nat\ninstance globalMarker : Marker where\n  value := 1\nnamespace N\ntheorem proof : (Marker.value : Nat) = 2 := by decide\n#print N.proof\n#print axioms N.proof\nend N\n",
+      "source_sha256": "79d2127c88cfeea258e0ff3b5cfdaa67d16b7266d7ba34674c1a0ae11aa64dfd",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `decide` proved that the proposition\\n  Marker.value = 2\\nis false\",\"endPos\":{\"column\":53,\"line\":6},\"fileName\":\"$WORK/instance_omitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":47,\"line\":6},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"theorem N.proof : Marker.value = 2 :=\\nsorry\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"$WORK/instance_omitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'N.proof' depends on axioms: [sorryAx]\",\"endPos\":{\"column\":6,\"line\":8},\"fileName\":\"$WORK/instance_omitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":8},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 162
+    },
+    "macro_left": {
+      "source": "namespace N\nsyntax \"claim\" : term\nmacro_rules | `(claim) => `(0 = 0)\ntheorem proof : claim := by rfl\n#print N.proof\n#print axioms N.proof\nend N\n",
+      "source_sha256": "4fba30c4d39fad36d682eb990c1aac40e4dcd0453a8198537a6a7bd202e1edc8",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"theorem N.proof : 0 = 0 :=\\nEq.refl 0\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/macro_left.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'N.proof' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"$WORK/macro_left.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 172
+    },
+    "macro_right": {
+      "source": "namespace N\nsyntax \"claim\" : term\nmacro_rules | `(claim) => `(1 = 1)\ntheorem proof : claim := by rfl\n#print N.proof\n#print axioms N.proof\nend N\n",
+      "source_sha256": "2c709601b47a695664cbe7a6a76ad19560477c6d5a73a0cbd18e21c5371e7ee3",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"theorem N.proof : 1 = 1 :=\\nEq.refl 1\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/macro_right.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'N.proof' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":6},\"fileName\":\"$WORK/macro_right.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 172
+    },
+    "macro_missing": {
+      "source": "namespace N\ntheorem proof : claim := by rfl\n#print N.proof\nend N\n",
+      "source_sha256": "51c7acf6156e6979f5123b2167b906178fd9e99888a7e9381e57be061fb5a146",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: Expected the goal to be a binary relation\\n\\nHint: Reflexivity tactics can only be used on goals of the form `x ~ x` or `R x x`\\n\\nclaim : Sort u_1\\n⊢ claim\",\"endPos\":{\"column\":31,\"line\":2},\"fileName\":\"$WORK/macro_missing.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":28,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"type of theorem `N.proof` is not a proposition\\n  {claim : Sort u_1} → claim\",\"endPos\":{\"column\":31,\"line\":2},\"fileName\":\"$WORK/macro_missing.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"theorem N.proof : sorry :=\\nsorry\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"$WORK/macro_missing.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 162
+    },
+    "option_strict": {
+      "source": "set_option autoImplicit false\nnamespace N\naxiom proof : later = 1\ndef later : Nat := 1\n#print N.proof\nend N\n",
+      "source_sha256": "d2feb7d26f8647d7b9bebccf66775c49c2394ae5a74a59dfa62bea78f8e60075",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Unknown identifier `later`\\n\\nNote: It is not possible to treat `later` as an implicitly bound variable here because the `autoImplicit` option is set to `false`.\",\"endPos\":{\"column\":19,\"line\":3},\"fileName\":\"$WORK/option_strict.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"lean.unknownIdentifier._namedError\",\"pos\":{\"column\":14,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"axiom N.proof : sorry = 1\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/option_strict.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 162
+    },
+    "option_permissive": {
+      "source": "set_option autoImplicit true\nnamespace N\naxiom proof : later = 1\ndef later : Nat := 1\n#print N.proof\nend N\n",
+      "source_sha256": "f45e2cc63c62f07d8c63f69874fb83a04c39b5f4b75d9312ee3e4e9b770fadcd",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"axiom N.proof : ∀ {later : Nat}, later = 1\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"$WORK/option_permissive.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "elapsed_ms": 160
+    }
+  },
+  "prefix": {
+    "steps": [
+      {
+        "version": 1,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 726,
+        "name": "base",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 2,
+        "source_sha256": "59573733bd921a848eb37e49d5c83472162b92c92b29ee5c520998d71f289e39",
+        "wait": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "late_tactic",
+        "normalized_source_sha256": "ce2d9a5859d138b3b61d0cdef277aac32766c878e239e381cea2793318535bc1",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E"
+        ],
+        "new_ticks": [
+          "E"
+        ]
+      },
+      {
+        "version": 3,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "reset_late",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E"
+        ],
+        "new_ticks": [
+          "E"
+        ]
+      },
+      {
+        "version": 4,
+        "source_sha256": "9ae3ad156d6571e69df948d9f50284f174631a0086b2102bbd50b2a02a410d6b",
+        "wait": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "definition",
+        "normalized_source_sha256": "22c3086910c6b1eabcaabab70d4e82ed51f97182af297aa8ecca27d2cc47a608",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 5,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "reset_definition",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 6,
+        "source_sha256": "0d29faba8048c62134845517f40ff21a14221e9ed556beb1d25d40b17231a4c1",
+        "wait": {
+          "id": 7,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "option",
+        "normalized_source_sha256": "3878df308f6c5306cf1661ec7b60f14965ce6eca0dc6c42f60fd181cfff783b5",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 7,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 8,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "reset_option",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 8,
+        "source_sha256": "325034364e8cfb5870d53576afe4986e2098cd6acb413c4567b534209be85cf6",
+        "wait": {
+          "id": 9,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "namespace",
+        "normalized_source_sha256": "2e323e13495024ecaca05ac8354c1c93d106bb60cd20bad077e7b454c434b30f",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 9,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 213,
+        "name": "reset_namespace",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 10,
+        "source_sha256": "4d28500438d638075f414cf359a284463b7098e5d23a97361619623e95087cc3",
+        "wait": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 891,
+        "name": "import",
+        "normalized_source_sha256": "608a1c77cc69cb2bcab607211a1e4d725fd202325670a14875fe99bf75b8d0e8",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E",
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      },
+      {
+        "version": 11,
+        "source_sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4",
+        "wait": {
+          "id": 12,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "elapsed_ms": 912,
+        "name": "reset_import",
+        "normalized_source_sha256": "808af96882341e0e138a85382537e00057b95c2aaf487ada327daaed23a1882b",
+        "ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "E",
+          "E",
+          "D",
+          "E",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E",
+          "B",
+          "C",
+          "D",
+          "E",
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ],
+        "new_ticks": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E"
+        ]
+      }
+    ],
+    "events": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "method": "initialize",
+          "params": {
+            "processId": 98517,
+            "rootUri": "file://$WORK",
+            "capabilities": {},
+            "initializationOptions": {
+              "hasWidgets": false
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "result": {
+            "capabilities": {
+              "callHierarchyProvider": true,
+              "codeActionProvider": {
+                "codeActionKinds": [
+                  "quickfix",
+                  "refactor",
+                  "source.organizeImports"
+                ],
+                "resolveProvider": true,
+                "workDoneProgress": false
+              },
+              "colorProvider": {
+                "workDoneProgress": false
+              },
+              "completionProvider": {
+                "resolveProvider": true,
+                "triggerCharacters": [
+                  "."
+                ]
+              },
+              "declarationProvider": true,
+              "definitionProvider": true,
+              "documentHighlightProvider": true,
+              "documentSymbolProvider": true,
+              "experimental": {
+                "moduleHierarchyProvider": {},
+                "rpcProvider": {
+                  "highlightMatchesProvider": {},
+                  "rpcWireFormat": "v1"
+                }
+              },
+              "foldingRangeProvider": true,
+              "hoverProvider": true,
+              "inlayHintProvider": {
+                "resolveProvider": false,
+                "workDoneProgress": false
+              },
+              "referencesProvider": true,
+              "renameProvider": {
+                "prepareProvider": true
+              },
+              "semanticTokensProvider": {
+                "full": true,
+                "legend": {
+                  "tokenModifiers": [
+                    "declaration",
+                    "definition",
+                    "readonly",
+                    "static",
+                    "deprecated",
+                    "abstract",
+                    "async",
+                    "modification",
+                    "documentation",
+                    "defaultLibrary"
+                  ],
+                  "tokenTypes": [
+                    "keyword",
+                    "variable",
+                    "property",
+                    "function",
+                    "namespace",
+                    "type",
+                    "class",
+                    "enum",
+                    "interface",
+                    "struct",
+                    "typeParameter",
+                    "parameter",
+                    "enumMember",
+                    "event",
+                    "method",
+                    "macro",
+                    "modifier",
+                    "comment",
+                    "string",
+                    "number",
+                    "regexp",
+                    "operator",
+                    "decorator",
+                    "leanSorryLike"
+                  ]
+                },
+                "range": true
+              },
+              "signatureHelpProvider": {
+                "triggerCharacters": [
+                  " "
+                ],
+                "workDoneProgress": false
+              },
+              "textDocumentSync": {
+                "change": 2,
+                "openClose": true,
+                "save": {
+                  "includeText": true
+                },
+                "willSave": false,
+                "willSaveWaitUntil": false
+              },
+              "typeDefinitionProvider": true,
+              "workspaceSymbolProvider": true
+            },
+            "serverInfo": {
+              "name": "Lean 4 Server",
+              "version": "0.3.0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "initialized",
+          "params": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didOpen",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "languageId": "lean",
+              "version": 1,
+              "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 2,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": "register_lean_watcher",
+          "jsonrpc": "2.0",
+          "method": "client/registerCapability",
+          "params": {
+            "registrations": [
+              {
+                "id": "lean_watcher",
+                "method": "workspace/didChangeWatchedFiles",
+                "registerOptions": {
+                  "watchers": [
+                    {
+                      "globPattern": "**/*.lean"
+                    },
+                    {
+                      "globPattern": "**/*.ilean"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": "register_lean_watcher",
+          "result": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 0,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 22,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 10
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 15
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 1
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 1
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 2
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by rfl\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 3,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 2
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 2
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 2
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 2
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 3
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 4,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 3
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 1,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 3
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 3
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 3
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 4
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 2\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 5,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 4
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 4
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 4
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [
+              {
+                "fullRange": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                },
+                "message": "Tactic `decide` proved that the proposition\n  generated = 1\nis false",
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                },
+                "severity": 1,
+                "source": "Lean 4"
+              }
+            ],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 4
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 5
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 6,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 5
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 5
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 5
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 5
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 6
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1001\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 7,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 6
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 6
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 6
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 6
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 7,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 7
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 8,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 7
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 7
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 7
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 7
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 8,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 8
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace M\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend M\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 9,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 8
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "method": "workspace/semanticTokens/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 4,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 8
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 8
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 8
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 9,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 9
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 9
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 9
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 9
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 9
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 10,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nimport Std\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 10
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 10
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 10
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 5,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 22,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 3
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 3
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 8
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 8
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 8
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 8
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 8
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 8
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 8
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 27,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 13
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 13
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 13
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 13
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 13
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 13
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 18
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 18
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 10
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 26
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 23
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 23
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 23
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 28
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 27
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 10
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 11,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/didChange",
+          "params": {
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            },
+            "contentChanges": [
+              {
+                "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "method": "textDocument/waitForDiagnostics",
+          "params": {
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 11
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 11
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 0
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 11
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 6,
+          "jsonrpc": "2.0",
+          "method": "workspace/inlayHint/refresh"
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 22,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 1
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 1
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 5
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 2
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 2
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 6
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 6
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 10
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 7
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 7
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 11
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 11
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 15
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 12
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 12
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 24,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 16
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 16
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 20
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 17
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 17
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 43,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 37,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 11
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 21
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 21
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 44,
+                    "line": 25
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 22
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 22
+                  }
+                }
+              },
+              {
+                "kind": 1,
+                "range": {
+                  "end": {
+                    "character": 0,
+                    "line": 27
+                  },
+                  "start": {
+                    "character": 0,
+                    "line": 26
+                  }
+                }
+              }
+            ],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "$/lean/fileProgress",
+          "params": {
+            "processing": [],
+            "textDocument": {
+              "uri": "file://$WORK/Prefix.lean",
+              "version": 11
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 12,
+          "jsonrpc": "2.0",
+          "result": {}
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "method": "shutdown",
+          "params": null
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "textDocument/publishDiagnostics",
+          "params": {
+            "diagnostics": [],
+            "uri": "file://$WORK/Prefix.lean",
+            "version": 11
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "id": 13,
+          "jsonrpc": "2.0",
+          "result": null
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "exit"
+        }
+      },
+      {
+        "direction": "exit",
+        "code": 0,
+        "stderr": ""
+      }
+    ],
+    "sources": [
+      {
+        "name": "base",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      },
+      {
+        "name": "late_tactic",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by rfl\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "59573733bd921a848eb37e49d5c83472162b92c92b29ee5c520998d71f289e39"
+      },
+      {
+        "name": "reset_late",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      },
+      {
+        "name": "definition",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 2\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "9ae3ad156d6571e69df948d9f50284f174631a0086b2102bbd50b2a02a410d6b"
+      },
+      {
+        "name": "reset_definition",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      },
+      {
+        "name": "option",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1001\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "0d29faba8048c62134845517f40ff21a14221e9ed556beb1d25d40b17231a4c1"
+      },
+      {
+        "name": "reset_option",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      },
+      {
+        "name": "namespace",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace M\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend M\n",
+        "sha256": "325034364e8cfb5870d53576afe4986e2098cd6acb413c4567b534209be85cf6"
+      },
+      {
+        "name": "reset_namespace",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      },
+      {
+        "name": "import",
+        "source": "import Lean\nimport Std\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "4d28500438d638075f414cf359a284463b7098e5d23a97361619623e95087cc3"
+      },
+      {
+        "name": "reset_import",
+        "source": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\nnamespace N\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B\\n\")\nset_option maxRecDepth 1000\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"D\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"$WORK/ticks.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"E\\n\")\nend N\n",
+        "sha256": "8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4"
+      }
+    ]
+  }
+}

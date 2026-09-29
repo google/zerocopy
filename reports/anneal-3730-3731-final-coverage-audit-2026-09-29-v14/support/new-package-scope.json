@@ -1,0 +1,81 @@
+{
+  "anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2": {
+    "ids": [
+      "I036",
+      "I037"
+    ],
+    "suggestions": [
+      "B08"
+    ],
+    "method": "Seven fresh Lean batch wrapper controls changed local instance, macro and autoImplicit context while retaining theorem source; eleven same-URI server versions placed side-effect markers around proof, generated definition, option, namespace and import edits and observed re-executed command suffixes.",
+    "boundary": "Tiny direct Lean fixtures, one sequential server, side-effect markers and one timing sample; no Anneal parser/generator, source map, broad imports or product invalidation.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/probe.py",
+      "support/raw.json",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-nested-tactic-position-grid-v4-30-0-rc2": {
+    "ids": [
+      "I043"
+    ],
+    "suggestions": [
+      "C02"
+    ],
+    "method": "Fresh Lean batch accepted nested have/simpa, first combinator, bullets and term proof; one direct server answered 20 plainGoal and three plainTermGoal cursor probes with retained UTF-16 emoji coordinates and no error diagnostics.",
+    "boundary": "One valid tiny direct Lean file, no unsaved edit, parser failure, macro expansion, generated proof, source projection, rich RPC or Anneal adapter.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/Nested.lean",
+      "support/probe.py",
+      "support/transcript.json",
+      "support/check.py"
+    ]
+  },
+  "anneal-3730-lean-uri-history-import-boundaries-2026-09-29": {
+    "ids": [
+      "I033",
+      "I047",
+      "I056"
+    ],
+    "suggestions": [
+      "H01",
+      "H02",
+      "H04",
+      "A05",
+      "A06",
+      "C10"
+    ],
+    "method": "Pinned direct/Lake server accepted unsaved imported text at physical, absent-file, custom and untitled URIs; setup-file distinguished physical file; rapid same-URI edits plus separate old URI and close/reopen/fresh recomputation returned exact goal controls; fresh two-proof Model\u2192Helper batch matrix ablated proof body, statement, helper and model with OLean hashes.",
+    "boundary": "Synthetic tiny projects, one host and one timing run; no real Rust editor, Anneal projection, exact historical-query service, retention cost, many-proof scale or sound product reuse decision.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/probe.py",
+      "support/results.json",
+      "support/check.py",
+      "support/work/uri/Shell.lean",
+      "support/work/imports/Model.lean",
+      "support/work/imports/Helper.lean"
+    ]
+  },
+  "anneal-3730-lake-consumer-identity-observability-2026-09-29": {
+    "ids": [
+      "I090",
+      "I095"
+    ],
+    "suggestions": [
+      "F01",
+      "F05",
+      "F10"
+    ],
+    "method": "Pinned offline Lake path-dependency matrix moved assigned name, graph index and consumer root against one physical producer; same producer configuration trace changed idx 1\u21922\u21921 while Dep replayed. Clean/replay/no-build/same-mtime rehash controls retained exit/action, net file deltas and bounded descendant-process samples; --no-build wrote .trace.nobuild on out-of-date exit 3. Follow-up direct duplicate-name requires failed before producer load in either order; through two wrapper packages, an explicit root manifest selected physical producer A or B independent of wrapper order in tested cells.",
+    "boundary": "Tiny synthetic one-module producer and sequential consumers. Net file inventory cannot show reads/transient writes; ps polling can positively witness Lean child but not prove absence; no root fs_usage, actual prepared Anneal archive, later-than-4.30 Lake, read-only/concurrent consumer, server or product cache contract. Same-name control covers one direct duplicate and two wrapper-order shapes, not every version solver or nested graph.",
+    "evidence_files": [
+      "REPORT.md",
+      "support/probe.py",
+      "support/results.json",
+      "support/check.py"
+    ]
+  }
+}

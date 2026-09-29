@@ -1,0 +1,3722 @@
+[
+  {
+    "kind": "subject",
+    "seq": 0,
+    "ms": 177.3,
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": "8ace3b00831edb6bc3d023ffdeb95ef51798334af5557b8c32e22e7071fb47b3"
+  },
+  {
+    "kind": "batch",
+    "seq": 1,
+    "ms": 2025.3,
+    "argv": [
+      "$LEAN",
+      "--json",
+      "$SOURCE"
+    ],
+    "returncode": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"🧪\",\"endPos\":{\"column\":9,\"line\":7},\"fileName\":\"$SOURCE\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":4,\"line\":7},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "start",
+    "seq": 2,
+    "ms": 2026.6,
+    "pid": 98974
+  },
+  {
+    "kind": "send",
+    "seq": 3,
+    "ms": 2026.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 98970,
+        "rootUri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-nested-tactic-position-grid-v4-30-0-rc2/support",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 4,
+    "ms": 2054.8,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 5,
+    "ms": 2054.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 6,
+    "ms": 2054.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$URI",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\n\ntheorem nested (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  have hz : n + 0 = 0 := by\n    simpa using h\n  first\n  | trace \"🧪\"; exact hz\n  | exact h\n\ntheorem branches (n : Nat) : True ∧ n = n := by\n  constructor\n  · trivial\n  · rfl\n\ntheorem term (n : Nat) : n = n := by\n  exact Eq.refl n\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 7,
+    "ms": 2054.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 8,
+    "ms": 2056.0,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 9,
+    "ms": 2056.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 10,
+    "ms": 2057.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 11,
+    "ms": 2134.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 12,
+    "ms": 2295.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 13,
+    "ms": 2295.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 14,
+    "ms": 2614.7,
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 15,
+    "ms": 2768.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 16,
+    "ms": 2770.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 17,
+    "ms": 2770.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 18,
+    "ms": 2770.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 19,
+    "ms": 2770.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 20,
+    "ms": 2770.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 21,
+    "ms": 2770.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 22,
+    "ms": 2770.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 10
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 23,
+    "ms": 2770.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 10
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 24,
+    "ms": 2771.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 13,
+                "line": 10
+              },
+              "start": {
+                "character": 2,
+                "line": 10
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 25,
+    "ms": 2771.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 13,
+                "line": 10
+              },
+              "start": {
+                "character": 2,
+                "line": 10
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 26,
+    "ms": 2771.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 27,
+    "ms": 2771.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 11
+              },
+              "start": {
+                "character": 4,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 2,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 15
+              },
+              "start": {
+                "character": 2,
+                "line": 15
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 28,
+    "ms": 2772.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 7,
+                "line": 12
+              },
+              "start": {
+                "character": 4,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 29,
+    "ms": 2772.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 30,
+    "ms": 2772.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 31,
+    "ms": 2773.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 32,
+    "ms": 2773.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 33,
+    "ms": 2773.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 4,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 34,
+    "ms": 2774.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 11,
+                "line": 7
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 35,
+    "ms": 2774.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 36,
+    "ms": 2775.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 37,
+    "ms": 2775.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 14
+              },
+              "start": {
+                "character": 0,
+                "line": 14
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 38,
+    "ms": 2775.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "message": "🧪",
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 39,
+    "ms": 2775.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "message": "🧪",
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 40,
+    "ms": 2775.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "message": "🧪",
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 41,
+    "ms": 2775.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "message": "🧪",
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 6
+              },
+              "start": {
+                "character": 4,
+                "line": 6
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 42,
+    "ms": 2775.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 43,
+    "ms": 2775.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 44,
+    "ms": 2775.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 45,
+    "ms": 2776.3,
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "ready",
+    "seq": 46,
+    "ms": 2776.3,
+    "response": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 47,
+    "ms": 2777.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 2,
+          "character": 52
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 48,
+    "ms": 2781.6,
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 49,
+    "ms": 2781.6,
+    "name": "nested_by",
+    "position": {
+      "line": 2,
+      "character": 52
+    },
+    "response": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 50,
+    "ms": 2781.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 3,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 51,
+    "ms": 2782.4,
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 52,
+    "ms": 2782.4,
+    "name": "have_before",
+    "position": {
+      "line": 3,
+      "character": 2
+    },
+    "response": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 53,
+    "ms": 2782.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 4,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 54,
+    "ms": 2782.9,
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 55,
+    "ms": 2782.9,
+    "name": "inner_simpa_before",
+    "position": {
+      "line": 4,
+      "character": 4
+    },
+    "response": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 56,
+    "ms": 2783.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 4,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 57,
+    "ms": 2783.5,
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 58,
+    "ms": 2783.5,
+    "name": "inner_simpa_after",
+    "position": {
+      "line": 4,
+      "character": 9
+    },
+    "response": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 59,
+    "ms": 2783.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 60,
+    "ms": 2784.0,
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 61,
+    "ms": 2784.0,
+    "name": "first_keyword",
+    "position": {
+      "line": 5,
+      "character": 2
+    },
+    "response": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 62,
+    "ms": 2784.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 63,
+    "ms": 2784.5,
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 64,
+    "ms": 2784.5,
+    "name": "trace_before",
+    "position": {
+      "line": 6,
+      "character": 4
+    },
+    "response": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 65,
+    "ms": 2784.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 10
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 66,
+    "ms": 2785.0,
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 67,
+    "ms": 2785.0,
+    "name": "emoji_open_quote",
+    "position": {
+      "line": 6,
+      "character": 10
+    },
+    "response": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 68,
+    "ms": 2785.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 11
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 69,
+    "ms": 2785.6,
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 70,
+    "ms": 2785.6,
+    "name": "emoji_inside",
+    "position": {
+      "line": 6,
+      "character": 11
+    },
+    "response": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 71,
+    "ms": 2785.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 13
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 72,
+    "ms": 2786.0,
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 73,
+    "ms": 2786.0,
+    "name": "emoji_after",
+    "position": {
+      "line": 6,
+      "character": 13
+    },
+    "response": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 74,
+    "ms": 2786.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 16
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 75,
+    "ms": 2786.5,
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 76,
+    "ms": 2786.5,
+    "name": "outer_exact_before",
+    "position": {
+      "line": 6,
+      "character": 16
+    },
+    "response": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 77,
+    "ms": 2786.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 24
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 78,
+    "ms": 2786.7,
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 79,
+    "ms": 2786.7,
+    "name": "outer_exact_after",
+    "position": {
+      "line": 6,
+      "character": 24
+    },
+    "response": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 80,
+    "ms": 2786.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 7,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 81,
+    "ms": 2786.9,
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 82,
+    "ms": 2786.9,
+    "name": "unselected_branch",
+    "position": {
+      "line": 7,
+      "character": 4
+    },
+    "response": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 83,
+    "ms": 2786.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 10,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 84,
+    "ms": 2787.4,
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n⊢ True ∧ n = n"
+        ],
+        "rendered": "```lean\nn : Nat\n⊢ True ∧ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 85,
+    "ms": 2787.4,
+    "name": "constructor_before",
+    "position": {
+      "line": 10,
+      "character": 2
+    },
+    "response": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n⊢ True ∧ n = n"
+        ],
+        "rendered": "```lean\nn : Nat\n⊢ True ∧ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 86,
+    "ms": 2787.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 11,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 87,
+    "ms": 2787.7,
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case left\nn : Nat\n⊢ True",
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase left\nn : Nat\n⊢ True\n```\n---\n```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 88,
+    "ms": 2787.7,
+    "name": "first_bullet",
+    "position": {
+      "line": 11,
+      "character": 2
+    },
+    "response": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case left\nn : Nat\n⊢ True",
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase left\nn : Nat\n⊢ True\n```\n---\n```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 89,
+    "ms": 2787.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 11,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 90,
+    "ms": 2787.9,
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case left\nn : Nat\n⊢ True"
+        ],
+        "rendered": "```lean\ncase left\nn : Nat\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 91,
+    "ms": 2787.9,
+    "name": "trivial_before",
+    "position": {
+      "line": 11,
+      "character": 4
+    },
+    "response": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case left\nn : Nat\n⊢ True"
+        ],
+        "rendered": "```lean\ncase left\nn : Nat\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 92,
+    "ms": 2787.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 11,
+          "character": 11
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 93,
+    "ms": 2788.1,
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 94,
+    "ms": 2788.1,
+    "name": "trivial_after",
+    "position": {
+      "line": 11,
+      "character": 11
+    },
+    "response": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 95,
+    "ms": 2788.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 12,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 96,
+    "ms": 2788.7,
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 97,
+    "ms": 2788.7,
+    "name": "second_bullet",
+    "position": {
+      "line": 12,
+      "character": 2
+    },
+    "response": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 98,
+    "ms": 2788.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 12,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 99,
+    "ms": 2788.9,
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 100,
+    "ms": 2788.9,
+    "name": "rfl_before",
+    "position": {
+      "line": 12,
+      "character": 4
+    },
+    "response": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "case right\nn : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\ncase right\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 101,
+    "ms": 2788.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 15,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 102,
+    "ms": 2789.2,
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 103,
+    "ms": 2789.2,
+    "name": "term_exact_before",
+    "position": {
+      "line": 15,
+      "character": 2
+    },
+    "response": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n⊢ n = n"
+        ],
+        "rendered": "```lean\nn : Nat\n⊢ n = n\n```"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 104,
+    "ms": 2789.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 15,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 105,
+    "ms": 2789.3,
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "seq": 106,
+    "ms": 2789.3,
+    "name": "term_expr",
+    "position": {
+      "line": 15,
+      "character": 8
+    },
+    "response": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 107,
+    "ms": 2789.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainTermGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 15,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 108,
+    "ms": 2789.6,
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "term_goal",
+    "seq": 109,
+    "ms": 2789.6,
+    "name": "term_exact_before",
+    "position": {
+      "line": 15,
+      "character": 2
+    },
+    "response": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 110,
+    "ms": 2789.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainTermGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 15,
+          "character": 8
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 111,
+    "ms": 2789.9,
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goal": "n : Nat\n⊢ n = n",
+        "range": {
+          "end": {
+            "character": 17,
+            "line": 15
+          },
+          "start": {
+            "character": 8,
+            "line": 15
+          }
+        }
+      }
+    }
+  },
+  {
+    "kind": "term_goal",
+    "seq": 112,
+    "ms": 2789.9,
+    "name": "term_expr",
+    "position": {
+      "line": 15,
+      "character": 8
+    },
+    "response": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goal": "n : Nat\n⊢ n = n",
+        "range": {
+          "end": {
+            "character": 17,
+            "line": 15
+          },
+          "start": {
+            "character": 8,
+            "line": 15
+          }
+        }
+      }
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 113,
+    "ms": 2789.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "$/lean/plainTermGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI"
+        },
+        "position": {
+          "line": 6,
+          "character": 13
+        }
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 114,
+    "ms": 2790.0,
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "term_goal",
+    "seq": 115,
+    "ms": 2790.0,
+    "name": "emoji_after",
+    "position": {
+      "line": 6,
+      "character": 13
+    },
+    "response": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "completed",
+    "seq": 116,
+    "ms": 2790.0
+  },
+  {
+    "kind": "send",
+    "seq": 117,
+    "ms": 2790.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 118,
+    "ms": 2790.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "recv",
+    "seq": 119,
+    "ms": 2810.7,
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "send",
+    "seq": 120,
+    "ms": 2810.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "kind": "stop",
+    "seq": 121,
+    "ms": 2815.4,
+    "returncode": 0,
+    "stderr": ""
+  }
+]

@@ -1,0 +1,56 @@
+package,relative_file,bytes,sha256,inspection
+anneal-3730-lake-consumer-identity-observability-2026-09-29,REPORT.json,442,998705b84964680f7bdb1bb6afe891b14c19dca9838f29b7b0b7ee45c5f92c42,parsed JSON
+anneal-3730-lake-consumer-identity-observability-2026-09-29,REPORT.md,14961,dced6b8cc362b48cf1f55e9eda9797da13f5ad739a6c4580afc74dec923e5d08,83 UTF-8 lines
+anneal-3730-lake-consumer-identity-observability-2026-09-29,support/check.py,3787,8808c4096d7ff7a0c8a90942661bc378bb329e3effe0138a7df2cde9437c5619,59 UTF-8 lines
+anneal-3730-lake-consumer-identity-observability-2026-09-29,support/probe.py,12513,a1216bb5c2e97248f91301750d97a929f3e66c17c6d7d3fef0593cbbfd5e4aae,255 UTF-8 lines
+anneal-3730-lake-consumer-identity-observability-2026-09-29,support/results.json,47046,c3ffcee512b530980f8a8d690979e1bb52d55209eb59aa416299fa460b4f904d,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,REPORT.json,594,ba05ca183af0f7b1856b99d39d83528c18794343d1980346825be6b141eb8729,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,REPORT.md,5334,aa8e6cfb698fb81fbbd5951a6f0578acf8fc45c5b640b7abadabf64c0bd764b7,22 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/check.py,3384,2a42c1e86d98fc741a2a7a1f5f0f63eeb602829e5110f3ee8e724240082fabf7,54 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/probe.py,10437,9d5d5c7e3d85e8679e1ee04f9f8df485d163be3bd0eebaa0ffadaf27f7dc50a7,203 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/results.json,67330,22275b76daf5a289209e1600bbfd6997e948d75d9ac309af450e4069337f21f0,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/history/Dep.lean,24,a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc,1 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/history/lake-manifest.json,141,4137b41c70c56eea23fc0125d885ee910edf2fe62c543ebbb001c50c4b44c0a7,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/history/lakefile.lean,75,a664603009d0549bdbe48287d34e32e872f8cf9952d5aa922ab635bc08975333,5 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/history/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,1 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan0.lean,52,0f52c36ee401312e6f622f4f8eb2a196629e62ee5d7e9f37f01210fb210ceed0,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan1.lean,52,282ca6ef7ad019b012e5513c93fb178d55086916e5f27d470c609e952d911d3b,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan2.lean,52,2b0681f76cd87bbc8480e087adb6832dfb6353d75b888a830e840a3a5f407e4c,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan3.lean,52,59fb995c5d19ffcadeb2c3541828c166bbecb966fe3bfa1bc5a87110806ba6ea,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan4.lean,52,9404022330bd92717f28b3c074a5f51d87a3f0aae5ba224b6ca6e84acf4e0ca1,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan5.lean,52,fdb85a727aeb1b637251f4db2aa815ddc929eda6874c23b5aba9f4358532a8e6,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan6.lean,52,01a249d7f256f2b84a2e0a29c676a8280c7ceffded270437434c3d27c57ab904,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Fan7.lean,52,3d3344179436a60881ff312efcbc63bdce78ca7f38a813d110d680a26378180a,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Helper.lean,39,981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a,2 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Model.lean,21,1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1,1 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Proof.lean,55,68e2eb38873dd0492086854665593a8c1557a597777eedab37467ea0a0c518dd,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/Proof2.lean,56,7126336e76ab57ad07b0a2b8d0f0e0e61a275cd58a4668634f9297dc4d1db951,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/lake-manifest.json,144,8fbf076d5cbacb6521112939c7b85462e3ce89dcf9e17946e35b526a95ce81bb,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/lakefile.lean,78,533cd8f384fd17215b6d19b284400308d3f790c8e05cfaa0fe236fc2226df828,5 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/imports/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,1 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/uri/Dep.lean,24,a65f708068d277a77a351c90927ac6b9e0d36f7d42376cd84caf4fba41cfcefc,1 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/uri/Shell.lean,53,5e32e4376bd4eb8f1c0048ebab10b1395f047dc31fac978f89227f4b53ab7067,3 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/uri/lake-manifest.json,141,4137b41c70c56eea23fc0125d885ee910edf2fe62c543ebbb001c50c4b44c0a7,parsed JSON
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/uri/lakefile.lean,75,a664603009d0549bdbe48287d34e32e872f8cf9952d5aa922ab635bc08975333,5 UTF-8 lines
+anneal-3730-lean-uri-history-import-boundaries-2026-09-29,support/work/uri/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,1 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,REPORT.json,491,6413d8d59615fbace086d2b2a5f1bafb26d424b6e3c1933940fd4888c8cade7c,parsed JSON
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,REPORT.md,5407,ba9facb55c1a1556a390ac92ee47f5f0ec5304ccf0116ddfaa43cf46b0d64f20,34 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/check.py,2343,2bd3cdce1605cdf1d6bed366807a796d467bba621fe802b13236c7d397627058,44 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/probe.py,8806,f2f3a0bef19c8d554f560e270393d98af16239dfc6ba39cd0a13617459c91370,182 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/raw.json,192847,3dd0fc3b3343a9dd4b11ec5fa4dfce62991b387c89418c329075b0a2ddcb9a05,parsed JSON
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/Prefix.lean,1770,8c75638705c87af955346c2bc7c39923bf7d3e8d09be1c72bdc57099e29a44d4,27 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/Version.lean,25,e109cd8fb7238b9b3c66dd1b2cdec0fddccd7f4ef2e5577053c1719d08ceb419,1 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/instance_in_scope.lean,247,416ccc3689cc127c6545348286fb0b0b1fa52373c16707a37620cc82a19d1199,13 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/instance_omitted.lean,192,79d2127c88cfeea258e0ff3b5cfdaa67d16b7266d7ba34674c1a0ae11aa64dfd,9 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/macro_left.lean,144,4fba30c4d39fad36d682eb990c1aac40e4dcd0453a8198537a6a7bd202e1edc8,7 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/macro_missing.lean,65,51c7acf6156e6979f5123b2167b906178fd9e99888a7e9381e57be061fb5a146,4 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/macro_right.lean,144,2c709601b47a695664cbe7a6a76ad19560477c6d5a73a0cbd18e21c5371e7ee3,7 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/option_permissive.lean,107,f45e2cc63c62f07d8c63f69874fb83a04c39b5f4b75d9312ee3e4e9b770fadcd,6 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/option_strict.lean,108,d2feb7d26f8647d7b9bebccf66775c49c2394ae5a74a59dfa62bea78f8e60075,6 UTF-8 lines
+anneal-3730-lean-wrapper-context-prefix-reuse-v4-30-0-rc2,support/work/ticks.txt,70,6e60cd3f026d62e869ee17ee12db429b37d16f4cf1938944c416b371dbbcf753,35 UTF-8 lines
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,REPORT.json,330,31ab6f5e33de49c93b439a432e0c3d1738273597de08d88bf356e2b4870bae14,parsed JSON
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,REPORT.md,5212,13a8e0d8bc6ef7f990c71015f3a335d6883e355c5d4ea862b1760f9b5d2d5775,33 UTF-8 lines
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,support/Nested.lean,304,8ace3b00831edb6bc3d023ffdeb95ef51798334af5557b8c32e22e7071fb47b3,16 UTF-8 lines
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,support/check.py,3437,bbda4288a526498aa84db407b9c17a44f52d3a41f855a0d26f1b0c532d52181b,58 UTF-8 lines
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,support/probe.py,6801,bc4aa6ee64bb65c46a6e20963b1e5060365c3bdd98ee5419dad50f0d91db3879,148 UTF-8 lines
+anneal-3730-nested-tactic-position-grid-v4-30-0-rc2,support/transcript.json,75268,04b0d8c14ce74782277ddc95768dd5d422c6633aadfd4c4f1efd4d99e0d2bf64,parsed JSON

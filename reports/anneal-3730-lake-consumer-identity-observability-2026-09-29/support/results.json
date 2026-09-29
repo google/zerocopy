@@ -1,0 +1,968 @@
+{
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+  "runs": [
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [
+          "base/.lake/build/ir/Generated.c",
+          "base/.lake/build/ir/Generated.c.hash",
+          "base/.lake/build/ir/Generated.setup.json",
+          "base/.lake/build/lib/lean/Generated.ilean",
+          "base/.lake/build/lib/lean/Generated.ilean.hash",
+          "base/.lake/build/lib/lean/Generated.olean",
+          "base/.lake/build/lib/lean/Generated.olean.hash",
+          "base/.lake/build/lib/lean/Generated.trace",
+          "base/.lake/config/[anonymous]/lakefile.olean",
+          "base/.lake/config/[anonymous]/lakefile.olean.trace",
+          "producer/.lake/build/ir/Dep.c",
+          "producer/.lake/build/ir/Dep.c.hash",
+          "producer/.lake/build/ir/Dep.setup.json",
+          "producer/.lake/build/lib/lean/Dep.ilean",
+          "producer/.lake/build/lib/lean/Dep.ilean.hash",
+          "producer/.lake/build/lib/lean/Dep.olean",
+          "producer/.lake/build/lib/lean/Dep.olean.hash",
+          "producer/.lake/build/lib/lean/Dep.trace",
+          "producer/.lake/config/probe_dep/lakefile.olean",
+          "producer/.lake/config/probe_dep/lakefile.olean.trace"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "base-build",
+      "observed_descendants": [
+        "$TOOLCHAIN_BIN/lean",
+        "(lean)"
+      ],
+      "seconds": 0.816,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Built Dep (186ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (179ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/base/Generated.lean -o $WORK/base/.lake/build/lib/lean/Generated.olean -i $WORK/base/.lake/build/lib/lean/Generated.ilean -c $WORK/base/.lake/build/ir/Generated.c --setup $WORK/base/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "base-replay",
+      "observed_descendants": [],
+      "seconds": 0.435,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Replayed Generated\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/base/Generated.lean -o $WORK/base/.lake/build/lib/lean/Generated.olean -i $WORK/base/.lake/build/lib/lean/Generated.ilean -c $WORK/base/.lake/build/ir/Generated.c --setup $WORK/base/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--no-build",
+        "build",
+        "Generated"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "base-no-build",
+      "seconds": 0.413,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Replayed Generated\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/base/Generated.lean -o $WORK/base/.lake/build/lib/lean/Generated.olean -i $WORK/base/.lake/build/lib/lean/Generated.ilean -c $WORK/base/.lake/build/ir/Generated.c --setup $WORK/base/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nAll targets up-to-date (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "setup-file",
+        "$WORK/base/Generated.lean"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "base-setup",
+      "seconds": 0.422,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/base/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "alias",
+      "delta": {
+        "added": [
+          "alias/.lake/build/ir/Generated.c",
+          "alias/.lake/build/ir/Generated.c.hash",
+          "alias/.lake/build/ir/Generated.setup.json",
+          "alias/.lake/build/lib/lean/Generated.ilean",
+          "alias/.lake/build/lib/lean/Generated.ilean.hash",
+          "alias/.lake/build/lib/lean/Generated.olean",
+          "alias/.lake/build/lib/lean/Generated.olean.hash",
+          "alias/.lake/build/lib/lean/Generated.trace",
+          "alias/.lake/config/[anonymous]/lakefile.olean",
+          "alias/.lake/config/[anonymous]/lakefile.olean.trace",
+          "producer/.lake/config/dep_alias/lakefile.olean",
+          "producer/.lake/config/dep_alias/lakefile.olean.trace"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "assigned-name-alias-build",
+      "seconds": 0.589,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran dep_alias:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (176ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/alias/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/alias/Generated.lean -o $WORK/alias/.lake/build/lib/lean/Generated.olean -i $WORK/alias/.lake/build/lib/lean/Generated.ilean -c $WORK/alias/.lake/build/ir/Generated.c --setup $WORK/alias/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "setup-file",
+        "$WORK/alias/Generated.lean"
+      ],
+      "cwd": "alias",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "assigned-name-alias-setup",
+      "seconds": 0.411,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran dep_alias:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/alias/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "shifted",
+      "delta": {
+        "added": [
+          "dummy/.lake/config/dummy/lakefile.olean",
+          "dummy/.lake/config/dummy/lakefile.olean.trace",
+          "producer/.lake/config/probe_dep/lakefile.olean.lock",
+          "shifted/.lake/build/ir/Generated.c",
+          "shifted/.lake/build/ir/Generated.c.hash",
+          "shifted/.lake/build/ir/Generated.setup.json",
+          "shifted/.lake/build/lib/lean/Generated.ilean",
+          "shifted/.lake/build/lib/lean/Generated.ilean.hash",
+          "shifted/.lake/build/lib/lean/Generated.olean",
+          "shifted/.lake/build/lib/lean/Generated.olean.hash",
+          "shifted/.lake/build/lib/lean/Generated.trace",
+          "shifted/.lake/config/[anonymous]/lakefile.olean",
+          "shifted/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "content_changed": [
+          "producer/.lake/config/probe_dep/lakefile.olean",
+          "producer/.lake/config/probe_dep/lakefile.olean.trace"
+        ],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "dependency-index-shift-build",
+      "seconds": 0.616,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (178ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/dummy/.lake/build/lib/lean:$WORK/shifted/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/shifted/Generated.lean -o $WORK/shifted/.lake/build/lib/lean/Generated.olean -i $WORK/shifted/.lake/build/lib/lean/Generated.ilean -c $WORK/shifted/.lake/build/ir/Generated.c --setup $WORK/shifted/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "setup-file",
+        "$WORK/shifted/Generated.lean"
+      ],
+      "cwd": "shifted",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "dependency-index-shift-setup",
+      "seconds": 0.42,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/shifted/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "nested/consumer",
+      "delta": {
+        "added": [
+          "nested/consumer/.lake/build/ir/Generated.c",
+          "nested/consumer/.lake/build/ir/Generated.c.hash",
+          "nested/consumer/.lake/build/ir/Generated.setup.json",
+          "nested/consumer/.lake/build/lib/lean/Generated.ilean",
+          "nested/consumer/.lake/build/lib/lean/Generated.ilean.hash",
+          "nested/consumer/.lake/build/lib/lean/Generated.olean",
+          "nested/consumer/.lake/build/lib/lean/Generated.olean.hash",
+          "nested/consumer/.lake/build/lib/lean/Generated.trace",
+          "nested/consumer/.lake/config/[anonymous]/lakefile.olean",
+          "nested/consumer/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "content_changed": [
+          "producer/.lake/config/probe_dep/lakefile.olean",
+          "producer/.lake/config/probe_dep/lakefile.olean.trace"
+        ],
+        "mtime_only": [
+          "producer/.lake/config/probe_dep/lakefile.olean.lock"
+        ],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "relative-root-build",
+      "seconds": 0.588,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (175ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/nested/consumer/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/nested/consumer/Generated.lean -o $WORK/nested/consumer/.lake/build/lib/lean/Generated.olean -i $WORK/nested/consumer/.lake/build/lib/lean/Generated.ilean -c $WORK/nested/consumer/.lake/build/ir/Generated.c --setup $WORK/nested/consumer/.lake/build/ir/Generated.setup.json --json\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "setup-file",
+        "$WORK/nested/consumer/Generated.lean"
+      ],
+      "cwd": "nested/consumer",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "relative-root-setup",
+      "seconds": 0.419,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/nested/consumer/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "-Kprobe=one",
+        "setup-file",
+        "$WORK/base/Generated.lean"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "K-first",
+      "seconds": 0.425,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/base/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "-Kprobe=two",
+        "setup-file",
+        "$WORK/base/Generated.lean"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "K-second",
+      "seconds": 0.426,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/base/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "setup-file",
+        "$WORK/base/Generated.lean"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [
+          "base/.lake/config/[anonymous]/lakefile.olean.lock"
+        ],
+        "content_changed": [
+          "base/.lake/config/[anonymous]/lakefile.olean",
+          "base/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "server-option-changed-setup",
+      "seconds": 0.46,
+      "stderr": "\u2714 [0/4] Ran job computation\n\u2714 [1/4] Ran consumer:extraDep\n\u2714 [2/4] Ran probe_dep:extraDep\n\u2139 [3/4] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/4] Ran setup-file $WORK/base/Generated.lean\ntrace: file identified as module: Generated\n",
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"consumer\",\"plugins\":[]}\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--rehash",
+        "--no-build",
+        "build",
+        "Dep"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [
+          "producer/.lake/build/lib/lean/Dep.trace.nobuild"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 3,
+      "label": "changed-source-no-build-rehash",
+      "seconds": 0.424,
+      "stderr": "",
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_dep:extraDep\n\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\n\u2714 [3/3] Ran probe_dep/Dep:default\nSome required targets logged failures:\n- Dep\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "--rehash",
+        "build",
+        "Dep"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [
+          "producer/.lake/build/ir/Dep.c",
+          "producer/.lake/build/ir/Dep.c.hash",
+          "producer/.lake/build/lib/lean/Dep.olean",
+          "producer/.lake/build/lib/lean/Dep.olean.hash",
+          "producer/.lake/build/lib/lean/Dep.trace"
+        ],
+        "mtime_only": [
+          "producer/.lake/build/ir/Dep.setup.json",
+          "producer/.lake/build/lib/lean/Dep.ilean",
+          "producer/.lake/build/lib/lean/Dep.ilean.hash"
+        ],
+        "removed": [
+          "producer/.lake/build/lib/lean/Dep.trace.nobuild"
+        ]
+      },
+      "exit": 0,
+      "label": "changed-source-build-rehash",
+      "observed_descendants": [
+        "$TOOLCHAIN_BIN/lean",
+        "(lean)"
+      ],
+      "seconds": 0.543,
+      "stderr": "",
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_dep:extraDep\n\u2139 [2/3] Built Dep (180ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran probe_dep/Dep:default\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Dep"
+      ],
+      "cwd": "base",
+      "delta": {
+        "added": [],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "changed-source-post-build-replay",
+      "observed_descendants": [],
+      "seconds": 0.438,
+      "stderr": "",
+      "stdout": "\u2714 [0/3] Ran job computation\n\u2714 [1/3] Ran probe_dep:extraDep\n\u2139 [2/3] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2714 [3/3] Ran probe_dep/Dep:default\nBuild completed successfully (3 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "duplicate/consumer_ab",
+      "delta": {
+        "added": [
+          "duplicate/consumer_ab/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 1,
+      "label": "duplicate-name-ab-build",
+      "seconds": 0.329,
+      "stderr": "error: $WORK/duplicate/consumer_ab/lakefile.lean:4:8: `probe_dep` has already been declared\nerror: $WORK/duplicate/consumer_ab/lakefile.lean: package configuration has errors\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "duplicate/consumer_ba",
+      "delta": {
+        "added": [
+          "duplicate/consumer_ba/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 1,
+      "label": "duplicate-name-ba-build",
+      "seconds": 0.328,
+      "stderr": "error: $WORK/duplicate/consumer_ba/lakefile.lean:4:8: `probe_dep` has already been declared\nerror: $WORK/duplicate/consumer_ba/lakefile.lean: package configuration has errors\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "duplicate/transitive_ab-manifest-a",
+      "delta": {
+        "added": [
+          "duplicate/producer_a/.lake/build/ir/Dep.c",
+          "duplicate/producer_a/.lake/build/ir/Dep.c.hash",
+          "duplicate/producer_a/.lake/build/ir/Dep.setup.json",
+          "duplicate/producer_a/.lake/build/lib/lean/Dep.ilean",
+          "duplicate/producer_a/.lake/build/lib/lean/Dep.ilean.hash",
+          "duplicate/producer_a/.lake/build/lib/lean/Dep.olean",
+          "duplicate/producer_a/.lake/build/lib/lean/Dep.olean.hash",
+          "duplicate/producer_a/.lake/build/lib/lean/Dep.trace",
+          "duplicate/producer_a/.lake/config/probe_dep/lakefile.olean",
+          "duplicate/producer_a/.lake/config/probe_dep/lakefile.olean.trace",
+          "duplicate/transitive_ab-manifest-a/.lake/build/ir/Generated.c",
+          "duplicate/transitive_ab-manifest-a/.lake/build/ir/Generated.c.hash",
+          "duplicate/transitive_ab-manifest-a/.lake/build/ir/Generated.setup.json",
+          "duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.ilean",
+          "duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.ilean.hash",
+          "duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.olean",
+          "duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.olean.hash",
+          "duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.trace",
+          "duplicate/transitive_ab-manifest-a/.lake/config/[anonymous]/lakefile.olean",
+          "duplicate/transitive_ab-manifest-a/.lake/config/[anonymous]/lakefile.olean.trace",
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean",
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean.trace",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean.trace"
+        ],
+        "content_changed": [],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "transitive-name-ab-manifest-a-build",
+      "seconds": 0.885,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Built Dep (182ms)\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/transitive_ab-manifest-a/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/producer_a/Dep.lean -o $WORK/duplicate/producer_a/.lake/build/lib/lean/Dep.olean -i $WORK/duplicate/producer_a/.lake/build/lib/lean/Dep.ilean -c $WORK/duplicate/producer_a/.lake/build/ir/Dep.c --setup $WORK/duplicate/producer_a/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (176ms)\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/transitive_ab-manifest-a/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/transitive_ab-manifest-a/Generated.lean -o $WORK/duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.olean -i $WORK/duplicate/transitive_ab-manifest-a/.lake/build/lib/lean/Generated.ilean -c $WORK/duplicate/transitive_ab-manifest-a/.lake/build/ir/Generated.c --setup $WORK/duplicate/transitive_ab-manifest-a/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:2:0: 7\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "duplicate/transitive_ba-manifest-a",
+      "delta": {
+        "added": [
+          "duplicate/transitive_ba-manifest-a/.lake/build/ir/Generated.c",
+          "duplicate/transitive_ba-manifest-a/.lake/build/ir/Generated.c.hash",
+          "duplicate/transitive_ba-manifest-a/.lake/build/ir/Generated.setup.json",
+          "duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.ilean",
+          "duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.ilean.hash",
+          "duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.olean",
+          "duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.olean.hash",
+          "duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.trace",
+          "duplicate/transitive_ba-manifest-a/.lake/config/[anonymous]/lakefile.olean",
+          "duplicate/transitive_ba-manifest-a/.lake/config/[anonymous]/lakefile.olean.trace",
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean.lock",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean.lock"
+        ],
+        "content_changed": [
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean",
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean.trace",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean.trace"
+        ],
+        "mtime_only": [],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "transitive-name-ba-manifest-a-build",
+      "seconds": 0.66,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/transitive_ab-manifest-a/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/producer_a/Dep.lean -o $WORK/duplicate/producer_a/.lake/build/lib/lean/Dep.olean -i $WORK/duplicate/producer_a/.lake/build/lib/lean/Dep.ilean -c $WORK/duplicate/producer_a/.lake/build/ir/Dep.c --setup $WORK/duplicate/producer_a/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (179ms)\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/transitive_ba-manifest-a/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/transitive_ba-manifest-a/Generated.lean -o $WORK/duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.olean -i $WORK/duplicate/transitive_ba-manifest-a/.lake/build/lib/lean/Generated.ilean -c $WORK/duplicate/transitive_ba-manifest-a/.lake/build/ir/Generated.c --setup $WORK/duplicate/transitive_ba-manifest-a/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:2:0: 7\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "cwd": "duplicate/transitive_ab-manifest-b",
+      "delta": {
+        "added": [
+          "duplicate/producer_b/.lake/build/ir/Dep.c",
+          "duplicate/producer_b/.lake/build/ir/Dep.c.hash",
+          "duplicate/producer_b/.lake/build/ir/Dep.setup.json",
+          "duplicate/producer_b/.lake/build/lib/lean/Dep.ilean",
+          "duplicate/producer_b/.lake/build/lib/lean/Dep.ilean.hash",
+          "duplicate/producer_b/.lake/build/lib/lean/Dep.olean",
+          "duplicate/producer_b/.lake/build/lib/lean/Dep.olean.hash",
+          "duplicate/producer_b/.lake/build/lib/lean/Dep.trace",
+          "duplicate/producer_b/.lake/config/probe_dep/lakefile.olean",
+          "duplicate/producer_b/.lake/config/probe_dep/lakefile.olean.trace",
+          "duplicate/transitive_ab-manifest-b/.lake/build/ir/Generated.c",
+          "duplicate/transitive_ab-manifest-b/.lake/build/ir/Generated.c.hash",
+          "duplicate/transitive_ab-manifest-b/.lake/build/ir/Generated.setup.json",
+          "duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.ilean",
+          "duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.ilean.hash",
+          "duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.olean",
+          "duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.olean.hash",
+          "duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.trace",
+          "duplicate/transitive_ab-manifest-b/.lake/config/[anonymous]/lakefile.olean",
+          "duplicate/transitive_ab-manifest-b/.lake/config/[anonymous]/lakefile.olean.trace"
+        ],
+        "content_changed": [
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean",
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean.trace",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean.trace"
+        ],
+        "mtime_only": [
+          "duplicate/wrapper_a/.lake/config/wrapper_a/lakefile.olean.lock",
+          "duplicate/wrapper_b/.lake/config/wrapper_b/lakefile.olean.lock"
+        ],
+        "removed": []
+      },
+      "exit": 0,
+      "label": "transitive-name-ab-manifest-b-build",
+      "seconds": 0.89,
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Built Dep (179ms)\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_b/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/transitive_ab-manifest-b/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/producer_b/Dep.lean -o $WORK/duplicate/producer_b/.lake/build/lib/lean/Dep.olean -i $WORK/duplicate/producer_b/.lake/build/lib/lean/Dep.ilean -c $WORK/duplicate/producer_b/.lake/build/ir/Dep.c --setup $WORK/duplicate/producer_b/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (177ms)\ntrace: .> LEAN_PATH=$WORK/duplicate/producer_b/.lake/build/lib/lean:$WORK/duplicate/wrapper_a/.lake/build/lib/lean:$WORK/duplicate/wrapper_b/.lake/build/lib/lean:$WORK/duplicate/transitive_ab-manifest-b/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/duplicate/transitive_ab-manifest-b/Generated.lean -o $WORK/duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.olean -i $WORK/duplicate/transitive_ab-manifest-b/.lake/build/lib/lean/Generated.ilean -c $WORK/duplicate/transitive_ab-manifest-b/.lake/build/ir/Generated.c --setup $WORK/duplicate/transitive_ab-manifest-b/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:2:0: 9\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    }
+  ],
+  "snapshots": {
+    "after_alias": {
+      ".lake/build/ir/Dep.c": [
+        "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        1366
+      ],
+      ".lake/build/ir/Dep.c.hash": [
+        "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        16
+      ],
+      ".lake/build/ir/Dep.setup.json": [
+        "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        127
+      ],
+      ".lake/build/lib/lean/Dep.ilean": [
+        "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        289
+      ],
+      ".lake/build/lib/lean/Dep.ilean.hash": [
+        "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.olean": [
+        "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        4616
+      ],
+      ".lake/build/lib/lean/Dep.olean.hash": [
+        "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.trace": [
+        "7d5f141e4ea279eaa75d8370ceb98574cd3bcd75eafcf52464c284e278afb8ca",
+        2933
+      ],
+      ".lake/config/dep_alias/lakefile.olean": [
+        "ea2beafb2f25f007ddf810aabbfc3b7b481fc9059133b5b2ed97cd8eb1891253",
+        97840
+      ],
+      ".lake/config/dep_alias/lakefile.olean.trace": [
+        "ed06355f8bd20df1420fcc1bb71a324bd87541c7059ee92caf02711346b4d17d",
+        182
+      ],
+      ".lake/config/probe_dep/lakefile.olean": [
+        "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+        96288
+      ],
+      ".lake/config/probe_dep/lakefile.olean.trace": [
+        "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+        182
+      ],
+      "Dep.lean": [
+        "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        24
+      ],
+      "lake-manifest.json": [
+        "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+        150
+      ],
+      "lakefile.lean": [
+        "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        75
+      ],
+      "lean-toolchain": [
+        "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        29
+      ]
+    },
+    "after_base": {
+      ".lake/build/ir/Dep.c": [
+        "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        1366
+      ],
+      ".lake/build/ir/Dep.c.hash": [
+        "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        16
+      ],
+      ".lake/build/ir/Dep.setup.json": [
+        "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        127
+      ],
+      ".lake/build/lib/lean/Dep.ilean": [
+        "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        289
+      ],
+      ".lake/build/lib/lean/Dep.ilean.hash": [
+        "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.olean": [
+        "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        4616
+      ],
+      ".lake/build/lib/lean/Dep.olean.hash": [
+        "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.trace": [
+        "7d5f141e4ea279eaa75d8370ceb98574cd3bcd75eafcf52464c284e278afb8ca",
+        2933
+      ],
+      ".lake/config/probe_dep/lakefile.olean": [
+        "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+        96288
+      ],
+      ".lake/config/probe_dep/lakefile.olean.trace": [
+        "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+        182
+      ],
+      "Dep.lean": [
+        "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        24
+      ],
+      "lake-manifest.json": [
+        "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+        150
+      ],
+      "lakefile.lean": [
+        "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        75
+      ],
+      "lean-toolchain": [
+        "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        29
+      ]
+    },
+    "after_shift": {
+      ".lake/build/ir/Dep.c": [
+        "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+        1366
+      ],
+      ".lake/build/ir/Dep.c.hash": [
+        "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+        16
+      ],
+      ".lake/build/ir/Dep.setup.json": [
+        "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+        127
+      ],
+      ".lake/build/lib/lean/Dep.ilean": [
+        "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+        289
+      ],
+      ".lake/build/lib/lean/Dep.ilean.hash": [
+        "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.olean": [
+        "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+        4616
+      ],
+      ".lake/build/lib/lean/Dep.olean.hash": [
+        "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+        16
+      ],
+      ".lake/build/lib/lean/Dep.trace": [
+        "7d5f141e4ea279eaa75d8370ceb98574cd3bcd75eafcf52464c284e278afb8ca",
+        2933
+      ],
+      ".lake/config/dep_alias/lakefile.olean": [
+        "ea2beafb2f25f007ddf810aabbfc3b7b481fc9059133b5b2ed97cd8eb1891253",
+        97840
+      ],
+      ".lake/config/dep_alias/lakefile.olean.trace": [
+        "ed06355f8bd20df1420fcc1bb71a324bd87541c7059ee92caf02711346b4d17d",
+        182
+      ],
+      ".lake/config/probe_dep/lakefile.olean": [
+        "1ba2692296cff0139042a74c4218e0c1e1988881afa2f80cff23a98e900fe4d3",
+        96472
+      ],
+      ".lake/config/probe_dep/lakefile.olean.lock": [
+        "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        0
+      ],
+      ".lake/config/probe_dep/lakefile.olean.trace": [
+        "14117e2aed33b8c765506d28ffbc42506f25e9a830edb0a57f520af9a736f08f",
+        182
+      ],
+      "Dep.lean": [
+        "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        24
+      ],
+      "lake-manifest.json": [
+        "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+        150
+      ],
+      "lakefile.lean": [
+        "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        75
+      ],
+      "lean-toolchain": [
+        "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        29
+      ]
+    },
+    "alias_config_traces": {
+      ".lake/config/dep_alias/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "dep_alias",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "probe_dep",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      }
+    },
+    "base_config_traces": {
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "probe_dep",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      }
+    },
+    "duplicate-ab-config-traces": {
+      "a": {},
+      "b": {}
+    },
+    "duplicate-ba-config-traces": {
+      "a": {},
+      "b": {}
+    },
+    "relative_root_config_traces": {
+      ".lake/config/dep_alias/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "dep_alias",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "probe_dep",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      }
+    },
+    "same_mtime_source_mutation": {
+      "mtime_ns": 1790695772775265483,
+      "source_sha256": "ad9b20a84e7342b940c4792cfb92687555648d9d5e47982f9e089db614785046"
+    },
+    "shift_config_traces": {
+      ".lake/config/dep_alias/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 1,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "dep_alias",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      },
+      ".lake/config/probe_dep/lakefile.olean.trace": {
+        "configHash": "ba08543c33d179c7",
+        "idx": 2,
+        "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "name": "probe_dep",
+        "options": {},
+        "platform": "arm64-apple-darwin24.6.0"
+      }
+    },
+    "transitive-ab-manifest-a-config-traces": {
+      "a": {
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "configHash": "a5b4b476a0591aca",
+          "idx": 3,
+          "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "name": "probe_dep",
+          "options": {},
+          "platform": "arm64-apple-darwin24.6.0"
+        }
+      },
+      "b": {}
+    },
+    "transitive-ab-manifest-b-config-traces": {
+      "a": {
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "configHash": "a5b4b476a0591aca",
+          "idx": 3,
+          "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "name": "probe_dep",
+          "options": {},
+          "platform": "arm64-apple-darwin24.6.0"
+        }
+      },
+      "b": {
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "configHash": "b74db869a8cb920f",
+          "idx": 3,
+          "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "name": "probe_dep",
+          "options": {},
+          "platform": "arm64-apple-darwin24.6.0"
+        }
+      }
+    },
+    "transitive-ba-manifest-a-config-traces": {
+      "a": {
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "configHash": "a5b4b476a0591aca",
+          "idx": 3,
+          "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+          "name": "probe_dep",
+          "options": {},
+          "platform": "arm64-apple-darwin24.6.0"
+        }
+      },
+      "b": {}
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.30.0-rc2"
+}

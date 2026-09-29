@@ -1,0 +1,2 @@
+id,title,remaining_delta
+I072,Existing Lean MCP adapters under Anneal conditions,No installed existing Lean MCP adapter was exercised. The current-wire plus actual Lean goal bridge is still standard-library toy code with a raw test client; two real clients sharing an Anneal workspace remain unrun.
