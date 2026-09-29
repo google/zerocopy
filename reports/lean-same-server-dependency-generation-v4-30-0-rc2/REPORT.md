@@ -12,6 +12,7 @@ This run complements the existing `lake env lean --server` stale-import experime
 - Launch: direct `lean --server`, working directory set to the generated fixture, `LEAN_PATH` set to that directory, `LEAN_NUM_THREADS=1`.
 - Fixture: `Dep.lean` initially defines `sharedValue := 3`; one proof document contains `theorem current : sharedValue = 3 := by rfl`. The dependency is rebuilt with `sharedValue := 4` while the server stays alive.
 - The transcript includes the exact artifact and proof hashes, protocol messages, goals, diagnostics, and batch result. Toolchain setup was not performed by Lake.
+- The Lean revision identifies the executable's source; the fixture was generated locally by `support/probe.py`, whose current SHA-256 is recorded in `REPORT.json`. The previously recorded zerocopy revision does not contain the fixture.
 
 ## Findings
 
@@ -49,6 +50,7 @@ Basis: **derived** from the paired worker results and fresh batch control.
 ## Evidence
 
 - `support/probe.py` — reproducible direct-server and batch procedure. Set `LEAN_BIN` to the pinned Lean executable.
+- `REPORT.json` identifies the current probe bytes by SHA-256. The retained transcripts bind the actual runs to their source and artifact hashes; the probe hash identifies the revalidation procedure, not a historical zerocopy commit.
 - `support/transcript.json` — causal protocol and batch transcript, with local absolute paths scrubbed.
 - `support/revalidation-transcript.json` — independent replay with the same pinned Lean binary. The artifact hashes, four goal results, and batch exit code match the original run.
 - `support/simultaneous-transcript.json` — supplementary replay with one additional old-document query after the new worker's goal result. It returned `no goals` before the old document was closed, while the new document had already returned `⊢ sharedValue = 3`; the original artifact hashes and batch result also matched.

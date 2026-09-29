@@ -15,6 +15,17 @@ identity = json.loads((root.parent / "REPORT.json").read_text())["subjects"][0][
 assert identity["model_probes_sha256"] == sha(root / "model_probes.py")
 assert identity["publication_probe_sha256"] == sha(root / "publication_probe.py")
 subprocess.run([sys.executable, str(root / "model_probes.py"), "--check"], check=True)
+subprocess.run([sys.executable, str(root / "supersession_gap_probe.py"), "--check"], check=True)
+gap = json.loads((root / "supersession-gap.json").read_text())
+assert gap["valid_orders"] == 10
+assert gap["delayed_stage_token_stale_publishes"] == 2
+assert gap["request_time_token_stale_publishes"] == 0
+assert gap["delayed_stage_token_accepted_publications"] == 13
+assert gap["request_time_token_accepted_publications"] == 11
+assert gap["stale_gap_orders"] == [
+    ["stageA", "requestB", "publishA", "stageB", "publishB"],
+    ["requestB", "stageA", "publishA", "stageB", "publishB"],
+]
 
 identity_cases = model["identity_ablation"]
 assert len(identity_cases["cases"]) == 10

@@ -1,0 +1,87 @@
+{
+  "generated_sha256": {
+    "3730-crosswalk-final-v22.csv": "90ee49ce47fff9123c41041c65125a9235caec8306a85a99ae293be345b8007d",
+    "investigation-final-v22.csv": "2b7e31ba897abbbdd6c1268c0ed278baa7e6ccdc29dce504380d22e79195b5d6",
+    "new-file-inventory-v22.csv": "4523e38520fe5666076d1a42ff08b240bfb022d8e9431ffb212345be92b2d64e",
+    "new-package-review-v22.csv": "bbec781e4968618b03d25356855424a81e5bd7a8961c63c955c48985b8d9bbeb",
+    "row-challenge-v22.json": "7e458e97a57e6757742ab221881fa69d7e374994593477b68b81bd4ecb1bf4d7",
+    "unrun-conditional-inputs-v22.csv": "c7b77e18c232b747e11b3d2a6469123c9b803ebd7ad356fa27b2a7c67038a014"
+  },
+  "input_sha256": {
+    "audit-snapshot.json": "46f57d236341a0c7dee7114be383c464efe643dbbadbf7b75d5cb350fdc4eca5",
+    "issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "live-issue-hashes.json": "484a9ce7e8281b5490b70b6b965931bc56f216bdfb77973f76ff2a46da8b4afa"
+  },
+  "issue_3730_heading_count": 174,
+  "issue_3731_id_count": 159,
+  "issue_fetched_at_utc": "2026-09-29T18:49:42.426493+00:00",
+  "issue_hashes": {
+    "3730": {
+      "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+      "comments": [
+        {
+          "body_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+          "id": 5884380373,
+          "updated_at": "2026-09-29T05:39:32Z"
+        }
+      ],
+      "number": 3730,
+      "state": "closed",
+      "updated_at": "2026-09-29T05:40:03Z"
+    },
+    "3731": {
+      "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+      "comments": [
+        {
+          "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+          "id": 5884299718,
+          "updated_at": "2026-09-29T05:32:10Z"
+        }
+      ],
+      "number": 3731,
+      "state": "open",
+      "updated_at": "2026-09-29T05:39:11Z"
+    }
+  },
+  "new_complete_ids": [],
+  "new_distinct_cached_only_experiment_count": 0,
+  "new_package_file_count": 2,
+  "new_packages": [
+    "anneal-v2-current-source-surface-main-bd0956b-2026-09-29"
+  ],
+  "prior_sha256": {
+    "3730-crosswalk-final-v21.csv": "f1fc19f331bca842b920e5a55a2e7fdd659470db24ff053d7a17c1961ce889dc",
+    "investigation-final-v21.csv": "98b028f26acfc3acf215a963301a79040f82c1c855af56f85469b7571e74877f",
+    "row-challenge-v21.json": "9734445f0f044e8c501c5f59132904cb822bec03e0b971adeafcfa0915305a8e"
+  },
+  "reference_commit": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+  "residual_corrections": [
+    "I020",
+    "I075",
+    "I076",
+    "I078",
+    "I089",
+    "I096",
+    "I157",
+    "L07",
+    "L08"
+  ],
+  "row_challenge_count": 333,
+  "source_mapped_rows": 62,
+  "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 4,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 161
+    }
+  },
+  "unrun_conditional_count": 13
+}

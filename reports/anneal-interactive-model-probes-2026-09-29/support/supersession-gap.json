@@ -1,0 +1,35 @@
+{
+  "events": [
+    "stageA",
+    "requestB",
+    "stageB",
+    "publishA",
+    "publishB"
+  ],
+  "valid_orders": 10,
+  "constraints": [
+    "stageA before publishA",
+    "requestB before stageB before publishB"
+  ],
+  "delayed_stage_token_stale_publishes": 2,
+  "request_time_token_stale_publishes": 0,
+  "delayed_stage_token_accepted_publications": 13,
+  "request_time_token_accepted_publications": 11,
+  "stale_gap_orders": [
+    [
+      "stageA",
+      "requestB",
+      "publishA",
+      "stageB",
+      "publishB"
+    ],
+    [
+      "requestB",
+      "stageA",
+      "publishA",
+      "stageB",
+      "publishB"
+    ]
+  ],
+  "interpretation": "A token advanced only at stageB admits A publication after requestB and before stageB; advancing the desired token at requestB rejects it."
+}

@@ -4,7 +4,7 @@
 
 Three small experiments support distinct contracts: URI/path or document-version identity alone collides across changed source/import state; source-map edits must reject synthetic gaps and compare the host/projection generation before applying; and replacing a mutable generation pointer does not make a multi-file read coherent unless the consumer pins one immutable generation directory. A forced pointer to an incomplete stage exposes a missing file. These are bounded model/filesystem results, not proof that a specific Anneal implementation follows or violates the contracts.
 
-The Python harness checked ten **distinct** single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`. Independent re-reviews replaced one duplicated worker-epoch case with a symbolic LLBC-identity change, separated the three stale-patch controls, and added a fresh model replay to the checker. The filesystem controls are unchanged.
+The Python harness checked ten **distinct** single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. A follow-up model separated B's request from its staging and found two valid schedules in which a token advanced only at staging would allow stale A publication. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`. Independent re-reviews replaced one duplicated worker-epoch case with a symbolic LLBC-identity change, separated the three stale-patch controls, and added fresh model replays to the checker. The filesystem controls are unchanged.
 
 ## Applicability
 
@@ -32,9 +32,15 @@ The piecewise fixture mapped authored segments and rejected positions in synthet
 
 Basis: **execution** of `support/model_probes.py`; **derived** for the safe-patch rule.
 
+### Invalidate the old generation when a newer one is requested
+
+The original 120-order schedule model advances its current token at `stageB`, so it does not represent the interval after B is requested and before B finishes staging. A separate five-event model adds `requestB` and keeps request, staging, and publication distinct. Of ten orders satisfying the required stage-before-publish constraints, two place `publishA` after `requestB` but before `stageB`. A guard whose token changes only at `stageB` admits stale A in those orders; a desired-generation token changed at `requestB` rejects it. This is a model of latest-request-wins publication, not evidence about an Anneal implementation or a requirement that an already published A result become unreadable while B runs.
+
+Basis: **execution** of `support/supersession_gap_probe.py`; **derived** for the generation-token design constraint.
+
 ### Resolve and pin the generation before reading multiple files
 
-The controlled reader first opened `Types.lean` through `current -> gen-A`. The publisher atomically replaced `current` with a link to `gen-B`; the reader then opened `Funs.lean` through the new pointer and observed a mixed A/B generation. A second reader resolved the symlink once to the immutable `gen-A` directory before the swap and read both files from that pinned directory; it saw a coherent old generation.
+The controlled reader first opened `Types.lean` through `current -> gen-A`. The script replaced `current` with a link to `gen-B`; the reader then opened `Funs.lean` through the new pointer and observed a mixed A/B generation. A second reader resolved the symlink once to the immutable `gen-A` directory before the swap and read both files from that pinned directory; it saw a coherent old generation.
 
 An incomplete `gen-C` stage missing `Funs.lean` initially remained unpublished. The negative control forcibly pointed `current` to `gen-C` and observed `FileNotFoundError` for that member; it then restored `gen-B`. This confirms that the pointer operation itself has no completeness gate. The old `gen-A` directory remained readable after replacement. Complete staging, consumer pinning, and retention until readers release old generations are requirements suggested by these controls; this fixture did not implement a publisher that enforces them.
 
@@ -44,7 +50,7 @@ Basis: **execution** on APFS using `support/publication_probe.py`; broader Lake/
 
 - The finite identity model demonstrates collisions in chosen keys; it does not prove a particular production key is incomplete or that the listed full tuple is minimal.
 - The projection fixture is hand-authored. No Rust annotation parser, Lean formatter, LSP client, macro expansion, or actual edit application was exercised here.
-- The schedule model explores all permutations of five abstract events, not all states or schedules of an implementation. Its counterexamples do not establish the presence of a race in Anneal.
+- The schedule models explore finite abstract events, not all states or schedules of an implementation. Their counterexamples do not establish the presence of a race in Anneal. The supersession model assumes a latest-request-wins policy.
 - The APFS probe uses symlink indirection and a deterministic interleaving, not concurrent readers. It does not test Lake's trace/hash cache, mmap behavior, artifact-cache restoration, crash durability, or network filesystems.
 - This report does not cover human/agent studies, cross-platform publication, high-concurrency resource sweeps, or independent reproduction.
 
@@ -52,13 +58,14 @@ Basis: **execution** on APFS using `support/publication_probe.py`; broader Lake/
 
 - `support/model_probes.py` — executable identity ablation, Unicode coordinate corpus, patch-boundary controls, and bounded schedule enumeration.
 - `support/model-probes.json` — exact counts and results emitted by the harness.
+- `support/supersession_gap_probe.py` and `support/supersession-gap.json` — request-to-stage gap model, with all ten valid orders counted and two stale-publication counterexamples retained.
 - `support/publication_probe.py` — controlled APFS generation-pointer swap.
-- `support/publication-fixture/` — disposable A/B generations and unpublished partial C generation.
+- `support/publication-fixture/` — disposable A/B generations and partial C generation, which the script briefly forced into view as a negative control before restoring B.
 - `support/publication-fixture/publication-probe.json` — per-file hashes and observed interleaving.
-- `support/check.py` — read-only fresh model replay and checks of retained counts, A→B→A sequence, file hashes, final pointer, and forced-incomplete negative control.
+- `support/check.py` — read-only fresh model replays and checks of retained counts, A→B→A sequence, file hashes, final pointer, and forced-incomplete negative control.
 
 Issue alignment: #3730 A01–A08, B02–B05, K01, F15, N01/N02/N07/N09/N12, and #3731 I011, I025–I032, I045, I051–I053, I097, I133–I135, I145, and I151 are only partially informed by these probes. The complete per-investigation ledger is in the companion #3730/#3731 coverage report.
 
 ## Revalidation
 
-Run `python3 support/check.py` from the package root to validate the retained result without changing the fixture; it also reruns the finite model in read-only check mode. To regenerate it, run `python3 support/model_probes.py` and `python3 support/publication_probe.py`; the latter deletes and recreates only its own `support/publication-fixture/` contents. The filesystem probe should be repeated on each supported filesystem before generalizing rename or pointer behavior. Replace the hand-authored segments with a real parser/projection implementation before treating the coordinate results as product evidence.
+Run `python3 support/check.py` from the package root to validate the retained result without changing the fixture; it reruns both finite models in read-only check mode. To regenerate it, run `python3 support/model_probes.py`, `python3 support/supersession_gap_probe.py`, and `python3 support/publication_probe.py`; the latter deletes and recreates only its own `support/publication-fixture/` contents. The filesystem probe should be repeated on each supported filesystem before generalizing rename or pointer behavior. Replace the hand-authored segments with a real parser/projection implementation before treating the coordinate results as product evidence.

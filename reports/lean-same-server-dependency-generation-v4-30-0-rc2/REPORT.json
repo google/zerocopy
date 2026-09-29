@@ -17,9 +17,8 @@
     {
       "name": "Lean direct server fixture",
       "identity": {
-        "repository": "google/zerocopy",
-        "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
-        "launch_mode": "lean --server with LEAN_PATH"
+        "launch_mode": "lean --server with LEAN_PATH",
+        "probe_sha256": "6ece16cbce20da90f037379274c4707002133d5459c1740c6c7403f642b17744"
       }
     }
   ],

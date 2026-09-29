@@ -8,6 +8,9 @@ from pathlib import Path
 root = Path(__file__).resolve().parent
 transcript = root / (sys.argv[1] if len(sys.argv) > 1 else 'transcript.json')
 data = json.loads(transcript.read_text())
+metadata = json.loads((root.parent / 'REPORT.json').read_text())
+fixture_identity = next(s['identity'] for s in metadata['subjects'] if s['name'] == 'Lean direct server fixture')
+assert fixture_identity['probe_sha256'] == hashlib.sha256((root / 'probe.py').read_bytes()).hexdigest()
 events = data['events']
 sha = lambda blob: hashlib.sha256(blob).hexdigest()
 by_kind = lambda kind: [e for e in events if e['kind'] == kind]

@@ -1,0 +1,184 @@
+{
+  "observed_at_utc": "2026-09-29T18:53:54.413898+00:00",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64"
+  },
+  "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+  "input_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098",
+  "input_bytes": 19827,
+  "flags": [
+    "-backend",
+    "lean",
+    "-no-progress-bar",
+    "-sequential",
+    "-split-files",
+    "-gen-lib-entry"
+  ],
+  "cwd": "$SCRATCH",
+  "groups": {
+    "independent": {
+      "runs": [
+        {
+          "label": "independent-0",
+          "pid": 18616,
+          "destination": "independent/worker-0",
+          "spawned_ns": 1989345926124666,
+          "observed_alive": true,
+          "observed_ns": 1989345929590958,
+          "collected_ns": 1989346195649958,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $SCRATCH/independent/worker-0\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-0/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.171523 seconds\n",
+          "stderr": "",
+          "inventory": {
+            "Funs.lean": {
+              "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+              "bytes": 1260
+            },
+            "Probe.lean": {
+              "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+              "bytes": 18
+            },
+            "Types.lean": {
+              "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+              "bytes": 506
+            }
+          }
+        },
+        {
+          "label": "independent-1",
+          "pid": 18617,
+          "destination": "independent/worker-1",
+          "spawned_ns": 1989345927209375,
+          "observed_alive": true,
+          "observed_ns": 1989345929594833,
+          "collected_ns": 1989346196155083,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $SCRATCH/independent/worker-1\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-1/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170632 seconds\n",
+          "stderr": "",
+          "inventory": {
+            "Funs.lean": {
+              "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+              "bytes": 1260
+            },
+            "Probe.lean": {
+              "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+              "bytes": 18
+            },
+            "Types.lean": {
+              "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+              "bytes": 506
+            }
+          }
+        },
+        {
+          "label": "independent-2",
+          "pid": 18618,
+          "destination": "independent/worker-2",
+          "spawned_ns": 1989345928296333,
+          "observed_alive": true,
+          "observed_ns": 1989345929596000,
+          "collected_ns": 1989346198903833,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $SCRATCH/independent/worker-2\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-2/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.172366 seconds\n",
+          "stderr": "",
+          "inventory": {
+            "Funs.lean": {
+              "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+              "bytes": 1260
+            },
+            "Probe.lean": {
+              "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+              "bytes": 18
+            },
+            "Types.lean": {
+              "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+              "bytes": 506
+            }
+          }
+        },
+        {
+          "label": "independent-3",
+          "pid": 18619,
+          "destination": "independent/worker-3",
+          "spawned_ns": 1989345929550708,
+          "observed_alive": true,
+          "observed_ns": 1989345929597000,
+          "collected_ns": 1989346199194625,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $SCRATCH/independent/worker-3\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-3/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-3/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/independent/worker-3/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.172360 seconds\n",
+          "stderr": "",
+          "inventory": {
+            "Funs.lean": {
+              "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+              "bytes": 1260
+            },
+            "Probe.lean": {
+              "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+              "bytes": 18
+            },
+            "Types.lean": {
+              "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+              "bytes": 506
+            }
+          }
+        }
+      ],
+      "final_inventory": null
+    },
+    "shared": {
+      "runs": [
+        {
+          "label": "shared-0",
+          "pid": 18620,
+          "destination": "shared",
+          "spawned_ns": 1989346200985666,
+          "observed_alive": true,
+          "observed_ns": 1989346202964375,
+          "collected_ns": 1989346466634333,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170020 seconds\n",
+          "stderr": ""
+        },
+        {
+          "label": "shared-1",
+          "pid": 18621,
+          "destination": "shared",
+          "spawned_ns": 1989346201943791,
+          "observed_alive": true,
+          "observed_ns": 1989346202965541,
+          "collected_ns": 1989346466683041,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170009 seconds\n",
+          "stderr": ""
+        },
+        {
+          "label": "shared-2",
+          "pid": 18622,
+          "destination": "shared",
+          "spawned_ns": 1989346202954583,
+          "observed_alive": true,
+          "observed_ns": 1989346202966333,
+          "collected_ns": 1989346466705708,
+          "returncode": 0,
+          "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $SCRATCH/shared/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.169625 seconds\n",
+          "stderr": ""
+        }
+      ],
+      "final_inventory": {
+        "Funs.lean": {
+          "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+          "bytes": 1260
+        },
+        "Probe.lean": {
+          "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+          "bytes": 18
+        },
+        "Types.lean": {
+          "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+          "bytes": 506
+        }
+      }
+    }
+  }
+}

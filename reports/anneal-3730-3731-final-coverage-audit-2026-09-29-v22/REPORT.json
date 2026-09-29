@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/v2",
+    "anneal/implementation",
+    "anneal/3730-3731"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and #3730/#3731 issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Anneal current redesign source surface",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal",
+        "evidence_package": "anneal-v2-current-source-surface-main-bd0956b-2026-09-29"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

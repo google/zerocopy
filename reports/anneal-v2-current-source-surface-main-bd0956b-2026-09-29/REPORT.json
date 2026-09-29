@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/v2",
+    "anneal/implementation",
+    "anneal/3730-3731"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal current redesign source",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+        "path": "anneal"
+      }
+    },
+    {
+      "name": "#3730/#3731 coverage audit v21 crosswalk",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+        "path": "reports/anneal-3730-3731-final-coverage-audit-2026-09-29-v21"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

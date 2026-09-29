@@ -40,6 +40,18 @@ def inspect(folder, version, revision, preserve_old):
         assert (folder / "fixture" / name).read_bytes() == proof
     assert d["old_worker_goal_before"]["result"]["goals"] == []
     assert d["old_worker_goal_after"]["result"]["goals"] == []
+    recorded_goals = {
+        "old_worker_goal_before": "old_worker_before_change",
+        "old_worker_goal_after": "old_worker_after_dependency_rebuild",
+        "new_worker_goal_same_server": "new_worker_same_server_after_dependency_rebuild",
+        "reopened_worker_goal_same_server": "closed_reopened_worker_after_dependency_rebuild",
+    }
+    if preserve_old:
+        recorded_goals["old_worker_goal_after_new_worker_ready_and_delay"] = "old_worker_after_new_worker_ready_and_delay"
+    for summary_key, event_kind in recorded_goals.items():
+        goal = d[summary_key]
+        assert kinds(event_kind)[0]["goal"] == goal
+        assert any(e.get("message") == goal for e in kinds("server_message"))
     for key in ("new_worker_goal_same_server", "reopened_worker_goal_same_server"):
         assert d[key]["result"]["goals"] == ["⊢ sharedValue = 3"]
     for name, document_version in (("NewOpen.lean", 1), ("OldOpen.lean", 2)):
@@ -51,6 +63,9 @@ def inspect(folder, version, revision, preserve_old):
     assert d["fresh_batch_returncode"] == 1
     assert "Tactic `rfl` failed" in kinds("fresh_batch_after_dependency_rebuild")[0]["stdout"]
     assert len(kinds("server_start")) == len(kinds("server_exit")) == 1
+    assert kinds("server_start")[0]["pid"] == kinds("server_exit")[0]["pid"]
+    assert order("server_start") < order("old_worker_before_change")
+    assert order("closed_reopened_worker_after_dependency_rebuild") < order("server_exit")
     assert kinds("server_exit")[0]["returncode"] == 0
     assert order("old_worker_before_change") < order("artifact_changed") < order("old_worker_after_dependency_rebuild")
     assert order("old_worker_after_dependency_rebuild") < order("new_worker_same_server_after_dependency_rebuild")

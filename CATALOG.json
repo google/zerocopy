@@ -1639,6 +1639,36 @@
         "filesystem/reader-leases"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v22": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_hashes": "support/live-issue-hashes.json",
+            "issue_snapshot": "support/issue-scope-snapshot.json",
+            "issues": "#3730 and #3731",
+            "reference_revision": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference and #3730/#3731 issue scope"
+        },
+        {
+          "identity": {
+            "evidence_package": "anneal-v2-current-source-surface-main-bd0956b-2026-09-29",
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal current redesign source surface"
+        }
+      ],
+      "topics": [
+        "anneal/coverage",
+        "anneal/v2",
+        "anneal/implementation",
+        "anneal/3730-3731"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6899,6 +6929,33 @@
         "verification/trust-boundary"
       ]
     },
+    "anneal-v2-current-source-surface-main-bd0956b-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal current redesign source"
+        },
+        {
+          "identity": {
+            "path": "reports/anneal-3730-3731-final-coverage-audit-2026-09-29-v21",
+            "reference_revision": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+            "repository": "google/zerocopy"
+          },
+          "name": "#3730/#3731 coverage audit v21 crosswalk"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/v2",
+        "anneal/implementation",
+        "anneal/3730-3731"
+      ]
+    },
     "assembly-isa-proof-boundaries-2013-2026": {
       "observed_at": "2026-09-27",
       "subjects": [
@@ -9911,8 +9968,7 @@
         {
           "identity": {
             "launch_mode": "lean --server with LEAN_PATH",
-            "repository": "google/zerocopy",
-            "revision": "8c257ec3f4e067963e12441ce5b261714a005c74"
+            "probe_sha256": "6ece16cbce20da90f037379274c4707002133d5459c1740c6c7403f642b17744"
           },
           "name": "Lean direct server fixture"
         }

@@ -61,4 +61,36 @@ assert all(summary[key] is True for key in (
     "shared_final_matches_independent", "independent_runs_overlapped", "shared_runs_overlapped",
 ))
 assert summary["independent_inventory"] == summary["shared_final_inventory"] == oracle
-print("PASS: 7 pinned Aeneas processes, overlapping post-spawn intervals, matching retained outputs")
+
+# The supplementary probe sampled each child after the final spawn. Every
+# child observed live later was necessarily live at the first sample too.
+simultaneous = json.loads((ROOT / "simultaneous-transcript.json").read_text())
+assert simultaneous["binary_sha256"] == EXPECTED_BINARY
+assert simultaneous["input_sha256"] == EXPECTED_INPUT
+assert simultaneous["input_bytes"] == (ROOT / "fixture/probe.llbc").stat().st_size
+assert simultaneous["host"] == {"system": "Darwin", "machine": "arm64"}
+assert simultaneous["flags"] == FLAGS and simultaneous["cwd"] == "$SCRATCH"
+groups = simultaneous["groups"]
+assert set(groups) == {"independent", "shared"}
+for name, count in (("independent", 4), ("shared", 3)):
+    runs = groups[name]["runs"]
+    assert len(runs) == count
+    assert len({r["pid"] for r in runs}) == count
+    first_observation = min(r["observed_ns"] for r in runs)
+    assert max(r["spawned_ns"] for r in runs) < first_observation
+    for i, run in enumerate(runs):
+        dest = f"independent/worker-{i}" if name == "independent" else "shared"
+        assert run["label"] == f"{name}-{i}" and run["destination"] == dest
+        assert run["observed_alive"] is True
+        assert run["spawned_ns"] < run["observed_ns"] < run["collected_ns"]
+        assert run["returncode"] == 0 and run["stderr"] == ""
+        assert "Imported: $REPORT_SUPPORT/fixture/probe.llbc" in run["stdout"]
+        for filename in EXPECTED_FILES:
+            assert f"Generated: $SCRATCH/{dest}/{filename}" in run["stdout"]
+        if name == "independent":
+            assert run["inventory"] == oracle
+        else:
+            assert "inventory" not in run
+assert groups["independent"]["final_inventory"] is None
+assert groups["shared"]["final_inventory"] == oracle
+print("PASS: retained outputs match; all 4 and all 3 children observed live after final spawn")

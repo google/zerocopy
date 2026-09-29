@@ -1,0 +1,10 @@
+{
+  "new_complete_ids": [],
+  "new_packages": [
+    "anneal-v2-current-source-surface-main-bd0956b-2026-09-29"
+  ],
+  "prior_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v21",
+  "reference_commit": "a5b4d034aa65aa44d85afc943c3caec26a5229ba",
+  "source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "scope_note": "Current V2 source has reachable setup and unconnected selection, locator, locking and tool helpers. Offline build and default tests stopped before compilation on an absent pinned Charon checkout. No verification, proof acceptance, LSP or MCP path was executed; v21 row statuses remain conservative."
+}
