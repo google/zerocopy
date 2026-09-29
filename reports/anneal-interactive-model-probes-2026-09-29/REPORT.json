@@ -1,0 +1,33 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "anneal/freshness",
+    "anneal/source-mapping",
+    "anneal/generation-publication",
+    "model-checking"
+  ],
+  "subjects": [
+    {
+      "name": "Finite identity, projection, and publication probe harness",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
+        "artifact": "new Python standard-library research harness in this package"
+      }
+    },
+    {
+      "name": "CPython",
+      "identity": {
+        "version": "3.14.7"
+      }
+    },
+    {
+      "name": "macOS APFS filesystem",
+      "identity": {
+        "operating_system": "macOS 26.6.2",
+        "filesystem": "APFS"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

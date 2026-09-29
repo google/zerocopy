@@ -1,0 +1,27 @@
+{
+  "topics": [
+    "lean/language-server",
+    "lean/dependency-invalidation",
+    "lean/tactic-state",
+    "anneal/interactive-freshness"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Lean direct server fixture",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
+        "launch_mode": "lean --server with LEAN_PATH"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

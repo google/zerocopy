@@ -1,0 +1,317 @@
+{
+  "identity_ablation": {
+    "cases": [
+      {
+        "scenario": "same paths, Rust bytes change",
+        "changed_fields": [
+          "source"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same document URI/version, proof bytes change",
+        "changed_fields": [
+          "projection"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same proof, imported artifact changes",
+        "changed_fields": [
+          "imports"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same source path, Cargo target changes",
+        "changed_fields": [
+          "cargo_subject"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same code, Charon configuration changes",
+        "changed_fields": [
+          "charon"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same LLBC, Aeneas configuration changes",
+        "changed_fields": [
+          "aeneas"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same generated source, Lake environment changes",
+        "changed_fields": [
+          "env"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same bytes after A\u2192B\u2192A, later causal generation",
+        "changed_fields": [
+          "worker"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports",
+          "semantic_content"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same document version after worker restart",
+        "changed_fields": [
+          "worker"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports",
+          "semantic_content"
+        ],
+        "full_causal_identity_changes": true
+      },
+      {
+        "scenario": "same worker, RPC session reconnected",
+        "changed_fields": [
+          "rpc"
+        ],
+        "insufficient_keys_colliding": [
+          "path",
+          "uri_version",
+          "proof_hash",
+          "document_imports",
+          "semantic_content"
+        ],
+        "full_causal_identity_changes": true
+      }
+    ],
+    "cache_content_identity_example": {
+      "equal_content_key": true,
+      "distinct_causal_tags": true
+    }
+  },
+  "projection_coordinates": {
+    "corpus_strings": 59,
+    "valid_scalar_boundaries_checked": 2092,
+    "coordinate_sample": [
+      {
+        "text_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "scalar_index": 0,
+        "utf8_byte": 0,
+        "utf16_units": 0
+      },
+      {
+        "text_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "scalar_index": 0,
+        "utf8_byte": 0,
+        "utf16_units": 0
+      },
+      {
+        "text_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "scalar_index": 1,
+        "utf8_byte": 1,
+        "utf16_units": 1
+      },
+      {
+        "text_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "scalar_index": 2,
+        "utf8_byte": 2,
+        "utf16_units": 2
+      },
+      {
+        "text_sha256": "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+        "scalar_index": 3,
+        "utf8_byte": 3,
+        "utf16_units": 3
+      },
+      {
+        "text_sha256": "4a99557e4033c3539de2eb65472017cad5f9557f7a0625a09f1c3f6e2ba69c4c",
+        "scalar_index": 0,
+        "utf8_byte": 0,
+        "utf16_units": 0
+      },
+      {
+        "text_sha256": "4a99557e4033c3539de2eb65472017cad5f9557f7a0625a09f1c3f6e2ba69c4c",
+        "scalar_index": 1,
+        "utf8_byte": 2,
+        "utf16_units": 1
+      },
+      {
+        "text_sha256": "bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6",
+        "scalar_index": 0,
+        "utf8_byte": 0,
+        "utf16_units": 0
+      },
+      {
+        "text_sha256": "bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6",
+        "scalar_index": 1,
+        "utf8_byte": 1,
+        "utf16_units": 1
+      },
+      {
+        "text_sha256": "bf12767b0f2a56b2190075bae8169f656e3ce8d6357d4aff184bc6c7ea48f9f6",
+        "scalar_index": 2,
+        "utf8_byte": 3,
+        "utf16_units": 2
+      },
+      {
+        "text_sha256": "75fd0cc681935506e6a8e1cb87c5e43fde5b631ec5fed1febac14d43985a44a3",
+        "scalar_index": 0,
+        "utf8_byte": 0,
+        "utf16_units": 0
+      },
+      {
+        "text_sha256": "75fd0cc681935506e6a8e1cb87c5e43fde5b631ec5fed1febac14d43985a44a3",
+        "scalar_index": 1,
+        "utf8_byte": 4,
+        "utf16_units": 2
+      }
+    ],
+    "all_utf8_utf16_roundtrips": true,
+    "projection_segments": [
+      {
+        "source_start": 10,
+        "source_end": 16,
+        "projected_start": 3,
+        "projected_end": 9
+      },
+      {
+        "source_start": 30,
+        "source_end": 36,
+        "projected_start": 20,
+        "projected_end": 26
+      }
+    ],
+    "mapped_positions": [
+      10,
+      12,
+      16,
+      null,
+      null,
+      30,
+      32,
+      36,
+      null
+    ],
+    "patch_cases": [
+      {
+        "name": "inside one segment",
+        "start": 4,
+        "end": 6,
+        "accepted": true
+      },
+      {
+        "name": "touches synthetic prefix",
+        "start": 2,
+        "end": 4,
+        "accepted": false
+      },
+      {
+        "name": "crosses synthetic gap",
+        "start": 8,
+        "end": 21,
+        "accepted": false
+      },
+      {
+        "name": "stale host digest",
+        "start": 4,
+        "end": 6,
+        "accepted": false
+      }
+    ],
+    "stale_patch_cas_rejected": true
+  },
+  "generation_schedule_model": {
+    "permutations": 120,
+    "stale_publish_rejections": 10,
+    "naive_late_publish_counterexample_count": 10,
+    "counterexample_orders": [
+      [
+        "stageA",
+        "stageB",
+        "publishA",
+        "cancelA",
+        "publishB"
+      ],
+      [
+        "stageA",
+        "stageB",
+        "publishA",
+        "publishB",
+        "cancelA"
+      ],
+      [
+        "stageA",
+        "stageB",
+        "publishB",
+        "publishA",
+        "cancelA"
+      ],
+      [
+        "stageA",
+        "publishB",
+        "stageB",
+        "publishA",
+        "cancelA"
+      ],
+      [
+        "stageB",
+        "stageA",
+        "publishA",
+        "cancelA",
+        "publishB"
+      ]
+    ],
+    "safe_current_generation_guard": true
+  },
+  "limits": [
+    "Finite illustrative model only; it does not establish implementation behavior.",
+    "Projection segments are a test oracle fixture, not an implemented Rust parser or Lean projection engine.",
+    "UTF-16 positions inside a surrogate pair are not invertible; test only source scalar boundaries."
+  ]
+}

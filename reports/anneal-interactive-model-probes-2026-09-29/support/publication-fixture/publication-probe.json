@@ -1,0 +1,42 @@
+{
+  "filesystem": "APFS (workspace volume; macOS host)",
+  "pointer_type": "symlink replaced using os.replace",
+  "pointer_after": "gen-B",
+  "generation_a_sha256": {
+    "Module.olean": "f5e8b8e7848fa1daa200195cf5f7e30a9a331bff3a4a83b7469dc30ebdada21c",
+    "Funs.lean": "32691aa8f0a42389e2876880ce30d07a2a5b4b7d40ebbbac89a42a3fbe74fe04",
+    "lake-manifest.json": "74ed926276460046086ca6999d3d6ea9d0d9adbbb374af6651b2442cf07c65e1",
+    "Types.lean": "41c3122b23c6a90e0b0b78e071a3266241e48f62e10e5f40abc86975bfa708c7"
+  },
+  "generation_b_sha256": {
+    "Module.olean": "fbfcaa3bcdbaf86244e1461eccf8de3d62a8e15710a4e6066bbf83b7e06ec0c4",
+    "Funs.lean": "b46575f9caed481f59a54f8383a7bae4ef8674f64a2eb09b0aba67088f0c087e",
+    "lake-manifest.json": "bdbe123bb9a101a214de11b265257a491b0efc29595f098a7147d402c9201973",
+    "Types.lean": "116a4364ad37afea050a81d6ec53c3447ba9ac0359d304b2117aa4557560c626"
+  },
+  "un-pinned_reader_interleaving": {
+    "first_file": "-- generation gen-A",
+    "second_file_after_swap": "-- generation gen-B",
+    "manifest_generation_after_swap": "gen-B",
+    "mixed_generation_observed": true
+  },
+  "pinned_reader": {
+    "resolved_path": "gen-A (resolved immutable directory)",
+    "first_file": "-- generation gen-A",
+    "second_file_after_swap": "-- generation gen-A",
+    "consistent_old_generation": true
+  },
+  "incomplete_stage": {
+    "stage": "gen-C missing Funs.lean",
+    "visible_generation_before": "gen-B",
+    "current_after": "gen-B",
+    "visible_state": [
+      "-- generation gen-B",
+      "-- generation gen-B",
+      "gen-B",
+      "olean:gen-B"
+    ],
+    "published_incomplete": false
+  },
+  "old_generation_retained_after_swap": true
+}

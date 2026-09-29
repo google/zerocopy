@@ -1,0 +1,175 @@
+3730_id,suggestion,3731_destination
+A01,Minimum sufficient generation identity,I145
+A02,Locators versus semantic generations,"I011, I034, I079, I145"
+A03,Mixed-generation race matrix,"I013, I051, I134, I138"
+A04,Late publication after cancellation,"I053, I106"
+A05,Snapshot retention versus recomputation,"I047, I146"
+A06,Historical query semantics,"I047, I146"
+A07,Cross-process reconstruction,"I016, I110"
+A08,Hashes versus monotonic revisions,"I011, I079, I097, I145"
+B01,Exact projection model,I026
+B02,Executed round-trip corpus,"I025, I026, I032"
+B03,UTF-16 stress tests,"I025, I062"
+B04,Incremental projection algorithm,I032
+B05,Host-only edits shift source positions,"I029, I032"
+B06,Delimiter corruption and partial syntax,"I017, I046"
+B07,Multiple-annotation document granularity,"I022, I035"
+B08,Name visibility and namespaces,"I022, I037"
+B09,Embedded import-header ownership,"I018, I022, I091"
+B10,Authored versus generated edits,"I026, I027, I030, I069"
+B11,Code actions and rename,"I030, I059, I060"
+B12,Hover/completion/tokens/signature help/inlay hints,"I030, I059, I062"
+B13,Diagnostic responsibility versus editability,"I027, I031"
+B14,Macro-generated annotations,"I019, I087"
+B15,Unsaved host as proof authority,"I012, I068, I137, I155"
+C01,Version-bound goal wrapper,"I041, I045, I048, I145"
+C02,Rich RPC versus plainGoal,"I043, I044, I046"
+C03,Worker-restart freshness barrier,I049
+C04,Server launch-mode comparison,I049
+C05,Changed artifact with unchanged source,I147
+C06,Changed source with identical rebuilt artifact,I147
+C07,Import additions/removals/renames,"I051, I055"
+C08,RPC and handle lifetimes,"I044, I045, I047, I122"
+C09,Concurrent goal queries in one document,"I041, I134"
+C10,Many proofs importing one model,"I050, I056"
+C11,Importing another live proof,"I038, I039"
+C12,Semantic-readiness alternatives,"I042, I048"
+C13,Partial-file elaboration,I046
+C14,Diagnostics/goal disagreement,"I058, I129"
+C15,Crash recovery of unsaved text,"I016, I110"
+D01,Saved Rust versus overlays,"I073, I074"
+D02,Overlay path sensitivity,I074
+D03,Cargo reuse with materialized snapshots,"I075, I080"
+D04,Charon process lifetime,"I077, I118"
+D05,Charon concurrent determinism,"I079, I148"
+D06,Charon cancellation cleanup,"I078, I080, I105"
+D07,Compilation-subject invalidation matrix,"I009, I020, I076"
+D08,Annotation-only upstream bypass,I018
+D09,Compilation-affecting annotations,"I018, I019"
+D10,Stable item correspondence across edits,"I019, I021, I149"
+E01,Warm Aeneas without semantic reuse,"I081, I118"
+E02,Global-state reset audit,"I081, I088"
+E03,In-process concurrent Aeneas requests,I081
+E04,Transactional generated-tree replacement,"I051, I052, I085"
+E05,Declaration deletion and rename,"I055, I085"
+E06,Generated-source determinism,I148
+E07,Semantic sameness with textual instability,"I079, I084, I132, I148"
+E08,Output-to-model manifest,I149
+E09,Generated versus external-model ownership,"I024, I085"
+E10,External model changes without codegen changes,"I050, I082, I147"
+E11,Restricted finer-grained Aeneas prototype,I083
+E12,Failure during generation and fallback,"I054, I085, I088"
+F01,Prepared-environment schema,"I090, I091, I150"
+F02,Real read-only archive/server probe,I089
+F03,4.30 versus later Lake ownership,"I094, I158"
+F04,Real-archive missing-manifest control,I089
+F05,Prepared-environment identity collisions,"I090, I096, I145"
+F06,Server artifact completeness,"I098, I150"
+F07,No-build/no-cache fail-closed path,I092
+F08,Build completion versus server readiness,"I042, I089, I091"
+F09,Unsaved import changes,I091
+F10,Cache-hit and rebuild observability,I095
+F11,Artifact-cache writer crash consistency,I102
+F12,Shared package-directory writer crashes,"I108, I151"
+F13,Read-only producer/many consumers,"I089, I114, I139"
+F14,Consumer/toolchain relocation separately and together,I101
+F15,Final-location preparation versus rename,I052
+F16,Network-denied consumption,I104
+F17,User-cache contamination,"I096, I104"
+F18,Timestamp perturbations,I100
+F19,Clean oracle for interactive setup,"I099, I131, I132"
+F20,Generated-module rebuild isolation,"I089, I113"
+G01,Explicit transport-independent MCP handles,"I065, I066, I145"
+G02,Handle expiry and stale-generation failures,"I044, I047, I122, I145"
+G03,Long-running MCP tasks,"I065, I071"
+G04,Subscriptions for diagnostics/progress,I152
+G05,Concurrent agents in one workspace,"I014, I067, I068"
+G06,Version-checked agent patch transaction,"I029, I070, I137"
+G07,Scratch tactic trials and reuse,"I040, I070, I116, I153"
+G08,Scratch environment fidelity,I040
+G09,Read-only versus mutating tools,"I069, I126"
+G10,MCP multiplexing/process isolation,"I004, I153"
+G11,Edit/setup authorization taxonomy,I069
+G12,Response provenance envelope,"I066, I145"
+G13,Retry and idempotency,I067
+G14,MCP cancellation races,"I071, I105, I106"
+G15,Agent navigation Rust-to-Lean-and-back,"I066, I140, I149"
+H01,Virtual document URI strategy,"I033, I034, I155"
+H02,Custom URI versus setup-file,"I033, I155"
+H03,Shadow-file authority and recovery,I155
+H04,Hidden Lean document lifecycle,"I033, I064, I155"
+H05,Different unsaved editor clients,"I014, I068"
+H06,Save versus existing unsaved generation,I063
+H07,Rename/move with open proof,"I021, I034, I063, I155"
+H08,Workspace-folder/project switch,"I004, I057, I153"
+H09,Editor cancellation through scheduler,"I007, I105, I107"
+H10,Stale diagnostics during regeneration,"I054, I058, I141"
+I01,Batch/fresh/warm/edited/restarted equivalence,"I001, I131, I132"
+I02,Actual batch/live import identity,"I048, I099, I131"
+I03,Live acceptance followed by fresh verification,"I131, I137, I138"
+I04,Batch acceptance followed by cold interactive use,"I089, I091, I131"
+I05,Verification scope across live transitions,"I129, I138, I144"
+I06,No goals versus theorem/file/project acceptance,I129
+I07,TCB identity under reuse,I130
+I08,Development/partial-result taint,"I130, I141"
+J01,Real generated-project disk scaling,"I113, I114, I139"
+J02,Every copied byte classified,I113
+J03,Real-import server memory scaling,"I114, I117, I153"
+J04,One watchdog/many documents versus many servers,I153
+J05,Prewarmed scratch pool scaling,"I116, I153"
+J06,Nested parallelism budget,I115
+J07,Cold/warm latency decomposition,I118
+J08,Test/fixture/suite reuse granularity,I154
+J09,Failures under high concurrency,"I105, I110, I139"
+J10,Long-lived daemon resource drift,"I116, I122"
+J11,Generation collection with live readers,I121
+J12,Cross-test contamination sentinels,"I135, I154"
+J13,Concurrent identical cache misses,"I102, I107"
+J14,Filesystem-specific resource scaling,"I119, I124"
+J15,Resource limits and stale-success fallback,"I109, I129"
+K01,Exact pre-compiler proof-range sidecar,"I025, I026, I149"
+K02,Cross-layer declaration manifest,I149
+K03,Macro provenance/edit responsibility,"I019, I031"
+K04,Synthetic-scaffolding blame evaluation,"I031, I141"
+K05,Relocation and normalized diagnostic identities,"I059, I101, I123"
+K06,Owning range deleted during query,"I021, I029"
+K07,Rustfmt and proof-map stability,"I032, I063"
+K08,Stable proof identity through model regeneration,"I024, I034, I056, I155"
+L01,Structured stage results,"I006, I145"
+L02,Backend filesystem-effects inventory,"I006, I113"
+L03,Progress independent of UI,"I006, I095"
+L04,Cancellation abstraction fit,"I007, I105"
+L05,Backend crash/retry reconstruction,"I077, I081, I110"
+L06,Backend version/capability negotiation,I156
+L07,Batch shell over shared engine,I157
+L08,Transport-free interactive shell,I157
+L09,Direct Lean backend versus MCP delegation,I072
+L10,Aeneas library embedding,"I081, I086"
+M01,Interactive invariants on upgraded Lean/Lake,"I094, I136, I158"
+M02,Minimal interactive upgrade checklist,I158
+M03,Charon upgrade checklist,I158
+M04,Aeneas upgrade checklist,I158
+M05,Golden replay across toolchain tuples,"I136, I158"
+M06,Probes for deleting obsolete workarounds,"I100, I142, I158"
+N01,Challenge path-only identity,I159
+N02,Challenge document-version-only identity,I159
+N03,Try supported refresh without restart,I159
+N04,Try one server for conflicting workspaces,I159
+N05,Try shared writable generated build state,I159
+N06,Try artifact-cache-only reconstruction,I159
+N07,Try renaming a prepared generation,I159
+N08,Try generated Lean as canonical proof source,I159
+N09,Try span-only editable-range recovery,I159
+N10,Challenge universal proof-only bypass,I159
+N11,Challenge no-goals-as-success,I159
+N12,Challenge cancellation-only freshness,I159
+O01,Synthesize state machine and invariants,I144
+O02,Synthesize invalidation matrix,I144
+O03,Synthesize stable/ephemeral identity model,"I144, I145"
+O04,Synthesize ownership/projection contract,I144
+O05,Synthesize prepared producer/consumer contract,"I144, I150"
+O06,Synthesize exact proof-query contract,I144
+O07,Synthesize MCP semantic API,I144
+O08,Synthesize LSP semantic API,I144
+O09,Synthesize measured test-resource architecture,I144
+O10,Synthesize batch/live equivalence contract,I144
