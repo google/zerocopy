@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/generation-publication",
+    "anneal/real-generated-model",
+    "filesystem/atomic-publication"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "5f4c846fa5dddc19b649305d86d612bf142ce606",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Disposable real-artifact generation publication experiment",
+      "identity": {
+        "package": "anneal-3731-real-generation-publication-v4-30-0-rc2",
+        "evidence": "support/new-package-review-v19.csv",
+        "boundary": "fixture-owned Python publisher with retained real Charon/Aeneas/Lean A/B artifact families"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

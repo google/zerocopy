@@ -1,0 +1,9 @@
+{
+  "new_complete_ids": [],
+  "new_packages": [
+    "anneal-3731-real-generation-publication-v4-30-0-rc2"
+  ],
+  "prior_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v18",
+  "reference_commit": "5f4c846fa5dddc19b649305d86d612bf142ce606",
+  "scope_note": "New package is a disposable real-artifact component experiment. I051/A03/E04 retain product-level gaps."
+}

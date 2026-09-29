@@ -1,0 +1,32 @@
+{
+  "fetched_at_utc": "2026-09-29T17:54:26.017178+00:00",
+  "issues": {
+    "3730": {
+      "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+      "comments": [
+        {
+          "body_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+          "id": 5884380373,
+          "updated_at": "2026-09-29T05:39:32Z"
+        }
+      ],
+      "number": 3730,
+      "state": "closed",
+      "updated_at": "2026-09-29T05:40:03Z"
+    },
+    "3731": {
+      "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+      "comments": [
+        {
+          "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+          "id": 5884299718,
+          "updated_at": "2026-09-29T05:32:10Z"
+        }
+      ],
+      "number": 3731,
+      "state": "open",
+      "updated_at": "2026-09-29T05:39:11Z"
+    }
+  },
+  "source": "public GitHub REST issue and comments endpoints"
+}

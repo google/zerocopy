@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/generation-publication",
+    "anneal/real-generated-model",
+    "lean/batch-checking",
+    "lean/language-server",
+    "filesystem/atomic-publication"
+  ],
+  "subjects": [
+    {
+      "name": "retained Charon/Aeneas generated A and B model families",
+      "identity": {
+        "old_origin_reference_commit": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+        "old_llbc_sha256": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+        "new_llbc_sha256": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "old_funs_olean_sha256": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+        "new_funs_olean_sha256": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871"
+      }
+    },
+    {
+      "name": "Lean 4 direct batch checker and language server",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "disposable gated generation publisher and reader",
+      "identity": {
+        "source": "support/probe.py",
+        "sha256": "d2a3d1c90aaf2aacb4d3f06ae4f4d645d2bc7c181151a87cfb284a0c56c635e8",
+        "input_family": "retained real generated A/B seven-file LLBC/Lean/OLean family"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

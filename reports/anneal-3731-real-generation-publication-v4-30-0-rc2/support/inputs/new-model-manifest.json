@@ -1,0 +1,17 @@
+{
+  "source_sha256": "e1d8e8151a057cdbcef186bb31c374a561170815311e8bdafbe181845cd8ef88",
+  "llbc_sha256": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+  "generated_files_sha256": {
+    "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+    "Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+    "Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+  },
+  "files_sha256": {
+    "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+    "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+    "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+    "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+    "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+    "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+  }
+}

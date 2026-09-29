@@ -1,0 +1,2558 @@
+{
+  "tool": {
+    "lean": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "scratch": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication"
+  },
+  "expected": {
+    "A": {
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+      "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+    },
+    "B": {
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+      "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+    }
+  },
+  "generation_ids": {
+    "A": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+    "B": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b"
+  },
+  "staged": {
+    "mode": "staged",
+    "kill_at": null,
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "gates": [
+      {
+        "gate": "write-0",
+        "written_file": "current.llbc",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-1",
+        "written_file": "Current/Types.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-2",
+        "written_file": "Current/Types.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-3",
+        "written_file": "Current/Funs.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-4",
+        "written_file": "Current/Funs.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-5",
+        "written_file": "Current.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-6",
+        "written_file": "Current.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "validated",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-validated-1/Proof1.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-validated-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+            "generation_classification": "A"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-validated-2/Proof2.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-validated-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-validated-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+            "generation_classification": "A"
+          }
+        ]
+      },
+      {
+        "gate": "generation-moved",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "before-publish",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "after-publish",
+        "selected": {
+          "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+          "classification": "B",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/B",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/B",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-after-publish-1/Proof1.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-after-publish-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-after-publish-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/B",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-after-publish-2/Proof2.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/reader-after-publish-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          }
+        ]
+      }
+    ],
+    "readback": {
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "classification": "B",
+      "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/generations/B",
+      "files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      }
+    },
+    "validation": {
+      "exact_files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      },
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "old_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/staging",
+        "proof_value": 1,
+        "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/validation-old/Proof1.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      },
+      "new_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/staging",
+        "proof_value": 2,
+        "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/validation-new/Proof2.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/validation-new/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      }
+    },
+    "old_server_initial_goal": {
+      "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+      "generation_classification": "A",
+      "current_for_selected": true,
+      "response": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    "old_server_after_goal": {
+      "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+      "generation_classification": "A",
+      "current_for_selected": false,
+      "response": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": {
+          "goals": [],
+          "rendered": "no goals"
+        }
+      }
+    },
+    "old_server": {
+      "pid": 11316,
+      "exit": 0,
+      "messages": [
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 1,
+            "method": "initialize",
+            "params": {
+              "processId": 11315,
+              "rootUri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old",
+              "capabilities": {},
+              "initializationOptions": {
+                "hasWidgets": false
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "result": {
+              "capabilities": {
+                "callHierarchyProvider": true,
+                "codeActionProvider": {
+                  "codeActionKinds": [
+                    "quickfix",
+                    "refactor",
+                    "source.organizeImports"
+                  ],
+                  "resolveProvider": true,
+                  "workDoneProgress": false
+                },
+                "colorProvider": {
+                  "workDoneProgress": false
+                },
+                "completionProvider": {
+                  "resolveProvider": true,
+                  "triggerCharacters": [
+                    "."
+                  ]
+                },
+                "declarationProvider": true,
+                "definitionProvider": true,
+                "documentHighlightProvider": true,
+                "documentSymbolProvider": true,
+                "experimental": {
+                  "moduleHierarchyProvider": {},
+                  "rpcProvider": {
+                    "highlightMatchesProvider": {},
+                    "rpcWireFormat": "v1"
+                  }
+                },
+                "foldingRangeProvider": true,
+                "hoverProvider": true,
+                "inlayHintProvider": {
+                  "resolveProvider": false,
+                  "workDoneProgress": false
+                },
+                "referencesProvider": true,
+                "renameProvider": {
+                  "prepareProvider": true
+                },
+                "semanticTokensProvider": {
+                  "full": true,
+                  "legend": {
+                    "tokenModifiers": [
+                      "declaration",
+                      "definition",
+                      "readonly",
+                      "static",
+                      "deprecated",
+                      "abstract",
+                      "async",
+                      "modification",
+                      "documentation",
+                      "defaultLibrary"
+                    ],
+                    "tokenTypes": [
+                      "keyword",
+                      "variable",
+                      "property",
+                      "function",
+                      "namespace",
+                      "type",
+                      "class",
+                      "enum",
+                      "interface",
+                      "struct",
+                      "typeParameter",
+                      "parameter",
+                      "enumMember",
+                      "event",
+                      "method",
+                      "macro",
+                      "modifier",
+                      "comment",
+                      "string",
+                      "number",
+                      "regexp",
+                      "operator",
+                      "decorator",
+                      "leanSorryLike"
+                    ]
+                  },
+                  "range": true
+                },
+                "signatureHelpProvider": {
+                  "triggerCharacters": [
+                    " "
+                  ],
+                  "workDoneProgress": false
+                },
+                "textDocumentSync": {
+                  "change": 2,
+                  "openClose": true,
+                  "save": {
+                    "includeText": true
+                  },
+                  "willSave": false,
+                  "willSaveWaitUntil": false
+                },
+                "typeDefinitionProvider": true,
+                "workspaceSymbolProvider": true
+              },
+              "serverInfo": {
+                "name": "Lean 4 Server",
+                "version": "0.3.0"
+              }
+            }
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "initialized",
+            "params": {}
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/didOpen",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "languageId": "lean",
+                "version": 1,
+                "text": "import Current\ntheorem obl_inc : golden_vertical.inc 0#u32 = .ok 1#u32 := by\n  rfl\n"
+              }
+            }
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 2,
+            "method": "textDocument/waitForDiagnostics",
+            "params": {
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": "register_lean_watcher",
+            "jsonrpc": "2.0",
+            "method": "client/registerCapability",
+            "params": {
+              "registrations": [
+                {
+                  "id": "lean_watcher",
+                  "method": "workspace/didChangeWatchedFiles",
+                  "registerOptions": {
+                    "watchers": [
+                      {
+                        "globPattern": "**/*.lean"
+                      },
+                      {
+                        "globPattern": "**/*.ilean"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": "register_lean_watcher",
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 0
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 0,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 6,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 7,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 8,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 8,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 9,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                },
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 3
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 3
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [
+                {
+                  "kind": 1,
+                  "range": {
+                    "end": {
+                      "character": 0,
+                      "line": 1
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 1
+                    }
+                  }
+                }
+              ],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "$/lean/fileProgress",
+            "params": {
+              "processing": [],
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+                "version": 1
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 2,
+            "jsonrpc": "2.0",
+            "result": {}
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 3,
+            "method": "$/lean/plainGoal",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean"
+              },
+              "position": {
+                "line": 2,
+                "character": 5
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 3,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 4,
+            "method": "$/lean/plainGoal",
+            "params": {
+              "textDocument": {
+                "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean"
+              },
+              "position": {
+                "line": 2,
+                "character": 5
+              }
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 10,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 11,
+            "jsonrpc": "2.0",
+            "method": "workspace/inlayHint/refresh"
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 12,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 13,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 14,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 15,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 16,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 17,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 18,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 19,
+            "jsonrpc": "2.0",
+            "method": "workspace/semanticTokens/refresh"
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 19,
+            "result": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 4,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "id": 5,
+            "method": "shutdown",
+            "params": null
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "file:///Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/staged/server-old/OldProof.lean",
+              "version": 1
+            }
+          }
+        },
+        {
+          "direction": "server",
+          "message": {
+            "id": 5,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        {
+          "direction": "client",
+          "message": {
+            "jsonrpc": "2.0",
+            "method": "exit",
+            "params": {}
+          }
+        }
+      ],
+      "stderr": "",
+      "pinned_generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+      "pinned_generation_classification": "A"
+    }
+  },
+  "inplace": {
+    "mode": "inplace",
+    "kill_at": null,
+    "exit": 0,
+    "stdout": "",
+    "stderr": "",
+    "gates": [
+      {
+        "gate": "write-0",
+        "written_file": "current.llbc",
+        "selected": {
+          "generation_id": null,
+          "classification": "mixed",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-0-1/Proof1.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-0-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-0-2/Proof2.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-0-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-0-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          }
+        ]
+      },
+      {
+        "gate": "write-1",
+        "written_file": "Current/Types.lean",
+        "selected": {
+          "generation_id": null,
+          "classification": "mixed",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-1-1/Proof1.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-1-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-1-2/Proof2.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-1-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-1-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          }
+        ]
+      },
+      {
+        "gate": "write-2",
+        "written_file": "Current/Types.olean",
+        "selected": {
+          "generation_id": null,
+          "classification": "mixed",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-2-1/Proof1.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-2-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-2-2/Proof2.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-2-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-2-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          }
+        ]
+      },
+      {
+        "gate": "write-3",
+        "written_file": "Current/Funs.lean",
+        "selected": {
+          "generation_id": null,
+          "classification": "mixed",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-3-1/Proof1.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-3-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-3-2/Proof2.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-3-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-3-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": null,
+            "generation_classification": "mixed"
+          }
+        ]
+      },
+      {
+        "gate": "write-4",
+        "written_file": "Current/Funs.olean",
+        "selected": {
+          "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+          "classification": "B",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-4-1/Proof1.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-4-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-4-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-4-2/Proof2.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-4-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          }
+        ]
+      },
+      {
+        "gate": "write-5",
+        "written_file": "Current.lean",
+        "selected": {
+          "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+          "classification": "B",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-5-1/Proof1.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-5-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-5-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-5-2/Proof2.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-5-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          }
+        ]
+      },
+      {
+        "gate": "write-6",
+        "written_file": "Current.olean",
+        "selected": {
+          "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+          "classification": "B",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": [
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 1,
+            "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-6-1/Proof1.lean"
+            ],
+            "rc": 1,
+            "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-6-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-6-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          },
+          {
+            "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+            "proof_value": 2,
+            "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+            "argv": [
+              "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+              "--json",
+              "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-6-2/Proof2.lean"
+            ],
+            "rc": 0,
+            "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/reader-6-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+            "stderr": "",
+            "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "generation_classification": "B"
+          }
+        ]
+      }
+    ],
+    "readback": {
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "classification": "B",
+      "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/inplace/generations/A",
+      "files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      }
+    },
+    "validation": null,
+    "old_server_initial_goal": null,
+    "old_server_after_goal": null,
+    "old_server": null
+  },
+  "kill_before": {
+    "mode": "staged",
+    "kill_at": "before-publish",
+    "kill_rc": -9,
+    "stdout": "",
+    "stderr": "",
+    "gates": [
+      {
+        "gate": "write-0",
+        "written_file": "current.llbc",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-1",
+        "written_file": "Current/Types.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-2",
+        "written_file": "Current/Types.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-3",
+        "written_file": "Current/Funs.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-4",
+        "written_file": "Current/Funs.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-5",
+        "written_file": "Current.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-6",
+        "written_file": "Current.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "validated",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "generation-moved",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "before-publish",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      }
+    ],
+    "readback": {
+      "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+      "classification": "A",
+      "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/generations/A",
+      "files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+        "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      }
+    },
+    "validation": {
+      "exact_files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      },
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "old_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/staging",
+        "proof_value": 1,
+        "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/validation-old/Proof1.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      },
+      "new_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/staging",
+        "proof_value": 2,
+        "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/validation-new/Proof2.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-before/validation-new/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      }
+    }
+  },
+  "kill_after": {
+    "mode": "staged",
+    "kill_at": "after-publish",
+    "kill_rc": -9,
+    "stdout": "",
+    "stderr": "",
+    "gates": [
+      {
+        "gate": "write-0",
+        "written_file": "current.llbc",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-1",
+        "written_file": "Current/Types.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-2",
+        "written_file": "Current/Types.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-3",
+        "written_file": "Current/Funs.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-4",
+        "written_file": "Current/Funs.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-5",
+        "written_file": "Current.lean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "write-6",
+        "written_file": "Current.olean",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "validated",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "generation-moved",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "before-publish",
+        "selected": {
+          "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+          "classification": "A",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/A",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+            "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      },
+      {
+        "gate": "after-publish",
+        "selected": {
+          "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+          "classification": "B",
+          "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/B",
+          "files": {
+            "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+            "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+            "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+            "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+            "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+            "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+          }
+        },
+        "reader_oracles": []
+      }
+    ],
+    "readback": {
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "classification": "B",
+      "resolved": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/generations/B",
+      "files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      }
+    },
+    "validation": {
+      "exact_files": {
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+      },
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "old_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/staging",
+        "proof_value": 1,
+        "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/validation-old/Proof1.lean"
+        ],
+        "rc": 1,
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 1#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/validation-old/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      },
+      "new_proof": {
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/staging",
+        "proof_value": 2,
+        "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/validation-new/Proof2.lean"
+        ],
+        "rc": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-153000-i051-real-publication/kill-after/validation-new/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+        "stderr": "",
+        "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+        "generation_classification": "B"
+      }
+    }
+  }
+}
