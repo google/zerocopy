@@ -1,0 +1,187 @@
+{
+  "root_default": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/root_default.stdout",
+    "stderr_file": "raw/root_default.stderr"
+  },
+  "workspace": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "--workspace"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/workspace.stdout",
+    "stderr_file": "raw/workspace.stderr"
+  },
+  "alpha_lib": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "-p",
+      "alpha",
+      "--lib"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/alpha_lib.stdout",
+    "stderr_file": "raw/alpha_lib.stderr"
+  },
+  "alpha_bins": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "-p",
+      "alpha",
+      "--bins"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/alpha_bins.stdout",
+    "stderr_file": "raw/alpha_bins.stderr"
+  },
+  "alpha_bins_feature": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "-p",
+      "alpha",
+      "--bins",
+      "--features",
+      "gated"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/alpha_bins_feature.stdout",
+    "stderr_file": "raw/alpha_bins_feature.stderr"
+  },
+  "alpha_tests": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "-p",
+      "alpha",
+      "--tests"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/alpha_tests.stdout",
+    "stderr_file": "raw/alpha_tests.stderr"
+  },
+  "alpha_dir_default": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe"
+    ],
+    "cwd": "$PROBE_ROOT/fixture/alpha",
+    "exit_code": 0,
+    "stdout_file": "raw/alpha_dir_default.stdout",
+    "stderr_file": "raw/alpha_dir_default.stderr"
+  },
+  "beta_default": {
+    "argv": [
+      "$CARGO_TARGET_DIR/debug/anneal-resolver-probe",
+      "-p",
+      "beta"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/beta_default.stdout",
+    "stderr_file": "raw/beta_default.stderr"
+  },
+  "cargo_metadata": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "metadata",
+      "--offline",
+      "--locked",
+      "--format-version",
+      "1"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_metadata.stdout",
+    "stderr_file": "raw/cargo_metadata.stderr"
+  },
+  "cargo_default": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "check",
+      "--offline",
+      "--locked",
+      "--message-format",
+      "json"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_default.stdout",
+    "stderr_file": "raw/cargo_default.stderr"
+  },
+  "cargo_workspace": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "check",
+      "--offline",
+      "--locked",
+      "--message-format",
+      "json",
+      "--workspace"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_workspace.stdout",
+    "stderr_file": "raw/cargo_workspace.stderr"
+  },
+  "cargo_alpha_bins": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "check",
+      "--offline",
+      "--locked",
+      "--message-format",
+      "json",
+      "-p",
+      "alpha",
+      "--bins"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_alpha_bins.stdout",
+    "stderr_file": "raw/cargo_alpha_bins.stderr"
+  },
+  "cargo_alpha_bins_feature": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "check",
+      "--offline",
+      "--locked",
+      "--message-format",
+      "json",
+      "-p",
+      "alpha",
+      "--bins",
+      "--features",
+      "gated"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_alpha_bins_feature.stdout",
+    "stderr_file": "raw/cargo_alpha_bins_feature.stderr"
+  },
+  "cargo_alpha_tests": {
+    "argv": [
+      "$RUSTUP_HOME/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "check",
+      "--offline",
+      "--locked",
+      "--message-format",
+      "json",
+      "-p",
+      "alpha",
+      "--tests"
+    ],
+    "cwd": "$PROBE_ROOT/fixture",
+    "exit_code": 0,
+    "stdout_file": "raw/cargo_alpha_tests.stdout",
+    "stderr_file": "raw/cargo_alpha_tests.stderr"
+  }
+}

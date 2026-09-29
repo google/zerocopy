@@ -1,0 +1,11 @@
+[package]
+name = "beta"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["rlib"]
+
+[[bin]]
+name = "always"
+path = "src/main.rs"

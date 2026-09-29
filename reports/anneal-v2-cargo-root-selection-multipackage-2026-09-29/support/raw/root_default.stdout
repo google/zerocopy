@@ -1,0 +1,6 @@
+alpha|alpha|RLib|$PROBE_ROOT/fixture/alpha/Cargo.toml
+alpha|alpha|CDyLib|$PROBE_ROOT/fixture/alpha/Cargo.toml
+alpha|always|Bin|$PROBE_ROOT/fixture/alpha/Cargo.toml
+alpha|gated|Bin|$PROBE_ROOT/fixture/alpha/Cargo.toml
+beta|beta|RLib|$PROBE_ROOT/fixture/beta/Cargo.toml
+beta|always|Bin|$PROBE_ROOT/fixture/beta/Cargo.toml

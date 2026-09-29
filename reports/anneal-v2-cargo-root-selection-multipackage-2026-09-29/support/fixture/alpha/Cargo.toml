@@ -1,0 +1,23 @@
+[package]
+name = "alpha"
+version = "0.1.0"
+edition = "2024"
+
+[features]
+gated = []
+
+[lib]
+crate-type = ["rlib", "cdylib"]
+
+[[bin]]
+name = "always"
+path = "src/always.rs"
+
+[[bin]]
+name = "gated"
+path = "src/gated.rs"
+required-features = ["gated"]
+
+[[test]]
+name = "alpha_integration"
+path = "tests/integration.rs"

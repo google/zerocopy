@@ -1,0 +1,25 @@
+{
+  "harness_lock": {
+    "argv": [
+      "$CARGO_HOME/bin/cargo",
+      "generate-lockfile",
+      "--offline"
+    ],
+    "cwd": "$PROBE_ROOT/harness",
+    "exit_code": 0,
+    "stdout_file": "raw/harness_lock.stdout",
+    "stderr_file": "raw/harness_lock.stderr"
+  },
+  "harness_build": {
+    "argv": [
+      "$CARGO_HOME/bin/cargo",
+      "build",
+      "--offline",
+      "--locked"
+    ],
+    "cwd": "$PROBE_ROOT/harness",
+    "exit_code": 0,
+    "stdout_file": "raw/harness_build.stdout",
+    "stderr_file": "raw/harness_build.stderr"
+  }
+}

@@ -1,0 +1,12 @@
+[package]
+name = "anneal-resolver-probe"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+anyhow = "1.0.102"
+clap = { version = "4.5", features = ["derive"] }
+clap-cargo = { version = "0.18.3", features = ["cargo_metadata"] }
+cargo_metadata = "0.23.1"
+log = "0.4"
+sha2 = "0.10"

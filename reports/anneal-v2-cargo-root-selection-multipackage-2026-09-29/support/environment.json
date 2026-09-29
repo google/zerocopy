@@ -1,0 +1,30 @@
+{
+  "observed_at": "2026-09-29",
+  "host": "macOS 26.6.2 (25G83), arm64",
+  "source": {
+    "repository": "google/zerocopy",
+    "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+    "path": "anneal/src/resolve.rs",
+    "sha256": "6b36c1c5647d4bff5955799c02c6c764ee1b7e29455fd55a8c5d01f0462d23b4"
+  },
+  "fixture_tree_sha256": "b7e2f9a095f13f09b05ac95b35c3eb93661700630c371c75a294d4b37b931674",
+  "toolchain": {
+    "name": "nightly-2026-05-31-aarch64-apple-darwin",
+    "rustc": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+    "rustc_revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "cargo": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)",
+    "cargo_revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+  },
+  "execution": {
+    "cargo_home": "project-local .anneal-local-tools/cargo cache",
+    "rustup_home": "project-local .anneal-local-tools/rustup",
+    "cargo_target_dir": "conversation-specific Meta/Data directory",
+    "offline": true,
+    "harness_lock_generated_by": "cargo generate-lockfile --offline",
+    "harness_build": "cargo build --offline --locked",
+    "fixture_lock_generated_by": "cargo generate-lockfile --offline",
+    "cargo_controls": "cargo check --offline --locked --message-format json"
+  }
+}

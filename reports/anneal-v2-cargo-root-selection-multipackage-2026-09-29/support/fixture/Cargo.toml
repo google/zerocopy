@@ -1,0 +1,4 @@
+[workspace]
+resolver = "3"
+members = ["alpha", "beta"]
+default-members = ["alpha"]
