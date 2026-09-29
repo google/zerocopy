@@ -1,0 +1,105 @@
+{
+  "bounded_context_ids": [
+    "B15",
+    "C01",
+    "F02",
+    "F04",
+    "F13",
+    "F20",
+    "I02",
+    "I039",
+    "I042",
+    "I045",
+    "I091",
+    "I131",
+    "I132",
+    "I134"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [
+    "C09",
+    "C11",
+    "F07",
+    "F08",
+    "F19",
+    "I012",
+    "I038",
+    "I04",
+    "I041",
+    "I089",
+    "I092",
+    "I099"
+  ],
+  "changed_residual_ids": [
+    "C09",
+    "C11",
+    "F07",
+    "F08",
+    "F19",
+    "I012",
+    "I038",
+    "I04",
+    "I041",
+    "I089",
+    "I092",
+    "I099"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "C09",
+    "C11",
+    "F07",
+    "F08",
+    "F19",
+    "I012",
+    "I038",
+    "I04",
+    "I041",
+    "I089",
+    "I092",
+    "I099"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v28.csv": "7ce97c5854ed109f0d117a14922b9b873f888465ac96510b7095c145052205b7",
+    "investigation-final-v28.csv": "ffed44868166fdaee5a3cd7edf62c3d1d7c149ae3f9a9759d16b06de619e7d20",
+    "row-challenge-v28.json": "60802186d258eda42c5b4cf5316463032a151e04d2522050f0f5038bbd491b7e",
+    "source-package-inventory-v28.csv": "b2bf899ffb2e36e1049f8a4743599c726d0d2bf1535ba4eeeaf950d703ceb31d"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v28.json": "87fa54c3f6160171556b787b2b16ee07bdb25191e62e0bcc1724a7f1f75e4a11",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v27/3730-crosswalk-final-v27.csv": "83f4449293f02f4c81925a5d5d031b6988b2fda63d978cfe351b099bd3a0df6e",
+    "v27/investigation-final-v27.csv": "5773c739583ab976889d5a4cc5c947a25c37a80af0676de0c0f5268264accc4a",
+    "v27/row-challenge-v27.json": "9ec8bb96dbf66f45397362c439379ea4bf6bbabcabd7cffa509e9456014142ce"
+  },
+  "inventory_files": 44,
+  "investigation_count": 159,
+  "reference_tip_at_start": "1b67b6b87b3266f1f798cd825de9988e297b5822",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v27",
+    "lean-unsaved-cross-module-import-v4-30-0-rc2",
+    "lean-lake-unsaved-cross-module-import-v4-30-0-rc2",
+    "lean-lsp-cross-version-goal-completion-v4-30-0-rc2",
+    "anneal-3731-lake-fresh-cache-consumer-matrix-2026-09-29",
+    "lean-lsp-open-buffer-path-disappearance-v4-30-0-rc2"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v27",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

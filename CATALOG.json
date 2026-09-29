@@ -1918,6 +1918,43 @@
         "lean/lake"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v28": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "1b67b6b87b3266f1f798cd825de9988e297b5822",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "9ec8bb96dbf66f45397362c439379ea4bf6bbabcabd7cffa509e9456014142ce"
+          },
+          "name": "Published v27 coverage ledger"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Pinned Lean and Lake component executions"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lean/lake"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6394,6 +6431,24 @@
         "lake/build-cache"
       ]
     },
+    "anneal-3731-lake-fresh-cache-consumer-matrix-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/lake-preparation",
+        "lake/artifact-cache",
+        "lake/consumer-state"
+      ]
+    },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -10471,6 +10526,46 @@
         "lake/module-artifacts"
       ]
     },
+    "lean-lake-unsaved-cross-module-import-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 and Lake"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/lsp",
+        "lean/imports",
+        "lake/server"
+      ]
+    },
+    "lean-lsp-cross-version-goal-completion-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server and batch checker"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/language-server",
+        "lean/tactic-state",
+        "lean/protocol-concurrency",
+        "anneal/interactive-architecture"
+      ]
+    },
     "lean-lsp-old-version-wait-race-v4-30-0-rc2": {
       "observed_at": "2026-09-28",
       "subjects": [
@@ -10490,6 +10585,26 @@
         "lean/tactic-state",
         "lean/invalidation",
         "anneal/interactive"
+      ]
+    },
+    "lean-lsp-open-buffer-path-disappearance-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 language server and batch checker"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/language-server",
+        "lean/document-lifecycle",
+        "anneal/editor-ownership"
       ]
     },
     "lean-macro-hygiene-v4-30-0-rc2": {
@@ -11053,6 +11168,25 @@
         "lean/sorry",
         "lean/unsafe",
         "lean/native-evaluation"
+      ]
+    },
+    "lean-unsaved-cross-module-import-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/lsp",
+        "lean/imports",
+        "lean/interactive"
       ]
     },
     "lean-unused-simp-args-linter-v4-30-0-rc2": {

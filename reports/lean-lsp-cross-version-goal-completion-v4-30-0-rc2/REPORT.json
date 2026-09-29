@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "lean",
+    "lean/language-server",
+    "lean/tactic-state",
+    "lean/protocol-concurrency",
+    "anneal/interactive-architecture"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 language server and batch checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean-binary-sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

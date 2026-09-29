@@ -1,0 +1,1954 @@
+[
+  {
+    "kind": "command",
+    "time_monotonic": 2002524.041597541,
+    "label": "build_old_dependency",
+    "argv": [
+      "$LEAN_BIN",
+      "-o",
+      "Dep.olean",
+      "Dep.lean"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "kind": "artifact",
+    "time_monotonic": 2002524.041776166,
+    "label": "build_old_dependency",
+    "source_sha256": "3f73ffee4b6b6612fd97b89a1a9f46db69eb6a200ce3f4d322fba02e803c0b60",
+    "olean_sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71"
+  },
+  {
+    "kind": "server_start",
+    "time_monotonic": 2002524.042923666,
+    "argv": [
+      "$LEAN_BIN",
+      "--server"
+    ],
+    "cwd": "$FIXTURE",
+    "lean_path": "$FIXTURE",
+    "pid": 46400
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.06354725,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 46398,
+        "rootUri": "file://$FIXTURE",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.069038875,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.069053625,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.069294083,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "def sharedValue : Nat := 3\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.0693005,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.069323708,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.069329375,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.069519458,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.125395958,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.306335583,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.30639775,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.306404208,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.306632208,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002524.306635041,
+    "filename": "Dep.lean",
+    "version": 1,
+    "response": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.3069215,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem current : sharedValue = 3 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.306929541,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.30716325,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.364147583,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.537520291,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.537531041,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.537536833,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.537648041,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002524.537650916,
+    "filename": "Consumer.lean",
+    "version": 1,
+    "response": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.537678791,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.537979,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002524.537980666,
+    "label": "consumer_before_unsaved_edit",
+    "response": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.537997,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "def sharedValue : Nat := 4\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.538005583,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.625518375,
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.741950166,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.741965625,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Dep.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.741973708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.742020666,
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002524.742022333,
+    "uri": "file://$FIXTURE/Dep.lean",
+    "version": 2,
+    "response": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "unsaved_producer_state",
+    "time_monotonic": 2002524.742183166,
+    "buffer_sha256": "c9d2489f2aab1d2e058b7952c3c179fa39a8b9ce2edcf63bb6d0070c27c0943d",
+    "disk_sha256": "3f73ffee4b6b6612fd97b89a1a9f46db69eb6a200ce3f4d322fba02e803c0b60",
+    "olean_sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71",
+    "proof_sha256": "304bffdabf0dfc2274583df1773c83655d985883b359f889c56860b407660059"
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.742206708,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.742560583,
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002524.742562291,
+    "label": "consumer_after_unsaved_edit",
+    "response": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.742776833,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem current : sharedValue = 3 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.7427835,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.742950708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.802659875,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.850952875,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.983059125,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.983110208,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.983117,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.983218958,
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002524.98322125,
+    "filename": "FreshWhileProducerUnsaved.lean",
+    "version": 1,
+    "response": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002524.983245708,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002524.983458166,
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002524.98346125,
+    "label": "new_consumer_while_producer_unsaved",
+    "response": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "command",
+    "time_monotonic": 2002525.162107083,
+    "label": "batch_with_old_artifact",
+    "argv": [
+      "$LEAN_BIN",
+      "--json",
+      "Consumer.lean"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "kind": "command",
+    "time_monotonic": 2002525.337036125,
+    "label": "build_new_dependency",
+    "argv": [
+      "$LEAN_BIN",
+      "-o",
+      "Dep.olean",
+      "Dep.lean"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "kind": "artifact",
+    "time_monotonic": 2002525.337202458,
+    "label": "build_new_dependency",
+    "source_sha256": "c9d2489f2aab1d2e058b7952c3c179fa39a8b9ce2edcf63bb6d0070c27c0943d",
+    "olean_sha256": "142f9093501e0337ed2634fe0070957086cead5140326fd70b7fc6c6e29bbaeb"
+  },
+  {
+    "kind": "materialized_state",
+    "time_monotonic": 2002525.337268458,
+    "buffer_sha256": "c9d2489f2aab1d2e058b7952c3c179fa39a8b9ce2edcf63bb6d0070c27c0943d",
+    "disk_sha256": "c9d2489f2aab1d2e058b7952c3c179fa39a8b9ce2edcf63bb6d0070c27c0943d",
+    "olean_sha256": "142f9093501e0337ed2634fe0070957086cead5140326fd70b7fc6c6e29bbaeb",
+    "proof_sha256": "304bffdabf0dfc2274583df1773c83655d985883b359f889c56860b407660059"
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.337335041,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "file://$FIXTURE/Dep.lean",
+            "type": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.337345583,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.337401416,
+    "message": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.337408625,
+    "message": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.337868333,
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002525.337872291,
+    "label": "old_consumer_after_materialization",
+    "response": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.338093458,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Dep\ntheorem current : sharedValue = 3 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.33810425,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.338289666,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.372914333,
+    "message": {
+      "id": 4,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.402813458,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.580597708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.580633416,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.580685708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  sharedValue\nis not definitionally equal to the right-hand side\n  3\n\n\u22a2 sharedValue = 3",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.580734416,
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002525.580736208,
+    "filename": "FreshAfterMaterialization.lean",
+    "version": 1,
+    "response": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.580767541,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+          "version": 1
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.581117208,
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 sharedValue = 3"
+        ],
+        "rendered": "```lean\n\u22a2 sharedValue = 3\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002525.581118666,
+    "label": "new_consumer_after_materialization",
+    "response": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 sharedValue = 3"
+        ],
+        "rendered": "```lean\n\u22a2 sharedValue = 3\n```"
+      }
+    }
+  },
+  {
+    "kind": "command",
+    "time_monotonic": 2002525.755203416,
+    "label": "batch_with_new_artifact",
+    "argv": [
+      "$LEAN_BIN",
+      "--json",
+      "Consumer.lean"
+    ],
+    "exit_code": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  sharedValue\\nis not definitionally equal to the right-hand side\\n  3\\n\\n\u22a2 sharedValue = 3\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"Consumer.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.755264041,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.755540083,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "languageId": "lean",
+          "version": 2,
+          "text": "import Dep\ntheorem current : sharedValue = 3 := by\n  rfl\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.755548208,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.755599708,
+    "message": {
+      "id": 5,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.755778083,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.756005875,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.816284708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.832434,
+    "message": {
+      "id": 6,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.890727375,
+    "message": {
+      "id": 7,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.997443208,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.997451,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.997464416,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "message": "Tactic `rfl` failed: The left-hand side\n  sharedValue\nis not definitionally equal to the right-hand side\n  3\n\n\u22a2 sharedValue = 3",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 2
+              },
+              "start": {
+                "character": 2,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.997500666,
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002525.997503,
+    "filename": "Consumer.lean",
+    "version": 2,
+    "response": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.997538291,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/Consumer.lean",
+          "version": 2
+        },
+        "position": {
+          "line": 2,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.997898625,
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 sharedValue = 3"
+        ],
+        "rendered": "```lean\n\u22a2 sharedValue = 3\n```"
+      }
+    }
+  },
+  {
+    "kind": "goal",
+    "time_monotonic": 2002525.99790175,
+    "label": "reopened_consumer_after_materialization",
+    "response": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 sharedValue = 3"
+        ],
+        "rendered": "```lean\n\u22a2 sharedValue = 3\n```"
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.998040333,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/OnlyBuffer.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "def onlyBufferValue : Nat := 9\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002525.998047,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/OnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002525.99818725,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/OnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.058617041,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/OnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.176568541,
+    "message": {
+      "id": 8,
+      "jsonrpc": "2.0",
+      "method": "workspace/semanticTokens/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.20582725,
+    "message": {
+      "id": 9,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.238549708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/OnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.238588,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/OnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.238598041,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/OnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.239043916,
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002526.239046458,
+    "filename": "OnlyBuffer.lean",
+    "version": 1,
+    "response": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "open_only_buffer",
+    "time_monotonic": 2002526.239130166,
+    "source_exists": false,
+    "artifact_exists": false
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002526.239362,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import OnlyBuffer\n#check onlyBufferValue\n"
+        }
+      }
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002526.23937025,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.239606666,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.297891791,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.31622775,
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.362639208,
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.420815416,
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.478722791,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.478733166,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 2,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.478770916,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "message": "unknown module prefix 'OnlyBuffer'\n\nNo directory 'OnlyBuffer' or file 'OnlyBuffer.olean' in the search path entries:\n$FIXTURE\n$TOOLCHAIN/lib/lean",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 0
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.478842666,
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "barrier",
+    "time_monotonic": 2002526.478844291,
+    "filename": "ImportsOnlyBuffer.lean",
+    "version": 1,
+    "response": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002526.478868208,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.479500166,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Consumer.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.479830708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/Dep.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.480278,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/FreshAfterMaterialization.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.480540375,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/FreshWhileProducerUnsaved.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.480558708,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/ImportsOnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.480762916,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$FIXTURE/OnlyBuffer.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "kind": "server_message",
+    "time_monotonic": 2002526.493948416,
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "kind": "client_message",
+    "time_monotonic": 2002526.493975291,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "kind": "server_exit",
+    "time_monotonic": 2002526.498554708,
+    "exit_code": 0,
+    "stderr": ""
+  },
+  {
+    "kind": "lean_version",
+    "time_monotonic": 2002526.525522,
+    "value": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)"
+  }
+]

@@ -1,0 +1,1642 @@
+[
+  {
+    "ns": 195046458,
+    "kind": "subject",
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": {
+      "1": "30089ee2c6128c9ed04ebe0c581761d4e645f6e7980e68ce1d3fc29c6ba3760d",
+      "2": "ca471676fa095a961ef8759a9ea4fcdc8d1535af514c4187f1c47244ec4a8838",
+      "3": "c97e36df532d0d324e6dbed73ee6af72ed8a9e58c60a04f4030822056ae8cfcb"
+    }
+  },
+  {
+    "ns": 1080320416,
+    "kind": "batch",
+    "label": "source-1",
+    "path": "$WORK/Batch-1.lean",
+    "source_sha256": "30089ee2c6128c9ed04ebe0c581761d4e645f6e7980e68ce1d3fc29c6ba3760d",
+    "exit": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 1 = 1\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 1 = 1\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "ns": 1242623458,
+    "kind": "batch",
+    "label": "source-2",
+    "path": "$WORK/Batch-2.lean",
+    "source_sha256": "ca471676fa095a961ef8759a9ea4fcdc8d1535af514c4187f1c47244ec4a8838",
+    "exit": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 2 = 2\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 2 = 2\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "ns": 1402814125,
+    "kind": "batch",
+    "label": "source-3",
+    "path": "$WORK/Batch-3.lean",
+    "source_sha256": "c97e36df532d0d324e6dbed73ee6af72ed8a9e58c60a04f4030822056ae8cfcb",
+    "exit": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 3 = 3\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-3.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 3 = 3\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Batch-3.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "ns": 1403156166,
+    "kind": "disk_state",
+    "label": "initial",
+    "path": "$WORK/Open.lean",
+    "exists": true,
+    "sha256": "30089ee2c6128c9ed04ebe0c581761d4e645f6e7980e68ce1d3fc29c6ba3760d",
+    "intended_buffer_version": null
+  },
+  {
+    "ns": 1404217541,
+    "kind": "server_start",
+    "pid": 48969
+  },
+  {
+    "ns": 1440456125,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 48964,
+        "rootUri": "file://$WORK",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "ns": 1441388708,
+    "kind": "server",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "ns": 1441405916,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "ns": 1441432458,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : 1 = 1 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "ns": 1441439583,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 1442238666,
+    "kind": "server",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ns": 1442245375,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "ns": 1443200333,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 1530115083,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Open.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 1682877458,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 1682937041,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 1683006791,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 1 = 1",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 1 = 1",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Open.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 1683998708,
+    "kind": "server",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1684034791,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1685387208,
+    "kind": "server",
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 1 = 1"
+        ],
+        "rendered": "```lean\n\u22a2 1 = 1\n```"
+      }
+    }
+  },
+  {
+    "ns": 1685408041,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "theorem demo : 2 = 2 := by\n  exact ?_\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ns": 1685415833,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1892538208,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1892556750,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1892575375,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 2 = 2",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 2 = 2",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1892821125,
+    "kind": "server",
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1892914125,
+    "kind": "disk_state",
+    "label": "unsaved-B-disk-A",
+    "path": "$WORK/Open.lean",
+    "exists": true,
+    "sha256": "30089ee2c6128c9ed04ebe0c581761d4e645f6e7980e68ce1d3fc29c6ba3760d",
+    "intended_buffer_version": 2
+  },
+  {
+    "ns": 1892937083,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1893231791,
+    "kind": "server",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 1893429875,
+    "kind": "disk_state",
+    "label": "external-C-no-watcher",
+    "path": "$WORK/Open.lean",
+    "exists": true,
+    "sha256": "c97e36df532d0d324e6dbed73ee6af72ed8a9e58c60a04f4030822056ae8cfcb",
+    "intended_buffer_version": 2
+  },
+  {
+    "ns": 1893445125,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1893561000,
+    "kind": "server",
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1893571791,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1893807625,
+    "kind": "server",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 1893817000,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "file://$WORK/Open.lean",
+            "type": 2
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ns": 1893817541,
+    "kind": "watcher_sent",
+    "label": "external-C-changed"
+  },
+  {
+    "ns": 1893822625,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1893961750,
+    "kind": "server",
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1893969916,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1894164416,
+    "kind": "server",
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 1894248125,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didSave",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        }
+      }
+    }
+  },
+  {
+    "ns": 1894277708,
+    "kind": "disk_state",
+    "label": "saved-B-over-C",
+    "path": "$WORK/Open.lean",
+    "exists": true,
+    "sha256": "ca471676fa095a961ef8759a9ea4fcdc8d1535af514c4187f1c47244ec4a8838",
+    "intended_buffer_version": 2
+  },
+  {
+    "ns": 1894285625,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1894365041,
+    "kind": "server",
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1894371958,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1894563750,
+    "kind": "server",
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 1894683375,
+    "kind": "disk_state",
+    "label": "renamed-old-absent",
+    "path": "$WORK/Open.lean",
+    "exists": false,
+    "sha256": null,
+    "intended_buffer_version": 2
+  },
+  {
+    "ns": 1894726000,
+    "kind": "disk_state",
+    "label": "renamed-new-B",
+    "path": "$WORK/Renamed.lean",
+    "exists": true,
+    "sha256": "ca471676fa095a961ef8759a9ea4fcdc8d1535af514c4187f1c47244ec4a8838",
+    "intended_buffer_version": null
+  },
+  {
+    "ns": 1894744833,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "file://$WORK/Open.lean",
+            "type": 3
+          },
+          {
+            "uri": "file://$WORK/Renamed.lean",
+            "type": 1
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ns": 1894745666,
+    "kind": "watcher_sent",
+    "label": "rename"
+  },
+  {
+    "ns": 1894752666,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1894886250,
+    "kind": "server",
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 1894897541,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1895115333,
+    "kind": "server",
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 1895129750,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        }
+      }
+    }
+  },
+  {
+    "ns": 1895137583,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Open.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 1895360958,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Open.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 1895456625,
+    "kind": "server",
+    "message": {
+      "error": {
+        "code": -32801,
+        "message": "Cannot process request to closed file 'file://$WORK/Open.lean'"
+      },
+      "id": 26,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "ns": 1895509791,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "theorem demo : 2 = 2 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "ns": 1895514791,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 1895652125,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 1954265041,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 2135451916,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 2135461416,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "ns": 2135479583,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 2 = 2",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 2 = 2",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 2135494083,
+    "kind": "server",
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 2135521541,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2135831166,
+    "kind": "server",
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 2135968000,
+    "kind": "disk_state",
+    "label": "deleted-open-new-uri",
+    "path": "$WORK/Renamed.lean",
+    "exists": false,
+    "sha256": null,
+    "intended_buffer_version": 1
+  },
+  {
+    "ns": 2135991000,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "workspace/didChangeWatchedFiles",
+      "params": {
+        "changes": [
+          {
+            "uri": "file://$WORK/Renamed.lean",
+            "type": 3
+          }
+        ]
+      }
+    }
+  },
+  {
+    "ns": 2135991833,
+    "kind": "watcher_sent",
+    "label": "delete"
+  },
+  {
+    "ns": 2135999583,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 2136137375,
+    "kind": "server",
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 2136147708,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2136394833,
+    "kind": "server",
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 2 = 2"
+        ],
+        "rendered": "```lean\n\u22a2 2 = 2\n```"
+      }
+    }
+  },
+  {
+    "ns": 2136409125,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        }
+      }
+    }
+  },
+  {
+    "ns": 2136419291,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2136632416,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "ns": 2136684208,
+    "kind": "server",
+    "message": {
+      "error": {
+        "code": -32801,
+        "message": "Cannot process request to closed file 'file://$WORK/Renamed.lean'"
+      },
+      "id": 29,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "ns": 2165079833,
+    "kind": "batch",
+    "label": "deleted-path",
+    "path": "$WORK/Renamed.lean",
+    "source_sha256": null,
+    "exit": 1,
+    "stdout": "",
+    "stderr": "no such file or directory (error code: 4294967294)\n  file: $WORK/Renamed.lean\n"
+  },
+  {
+    "ns": 2165334000,
+    "kind": "disk_state",
+    "label": "recreated-C",
+    "path": "$WORK/Renamed.lean",
+    "exists": true,
+    "sha256": "c97e36df532d0d324e6dbed73ee6af72ed8a9e58c60a04f4030822056ae8cfcb",
+    "intended_buffer_version": null
+  },
+  {
+    "ns": 2165408500,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "languageId": "lean",
+          "version": 2,
+          "text": "theorem demo : 3 = 3 := by\n  exact ?_\n"
+        }
+      }
+    }
+  },
+  {
+    "ns": 2165418416,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 2165689958,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2221593541,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 2402892666,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2402902083,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2402930166,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "message": "don't know how to synthesize placeholder\ncontext:\n\u22a2 3 = 3",
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 8,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 10,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\n\u22a2 3 = 3",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 24,
+                "line": 0
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 2402974750,
+    "kind": "server",
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "ns": 2403000166,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        },
+        "position": {
+          "line": 1,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "ns": 2403318833,
+    "kind": "server",
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "\u22a2 3 = 3"
+        ],
+        "rendered": "```lean\n\u22a2 3 = 3\n```"
+      }
+    }
+  },
+  {
+    "ns": 2586296833,
+    "kind": "batch",
+    "label": "recreated-C",
+    "path": "$WORK/Renamed.lean",
+    "source_sha256": "c97e36df532d0d324e6dbed73ee6af72ed8a9e58c60a04f4030822056ae8cfcb",
+    "exit": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"don't know how to synthesize placeholder\\ncontext:\\n\u22a2 3 = 3\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Renamed.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Elab.synthPlaceholder\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\n\u22a2 3 = 3\",\"endPos\":{\"column\":10,\"line\":2},\"fileName\":\"$WORK/Renamed.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":24,\"line\":1},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "ns": 2586345125,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "file://$WORK/Renamed.lean"
+        }
+      }
+    }
+  },
+  {
+    "ns": 2586353583,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "ns": 2587117291,
+    "kind": "server",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "file://$WORK/Renamed.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "ns": 2587127166,
+    "kind": "server",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "ns": 2587135291,
+    "kind": "client",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit",
+      "params": {}
+    }
+  },
+  {
+    "ns": 2589593958,
+    "kind": "wire_drain_complete"
+  },
+  {
+    "ns": 2593202291,
+    "kind": "server_exit",
+    "exit": 0,
+    "stderr": ""
+  }
+]
