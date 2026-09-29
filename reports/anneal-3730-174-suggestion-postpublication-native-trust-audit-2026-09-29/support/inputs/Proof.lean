@@ -1,0 +1,1 @@
+example : True := by trivial

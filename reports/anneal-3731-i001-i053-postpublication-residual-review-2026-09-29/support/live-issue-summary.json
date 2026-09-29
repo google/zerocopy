@@ -1,0 +1,14 @@
+{
+  "number": 3731,
+  "state": "open",
+  "updated_at": "2026-09-29T05:39:11Z",
+  "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+  "comments": [
+    {
+      "id": 5884299718,
+      "updated_at": "2026-09-29T05:32:10Z",
+      "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+    }
+  ],
+  "fetched_at_utc": "2026-09-29T20:02:49.646515+00:00"
+}

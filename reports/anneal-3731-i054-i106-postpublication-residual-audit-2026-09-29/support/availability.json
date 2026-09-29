@@ -1,0 +1,40 @@
+{
+  "aeneas_binary_exists": true,
+  "cached_lean_toolchains": [
+    "leanprover--lean4---v4.29.0",
+    "leanprover--lean4---v4.30.0-rc2"
+  ],
+  "charon_binary_exists": true,
+  "checked_at": "2026-09-29",
+  "commands_on_path": {
+    "dtrace": "/usr/sbin/dtrace",
+    "dune": null,
+    "fs_usage": "/usr/bin/fs_usage",
+    "nix-store": null,
+    "node": "/usr/local/bin/node",
+    "npm": "/usr/local/bin/npm",
+    "ocamlc": null,
+    "opam": null,
+    "sandbox-exec": "/usr/bin/sandbox-exec"
+  },
+  "named_archive_candidates": [
+    "scratch/20260927-reference-experiments/nix_omnibus/omnibus-tar-build-attempt1.log",
+    "scratch/20260927-reference-experiments/nix_omnibus/omnibus-tar-watchdog-attempt1.json",
+    "scratch/20260927-reference-experiments/nix_omnibus_plan/dry-run-omnibus-archive-ci.txt",
+    "scratch/20260927-reference-experiments/nix_omnibus_plan/dry-run-omnibus-archive.txt",
+    "scratch/20260927-reference-experiments/nix_omnibus_plan/dry-run-omnibus-tar.txt",
+    "scratch/20260927-reference-experiments/reference-publish/reports/anneal-omnibus-archive-byte-reproducibility-main-41f5b37/support/execution/omnibus-tar-watchdog-attempt1.json",
+    "scratch/lean-archive-anomaly/lean-4.30.0-rc2-linux_aarch64.tar.zst"
+  ],
+  "npm_global_packages": [
+    "corepack",
+    "homebridge",
+    "homebridge-config-ui-x",
+    "npm"
+  ],
+  "python_modules": {
+    "fastmcp": false,
+    "mcp": false
+  },
+  "scope": "PATH, Python import resolution, globally installed npm packages, and named local-tools paths; no global-absence claim"
+}

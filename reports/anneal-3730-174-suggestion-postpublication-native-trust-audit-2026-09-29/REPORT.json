@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/research-coverage",
+    "lean/native-plugins",
+    "anneal/workspace-trust"
+  ],
+  "subjects": [
+    {
+      "name": "Published reference and v24 suggestion crosswalk",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+        "v24_crosswalk_sha256": "ce9ffc39de2e3e3db346d2ea5ab4e18e1d5570aeff89bfc7f3a344d3392750c6"
+      }
+    },
+    {
+      "name": "Live issues 3730 and 3731 scope",
+      "identity": {
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "issue_3731_crosswalk_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned native Lean plugin marker control",
+      "identity": {
+        "lean_version": "4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+        "probe_sha256": "945fcfe53d2538cdb140d1d1e823477a93d54720b9240765a27a1fd38f837d8e",
+        "result_sha256": "8301f229581a69f7acfb02c6fce4f660334a48b410395703668cf3c2d82ce66f"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

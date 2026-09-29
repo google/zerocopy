@@ -1,0 +1,19 @@
+{
+  "v23_ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+  "prior_review_sha256": "0a135d80d61cafbb12b1becfed3689b3c47965ed38083cdd8edc051db7bc90a5",
+  "row_count": 53,
+  "complete_count": 2,
+  "partial_count": 51,
+  "cited_package_count": 70,
+  "cited_evidence_file_count": 147,
+  "missing_cited_evidence_files": [],
+  "new_cached_only_experiment_ids": [
+    "I005"
+  ],
+  "row_review_sha256": "4de0526bfa9492520824b63cc5f509d497e81b3f5e1115bea0e68388ba1c8aee",
+  "package_inventory_sha256": "b08486050437cae0c6f3b963e0b2a8d0163e34d64cc9dbab3f1d92acb626aa0b",
+  "i005_results_sha256": "cc982bddd247b2425a331ff0a14f8fc4fcbf0bc236eaff3756cfea6d183d5101",
+  "i005_probe_sha256": "4655680b49740e150bf0fe358d4509f9a14cf55b361cd77a3aff51548a27f942",
+  "live_issue_summary_sha256": "9df6255718de662a5dbc03be1602b5279159bef8f81938b37decd75dfab031c2",
+  "resource_summary_sha256": "b6f28c879b19df5b92553dc925eb7084c4dc3beeaa966b8092f6ee93ed7d4885"
+}

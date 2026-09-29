@@ -1,0 +1,96 @@
+{
+  "case_timeout_seconds": 15,
+  "cases": [
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$WORK/plugin-allow/profile.sb",
+        "$BIN/lean",
+        "--plugin=$WORK/plugin-allow/workspace/plugin__probe_Plugin.dylib",
+        "Proof.lean"
+      ],
+      "label": "plugin-allow",
+      "marker_exists": true,
+      "marker_sha256": "d3fee1b1103ae4a2e7fd52a5939b5a049c8fa2b1e821c848679b6c33594f0400",
+      "marker_write_denied": false,
+      "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+      "plugin_used": true,
+      "process_exited": true,
+      "profile": "(version 1)\n(allow default)\n(deny network*)\n",
+      "proof_sha256": "85ae31b91827a6d559c3f720054b6ce6a134d79307dc76b9a3b43d515e232d0c",
+      "returncode": 0,
+      "seconds": 0.7687,
+      "stderr": "",
+      "stderr_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$WORK/plugin-deny/profile.sb",
+        "$BIN/lean",
+        "--plugin=$WORK/plugin-deny/workspace/plugin__probe_Plugin.dylib",
+        "Proof.lean"
+      ],
+      "label": "plugin-deny",
+      "marker_exists": false,
+      "marker_sha256": null,
+      "marker_write_denied": true,
+      "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+      "plugin_used": true,
+      "process_exited": true,
+      "profile": "(version 1)\n(allow default)\n(deny file-write* (subpath \"$WORK/plugin-deny/outside\"))\n(deny network*)\n",
+      "proof_sha256": "85ae31b91827a6d559c3f720054b6ce6a134d79307dc76b9a3b43d515e232d0c",
+      "returncode": 1,
+      "seconds": 0.2137,
+      "stderr": "error: operation not permitted (error code: 1)\n  file: $WORK/plugin-deny/outside/marker.txt\n",
+      "stderr_raw_sha256": "efb637967a355ae6d9c10a042b0b49418dc3eb3df2ba05ae73fb54252cb043ac",
+      "stdout": "",
+      "stdout_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$WORK/plain-deny/profile.sb",
+        "$BIN/lean",
+        "Proof.lean"
+      ],
+      "label": "plain-deny",
+      "marker_exists": false,
+      "marker_sha256": null,
+      "marker_write_denied": true,
+      "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+      "plugin_used": false,
+      "process_exited": true,
+      "profile": "(version 1)\n(allow default)\n(deny file-write* (subpath \"$WORK/plain-deny/outside\"))\n(deny network*)\n",
+      "proof_sha256": "85ae31b91827a6d559c3f720054b6ce6a134d79307dc76b9a3b43d515e232d0c",
+      "returncode": 0,
+      "seconds": 0.1986,
+      "stderr": "",
+      "stderr_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout": "",
+      "stdout_raw_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "timed_out": false
+    }
+  ],
+  "input_sha256": {
+    "Plugin.lean": "85d9f06b45372ec0dfed61803b996474a5ef628c77588dddd3ae0cc2136925ab",
+    "Proof.lean": "85ae31b91827a6d559c3f720054b6ce6a134d79307dc76b9a3b43d515e232d0c",
+    "plugin__probe_Plugin.dylib": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4"
+  },
+  "resource_limits": {
+    "cpu_seconds": 10,
+    "file_bytes": 16777216,
+    "nofile": 256
+  },
+  "tool_sha256": {
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "sandbox_exec": "abc5bb136d6b5cce8fa85d789f78e3326c51ca60cae637b2064adfb67a1dcd9a"
+  }
+}

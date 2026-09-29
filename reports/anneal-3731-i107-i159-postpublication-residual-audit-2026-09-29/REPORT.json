@@ -1,0 +1,39 @@
+{
+  "topics": [
+    "anneal/interactive-freshness",
+    "anneal/research-coverage",
+    "lean/lake",
+    "anneal/workspace-trust"
+  ],
+  "subjects": [
+    {
+      "name": "Reference v23 investigation ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+        "ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a"
+      }
+    },
+    {
+      "name": "Issue 3731 live scope, I107-I159",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3731",
+        "scope_sha256": "86ffa5e21acb87b8cca546e2081663173188c3b029085414429422bff287ae5a",
+        "full_body_sha256": "e1ca20c129376f0459674098d4f6ddd5355f4b24cdceaad0f2a9c6cb7e4d98aa",
+        "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533"
+      }
+    },
+    {
+      "name": "Pinned Lake configuration execution and sandbox control",
+      "identity": {
+        "lean_version": "4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "sandbox_exec_sha256": "abc5bb136d6b5cce8fa85d789f78e3326c51ca60cae637b2064adfb67a1dcd9a",
+        "probe_sha256": "58248208c8e1dabe01a2731b3dad969ec7c80a253459eac552328e96d40ee55a"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

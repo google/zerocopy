@@ -1,0 +1,14 @@
+{
+  "availability_scope": "Named local-tools tree, PATH and this host; no global absence or independent-host claim",
+  "built_anneal_omnibus_archive_found_in_named_local_tools_search": false,
+  "cached_aeneas": true,
+  "cached_charon": true,
+  "checked_at": "2026-09-29",
+  "lean_toolchain_names": [
+    "leanprover--lean4---v4.29.0",
+    "leanprover--lean4---v4.30.0-rc2"
+  ],
+  "meta_data_disk_free_bytes": 49229725696,
+  "physical_memory_bytes": 8589934592,
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O"
+}

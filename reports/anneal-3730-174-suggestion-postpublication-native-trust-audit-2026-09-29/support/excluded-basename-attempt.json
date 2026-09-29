@@ -1,0 +1,25 @@
+{
+  "classification": "excluded setup attempt; plugin never loaded",
+  "work_root": "/Users/josh/Codex/Meta/Data/20260929-lean-report-review/native-plugin-control-try1",
+  "cases": [
+    {
+      "label": "plugin-allow",
+      "returncode": 1,
+      "marker_exists": false,
+      "stderr": "error: error loading plugin, initializer not found 'initialize_plugin-v1'\n"
+    },
+    {
+      "label": "plugin-deny",
+      "returncode": 1,
+      "marker_exists": false,
+      "stderr": "error: error loading plugin, initializer not found 'initialize_plugin-v1'\n"
+    },
+    {
+      "label": "plain-deny",
+      "returncode": 0,
+      "marker_exists": false,
+      "stderr": ""
+    }
+  ],
+  "cause": "The retained binary was invoked under its archive filename plugin-v1.dylib; its exported initializer symbol is initialize_plugin__probe_Plugin. The valid probe copied identical bytes under plugin__probe_Plugin.dylib."
+}

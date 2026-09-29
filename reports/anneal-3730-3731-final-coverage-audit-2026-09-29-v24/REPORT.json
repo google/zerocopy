@@ -1,0 +1,37 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk"
+  ],
+  "subjects": [
+    {
+      "name": "Published reference v23 investigation and suggestion ledgers",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+        "investigation_ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+        "suggestion_crosswalk_sha256": "be56657530e039bfab53f3ef774289a83aeebe80d2741740281b963d78948b12"
+      }
+    },
+    {
+      "name": "Issues 3730 and 3731 live body and comment scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Three post-publication residual audits",
+      "identity": {
+        "i005_result_sha256": "cc982bddd247b2425a331ff0a14f8fc4fcbf0bc236eaff3756cfea6d183d5101",
+        "i076_result_sha256": "151bbb1d61f0ee0a5afcb14e80ca2ae2637ce3ba4f50c876742de5d7005d4565",
+        "i126_result_sha256": "5da5d945f48710da9c8225b90b7100f9ccfd016ef84443b9950588c8100114b2"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

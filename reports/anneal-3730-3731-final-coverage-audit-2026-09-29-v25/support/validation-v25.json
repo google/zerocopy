@@ -1,0 +1,59 @@
+{
+  "baseline_reference_head": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+  "changed_prerequisite_ids": [],
+  "changed_residual_ids": [
+    "G09",
+    "I126",
+    "I127"
+  ],
+  "changed_status_ids": [],
+  "cross_slice_observation_ids": [
+    "I127"
+  ],
+  "direct_suggestion_evidence_ids": [
+    "G09"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v25.csv": "46a49784422e3e7c05fc26a943ac91835b987e14fc5dda0ae2cda103a1cc26b9",
+    "investigation-final-v25.csv": "2845b53d89aa9b65f21341b05c2279b62efbd568a58769a12a18953095cdbfea",
+    "row-challenge-v25.json": "2fc5838d06c284abe5c75fa82e133a28b00065da41e8ae9929ffd6165635e77d",
+    "source-package-inventory-v25.csv": "75f8b085e362b87a6af7eaccb77726ff70e7973fe4cf82f9c16069f90f578315"
+  },
+  "input_sha256": {
+    "anneal-3730-174-suggestion-postpublication-native-trust-audit-2026-09-29/support/row-decisions.csv": "29ce0dc5f96f13399263a300d3b58f5b8c48fc8106cc4db0cd9a77146ea1e52f",
+    "live-issue-hashes.json": "ecff70f2c73950fe17bdd4182e84c116368b4cace14104678c7344fa7a0873d1",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v24/3730-crosswalk-final-v24.csv": "ce9ffc39de2e3e3db346d2ea5ab4e18e1d5570aeff89bfc7f3a344d3392750c6",
+    "v24/investigation-final-v24.csv": "39d54039e4616d3fe42a796aa39bbe4fa627b047244851bd21786202cd17af06",
+    "v24/row-challenge-v24.json": "3bd966c0f89780c26a7430313db51881e96cc8f50bdb4de7baa22bfcfb3545c8"
+  },
+  "inventory_files": 72,
+  "investigation_count": 159,
+  "new_bounded_experiment_ids": [
+    "I126"
+  ],
+  "row_count": 333,
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v24",
+    "anneal-3731-i001-i053-postpublication-residual-review-2026-09-29",
+    "anneal-3731-i054-i106-postpublication-residual-audit-2026-09-29",
+    "anneal-3731-i107-i159-postpublication-residual-audit-2026-09-29",
+    "anneal-3730-174-suggestion-postpublication-native-trust-audit-2026-09-29"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

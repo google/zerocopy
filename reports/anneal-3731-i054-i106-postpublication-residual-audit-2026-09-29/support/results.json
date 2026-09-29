@@ -1,0 +1,105 @@
+{
+  "commands": [
+    {
+      "argv": [
+        "$TOOLS/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$TOOLS/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i054-i106-postpublication-residual-audit-2026-09-29/support/artifacts/left.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/Cargo.toml",
+        "--package",
+        "left_package",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "case": "left",
+      "returncode": 0,
+      "seconds": 0.4027,
+      "stderr": "   Compiling left_package v0.1.0 ($WORK/left)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name shared_unit --edition=2021 left/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=d6ee48a9f0d99917 -C extra-filename=-e0e0ab7998f9e7e8 --out-dir $WORK/target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.26s\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "$TOOLS/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "$TOOLS/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i054-i106-postpublication-residual-audit-2026-09-29/support/artifacts/right.llbc",
+        "--",
+        "--manifest-path",
+        "$WORK/Cargo.toml",
+        "--package",
+        "right_package",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-v"
+      ],
+      "case": "right",
+      "returncode": 0,
+      "seconds": 0.0675,
+      "stderr": "   Compiling right_package v0.1.0 ($WORK/right)\n     Running `$TOOLS/bin/charon-driver rustc --crate-name shared_unit --edition=2021 right/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 -C split-debuginfo=unpacked --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=bcdf879572e712eb -C extra-filename=-65256884694b26e7 --out-dir $WORK/target/aarch64-apple-darwin/debug/deps --target aarch64-apple-darwin -L dependency=$WORK/target/aarch64-apple-darwin/debug/deps -L dependency=$WORK/target/debug/deps --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.03s\n",
+      "stdout": ""
+    }
+  ],
+  "input_sha256": {
+    "Cargo.lock": "f1f7304fb014fbb9d77b660a2b1446e8155280e23687a0b4ff8c74a78365264a",
+    "Cargo.toml": "daac43d9f076a608e58bd95c55499ca1dafe56a4d45dab16d11a090536d5bd73",
+    "left/Cargo.toml": "13adcccd7ef5f9655b129a674e4474e68d2d44ee19157aa8205c8141c9649be6",
+    "left/src/lib.rs": "f63f2840bc662959bbad2434e629d24df2b9825b2dc64a3984b293b18ff33646",
+    "right/Cargo.toml": "0ddcd7ff5ea4445b6974fcd059543bf0af4eca4dbc37c4fbf65ff53f36c578dd",
+    "right/src/lib.rs": "26838ffc849d01dd50d2d3039a024f8dce4b65b8eac18bbdaa38ec4550ad820a"
+  },
+  "outputs": {
+    "left": {
+      "bytes": 3517,
+      "projection": {
+        "charon_version": "0.1.210",
+        "crate_name": "shared_unit",
+        "function_name": [
+          "shared_unit",
+          "marker"
+        ],
+        "has_errors": false,
+        "literal": [
+          "U32",
+          "11"
+        ],
+        "source_name": "left/src/lib.rs",
+        "source_text": "pub fn marker() -> u32 { 11 }\n"
+      },
+      "sha256": "07aef8e7dcc9caf48e0a0d6a80dfe87f74d2cb639c293011f17184557ac6a703"
+    },
+    "right": {
+      "bytes": 3519,
+      "projection": {
+        "charon_version": "0.1.210",
+        "crate_name": "shared_unit",
+        "function_name": [
+          "shared_unit",
+          "marker"
+        ],
+        "has_errors": false,
+        "literal": [
+          "U32",
+          "29"
+        ],
+        "source_name": "right/src/lib.rs",
+        "source_text": "pub fn marker() -> u32 { 29 }\n"
+      },
+      "sha256": "d5301c18f06024c9cb13c8b58b74567fe9dc45f701208621384ef3a5f8cc2a29"
+    }
+  },
+  "tool_sha256": {
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  }
+}

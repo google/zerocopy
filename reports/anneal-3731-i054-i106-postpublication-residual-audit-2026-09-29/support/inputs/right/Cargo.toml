@@ -1,0 +1,8 @@
+[package]
+name = "right_package"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "shared_unit"
+path = "src/lib.rs"

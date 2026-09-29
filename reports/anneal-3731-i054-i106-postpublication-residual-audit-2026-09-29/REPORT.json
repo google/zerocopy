@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/interactive-freshness",
+    "anneal/research-coverage",
+    "rust/charon",
+    "rust/compilation-unit-identity"
+  ],
+  "subjects": [
+    {
+      "name": "Reference v23 investigation ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+        "ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a"
+      }
+    },
+    {
+      "name": "Issue 3731 live scope, I054-I106",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue": "3731",
+        "scope_sha256": "e2b1de4faa69aaef8fd0bfbae01108d0f01eb7d0c49c5e19bb755f77cb6890b0",
+        "full_body_sha256": "e1ca20c129376f0459674098d4f6ddd5355f4b24cdceaad0f2a9c6cb7e4d98aa"
+      }
+    },
+    {
+      "name": "Pinned Charon same-name Cargo fixture",
+      "identity": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "charon_version": "0.1.210",
+        "probe_sha256": "d1267960f4ba3e8bba81e1173f0e0a9c215d4aac8cc30e1acf1c11f8d3354bf9"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

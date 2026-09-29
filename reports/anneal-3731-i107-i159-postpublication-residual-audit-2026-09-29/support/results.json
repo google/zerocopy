@@ -1,0 +1,89 @@
+{
+  "cases": [
+    {
+      "argv": [
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "config": "dynamic-lakefile.lean",
+      "config_sha256": "aee462168252e2d3fc78ffc5efbb0720ef3128e4dfff124ef83f72af78a63559",
+      "label": "dynamic-allow",
+      "marker_exists": true,
+      "marker_sha256": "26105cafeae6317aa36b81c39681ad995e300fc81fa5b5ce58dbe1a0e1a1e79a",
+      "profile": null,
+      "returncode": 0,
+      "sandbox_denies_outside_write": false,
+      "seconds": 1.4668,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "stderr": "info: trust_fixture: no previous manifest, creating one from scratch\n",
+      "stderr_sha256": "adf87f117f89c39505668d7e77d4726a66d50c899074558f4b53d9ca25e494c7",
+      "stdout": "\u2714 [2/3] Built Dep (185ms)\nBuild completed successfully (3 jobs).\n",
+      "stdout_sha256": "529f87aff2f42f0c104f82f7274b4b024ec5d5e13560bf69da44fa23b1e2546f"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$WORK/dynamic-deny/profile.sb",
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "config": "dynamic-lakefile.lean",
+      "config_sha256": "aee462168252e2d3fc78ffc5efbb0720ef3128e4dfff124ef83f72af78a63559",
+      "label": "dynamic-deny",
+      "marker_exists": false,
+      "marker_sha256": null,
+      "profile": "(version 1)\n(allow default)\n(deny file-write* (subpath \"$WORK/dynamic-deny/outside\"))\n(deny network*)\n",
+      "returncode": 1,
+      "sandbox_denies_outside_write": true,
+      "seconds": 0.3345,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "stderr": "error: $WORK/dynamic-deny/workspace/lakefile.lean:3:0: operation not permitted (error code: 1)\n  file: $WORK/dynamic-deny/outside/marker.txt\nerror: $WORK/dynamic-deny/workspace/lakefile.lean: package configuration has errors\n",
+      "stderr_sha256": "f989d1729116071f885ccf6e88c6443dd784468d2bded8ff1933f24065136b1a",
+      "stdout": "",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "$WORK/static-deny/profile.sb",
+        "$BIN/lake",
+        "--keep-toolchain",
+        "--no-cache",
+        "build",
+        "Dep"
+      ],
+      "config": "static-lakefile.lean",
+      "config_sha256": "759dd5105701ba9df4a898a1965f0833d28de8dc50fc0da3c57d6ce8fb30f06a",
+      "label": "static-deny",
+      "marker_exists": false,
+      "marker_sha256": null,
+      "profile": "(version 1)\n(allow default)\n(deny file-write* (subpath \"$WORK/static-deny/outside\"))\n(deny network*)\n",
+      "returncode": 0,
+      "sandbox_denies_outside_write": true,
+      "seconds": 0.5517,
+      "source_sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "stderr": "info: trust_fixture: no previous manifest, creating one from scratch\n",
+      "stderr_sha256": "adf87f117f89c39505668d7e77d4726a66d50c899074558f4b53d9ca25e494c7",
+      "stdout": "\u2714 [2/3] Built Dep (168ms)\nBuild completed successfully (3 jobs).\n",
+      "stdout_sha256": "534db1fd4d436b7bc0076abaafb56e3ab57641b06376255685a7d2f30ff76f8b"
+    }
+  ],
+  "input_sha256": {
+    "Dep.lean": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+    "dynamic-lakefile.lean": "aee462168252e2d3fc78ffc5efbb0720ef3128e4dfff124ef83f72af78a63559",
+    "static-lakefile.lean": "759dd5105701ba9df4a898a1965f0833d28de8dc50fc0da3c57d6ce8fb30f06a"
+  },
+  "tool_sha256": {
+    "lake": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "sandbox_exec": "abc5bb136d6b5cce8fa85d789f78e3326c51ca60cae637b2064adfb67a1dcd9a"
+  }
+}

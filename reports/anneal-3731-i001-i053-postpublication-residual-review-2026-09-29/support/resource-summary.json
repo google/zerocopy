@@ -1,0 +1,83 @@
+{
+  "observed_at_utc": "2026-09-29T20:03:08.490604+00:00",
+  "pins": {
+    "aeneas": {
+      "exists": true,
+      "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+      "matches_v21": true
+    },
+    "aeneas-older-pair": {
+      "exists": true,
+      "sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22",
+      "matches_v21": true
+    },
+    "aeneas-source": {
+      "exists": true
+    },
+    "charon": {
+      "exists": true,
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+      "matches_v21": true
+    },
+    "charon-may31": {
+      "exists": true,
+      "sha256": "4c77ef61ab38ba88369406460dd992b6ae38375774747f979e0ce0801a88dc9e",
+      "matches_v21": true
+    },
+    "charon-older": {
+      "exists": true,
+      "sha256": "094ba2dc1d23f82be5ad2bb378e94ce8c66ca9d13c551edfeb8597b392558272",
+      "matches_v21": true
+    },
+    "charon-older-pair": {
+      "exists": true,
+      "sha256": "6b53eb746f512191b8408cd9c1c71f674406232ffe3b44cbd50b777ae9e63ec6",
+      "matches_v21": true
+    },
+    "charon-source": {
+      "exists": true
+    },
+    "lake-4.29": {
+      "exists": true,
+      "sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+      "matches_v21": true
+    },
+    "lake-4.30-rc2": {
+      "exists": true,
+      "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+      "matches_v21": true
+    },
+    "lean-4.29": {
+      "exists": true,
+      "sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+      "matches_v21": true
+    },
+    "lean-4.30-rc2": {
+      "exists": true,
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "matches_v21": true
+    },
+    "lean4-source": {
+      "exists": true
+    },
+    "nix": {
+      "exists": true,
+      "sha256": "9ba5b17bfb6e32f2650671092ddeabed094e722d5f923005cbf5acdc27df10af",
+      "matches_v21": true
+    }
+  },
+  "path_tools": {
+    "ocaml": null,
+    "dune": null,
+    "opam": null,
+    "lean": null,
+    "lake": null,
+    "charon": null,
+    "aeneas": null,
+    "cargo": "/opt/homebrew/bin/cargo",
+    "rustc": "/opt/homebrew/bin/rustc",
+    "node": "/usr/local/bin/node",
+    "npm": "/usr/local/bin/npm"
+  },
+  "disk_free_bytes": 49289383936
+}

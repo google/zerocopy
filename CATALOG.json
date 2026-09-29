@@ -1203,6 +1203,42 @@
         "lean/lake-prepared-environments"
       ]
     },
+    "anneal-3730-174-suggestion-postpublication-native-trust-audit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+            "v24_crosswalk_sha256": "ce9ffc39de2e3e3db346d2ea5ab4e18e1d5570aeff89bfc7f3a344d3392750c6"
+          },
+          "name": "Published reference and v24 suggestion crosswalk"
+        },
+        {
+          "identity": {
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3730_comment_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "issue_3731_crosswalk_comment_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+          },
+          "name": "Live issues 3730 and 3731 scope"
+        },
+        {
+          "identity": {
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lean_version": "4.30.0-rc2",
+            "plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+            "probe_sha256": "945fcfe53d2538cdb140d1d1e823477a93d54720b9240765a27a1fd38f837d8e",
+            "result_sha256": "8301f229581a69f7acfb02c6fce4f660334a48b410395703668cf3c2d82ce66f"
+          },
+          "name": "Pinned native Lean plugin marker control"
+        }
+      ],
+      "topics": [
+        "anneal/research-coverage",
+        "lean/native-plugins",
+        "anneal/workspace-trust"
+      ]
+    },
     "anneal-3730-3731-coverage-audit-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -1718,6 +1754,81 @@
         "anneal/coverage",
         "anneal/3730-3731",
         "anneal/interactive-architecture"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v24": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "investigation_ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+            "suggestion_crosswalk_sha256": "be56657530e039bfab53f3ef774289a83aeebe80d2741740281b963d78948b12"
+          },
+          "name": "Published reference v23 investigation and suggestion ledgers"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Issues 3730 and 3731 live body and comment scope"
+        },
+        {
+          "identity": {
+            "i005_result_sha256": "cc982bddd247b2425a331ff0a14f8fc4fcbf0bc236eaff3756cfea6d183d5101",
+            "i076_result_sha256": "151bbb1d61f0ee0a5afcb14e80ca2ae2637ce3ba4f50c876742de5d7005d4565",
+            "i126_result_sha256": "5da5d945f48710da9c8225b90b7100f9ccfd016ef84443b9950588c8100114b2"
+          },
+          "name": "Three post-publication residual audits"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk"
+      ]
+    },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v25": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+            "row_challenge_sha256": "3bd966c0f89780c26a7430313db51881e96cc8f50bdb4de7baa22bfcfb3545c8",
+            "suggestion_crosswalk_sha256": "ce9ffc39de2e3e3db346d2ea5ab4e18e1d5570aeff89bfc7f3a344d3392750c6"
+          },
+          "name": "Reference v24 investigation and suggestion ledgers"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Issues 3730 and 3731 live body and comment scope"
+        },
+        {
+          "identity": {
+            "native_plugin_sha256": "3f4a1cb3a67a0027f0c90e819afc20d009ddb921cb7f4c0e0095db074e085aa4",
+            "native_result_sha256": "8301f229581a69f7acfb02c6fce4f660334a48b410395703668cf3c2d82ce66f",
+            "suggestion_decisions_sha256": "29ce0dc5f96f13399263a300d3b58f5b8c48fc8106cc4db0cd9a77146ea1e52f"
+          },
+          "name": "174-suggestion audit and pinned Lean native plugin control"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lean/native-plugins"
       ]
     },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
@@ -5779,6 +5890,39 @@
         "anneal/model-change-vertical"
       ]
     },
+    "anneal-3731-i001-i053-postpublication-residual-review-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616"
+          },
+          "name": "Reference v23 investigation ledger, I001-I053"
+        },
+        {
+          "identity": {
+            "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "Issue 3731 live scope, I001-I053"
+        },
+        {
+          "identity": {
+            "probe_sha256": "4655680b49740e150bf0fe358d4509f9a14cf55b361cd77a3aff51548a27f942",
+            "result_sha256": "cc982bddd247b2425a331ff0a14f8fc4fcbf0bc236eaff3756cfea6d183d5101"
+          },
+          "name": "I005 matched fake-backend orchestration probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/orchestration"
+      ]
+    },
     "anneal-3731-i001-i053-residual-reaudit-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -5836,6 +5980,42 @@
         "anneal/interactive-architecture",
         "anneal/coverage-audit",
         "anneal/toolchain-boundaries"
+      ]
+    },
+    "anneal-3731-i054-i106-postpublication-residual-audit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616"
+          },
+          "name": "Reference v23 investigation ledger"
+        },
+        {
+          "identity": {
+            "full_body_sha256": "e1ca20c129376f0459674098d4f6ddd5355f4b24cdceaad0f2a9c6cb7e4d98aa",
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_sha256": "e2b1de4faa69aaef8fd0bfbae01108d0f01eb7d0c49c5e19bb755f77cb6890b0"
+          },
+          "name": "Issue 3731 live scope, I054-I106"
+        },
+        {
+          "identity": {
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "charon_version": "0.1.210",
+            "probe_sha256": "d1267960f4ba3e8bba81e1173f0e0a9c215d4aac8cc30e1acf1c11f8d3354bf9"
+          },
+          "name": "Pinned Charon same-name Cargo fixture"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-freshness",
+        "anneal/research-coverage",
+        "rust/charon",
+        "rust/compilation-unit-identity"
       ]
     },
     "anneal-3731-i080-shared-cargo-target-two-process-2026-09-29": {
@@ -5908,6 +6088,45 @@
         "research/coverage-audit",
         "lean/import-freshness",
         "lake/build-publication"
+      ]
+    },
+    "anneal-3731-i107-i159-postpublication-residual-audit-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "ledger_sha256": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+            "repository": "google/zerocopy",
+            "revision": "9d2426519c7eaaf58b13b109a2f4c16d84c51616"
+          },
+          "name": "Reference v23 investigation ledger"
+        },
+        {
+          "identity": {
+            "full_body_sha256": "e1ca20c129376f0459674098d4f6ddd5355f4b24cdceaad0f2a9c6cb7e4d98aa",
+            "issue": "3731",
+            "repository": "google/zerocopy",
+            "scope_extension_comment_sha256": "2451c7f38f864676a5aa23b16d4eb25ba18f768318829fd68715f9b384c1f533",
+            "scope_sha256": "86ffa5e21acb87b8cca546e2081663173188c3b029085414429422bff287ae5a"
+          },
+          "name": "Issue 3731 live scope, I107-I159"
+        },
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lean_version": "4.30.0-rc2",
+            "probe_sha256": "58248208c8e1dabe01a2731b3dad969ec7c80a253459eac552328e96d40ee55a",
+            "sandbox_exec_sha256": "abc5bb136d6b5cce8fa85d789f78e3326c51ca60cae637b2064adfb67a1dcd9a"
+          },
+          "name": "Pinned Lake configuration execution and sandbox control"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-freshness",
+        "anneal/research-coverage",
+        "lean/lake",
+        "anneal/workspace-trust"
       ]
     },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {

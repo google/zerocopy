@@ -1,0 +1,88 @@
+{
+  "baseline_reference_head": "9d2426519c7eaaf58b13b109a2f4c16d84c51616",
+  "changed_prerequisite_ids": [
+    "D07",
+    "G09",
+    "I005",
+    "I076",
+    "I126",
+    "I127",
+    "I145"
+  ],
+  "changed_residual_ids": [
+    "A01",
+    "A02",
+    "A08",
+    "C01",
+    "D07",
+    "F05",
+    "G01",
+    "G02",
+    "G09",
+    "G12",
+    "I005",
+    "I076",
+    "I126",
+    "I127",
+    "I145",
+    "L01",
+    "O03"
+  ],
+  "changed_status_ids": [],
+  "generated_sha256": {
+    "3730-crosswalk-final-v24.csv": "ce9ffc39de2e3e3db346d2ea5ab4e18e1d5570aeff89bfc7f3a344d3392750c6",
+    "investigation-final-v24.csv": "39d54039e4616d3fe42a796aa39bbe4fa627b047244851bd21786202cd17af06",
+    "row-challenge-v24.json": "3bd966c0f89780c26a7430313db51881e96cc8f50bdb4de7baa22bfcfb3545c8",
+    "source-package-inventory-v24.csv": "6034400ece2d366aca005dad56c8bfe55826d6be022e2707b2684b8beed26ab8"
+  },
+  "input_sha256": {
+    "live-issue-hashes.json": "dec24abf3f38cea0fe900e64afce815c0faa0e9cfbea70a5f4faa645f864cd8f",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v23/3730-crosswalk-final-v23.csv": "be56657530e039bfab53f3ef774289a83aeebe80d2741740281b963d78948b12",
+    "v23/investigation-final-v23.csv": "df8517ecf396a7fd1ee230afa95a67c0ed5929edb48dc7b571949c74466a234a",
+    "v23/row-challenge-v23.json": "1e89d074400f867ac2df26f94e9931c23692456c46b53c249cdd38173a736500"
+  },
+  "inventory_files": 41,
+  "investigation_count": 159,
+  "linked_suggestion_ids": [
+    "A01",
+    "A02",
+    "A08",
+    "C01",
+    "D07",
+    "F05",
+    "G01",
+    "G02",
+    "G09",
+    "G12",
+    "L01",
+    "O03"
+  ],
+  "new_bounded_experiment_ids": [
+    "I005",
+    "I076",
+    "I126"
+  ],
+  "row_count": 333,
+  "source_packages": [
+    "anneal-3731-i001-i053-postpublication-residual-review-2026-09-29",
+    "anneal-3731-i054-i106-postpublication-residual-audit-2026-09-29",
+    "anneal-3731-i107-i159-postpublication-residual-audit-2026-09-29"
+  ],
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}
