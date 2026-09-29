@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "lean/lake",
+    "charon"
+  ],
+  "subjects": [
+    {
+      "name": "Published v28 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "baa5c11b71289c5bf124a3f0fdc4194cf758c527",
+        "row_challenge_sha256": "60802186d258eda42c5b4cf5316463032a151e04d2522050f0f5038bbd491b7e"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned Lean/Lake position execution",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Pinned Charon and Aeneas local executions",
+      "identity": {
+        "charon_version": "0.1.210",
+        "charon_executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

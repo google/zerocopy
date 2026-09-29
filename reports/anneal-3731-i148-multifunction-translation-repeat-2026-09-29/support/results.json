@@ -1,0 +1,471 @@
+{
+  "schema": 1,
+  "tools": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "cargo": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+  },
+  "source": {
+    "Cargo.toml": "6c652347590ed406926d0caa083751ff8bb751eee2968126eedbaa33b8e8d672",
+    "Cargo.lock": "1b5f038a4792d67c98365ea9968bd2863d7d497d21ba0f068a87741d583d2139",
+    "src/lib.rs": "c1307296746705f68f957cf4604aeca9695d1be87dba68b7a87deca4da825f6c"
+  },
+  "runs": [
+    {
+      "label": "charon-seq-1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/same.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004788.648554083,
+      "end_monotonic": 2004789.14635725,
+      "elapsed_ms": 497.8,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "546c33bc0865fbab421881821a5981e08943368f5ca544bcc6730165c5471d1d"
+    },
+    {
+      "label": "charon-seq-2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/same.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.147017,
+      "end_monotonic": 2004789.211854625,
+      "elapsed_ms": 64.84,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "33754d90de8cbca7d4c7e30ff022587e94782c4daa938d340f916c3dfbdb296b"
+    },
+    {
+      "label": "charon-seq-3",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/same.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.212505291,
+      "end_monotonic": 2004789.275555041,
+      "elapsed_ms": 63.05,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "33754d90de8cbca7d4c7e30ff022587e94782c4daa938d340f916c3dfbdb296b"
+    },
+    {
+      "label": "charon-par-1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/par-1.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.279096625,
+      "end_monotonic": 2004789.44801875,
+      "elapsed_ms": 168.92,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "b3024af42bf96cac47c5553ee3e55ca29c7f3cf7d2778c5e0ee37289e1f91a36"
+    },
+    {
+      "label": "charon-par-2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/par-2.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.279226333,
+      "end_monotonic": 2004789.444203583,
+      "elapsed_ms": 164.98,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "3fce86e806bd2086c1061279e8638fb1052664f1491fa69717c2b1d388ff3759"
+    },
+    {
+      "label": "aeneas-1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/gen-1",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/input-1/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.458834833,
+      "end_monotonic": 2004789.724135708,
+      "elapsed_ms": 265.3,
+      "stdout_sha256": "32c42b92e761a72d16b80852f569b1b56a6f22d365eddc59f18946f60b4c698e",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "aeneas-2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/gen-2",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/input-2/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.724970458,
+      "end_monotonic": 2004789.950838208,
+      "elapsed_ms": 225.87,
+      "stdout_sha256": "7caeec9b54b51d59766d215daf44c393b0e24df94681414ef9ebb3e01d91d83c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "aeneas-3",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/gen-3",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/input-3/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004789.951633375,
+      "end_monotonic": 2004790.177905375,
+      "elapsed_ms": 226.27,
+      "stdout_sha256": "572c015638c690e3010c142bbf4dc5d24dfb4a60192b9537e7f8d6fe3e91cd3d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "aeneas-4",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/gen-4",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/input-4/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004790.178732416,
+      "end_monotonic": 2004790.405245375,
+      "elapsed_ms": 226.51,
+      "stdout_sha256": "875174f93fec36ffc4be7e9eedcfbdba2d21eb2e0bf741a1fe30b0525bcb810d",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "aeneas-5",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/gen-5",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/input-5/probe.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/fixture",
+      "exit": 0,
+      "start_monotonic": 2004790.406107208,
+      "end_monotonic": 2004790.631942916,
+      "elapsed_ms": 225.84,
+      "stdout_sha256": "e47761f16ec986b465a2faa88a231c5797775f15ffa738acc8604f4cb4694050",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "lean-Probe-Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe/Types.olean",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer",
+      "exit": 0,
+      "start_monotonic": 2004790.634289083,
+      "end_monotonic": 2004802.615166,
+      "elapsed_ms": 11980.88,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "lean-Probe-Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe/Funs.olean",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer",
+      "exit": 0,
+      "start_monotonic": 2004802.61585575,
+      "end_monotonic": 2004805.111494541,
+      "elapsed_ms": 2495.64,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "lean-Probe",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe.olean",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Probe.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer",
+      "exit": 0,
+      "start_monotonic": 2004805.112151333,
+      "end_monotonic": 2004807.37293725,
+      "elapsed_ms": 2260.79,
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "label": "lean-check",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer/Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i148-corpus-repeat/artifacts/consumer",
+      "exit": 0,
+      "start_monotonic": 2004807.373589166,
+      "end_monotonic": 2004809.031987875,
+      "elapsed_ms": 1658.4,
+      "stdout_sha256": "b58e85769ed74b5fd1ede8bdd136dc9d44fce0129fa50a4fc5c7ef24b7e9f42c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "llbc": [
+    {
+      "file": "seq-1.llbc",
+      "bytes": 27676,
+      "sha256": "d4e43d2d7d86817aa212ceb2411ba3adce1d8e55fda1ad535998f0f18a5556b5",
+      "short_names_count": 6,
+      "short_names_order": [
+        {
+          "Type": 0
+        },
+        {
+          "Fun": 1
+        },
+        {
+          "Fun": 2
+        },
+        {
+          "Fun": 0
+        },
+        {
+          "Fun": 4
+        },
+        {
+          "Fun": 3
+        }
+      ]
+    },
+    {
+      "file": "seq-2.llbc",
+      "bytes": 27676,
+      "sha256": "0c43333d2c5cf1ce2dafc10d94a0476a85ee1b9f6560cf5e2f9e51d0dd9054e0",
+      "short_names_count": 6,
+      "short_names_order": [
+        {
+          "Fun": 4
+        },
+        {
+          "Fun": 0
+        },
+        {
+          "Fun": 2
+        },
+        {
+          "Type": 0
+        },
+        {
+          "Fun": 1
+        },
+        {
+          "Fun": 3
+        }
+      ]
+    },
+    {
+      "file": "seq-3.llbc",
+      "bytes": 27676,
+      "sha256": "fb75646c83c35d354796dfd1c8cd6c00de2cca68c4ee2a5a3643ef8bc2cc1f18",
+      "short_names_count": 6,
+      "short_names_order": [
+        {
+          "Fun": 2
+        },
+        {
+          "Fun": 0
+        },
+        {
+          "Fun": 3
+        },
+        {
+          "Type": 0
+        },
+        {
+          "Fun": 1
+        },
+        {
+          "Fun": 4
+        }
+      ]
+    },
+    {
+      "file": "par-1.llbc",
+      "bytes": 27677,
+      "sha256": "30b0d24d9f8dd8feb166ff340f12d4dbf4f4cc351cb5e0336c2cf5c48ead307a",
+      "short_names_count": 6,
+      "short_names_order": [
+        {
+          "Fun": 3
+        },
+        {
+          "Fun": 1
+        },
+        {
+          "Fun": 2
+        },
+        {
+          "Type": 0
+        },
+        {
+          "Fun": 0
+        },
+        {
+          "Fun": 4
+        }
+      ]
+    },
+    {
+      "file": "par-2.llbc",
+      "bytes": 27677,
+      "sha256": "5cf8acc182c00f7c0902d1da786b06f2fc4a1de392a0160b2b1dbdfb4c417e73",
+      "short_names_count": 6,
+      "short_names_order": [
+        {
+          "Fun": 3
+        },
+        {
+          "Fun": 4
+        },
+        {
+          "Type": 0
+        },
+        {
+          "Fun": 0
+        },
+        {
+          "Fun": 1
+        },
+        {
+          "Fun": 2
+        }
+      ]
+    }
+  ],
+  "all_core_llbc_equal_after_only_dest_and_short_name_order": true,
+  "all_generated_file_inventories_equal": true,
+  "generated_inventory": {
+    "Probe.lean": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+    "Funs.lean": "a23e4de51aad5573134decee8733450afdb3924c306f51f51f41b537982c9ecd",
+    "Types.lean": "698540ae6f0215de8fe7c221807d967a2c34710f09bdc40028d84f48c8d84aa6"
+  },
+  "lean_declarations": [
+    "def add_one (x : Std.U32) : Result Std.U32 := do",
+    "def choose (flag : Bool) (x : Std.U32) (y : Std.U32) : Result Std.U32 := do",
+    "def pair_sum (pair : Pair) : Result Std.U32 := do",
+    "def make_pair (x : Std.U32) (y : Std.U32) : Result Pair := do",
+    "def combine (flag : Bool) (x : Std.U32) (y : Std.U32) : Result Std.U32 := do"
+  ],
+  "lean_obligation_markers": {
+    "sorry": 0,
+    "axiom": 0,
+    "theorem": 0,
+    "decreasing_by": 0
+  }
+}
