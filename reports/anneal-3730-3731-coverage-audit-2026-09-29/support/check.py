@@ -30,7 +30,7 @@ assert len(items) == len(matrix) == 159
 assert [r['id'] for r in matrix] == [f'I{i:03}' for i in range(1, 160)]
 for row in matrix:
     assert (row['title'], row['methods'], row['scope']) == items[row['id']], row['id']
-    for field in ('prior_evidence_packages', 'new_evidence'):
+    for field in ('prior_evidence_packages', 'new_evidence', 'context_only_packages'):
         for pointer in row[field].split(';'):
             slug = pointer.strip().split(' (')[0]
             if slug and slug != 'none in this turn':
@@ -67,6 +67,15 @@ assert all(all(f'I{i:03}' in items for i in map(int, re.findall(r'I(\d{3})', row
            for row in crosswalk)
 
 new_evidence_rows = sum(row['new_evidence'] != 'none in this turn' for row in matrix)
+context_only_rows = sum(bool(row['context_only_packages']) for row in matrix)
+assert (new_evidence_rows, context_only_rows) == (21, 20)
+assert all(row['new_evidence'] == 'none in this turn' or not row['context_only_packages']
+           for row in matrix)
+assert all(row['disposition'] == 'Context-only new package linked; requested cell remains'
+           for row in matrix if row['context_only_packages'])
+assert all(row['disposition'] == 'New bounded execution added; item remains partial'
+           for row in matrix if row['new_evidence'] != 'none in this turn')
 print(f'PASS: {len(items)} base items, {len(extensions)} scope extensions, '
-      f'{len(crosswalk)} crosswalk rows, {new_evidence_rows} partial new-evidence rows; '
+      f'{len(crosswalk)} crosswalk rows, {new_evidence_rows} partial new-evidence rows, '
+      f'{context_only_rows} context-only rows; '
       'source hashes and report pointers valid')

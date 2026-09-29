@@ -59,7 +59,7 @@ Basis: **derived** from the paired worker results and fresh batch control.
 
 Related corpus evidence: `anneal-v1-interactive-dependency-invalidation-2026-09-28` exercises `lake env lean --server` in a generated V1 workspace; `lean-server-tactic-state-v4-30-0-rc2` documents pinned goal-query semantics. This report adds a direct-server launch case rather than replacing those findings.
 
-Issue alignment: #3730 C03–C05, C07–C10, F08, I01–I04, and #3731 I041–I050, I098–I099, I131, I147, and I159 N02–N03 receive a narrow supplemental observation only; the companion coverage report marks each agenda item separately.
+Issue alignment: this direct-server import-refresh fixture adds bounded evidence for #3730 C03 and #3731 I041, I042, I046, I049, and I131. It also illustrates the N02–N03 falsification themes under I159. Other crosswalk destinations are context only: the probe does not compare the two Lake launch paths, change a compiled artifact while its source stays unchanged, or exercise tactic-position comparisons, transitive/plugin changes, artifact-family mixing, clean-versus-prepared archives, or source/artifact decoupling. The companion coverage report retains those agenda items and their open conditions.
 
 ## Revalidation
 
