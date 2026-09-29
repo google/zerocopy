@@ -1,0 +1,46 @@
+{
+  "topics": [
+    "anneal/interactive-verification",
+    "anneal/investigation-coverage",
+    "anneal/suggestion-crosswalk",
+    "lean/lake",
+    "charon"
+  ],
+  "subjects": [
+    {
+      "name": "Published v29 coverage ledger",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "40b3024d5a3c73357abb6e90f10fcaf713768cd4",
+        "row_challenge_sha256": "75b9f10d80d54430a0a3872c7915587ee6a6b0e44dc26b0f9bdedae2a1c853ed"
+      }
+    },
+    {
+      "name": "Public issues 3730 and 3731",
+      "identity": {
+        "repository": "google/zerocopy",
+        "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+        "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+        "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+        "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+      }
+    },
+    {
+      "name": "Pinned Lean/Lake local inventory and concurrent consumer execution",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2"
+      }
+    },
+    {
+      "name": "Pinned Charon/Cargo cancellation execution",
+      "identity": {
+        "charon_version": "0.1.210",
+        "charon_executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "rust_toolchain": "nightly-2026-05-31"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

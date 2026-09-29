@@ -1,0 +1,3897 @@
+{
+  "preflight": {
+    "free_disk_bytes": 46278062080,
+    "free_memory_percent": 45,
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "fixture_files": {
+      "Cargo.toml": "379981794b8050c386d9df69d4c71a2c180d99bda5c37d0ddb9e3d4f94603627",
+      "Cargo.lock": "d96950e53ac03685d77feada85aebd69db88b33911ac8d05ff08df9f64eba281",
+      "app/Cargo.toml": "f221b98e1729a66047d75c03b58cd567630ed7f0e4cb312a1136170d1e2b11af",
+      "app/build.rs": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+      "dep/Cargo.toml": "9abbe6a77153317ef6513d0cbb24e66b6e5a0cd7254a7ecdf3c1e72224547239",
+      "dep/src/lib.rs": "6eb2539f1956735276e0b3a22ba5ac36b7a6b2a6d274e1119ccc074b81df44f7",
+      "app/src/lib.rs": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+      "app/src/payload.txt": "146360c3e22f640f436104e311637800ba29f2db2a73318b8972f10233ee6160"
+    },
+    "min_free_disk_bytes": 10737418240,
+    "min_free_memory_percent": 30,
+    "max_group_rss_kib": 1048576,
+    "max_private_work_kib": 102400,
+    "serial_timeout_seconds": 15,
+    "pair_timeout_seconds": 20
+  },
+  "roots": {
+    "A": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A",
+    "B": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B"
+  },
+  "shared_target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+  "phases": {
+    "prewarm_A": {
+      "reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0113,
+          "free_disk_bytes": 46277984256,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 64,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 32
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0887,
+          "free_disk_bytes": 46277984256,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 64,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3616
+              },
+              {
+                "pid": 54262,
+                "rss_kib": 1920
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 5536
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.1651,
+          "free_disk_bytes": 46277976064,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 64,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3616
+              },
+              {
+                "pid": 54262,
+                "rss_kib": 18480
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 22096
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.2416,
+          "free_disk_bytes": 46277935104,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 64,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 9840
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 13520
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.3177,
+          "free_disk_bytes": 46277935104,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 64,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 17616
+              },
+              {
+                "pid": 54274,
+                "rss_kib": 37392
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 58688
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.3942,
+          "free_disk_bytes": 46277935104,
+          "free_memory_percent": 46,
+          "work_allocated_kib": 72,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 27824
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 31504
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.4736,
+          "free_disk_bytes": 46277890048,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 76,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31856
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 46528
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 82064
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.5474,
+          "free_disk_bytes": 46277881856,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 80,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 60992
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 96576
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.6205,
+          "free_disk_bytes": 46277812224,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 148,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 74496
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 110080
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.6975,
+          "free_disk_bytes": 46277677056,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 340,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 91472
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 127056
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.7749,
+          "free_disk_bytes": 46277337088,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 624,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 107840
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 143424
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.8528,
+          "free_disk_bytes": 46276714496,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 1388,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 116384
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 151968
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.9477,
+          "free_disk_bytes": 46276464640,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 1396,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 96336
+              },
+              {
+                "pid": 54311,
+                "rss_kib": 8016
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 139936
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.0274,
+          "free_disk_bytes": 46276460544,
+          "free_memory_percent": 45,
+          "work_allocated_kib": 1396,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 96336
+              },
+              {
+                "pid": 54311,
+                "rss_kib": 14864
+              },
+              {
+                "pid": 54315,
+                "rss_kib": 5824
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 152608
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.1029,
+          "free_disk_bytes": 46275928064,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 31904
+              },
+              {
+                "pid": 54283,
+                "rss_kib": 96336
+              },
+              {
+                "pid": 54311,
+                "rss_kib": 14864
+              },
+              {
+                "pid": 54315,
+                "rss_kib": 57312
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 204096
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.1842,
+          "free_disk_bytes": 46275874816,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54323,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35712
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.2669,
+          "free_disk_bytes": 46275813376,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54323,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35712
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.3446,
+          "free_disk_bytes": 46275813376,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54323,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35712
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.4418,
+          "free_disk_bytes": 46275813376,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54323,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35712
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.5184,
+          "free_disk_bytes": 46275813376,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2452,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54323,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35712
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.597,
+          "free_disk_bytes": 46275690496,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2476,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32016
+              },
+              {
+                "pid": 54342,
+                "rss_kib": 128
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 35824
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.6781,
+          "free_disk_bytes": 46275600384,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2556,
+          "groups": {
+            "prewarm-A": [
+              {
+                "pid": 54258,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54269,
+                "rss_kib": 32016
+              },
+              {
+                "pid": 54346,
+                "rss_kib": 79840
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 115536
+          },
+          "exits": {
+            "prewarm-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.7588,
+          "free_disk_bytes": 46275469312,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2652,
+          "groups": {
+            "prewarm-A": []
+          },
+          "group_rss_sum_kib": {
+            "prewarm-A": 0
+          },
+          "exits": {
+            "prewarm-A": 0
+          }
+        }
+      ],
+      "run": {
+        "label": "prewarm-A",
+        "pid": 54258,
+        "exit": 0,
+        "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A",
+        "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "cargo",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/prewarm-A.llbc",
+          "--",
+          "--manifest-path",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/Cargo.toml",
+          "--package",
+          "warm_probe",
+          "--lib",
+          "--offline",
+          "--locked"
+        ],
+        "source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+        "build_script_sha256": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+        "stdout": "",
+        "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1.46s\n",
+        "output": {
+          "sha256": "4b3ee8e86b1b94a37760c8f0f0c021010ef3fde5b162d98f6e22c101faeb3f81",
+          "bytes": 24214,
+          "crate_name": "warm_probe",
+          "has_errors": false,
+          "local_body_sha256": {
+            "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+            "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+            "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+            "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+            "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+          }
+        }
+      },
+      "target_after": {
+        "files": 131,
+        "file_bytes": 2796618,
+        "incremental_files": 55,
+        "incremental_bytes": 1374520,
+        "allocated_kib": 2588
+      }
+    },
+    "prewarm_B": {
+      "reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0111,
+          "free_disk_bytes": 46275469312,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2652,
+          "groups": {
+            "prewarm-B": [
+              {
+                "pid": 54355,
+                "rss_kib": 144
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "prewarm-B": 144
+          },
+          "exits": {
+            "prewarm-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0877,
+          "free_disk_bytes": 46275362816,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2732,
+          "groups": {
+            "prewarm-B": []
+          },
+          "group_rss_sum_kib": {
+            "prewarm-B": 0
+          },
+          "exits": {
+            "prewarm-B": 0
+          }
+        }
+      ],
+      "run": {
+        "label": "prewarm-B",
+        "pid": 54355,
+        "exit": 0,
+        "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B",
+        "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "cargo",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/prewarm-B.llbc",
+          "--",
+          "--manifest-path",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/Cargo.toml",
+          "--package",
+          "warm_probe",
+          "--lib",
+          "--offline",
+          "--locked"
+        ],
+        "source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+        "build_script_sha256": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+        "stdout": "",
+        "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+        "output": {
+          "sha256": "af8c64477b1350fd2c62a5559d125f92f6efb3f4b9e3f860db91365d3880bdcc",
+          "bytes": 24214,
+          "crate_name": "warm_probe",
+          "has_errors": false,
+          "local_body_sha256": {
+            "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+            "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+            "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+            "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+            "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+          }
+        }
+      },
+      "target_after": {
+        "files": 134,
+        "file_bytes": 2876115,
+        "incremental_files": 58,
+        "incremental_bytes": 1454017,
+        "allocated_kib": 2668
+      }
+    },
+    "cancel_pair": {
+      "reason": null,
+      "events": {
+        "marker_seen_seconds": 0.4675,
+        "companion_started_seconds": 0.4695,
+        "both_live_before_cancel": true,
+        "signal_seconds": 0.6615,
+        "owner_exit_seconds": 0.6631,
+        "companion_live_after_owner_exit": true,
+        "companion_exit_seconds": 3.9661
+      },
+      "samples": [
+        {
+          "elapsed_seconds": 0.0124,
+          "free_disk_bytes": 46275362816,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2732,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 144
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 144
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0896,
+          "free_disk_bytes": 46275301376,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 2328,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54372,
+                "rss_kib": 52896
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 78208
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.161,
+          "free_disk_bytes": 46274281472,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3200,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21712
+              },
+              {
+                "pid": 54372,
+                "rss_kib": 93728
+              },
+              {
+                "pid": 54383,
+                "rss_kib": 48
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 119168
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.241,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3728,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21904
+              },
+              {
+                "pid": 54387,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 25616
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.322,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3728,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21904
+              },
+              {
+                "pid": 54387,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 25616
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.4003,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21904
+              },
+              {
+                "pid": 54387,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 25616
+          },
+          "exits": {
+            "A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.6513,
+          "free_disk_bytes": 46274281472,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [
+              {
+                "pid": 54366,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54371,
+                "rss_kib": 21904
+              },
+              {
+                "pid": 54387,
+                "rss_kib": 1520
+              }
+            ],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 20848
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 27104,
+            "B": 24800
+          },
+          "exits": {
+            "A": null,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.678,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 25616
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.7612,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 25616
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.8315,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 25616
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.9124,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.9951,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.0802,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.1674,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.2557,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.3439,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.4323,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.5226,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.6037,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.6924,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.7821,
+          "free_disk_bytes": 46274285568,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.8717,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.9616,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.0519,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.1428,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.2329,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.3234,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.4146,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.5051,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.587,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.6772,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.7666,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.8567,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.9472,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.0371,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.1277,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.2182,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.3086,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.4004,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.4719,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 44,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.5895,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.6894,
+          "free_disk_bytes": 46274183168,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.7878,
+          "free_disk_bytes": 46274768896,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3732,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21632
+              },
+              {
+                "pid": 54405,
+                "rss_kib": 1520
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 27104
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.875,
+          "free_disk_bytes": 46274752512,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3736,
+          "groups": {
+            "A": [],
+            "B": [
+              {
+                "pid": 54397,
+                "rss_kib": 3952
+              },
+              {
+                "pid": 54399,
+                "rss_kib": 21840
+              },
+              {
+                "pid": 54516,
+                "rss_kib": 128
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 25920
+          },
+          "exits": {
+            "A": -15,
+            "B": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.9588,
+          "free_disk_bytes": 46274498560,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3820,
+          "groups": {
+            "A": [],
+            "B": []
+          },
+          "group_rss_sum_kib": {
+            "A": 0,
+            "B": 0
+          },
+          "exits": {
+            "A": -15,
+            "B": 0
+          }
+        }
+      ],
+      "runs": {
+        "A": {
+          "label": "cancel-A",
+          "pid": 54366,
+          "exit": -15,
+          "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A",
+          "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "cargo",
+            "--preset",
+            "aeneas",
+            "--dest-file",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/cancel-A.llbc",
+            "--",
+            "--manifest-path",
+            "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/Cargo.toml",
+            "--package",
+            "warm_probe",
+            "--lib",
+            "--offline",
+            "--locked"
+          ],
+          "source_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+          "build_script_sha256": "edfb075116dade977145bcb50e796c0ee8eb191d1070bd651a9fb581b472ed58",
+          "stdout": "",
+          "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/app)\n",
+          "output": null
+        },
+        "B": {
+          "label": "companion-B",
+          "pid": 54397,
+          "exit": 0,
+          "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B",
+          "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+          "command": [
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+            "cargo",
+            "--preset",
+            "aeneas",
+            "--dest-file",
+            "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/companion-B.llbc",
+            "--",
+            "--manifest-path",
+            "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/Cargo.toml",
+            "--package",
+            "warm_probe",
+            "--lib",
+            "--offline",
+            "--locked"
+          ],
+          "source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+          "build_script_sha256": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+          "stdout": "",
+          "stderr": "    Blocking waiting for file lock on build directory\n   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.38s\n",
+          "output": {
+            "sha256": "12904a0345e2d16c1f89aa714a4fb98e5cff1295e0a3c87c46cff2979981d730",
+            "bytes": 24216,
+            "crate_name": "warm_probe",
+            "has_errors": false,
+            "local_body_sha256": {
+              "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+              "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+              "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+              "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+              "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+            }
+          }
+        }
+      },
+      "target_after": {
+        "files": 229,
+        "file_bytes": 4582650,
+        "incremental_files": 109,
+        "incremental_bytes": 2815458,
+        "allocated_kib": 3752
+      }
+    },
+    "recovery_A": {
+      "reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0112,
+          "free_disk_bytes": 46274482176,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3820,
+          "groups": {
+            "recovery-A": [
+              {
+                "pid": 54524,
+                "rss_kib": 144
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "recovery-A": 144
+          },
+          "exits": {
+            "recovery-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0896,
+          "free_disk_bytes": 46274453504,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3900,
+          "groups": {
+            "recovery-A": []
+          },
+          "group_rss_sum_kib": {
+            "recovery-A": 0
+          },
+          "exits": {
+            "recovery-A": 0
+          }
+        }
+      ],
+      "run": {
+        "label": "recovery-A",
+        "pid": 54524,
+        "exit": 0,
+        "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A",
+        "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/shared-target",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "cargo",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/recovery-A.llbc",
+          "--",
+          "--manifest-path",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/Cargo.toml",
+          "--package",
+          "warm_probe",
+          "--lib",
+          "--offline",
+          "--locked"
+        ],
+        "source_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+        "build_script_sha256": "edfb075116dade977145bcb50e796c0ee8eb191d1070bd651a9fb581b472ed58",
+        "stdout": "",
+        "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/app)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.04s\n",
+        "output": {
+          "sha256": "2a9dc269ba89c215218772f110c59ce780eb020b765c29cb0ef19cd1e0ddc0a1",
+          "bytes": 24215,
+          "crate_name": "warm_probe",
+          "has_errors": false,
+          "local_body_sha256": {
+            "warm_probe::step": "5ffbb331be1ee975c7aa6220bd582859d6abec2ae13cbaad2be7042b0d762ca0",
+            "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+            "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+            "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+            "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+          }
+        }
+      },
+      "target_after": {
+        "files": 232,
+        "file_bytes": 4662147,
+        "incremental_files": 112,
+        "incremental_bytes": 2894955,
+        "allocated_kib": 3832
+      }
+    },
+    "oracle_edited_A": {
+      "reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.012,
+          "free_disk_bytes": 46274453504,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3900,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 144
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 144
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0885,
+          "free_disk_bytes": 46274445312,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 3900,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 17808
+              },
+              {
+                "pid": 54544,
+                "rss_kib": 0
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 21872
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.1665,
+          "free_disk_bytes": 46274203648,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 4368,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32000
+              },
+              {
+                "pid": 54550,
+                "rss_kib": 54528
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 90592
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.2483,
+          "free_disk_bytes": 46272884736,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 5256,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32048
+              },
+              {
+                "pid": 54550,
+                "rss_kib": 116512
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 152624
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.3267,
+          "free_disk_bytes": 46272307200,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32048
+              },
+              {
+                "pid": 54550,
+                "rss_kib": 96800
+              },
+              {
+                "pid": 54563,
+                "rss_kib": 14864
+              },
+              {
+                "pid": 54564,
+                "rss_kib": 0
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 147776
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.4092,
+          "free_disk_bytes": 46272307200,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 36240
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.481,
+          "free_disk_bytes": 46272303104,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 36240
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.5628,
+          "free_disk_bytes": 46272299008,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.6481,
+          "free_disk_bytes": 46272299008,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.7348,
+          "free_disk_bytes": 46272299008,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.8225,
+          "free_disk_bytes": 46272221184,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.9045,
+          "free_disk_bytes": 46271954944,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.9844,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.0664,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.1501,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.2357,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.3227,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.4107,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.4994,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.5877,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.6772,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.7675,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.858,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 1.9486,
+          "free_disk_bytes": 46272200704,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.0398,
+          "free_disk_bytes": 46272086016,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.1311,
+          "free_disk_bytes": 46272086016,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.2218,
+          "free_disk_bytes": 46272086016,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.3131,
+          "free_disk_bytes": 46272086016,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.4004,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.4833,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.5667,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.6504,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.734,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.8193,
+          "free_disk_bytes": 46272081920,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.906,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 2.994,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.0819,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.1712,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.2607,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.3504,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.4405,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6328,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.5302,
+          "free_disk_bytes": 46272057344,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6352,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32144
+              },
+              {
+                "pid": 54566,
+                "rss_kib": 1536
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 37744
+          },
+          "exits": {
+            "oracle-edited-A": null
+          }
+        },
+        {
+          "elapsed_seconds": 3.6119,
+          "free_disk_bytes": 46271856640,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6528,
+          "groups": {
+            "oracle-edited-A": [
+              {
+                "pid": 54536,
+                "rss_kib": 4064
+              },
+              {
+                "pid": 54542,
+                "rss_kib": 32160
+              },
+              {
+                "pid": 54681,
+                "rss_kib": 81792
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-edited-A": 118016
+          },
+          "exits": {
+            "oracle-edited-A": 0
+          }
+        }
+      ],
+      "run": {
+        "label": "oracle-edited-A",
+        "pid": 54536,
+        "exit": 0,
+        "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A",
+        "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-edited-target",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "cargo",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-edited-A.llbc",
+          "--",
+          "--manifest-path",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/Cargo.toml",
+          "--package",
+          "warm_probe",
+          "--lib",
+          "--offline",
+          "--locked"
+        ],
+        "source_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+        "build_script_sha256": "edfb075116dade977145bcb50e796c0ee8eb191d1070bd651a9fb581b472ed58",
+        "stdout": "",
+        "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 3.57s\n",
+        "output": {
+          "sha256": "1c4eafdbae3130cb169dbbe99cd04400896de772ee2796f5c91aaa35959c89ea",
+          "bytes": 24227,
+          "crate_name": "warm_probe",
+          "has_errors": false,
+          "local_body_sha256": {
+            "warm_probe::step": "5ffbb331be1ee975c7aa6220bd582859d6abec2ae13cbaad2be7042b0d762ca0",
+            "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+            "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+            "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+            "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+          }
+        }
+      },
+      "target_after": {
+        "files": 135,
+        "file_bytes": 2846075,
+        "incremental_files": 57,
+        "incremental_bytes": 1409129,
+        "allocated_kib": 2628
+      }
+    },
+    "oracle_baseline_B": {
+      "reason": null,
+      "samples": [
+        {
+          "elapsed_seconds": 0.0106,
+          "free_disk_bytes": 46271815680,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6528,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 144
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 144
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.0876,
+          "free_disk_bytes": 46271815680,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 6528,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 17888
+              },
+              {
+                "pid": 54694,
+                "rss_kib": 672
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 22240
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.167,
+          "free_disk_bytes": 46271254528,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 7088,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32080
+              },
+              {
+                "pid": 54699,
+                "rss_kib": 93504
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 129264
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.2475,
+          "free_disk_bytes": 46270377984,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 7860,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32048
+              },
+              {
+                "pid": 54699,
+                "rss_kib": 94544
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 130272
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.3281,
+          "free_disk_bytes": 46269833216,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 8916,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32128
+              },
+              {
+                "pid": 54714,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 35840
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.4115,
+          "free_disk_bytes": 46269833216,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 8916,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32128
+              },
+              {
+                "pid": 54714,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 35840
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.4912,
+          "free_disk_bytes": 46269833216,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 8916,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32128
+              },
+              {
+                "pid": 54714,
+                "rss_kib": 32
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 35840
+          },
+          "exits": {
+            "oracle-baseline-B": null
+          }
+        },
+        {
+          "elapsed_seconds": 0.571,
+          "free_disk_bytes": 46269628416,
+          "free_memory_percent": 43,
+          "work_allocated_kib": 9116,
+          "groups": {
+            "oracle-baseline-B": [
+              {
+                "pid": 54686,
+                "rss_kib": 3680
+              },
+              {
+                "pid": 54691,
+                "rss_kib": 32128
+              },
+              {
+                "pid": 54725,
+                "rss_kib": 70816
+              }
+            ]
+          },
+          "group_rss_sum_kib": {
+            "oracle-baseline-B": 106624
+          },
+          "exits": {
+            "oracle-baseline-B": 0
+          }
+        }
+      ],
+      "run": {
+        "label": "oracle-baseline-B",
+        "pid": 54686,
+        "exit": 0,
+        "root": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B",
+        "target": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/oracle-baseline-target",
+        "command": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+          "cargo",
+          "--preset",
+          "aeneas",
+          "--dest-file",
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29/support/artifacts/oracle-baseline-B.llbc",
+          "--",
+          "--manifest-path",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/Cargo.toml",
+          "--package",
+          "warm_probe",
+          "--lib",
+          "--offline",
+          "--locked"
+        ],
+        "source_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+        "build_script_sha256": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+        "stdout": "",
+        "stderr": "   Compiling warm_probe v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/app)\n   Compiling dep_path v0.1.0 (/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/B/dep)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.54s\n",
+        "output": {
+          "sha256": "fe8b7fd5e4d4bde12b9ed3dc940adc4fb40f27933c1ead8a8121dbb7677d2bff",
+          "bytes": 24231,
+          "crate_name": "warm_probe",
+          "has_errors": false,
+          "local_body_sha256": {
+            "warm_probe::step": "0194e911c5ac99fc24612f5d829148b10e977aa855e03dac0be2ddb2d3c81451",
+            "warm_probe::use_step": "1ab5c581f24a82dee57a9be5d793b42c389ebbae03d08643a56406f58538fc4d",
+            "warm_probe::payload_len": "d39899cc28462e17082084b92f5127901fa88256a58c6a201844a64b7727f149",
+            "warm_probe::generated_value": "943d952354878c5d7e160812e9cf3440455b9823d595476a39401a8862ed8653",
+            "warm_probe::SNAPSHOT_VALUE": "b6305d5482a9169a7a9b5e7588edcafaf1e9d3f593aaa68c40b9a915bd9ff079"
+          }
+        }
+      },
+      "target_after": {
+        "files": 131,
+        "file_bytes": 2797407,
+        "incremental_files": 55,
+        "incremental_bytes": 1374519,
+        "allocated_kib": 2588
+      }
+    }
+  },
+  "cleanup": {
+    "work_exists_after_removal": false,
+    "free_disk_bytes": 46277615616,
+    "free_memory_percent": 43
+  },
+  "edit": {
+    "baseline_sha256": "bbe231375dfe3d5ae46a420067496a466ee223e8e2acb2aa54d0c931691d041e",
+    "edited_sha256": "d264e3214d6b82cc98a3dc13d3fb4d839d1ed54ccdf705225c17210195e61bae",
+    "original_build_sha256": "28d6b36abed6dfd0d3800edddb2df680dc3ac1fa003952ffef6c92250ac3b702",
+    "instrumented_build_sha256": "edfb075116dade977145bcb50e796c0ee8eb191d1070bd651a9fb581b472ed58",
+    "marker": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/i080-incremental-cancel/work/A/app/.build-entered"
+  },
+  "final_shared_target": {
+    "files": 232,
+    "file_bytes": 4662147,
+    "incremental_files": 112,
+    "incremental_bytes": 2894955,
+    "allocated_kib": 3832
+  },
+  "postrun_groups": {
+    "prewarm-A": [],
+    "prewarm-B": [],
+    "recovery-A": [],
+    "oracle-edited-A": [],
+    "oracle-baseline-B": [],
+    "cancel-A": [],
+    "companion-B": []
+  }
+}

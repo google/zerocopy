@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "lake/configuration-ownership",
+    "lake/upgrade-boundary",
+    "lean/installed-toolchain-inventory",
+    "anneal/i094"
+  ],
+  "subjects": [
+    {
+      "name": "I094 installed Lean/Lake inventory",
+      "identity": {
+        "reference_revision": "40b3024d5a3c73357abb6e90f10fcaf713768cd4",
+        "inventory_sha256": "521462ea9a4c610e3f4f1b9d9efa47cdd90b011bd10d2f18267d093310f4644b",
+        "collector_sha256": "d221a2171ac1f4d40092d01847ae7f883956412da2eccb6deb56d441b84d3e43",
+        "checker_sha256": "070985b79b5b5e9d3a35f52a6b6fb9e759b8c1b878e0d8084deeb55de0dbfca8"
+      }
+    },
+    {
+      "name": "Bundled and Nix Lean/Lake executables",
+      "identity": {
+        "bundled_versions": "v4.29.0; v4.30.0-rc2",
+        "nix_store_lean_toolchain_version": "v4.30.0-rc2",
+        "lean_v429_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+        "lake_v429_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+        "lean_v430_rc2_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "lake_v430_rc2_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    },
+    {
+      "name": "Pinned Aeneas Lean selection",
+      "identity": {
+        "release": "nightly-2026.06.03",
+        "aeneas_repository": "AeneasVerif/aeneas",
+        "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "lean_toolchain": "leanprover/lean4:v4.30.0-rc2",
+        "release_pin_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "source_pin_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,82 @@
+{
+  "bounded_context_ids": [
+    "D03",
+    "F02",
+    "F03",
+    "F04",
+    "F08",
+    "F20",
+    "I04",
+    "I078",
+    "I092",
+    "I099",
+    "I105",
+    "I114",
+    "I139",
+    "M01"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [
+    "D06",
+    "F13",
+    "I080",
+    "I089",
+    "I094"
+  ],
+  "changed_residual_ids": [
+    "D06",
+    "F13",
+    "I080",
+    "I089",
+    "I094"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "D06",
+    "F13",
+    "I080",
+    "I089",
+    "I094"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v30.csv": "c4a1dcf547682fd89a9467ef24026f345ad3d48548b0fdcd59bb9acb809980fc",
+    "investigation-final-v30.csv": "2564b52287e15bc5a1daf344793712b441c3966683b5610e151cc1b1af70897d",
+    "row-challenge-v30.json": "4eec3f7ecf2bc0e42f33c6d04ae55667c68082195ec026c30c59d0bccd65bd38",
+    "source-package-inventory-v30.csv": "5905a19a24bf67f8cfd5a66300e4eea3b41478ac07c83e36c182abd098fdb7e0"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v30.json": "e31e3266df64f1df9e58b7f0457238c6bcda4416019d68cdd6a2d6903d9d89d2",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v29/3730-crosswalk-final-v29.csv": "2dbe963ceb72c3cc3cbb890db032b34788d10b211796390510b0a509a7f34634",
+    "v29/investigation-final-v29.csv": "e9689531ae7f70fefdf7b0e729ab39ca6f7755a848bb12b4ebb8ec2f8df8fa70",
+    "v29/row-challenge-v29.json": "75b9f10d80d54430a0a3872c7915587ee6a6b0e44dc26b0f9bdedae2a1c853ed"
+  },
+  "inventory_files": 40,
+  "investigation_count": 159,
+  "reference_tip_at_start": "40b3024d5a3c73357abb6e90f10fcaf713768cd4",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v29",
+    "anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29",
+    "anneal-3731-i094-installed-lean-lake-inventory-2026-09-29",
+    "anneal-3731-two-concurrent-fresh-cache-goal-consumers-2026-09-29"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v29",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

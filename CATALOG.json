@@ -2034,6 +2034,52 @@
         "anneal/evidence-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v30": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "40b3024d5a3c73357abb6e90f10fcaf713768cd4",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "75b9f10d80d54430a0a3872c7915587ee6a6b0e44dc26b0f9bdedae2a1c853ed"
+          },
+          "name": "Published v29 coverage ledger"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Pinned Lean/Lake local inventory and concurrent consumer execution"
+        },
+        {
+          "identity": {
+            "charon_executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "charon_version": "0.1.210",
+            "rust_toolchain": "nightly-2026-05-31"
+          },
+          "name": "Pinned Charon/Cargo cancellation execution"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lean/lake",
+        "charon"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v4": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6284,6 +6330,41 @@
         "rust/compilation-unit-identity"
       ]
     },
+    "anneal-3731-i080-incremental-on-shared-target-cancel-recovery-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "local macOS arm64 charon executable",
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned Charon Cargo extraction"
+        },
+        {
+          "identity": {
+            "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned nightly Cargo and rustc"
+        },
+        {
+          "identity": {
+            "fixture_source_tree": "af738e8e51a229bdc2940cc1caf176c2bec711b2",
+            "probe_sha256": "9e9249c178d5e42dc6d800bde65d4769d2883b127b15a4d3a48adfdf0a41ff6e"
+          },
+          "name": "Retained two-crate fixture and incremental cancellation probe"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "anneal/resource-controls",
+        "charon/cargo-extraction",
+        "cargo/incremental",
+        "charon/cancellation"
+      ]
+    },
     "anneal-3731-i080-incremental-target-layout-matrix-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6385,6 +6466,48 @@
         "charon/cargo-extraction",
         "cargo/incremental",
         "charon/cache-invalidation"
+      ]
+    },
+    "anneal-3731-i094-installed-lean-lake-inventory-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "checker_sha256": "070985b79b5b5e9d3a35f52a6b6fb9e759b8c1b878e0d8084deeb55de0dbfca8",
+            "collector_sha256": "d221a2171ac1f4d40092d01847ae7f883956412da2eccb6deb56d441b84d3e43",
+            "inventory_sha256": "521462ea9a4c610e3f4f1b9d9efa47cdd90b011bd10d2f18267d093310f4644b",
+            "reference_revision": "40b3024d5a3c73357abb6e90f10fcaf713768cd4"
+          },
+          "name": "I094 installed Lean/Lake inventory"
+        },
+        {
+          "identity": {
+            "bundled_versions": "v4.29.0; v4.30.0-rc2",
+            "lake_v429_sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b",
+            "lake_v430_rc2_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_v429_sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37",
+            "lean_v430_rc2_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "nix_store_lean_toolchain_version": "v4.30.0-rc2"
+          },
+          "name": "Bundled and Nix Lean/Lake executables"
+        },
+        {
+          "identity": {
+            "aeneas_repository": "AeneasVerif/aeneas",
+            "aeneas_revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "lean_toolchain": "leanprover/lean4:v4.30.0-rc2",
+            "release": "nightly-2026.06.03",
+            "release_pin_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+            "source_pin_sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+          },
+          "name": "Pinned Aeneas Lean selection"
+        }
+      ],
+      "topics": [
+        "lake/configuration-ownership",
+        "lake/upgrade-boundary",
+        "lean/installed-toolchain-inventory",
+        "anneal/i094"
       ]
     },
     "anneal-3731-i107-i159-independent-rereview-2026-09-29": {
@@ -6733,6 +6856,25 @@
         "lean/language-server",
         "lean/tactic-state",
         "lean/rpc"
+      ]
+    },
+    "anneal-3731-two-concurrent-fresh-cache-goal-consumers-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/lake-preparation",
+        "lake/artifact-cache",
+        "lake/consumer-state",
+        "lean/interactive-goals"
       ]
     },
     "anneal-archive-read-only-behavior-main-41f5b37": {

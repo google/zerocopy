@@ -1,0 +1,639 @@
+{
+  "preflight": {
+    "disk_free_bytes": 46279356416,
+    "memory_free_percent": 24.61
+  },
+  "limits": {
+    "disk_bytes": 16106127360,
+    "start_free_percent": 23,
+    "runtime_free_percent": 12,
+    "rss_kib": 4500000,
+    "cell_seconds": 75,
+    "call_seconds": 30
+  },
+  "tools": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "seed_build": {
+    "label": "seed-build",
+    "args": [
+      "-v",
+      "build",
+      "Generated"
+    ],
+    "start": 2006223.883364375,
+    "end": 2006227.767345916,
+    "exit": 0,
+    "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran probe_consumer:extraDep\n✔ [2/5] Ran probe_dep:extraDep\nℹ [3/5] Built Dep (192ms)\ntrace: .> LEAN_PATH=$WORK/seed/producer/.lake/build/lib/lean:$WORK/seed/consumer/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/seed/producer/Dep.lean -o $WORK/seed/producer/.lake/build/lib/lean/Dep.olean -i $WORK/seed/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/seed/producer/.lake/build/ir/Dep.c --setup $WORK/seed/producer/.lake/build/ir/Dep.setup.json --json\nℹ [4/5] Built Generated (189ms)\ntrace: .> LEAN_PATH=$WORK/seed/producer/.lake/build/lib/lean:$WORK/seed/consumer/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/seed/consumer/Generated.lean -o $WORK/seed/consumer/.lake/build/lib/lean/Generated.olean -i $WORK/seed/consumer/.lake/build/lib/lean/Generated.ilean -c $WORK/seed/consumer/.lake/build/ir/Generated.c --setup $WORK/seed/consumer/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:3:2: ⊢ depValue + 1 = 8\ninfo: Generated.lean:5:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:6:0: 8\n✔ [5/5] Ran probe_consumer/Generated:default\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  "seed_product": {
+    "Dep.olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+    "Generated.olean": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401"
+  },
+  "seed_before": {
+    "consumer/.lake/build/ir/Generated.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790724916095536038
+    },
+    "consumer/.lake/build/ir/Generated.c.hash": {
+      "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+      "size": 16,
+      "mtime_ns": 1790724916104315244
+    },
+    "consumer/.lake/build/ir/Generated.setup.json": {
+      "sha256": "f57213b1c42c78e07a7459f901e267de2c364c76d2ec532b05dc2a6204f99b31",
+      "size": 283,
+      "mtime_ns": 1790724915914026796
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790724916095425829
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+      "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+      "size": 16,
+      "mtime_ns": 1790724916103940619
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790724916095086580
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+      "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+      "size": 16,
+      "mtime_ns": 1790724916103542160
+    },
+    "consumer/.lake/build/lib/lean/Generated.trace": {
+      "sha256": "173a57c2dca7ac45154838a85df1a047f73332cf8b56524e1905e7b02596ac8a",
+      "size": 2569,
+      "mtime_ns": 1790724916103102827
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean": {
+      "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+      "size": 108432,
+      "mtime_ns": 1790724915681361944
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+      "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+      "size": 184,
+      "mtime_ns": 1790724912583868053
+    },
+    "consumer/Generated.lean": {
+      "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+      "size": 124,
+      "mtime_ns": 1790724912290781134
+    },
+    "consumer/lake-manifest.json": {
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "size": 372,
+      "mtime_ns": 1790724912290961259
+    },
+    "consumer/lakefile.lean": {
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "size": 123,
+      "mtime_ns": 1790724912290707926
+    },
+    "consumer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790724912290846259
+    },
+    "producer/.lake/build/ir/Dep.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790724915904012341
+    },
+    "producer/.lake/build/ir/Dep.c.hash": {
+      "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      "size": 16,
+      "mtime_ns": 1790724915913122838
+    },
+    "producer/.lake/build/ir/Dep.setup.json": {
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      "size": 127,
+      "mtime_ns": 1790724915721215767
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790724915902224300
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+      "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      "size": 16,
+      "mtime_ns": 1790724915912729380
+    },
+    "producer/.lake/build/lib/lean/Dep.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790724915901100092
+    },
+    "producer/.lake/build/lib/lean/Dep.olean.hash": {
+      "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      "size": 16,
+      "mtime_ns": 1790724915912335339
+    },
+    "producer/.lake/build/lib/lean/Dep.trace": {
+      "sha256": "eb6b54517038adfb322afe6ad0566d183e68196d297a155c228e873cd9f1c1eb",
+      "size": 2161,
+      "mtime_ns": 1790724915911635589
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean": {
+      "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      "size": 96288,
+      "mtime_ns": 1790724915715814893
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+      "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      "size": 182,
+      "mtime_ns": 1790724915685960026
+    },
+    "producer/Dep.lean": {
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24,
+      "mtime_ns": 1790724912290557384
+    },
+    "producer/lakefile.lean": {
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75,
+      "mtime_ns": 1790724912290453343
+    },
+    "producer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790724912290633343
+    }
+  },
+  "seed_after": {
+    "consumer/.lake/build/ir/Generated.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790724916095536038
+    },
+    "consumer/.lake/build/ir/Generated.c.hash": {
+      "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+      "size": 16,
+      "mtime_ns": 1790724916104315244
+    },
+    "consumer/.lake/build/ir/Generated.setup.json": {
+      "sha256": "f57213b1c42c78e07a7459f901e267de2c364c76d2ec532b05dc2a6204f99b31",
+      "size": 283,
+      "mtime_ns": 1790724915914026796
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790724916095425829
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+      "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+      "size": 16,
+      "mtime_ns": 1790724916103940619
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790724916095086580
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+      "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+      "size": 16,
+      "mtime_ns": 1790724916103542160
+    },
+    "consumer/.lake/build/lib/lean/Generated.trace": {
+      "sha256": "173a57c2dca7ac45154838a85df1a047f73332cf8b56524e1905e7b02596ac8a",
+      "size": 2569,
+      "mtime_ns": 1790724916103102827
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean": {
+      "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+      "size": 108432,
+      "mtime_ns": 1790724915681361944
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+      "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+      "size": 184,
+      "mtime_ns": 1790724912583868053
+    },
+    "consumer/Generated.lean": {
+      "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+      "size": 124,
+      "mtime_ns": 1790724912290781134
+    },
+    "consumer/lake-manifest.json": {
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "size": 372,
+      "mtime_ns": 1790724912290961259
+    },
+    "consumer/lakefile.lean": {
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "size": 123,
+      "mtime_ns": 1790724912290707926
+    },
+    "consumer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790724912290846259
+    },
+    "producer/.lake/build/ir/Dep.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790724915904012341
+    },
+    "producer/.lake/build/ir/Dep.c.hash": {
+      "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      "size": 16,
+      "mtime_ns": 1790724915913122838
+    },
+    "producer/.lake/build/ir/Dep.setup.json": {
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      "size": 127,
+      "mtime_ns": 1790724915721215767
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790724915902224300
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+      "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      "size": 16,
+      "mtime_ns": 1790724915912729380
+    },
+    "producer/.lake/build/lib/lean/Dep.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790724915901100092
+    },
+    "producer/.lake/build/lib/lean/Dep.olean.hash": {
+      "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      "size": 16,
+      "mtime_ns": 1790724915912335339
+    },
+    "producer/.lake/build/lib/lean/Dep.trace": {
+      "sha256": "eb6b54517038adfb322afe6ad0566d183e68196d297a155c228e873cd9f1c1eb",
+      "size": 2161,
+      "mtime_ns": 1790724915911635589
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean": {
+      "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      "size": 96288,
+      "mtime_ns": 1790724915715814893
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+      "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      "size": 182,
+      "mtime_ns": 1790724915685960026
+    },
+    "producer/Dep.lean": {
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24,
+      "mtime_ns": 1790724912290557384
+    },
+    "producer/lakefile.lean": {
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75,
+      "mtime_ns": 1790724912290453343
+    },
+    "producer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790724912290633343
+    }
+  },
+  "cache_before": {
+    "artifacts/3df289e2daffc40d.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790724915904012341
+    },
+    "artifacts/4ab07c203eb6f06e.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790724915901100092
+    },
+    "artifacts/7cbe5b9f9b2f9384.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790724916095536038
+    },
+    "artifacts/c831fda05afbbef8.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790724916095086580
+    },
+    "artifacts/d2264521cb1531dd.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790724915902224300
+    },
+    "artifacts/dc415dbf5fe7c5b6.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790724916095425829
+    },
+    "outputs/probe_consumer/6bd5b38c04e92e23.json": {
+      "sha256": "2c27198307da9b3ed24a5ddd824ff2c9225475928201cbd19fd0b4eea2143095",
+      "size": 170,
+      "mtime_ns": 1790724916104461327
+    },
+    "outputs/probe_dep/bc2ee9095550ff31.json": {
+      "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+      "size": 170,
+      "mtime_ns": 1790724915913623463
+    }
+  },
+  "cache_after": {
+    "artifacts/3df289e2daffc40d.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790724915904012341
+    },
+    "artifacts/4ab07c203eb6f06e.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790724915901100092
+    },
+    "artifacts/7cbe5b9f9b2f9384.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790724916095536038
+    },
+    "artifacts/c831fda05afbbef8.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790724916095086580
+    },
+    "artifacts/d2264521cb1531dd.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790724915902224300
+    },
+    "artifacts/dc415dbf5fe7c5b6.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790724916095425829
+    },
+    "outputs/probe_consumer/6bd5b38c04e92e23.json": {
+      "sha256": "2c27198307da9b3ed24a5ddd824ff2c9225475928201cbd19fd0b4eea2143095",
+      "size": 170,
+      "mtime_ns": 1790724916104461327
+    },
+    "outputs/probe_dep/bc2ee9095550ff31.json": {
+      "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+      "size": 170,
+      "mtime_ns": 1790724915913623463
+    }
+  },
+  "private_before": {
+    "a": {
+      "consumer/Generated.lean": {
+        "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+        "size": 124,
+        "mtime_ns": 1790724916180665056
+      },
+      "consumer/lake-manifest.json": {
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+        "size": 372,
+        "mtime_ns": 1790724916180905806
+      },
+      "consumer/lakefile.lean": {
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+        "size": 123,
+        "mtime_ns": 1790724916180564014
+      },
+      "consumer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790724916180762889
+      },
+      "producer/Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "size": 24,
+        "mtime_ns": 1790724916180365098
+      },
+      "producer/lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75,
+        "mtime_ns": 1790724916180241139
+      },
+      "producer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790724916180465723
+      }
+    },
+    "b": {
+      "consumer/Generated.lean": {
+        "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+        "size": 124,
+        "mtime_ns": 1790724916181761806
+      },
+      "consumer/lake-manifest.json": {
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+        "size": 372,
+        "mtime_ns": 1790724916181937014
+      },
+      "consumer/lakefile.lean": {
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+        "size": 123,
+        "mtime_ns": 1790724916181660514
+      },
+      "consumer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790724916181844430
+      },
+      "producer/Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "size": 24,
+        "mtime_ns": 1790724916181368639
+      },
+      "producer/lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75,
+        "mtime_ns": 1790724916181282847
+      },
+      "producer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790724916181448764
+      }
+    }
+  },
+  "guard": {
+    "abort": null,
+    "samples": 1,
+    "peak_rss_kib": 0,
+    "min_free_percent": 22.33,
+    "max_processes": 0
+  },
+  "consumers": {
+    "a": {
+      "build": {
+        "label": "a-no-build",
+        "args": [
+          "-v",
+          "--no-build",
+          "build",
+          "Generated"
+        ],
+        "start": 2006227.7865305,
+        "end": 2006227.793524125,
+        "exit": 65,
+        "stdout": "",
+        "stderr": "sandbox-exec: illegal argument:  #t\n\nBacktrace: \n<input string>:1:63:\n\t(subpath \"$WORK/cache\")\n\n"
+      },
+      "batch": {
+        "label": "a-batch",
+        "args": [
+          "--no-cache",
+          "env",
+          "lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "start": 2006227.793591708,
+        "end": 2006227.800094375,
+        "exit": 65,
+        "stdout": "",
+        "stderr": "sandbox-exec: illegal argument:  #t\n\nBacktrace: \n<input string>:1:63:\n\t(subpath \"$WORK/cache\")\n\n"
+      },
+      "goal": {
+        "label": "a-first-goal",
+        "start": 2006227.800111833,
+        "end": 2006227.870592041,
+        "error": "BrokenPipeError(32, 'Broken pipe')",
+        "wait": null,
+        "goal": null,
+        "stop": null,
+        "diagnostics": []
+      },
+      "producer_after": {
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24,
+          "mtime_ns": 1790724916180365098
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75,
+          "mtime_ns": 1790724916180241139
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790724916180465723
+        }
+      },
+      "consumer_after": {
+        "Generated.lean": {
+          "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+          "size": 124,
+          "mtime_ns": 1790724916180665056
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "size": 372,
+          "mtime_ns": 1790724916180905806
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "size": 123,
+          "mtime_ns": 1790724916180564014
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790724916180762889
+        }
+      }
+    },
+    "b": {
+      "build": {
+        "label": "b-no-build",
+        "args": [
+          "-v",
+          "--no-build",
+          "build",
+          "Generated"
+        ],
+        "start": 2006227.786491458,
+        "end": 2006227.793655666,
+        "exit": 65,
+        "stdout": "",
+        "stderr": "sandbox-exec: illegal argument:  #t\n\nBacktrace: \n<input string>:1:63:\n\t(subpath \"$WORK/cache\")\n\n"
+      },
+      "batch": {
+        "label": "b-batch",
+        "args": [
+          "--no-cache",
+          "env",
+          "lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "start": 2006227.793696875,
+        "end": 2006227.800055458,
+        "exit": 65,
+        "stdout": "",
+        "stderr": "sandbox-exec: illegal argument:  #t\n\nBacktrace: \n<input string>:1:63:\n\t(subpath \"$WORK/cache\")\n\n"
+      },
+      "goal": {
+        "label": "b-first-goal",
+        "start": 2006227.80016025,
+        "end": 2006227.870647041,
+        "error": "BrokenPipeError(32, 'Broken pipe')",
+        "wait": null,
+        "goal": null,
+        "stop": null,
+        "diagnostics": []
+      },
+      "producer_after": {
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24,
+          "mtime_ns": 1790724916181368639
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75,
+          "mtime_ns": 1790724916181282847
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790724916181448764
+        }
+      },
+      "consumer_after": {
+        "Generated.lean": {
+          "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+          "size": 124,
+          "mtime_ns": 1790724916181761806
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "size": 372,
+          "mtime_ns": 1790724916181937014
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "size": 123,
+          "mtime_ns": 1790724916181660514
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790724916181844430
+        }
+      }
+    }
+  },
+  "source": "import Dep\ntheorem generatedEq : depValue + 1 = 8 := by\n  trace_state\n  decide\n#print axioms generatedEq\n#eval depValue + 1\n"
+}

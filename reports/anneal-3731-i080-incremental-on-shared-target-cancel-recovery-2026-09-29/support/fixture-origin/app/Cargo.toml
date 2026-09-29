@@ -1,0 +1,7 @@
+[package]
+name = "warm_probe"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+[dependencies]
+dep_path = { path = "../dep" }

@@ -1,0 +1,1337 @@
+{
+  "preflight": {
+    "disk_free_bytes": 46262894592,
+    "memory_free_percent": 24.57
+  },
+  "limits": {
+    "disk_bytes": 16106127360,
+    "start_free_percent": 23,
+    "runtime_free_percent": 12,
+    "rss_kib": 4500000,
+    "cell_seconds": 75,
+    "call_seconds": 30
+  },
+  "tools": {
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "seed_build": {
+    "label": "seed-build",
+    "args": [
+      "-v",
+      "build",
+      "Generated"
+    ],
+    "start": 2006439.282747041,
+    "end": 2006443.02251675,
+    "exit": 0,
+    "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran probe_consumer:extraDep\n✔ [2/5] Ran probe_dep:extraDep\nℹ [3/5] Built Dep (197ms)\ntrace: .> LEAN_PATH=$WORK/seed/producer/.lake/build/lib/lean:$WORK/seed/consumer/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/seed/producer/Dep.lean -o $WORK/seed/producer/.lake/build/lib/lean/Dep.olean -i $WORK/seed/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/seed/producer/.lake/build/ir/Dep.c --setup $WORK/seed/producer/.lake/build/ir/Dep.setup.json --json\nℹ [4/5] Built Generated (191ms)\ntrace: .> LEAN_PATH=$WORK/seed/producer/.lake/build/lib/lean:$WORK/seed/consumer/.lake/build/lib/lean $TOOLCHAIN/bin/lean $WORK/seed/consumer/Generated.lean -o $WORK/seed/consumer/.lake/build/lib/lean/Generated.olean -i $WORK/seed/consumer/.lake/build/lib/lean/Generated.ilean -c $WORK/seed/consumer/.lake/build/ir/Generated.c --setup $WORK/seed/consumer/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:3:2: ⊢ depValue + 1 = 8\ninfo: Generated.lean:5:0: 'generatedEq' does not depend on any axioms\ninfo: Generated.lean:6:0: 8\n✔ [5/5] Ran probe_consumer/Generated:default\nBuild completed successfully (5 jobs).\n",
+    "stderr": ""
+  },
+  "seed_product": {
+    "Dep.olean": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+    "Generated.olean": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401"
+  },
+  "seed_before": {
+    "consumer/.lake/build/ir/Generated.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790725131362119111
+    },
+    "consumer/.lake/build/ir/Generated.c.hash": {
+      "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+      "size": 16,
+      "mtime_ns": 1790725131370921775
+    },
+    "consumer/.lake/build/ir/Generated.setup.json": {
+      "sha256": "6957141daf4aa0078af19eb5d05e0991a19de8e1be8c3db5c279290949246b3a",
+      "size": 283,
+      "mtime_ns": 1790725131179465828
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790725131362026070
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+      "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+      "size": 16,
+      "mtime_ns": 1790725131370546317
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790725131361692778
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+      "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+      "size": 16,
+      "mtime_ns": 1790725131370155276
+    },
+    "consumer/.lake/build/lib/lean/Generated.trace": {
+      "sha256": "ad8bbfa51535174731d552ffd26ff2d29199e0e5c53adeeac0bd375e6c2a205f",
+      "size": 2569,
+      "mtime_ns": 1790725131369682984
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean": {
+      "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+      "size": 108432,
+      "mtime_ns": 1790725130946326851
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+      "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+      "size": 184,
+      "mtime_ns": 1790725127952108723
+    },
+    "consumer/Generated.lean": {
+      "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+      "size": 124,
+      "mtime_ns": 1790725127690101837
+    },
+    "consumer/lake-manifest.json": {
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "size": 372,
+      "mtime_ns": 1790725127690301546
+    },
+    "consumer/lakefile.lean": {
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "size": 123,
+      "mtime_ns": 1790725127690032046
+    },
+    "consumer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790725127690170129
+    },
+    "producer/.lake/build/ir/Dep.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790725131170228706
+    },
+    "producer/.lake/build/ir/Dep.c.hash": {
+      "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      "size": 16,
+      "mtime_ns": 1790725131178843245
+    },
+    "producer/.lake/build/ir/Dep.setup.json": {
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      "size": 127,
+      "mtime_ns": 1790725130980429342
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790725131168830957
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+      "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      "size": 16,
+      "mtime_ns": 1790725131178454162
+    },
+    "producer/.lake/build/lib/lean/Dep.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790725131166301374
+    },
+    "producer/.lake/build/lib/lean/Dep.olean.hash": {
+      "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      "size": 16,
+      "mtime_ns": 1790725131178025121
+    },
+    "producer/.lake/build/lib/lean/Dep.trace": {
+      "sha256": "27ac76697edbe340d30a341f1859be7a42df0dbfddc14edc5263139bf9fc3dce",
+      "size": 2161,
+      "mtime_ns": 1790725131177418121
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean": {
+      "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      "size": 96288,
+      "mtime_ns": 1790725130977016426
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+      "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      "size": 182,
+      "mtime_ns": 1790725130949298934
+    },
+    "producer/Dep.lean": {
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24,
+      "mtime_ns": 1790725127689881004
+    },
+    "producer/lakefile.lean": {
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75,
+      "mtime_ns": 1790725127689785171
+    },
+    "producer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790725127689961046
+    }
+  },
+  "seed_after": {
+    "consumer/.lake/build/ir/Generated.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790725131362119111
+    },
+    "consumer/.lake/build/ir/Generated.c.hash": {
+      "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+      "size": 16,
+      "mtime_ns": 1790725131370921775
+    },
+    "consumer/.lake/build/ir/Generated.setup.json": {
+      "sha256": "6957141daf4aa0078af19eb5d05e0991a19de8e1be8c3db5c279290949246b3a",
+      "size": 283,
+      "mtime_ns": 1790725131179465828
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790725131362026070
+    },
+    "consumer/.lake/build/lib/lean/Generated.ilean.hash": {
+      "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+      "size": 16,
+      "mtime_ns": 1790725131370546317
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790725131361692778
+    },
+    "consumer/.lake/build/lib/lean/Generated.olean.hash": {
+      "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+      "size": 16,
+      "mtime_ns": 1790725131370155276
+    },
+    "consumer/.lake/build/lib/lean/Generated.trace": {
+      "sha256": "ad8bbfa51535174731d552ffd26ff2d29199e0e5c53adeeac0bd375e6c2a205f",
+      "size": 2569,
+      "mtime_ns": 1790725131369682984
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean": {
+      "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+      "size": 108432,
+      "mtime_ns": 1790725130946326851
+    },
+    "consumer/.lake/config/[anonymous]/lakefile.olean.trace": {
+      "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+      "size": 184,
+      "mtime_ns": 1790725127952108723
+    },
+    "consumer/Generated.lean": {
+      "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+      "size": 124,
+      "mtime_ns": 1790725127690101837
+    },
+    "consumer/lake-manifest.json": {
+      "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+      "size": 372,
+      "mtime_ns": 1790725127690301546
+    },
+    "consumer/lakefile.lean": {
+      "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+      "size": 123,
+      "mtime_ns": 1790725127690032046
+    },
+    "consumer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790725127690170129
+    },
+    "producer/.lake/build/ir/Dep.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790725131170228706
+    },
+    "producer/.lake/build/ir/Dep.c.hash": {
+      "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      "size": 16,
+      "mtime_ns": 1790725131178843245
+    },
+    "producer/.lake/build/ir/Dep.setup.json": {
+      "sha256": "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      "size": 127,
+      "mtime_ns": 1790725130980429342
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790725131168830957
+    },
+    "producer/.lake/build/lib/lean/Dep.ilean.hash": {
+      "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      "size": 16,
+      "mtime_ns": 1790725131178454162
+    },
+    "producer/.lake/build/lib/lean/Dep.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790725131166301374
+    },
+    "producer/.lake/build/lib/lean/Dep.olean.hash": {
+      "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      "size": 16,
+      "mtime_ns": 1790725131178025121
+    },
+    "producer/.lake/build/lib/lean/Dep.trace": {
+      "sha256": "27ac76697edbe340d30a341f1859be7a42df0dbfddc14edc5263139bf9fc3dce",
+      "size": 2161,
+      "mtime_ns": 1790725131177418121
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean": {
+      "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      "size": 96288,
+      "mtime_ns": 1790725130977016426
+    },
+    "producer/.lake/config/probe_dep/lakefile.olean.trace": {
+      "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      "size": 182,
+      "mtime_ns": 1790725130949298934
+    },
+    "producer/Dep.lean": {
+      "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      "size": 24,
+      "mtime_ns": 1790725127689881004
+    },
+    "producer/lakefile.lean": {
+      "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      "size": 75,
+      "mtime_ns": 1790725127689785171
+    },
+    "producer/lean-toolchain": {
+      "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      "size": 29,
+      "mtime_ns": 1790725127689961046
+    }
+  },
+  "cache_before": {
+    "artifacts/3df289e2daffc40d.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790725131170228706
+    },
+    "artifacts/4ab07c203eb6f06e.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790725131166301374
+    },
+    "artifacts/7cbe5b9f9b2f9384.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790725131362119111
+    },
+    "artifacts/c831fda05afbbef8.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790725131361692778
+    },
+    "artifacts/d2264521cb1531dd.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790725131168830957
+    },
+    "artifacts/dc415dbf5fe7c5b6.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790725131362026070
+    },
+    "outputs/probe_consumer/6bd5b38c04e92e23.json": {
+      "sha256": "2c27198307da9b3ed24a5ddd824ff2c9225475928201cbd19fd0b4eea2143095",
+      "size": 170,
+      "mtime_ns": 1790725131371069609
+    },
+    "outputs/probe_dep/bc2ee9095550ff31.json": {
+      "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+      "size": 170,
+      "mtime_ns": 1790725131179047620
+    }
+  },
+  "cache_after": {
+    "artifacts/3df289e2daffc40d.c": {
+      "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      "size": 1366,
+      "mtime_ns": 1790725131170228706
+    },
+    "artifacts/4ab07c203eb6f06e.olean": {
+      "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      "size": 4616,
+      "mtime_ns": 1790725131166301374
+    },
+    "artifacts/7cbe5b9f9b2f9384.c": {
+      "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+      "size": 1265,
+      "mtime_ns": 1790725131362119111
+    },
+    "artifacts/c831fda05afbbef8.olean": {
+      "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+      "size": 6152,
+      "mtime_ns": 1790725131361692778
+    },
+    "artifacts/d2264521cb1531dd.ilean": {
+      "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      "size": 289,
+      "mtime_ns": 1790725131168830957
+    },
+    "artifacts/dc415dbf5fe7c5b6.ilean": {
+      "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+      "size": 381,
+      "mtime_ns": 1790725131362026070
+    },
+    "outputs/probe_consumer/6bd5b38c04e92e23.json": {
+      "sha256": "2c27198307da9b3ed24a5ddd824ff2c9225475928201cbd19fd0b4eea2143095",
+      "size": 170,
+      "mtime_ns": 1790725131371069609
+    },
+    "outputs/probe_dep/bc2ee9095550ff31.json": {
+      "sha256": "6b434b5657f8666efad14443a158bf32c138967ee1b28be8a0ddfdf73412afc9",
+      "size": 170,
+      "mtime_ns": 1790725131179047620
+    }
+  },
+  "private_before": {
+    "a": {
+      "consumer/Generated.lean": {
+        "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+        "size": 124,
+        "mtime_ns": 1790725131435731757
+      },
+      "consumer/lake-manifest.json": {
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+        "size": 372,
+        "mtime_ns": 1790725131435974674
+      },
+      "consumer/lakefile.lean": {
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+        "size": 123,
+        "mtime_ns": 1790725131435623507
+      },
+      "consumer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790725131435828757
+      },
+      "producer/Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "size": 24,
+        "mtime_ns": 1790725131435399133
+      },
+      "producer/lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75,
+        "mtime_ns": 1790725131435263841
+      },
+      "producer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790725131435515466
+      }
+    },
+    "b": {
+      "consumer/Generated.lean": {
+        "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+        "size": 124,
+        "mtime_ns": 1790725131436709674
+      },
+      "consumer/lake-manifest.json": {
+        "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+        "size": 372,
+        "mtime_ns": 1790725131436890091
+      },
+      "consumer/lakefile.lean": {
+        "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+        "size": 123,
+        "mtime_ns": 1790725131436633341
+      },
+      "consumer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790725131436788341
+      },
+      "producer/Dep.lean": {
+        "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+        "size": 24,
+        "mtime_ns": 1790725131436478007
+      },
+      "producer/lakefile.lean": {
+        "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+        "size": 75,
+        "mtime_ns": 1790725131436399549
+      },
+      "producer/lean-toolchain": {
+        "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+        "size": 29,
+        "mtime_ns": 1790725131436552715
+      }
+    }
+  },
+  "guard": {
+    "abort": null,
+    "samples": 24,
+    "peak_rss_kib": 2789392,
+    "min_free_percent": 19.92,
+    "max_processes": 8
+  },
+  "consumers": {
+    "a": {
+      "build": {
+        "label": "a-no-build",
+        "args": [
+          "-v",
+          "--no-build",
+          "build",
+          "Generated"
+        ],
+        "start": 2006443.03649075,
+        "end": 2006443.605327875,
+        "exit": 0,
+        "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran probe_consumer:extraDep\n✔ [2/5] Ran probe_dep:extraDep\nℹ [3/5] Fetched Dep\ntrace: found artifact in cache: $WORK/cache/artifacts/4ab07c203eb6f06e.olean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/4ab07c203eb6f06e.olean\ntrace: restored artifact from cache to: $WORK/a/producer/.lake/build/lib/lean/Dep.olean\ntrace: found artifact in cache: $WORK/cache/artifacts/d2264521cb1531dd.ilean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/d2264521cb1531dd.ilean\ntrace: restored artifact from cache to: $WORK/a/producer/.lake/build/lib/lean/Dep.ilean\ntrace: found artifact in cache: $WORK/cache/artifacts/3df289e2daffc40d.c\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/3df289e2daffc40d.c\ntrace: restored artifact from cache to: $WORK/a/producer/.lake/build/ir/Dep.c\nℹ [4/5] Fetched Generated\ntrace: found artifact in cache: $WORK/cache/artifacts/c831fda05afbbef8.olean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/c831fda05afbbef8.olean\ntrace: restored artifact from cache to: $WORK/a/consumer/.lake/build/lib/lean/Generated.olean\ntrace: found artifact in cache: $WORK/cache/artifacts/dc415dbf5fe7c5b6.ilean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/dc415dbf5fe7c5b6.ilean\ntrace: restored artifact from cache to: $WORK/a/consumer/.lake/build/lib/lean/Generated.ilean\ntrace: found artifact in cache: $WORK/cache/artifacts/7cbe5b9f9b2f9384.c\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/7cbe5b9f9b2f9384.c\ntrace: restored artifact from cache to: $WORK/a/consumer/.lake/build/ir/Generated.c\n✔ [5/5] Ran probe_consumer/Generated:default\nAll targets up-to-date (5 jobs).\n",
+        "stderr": ""
+      },
+      "batch": {
+        "label": "a-batch",
+        "args": [
+          "--no-cache",
+          "env",
+          "lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "start": 2006443.605362958,
+        "end": 2006444.245728833,
+        "exit": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"⊢ depValue + 1 = 8\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n",
+        "stderr": ""
+      },
+      "goal": {
+        "label": "a-first-goal",
+        "start": 2006444.245757333,
+        "end": 2006445.518379708,
+        "error": null,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ depValue + 1 = 8"
+            ],
+            "rendered": "```lean\n⊢ depValue + 1 = 8\n```"
+          }
+        },
+        "stop": {
+          "exit": 0,
+          "stderr": ""
+        },
+        "diagnostics": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "message": "'generatedEq' does not depend on any axioms",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "message": "'generatedEq' does not depend on any axioms",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 5,
+                      "line": 5
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 5
+                    }
+                  },
+                  "message": "8",
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 5
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 5
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/a/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        ]
+      },
+      "producer_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366,
+          "mtime_ns": 1790725131889470798
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16,
+          "mtime_ns": 1790725131889555757
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289,
+          "mtime_ns": 1790725131889046923
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16,
+          "mtime_ns": 1790725131889139174
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616,
+          "mtime_ns": 1790725131888622674
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16,
+          "mtime_ns": 1790725131888744840
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "71b3e7f704321ddd7153c0cbb1f049e4072e81bba1c9ea3646074f51001b572d",
+          "size": 234,
+          "mtime_ns": 1790725131888309299
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288,
+          "mtime_ns": 1790725131886753674
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182,
+          "mtime_ns": 1790725131855313641
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24,
+          "mtime_ns": 1790725131435399133
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75,
+          "mtime_ns": 1790725131435263841
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790725131435515466
+        }
+      },
+      "consumer_after": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "size": 1265,
+          "mtime_ns": 1790725131891084131
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "size": 16,
+          "mtime_ns": 1790725131891185465
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+          "size": 381,
+          "mtime_ns": 1790725131890643131
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+          "size": 16,
+          "mtime_ns": 1790725131890748548
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+          "size": 6152,
+          "mtime_ns": 1790725131890241757
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+          "size": 16,
+          "mtime_ns": 1790725131890353756
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "f2c46710e2859e7bdbb2788e5cda8e45331fb4ea61adff3bfddb6d1b7bda4685",
+          "size": 234,
+          "mtime_ns": 1790725131889943256
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "size": 108432,
+          "mtime_ns": 1790725131851000517
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "size": 184,
+          "mtime_ns": 1790725131482549661
+        },
+        "Generated.lean": {
+          "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+          "size": 124,
+          "mtime_ns": 1790725131435731757
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "size": 372,
+          "mtime_ns": 1790725131435974674
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "size": 123,
+          "mtime_ns": 1790725131435623507
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790725131435828757
+        }
+      }
+    },
+    "b": {
+      "build": {
+        "label": "b-no-build",
+        "args": [
+          "-v",
+          "--no-build",
+          "build",
+          "Generated"
+        ],
+        "start": 2006443.036444916,
+        "end": 2006443.597394916,
+        "exit": 0,
+        "stdout": "✔ [0/5] Ran job computation\n✔ [1/5] Ran probe_consumer:extraDep\n✔ [2/5] Ran probe_dep:extraDep\nℹ [3/5] Fetched Dep\ntrace: found artifact in cache: $WORK/cache/artifacts/4ab07c203eb6f06e.olean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/4ab07c203eb6f06e.olean\ntrace: restored artifact from cache to: $WORK/b/producer/.lake/build/lib/lean/Dep.olean\ntrace: found artifact in cache: $WORK/cache/artifacts/d2264521cb1531dd.ilean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/d2264521cb1531dd.ilean\ntrace: restored artifact from cache to: $WORK/b/producer/.lake/build/lib/lean/Dep.ilean\ntrace: found artifact in cache: $WORK/cache/artifacts/3df289e2daffc40d.c\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/3df289e2daffc40d.c\ntrace: restored artifact from cache to: $WORK/b/producer/.lake/build/ir/Dep.c\nℹ [4/5] Fetched Generated\ntrace: found artifact in cache: $WORK/cache/artifacts/c831fda05afbbef8.olean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/c831fda05afbbef8.olean\ntrace: restored artifact from cache to: $WORK/b/consumer/.lake/build/lib/lean/Generated.olean\ntrace: found artifact in cache: $WORK/cache/artifacts/dc415dbf5fe7c5b6.ilean\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/dc415dbf5fe7c5b6.ilean\ntrace: restored artifact from cache to: $WORK/b/consumer/.lake/build/lib/lean/Generated.ilean\ntrace: found artifact in cache: $WORK/cache/artifacts/7cbe5b9f9b2f9384.c\ntrace: could not hard link artifact, copying from cache instead; error: operation not permitted (error code: 4294967295)\n  file: $WORK/cache/artifacts/7cbe5b9f9b2f9384.c\ntrace: restored artifact from cache to: $WORK/b/consumer/.lake/build/ir/Generated.c\n✔ [5/5] Ran probe_consumer/Generated:default\nAll targets up-to-date (5 jobs).\n",
+        "stderr": ""
+      },
+      "batch": {
+        "label": "b-batch",
+        "args": [
+          "--no-cache",
+          "env",
+          "lean",
+          "--json",
+          "Generated.lean"
+        ],
+        "start": 2006443.597433541,
+        "end": 2006444.243422958,
+        "exit": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"⊢ depValue + 1 = 8\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'generatedEq' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"8\",\"endPos\":{\"column\":5,\"line\":6},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":6},\"severity\":\"information\"}\n",
+        "stderr": ""
+      },
+      "goal": {
+        "label": "b-first-goal",
+        "start": 2006444.245841791,
+        "end": 2006445.518466041,
+        "error": null,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "⊢ depValue + 1 = 8"
+            ],
+            "rendered": "```lean\n⊢ depValue + 1 = 8\n```"
+          }
+        },
+        "stop": {
+          "exit": 0,
+          "stderr": ""
+        },
+        "diagnostics": [
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "message": "'generatedEq' does not depend on any axioms",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "message": "⊢ depValue + 1 = 8",
+                  "range": {
+                    "end": {
+                      "character": 13,
+                      "line": 2
+                    },
+                    "start": {
+                      "character": 2,
+                      "line": 2
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "message": "'generatedEq' does not depend on any axioms",
+                  "range": {
+                    "end": {
+                      "character": 6,
+                      "line": 4
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 4
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                },
+                {
+                  "fullRange": {
+                    "end": {
+                      "character": 5,
+                      "line": 5
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 5
+                    }
+                  },
+                  "message": "8",
+                  "range": {
+                    "end": {
+                      "character": 5,
+                      "line": 5
+                    },
+                    "start": {
+                      "character": 0,
+                      "line": 5
+                    }
+                  },
+                  "severity": 3,
+                  "source": "Lean 4"
+                }
+              ],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          },
+          {
+            "jsonrpc": "2.0",
+            "method": "textDocument/publishDiagnostics",
+            "params": {
+              "diagnostics": [],
+              "uri": "$WORK_URI/b/consumer/Generated.lean",
+              "version": 1
+            }
+          }
+        ]
+      },
+      "producer_after": {
+        ".lake/build/ir/Dep.c": {
+          "sha256": "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+          "size": 1366,
+          "mtime_ns": 1790725131889732048
+        },
+        ".lake/build/ir/Dep.c.hash": {
+          "sha256": "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+          "size": 16,
+          "mtime_ns": 1790725131889836048
+        },
+        ".lake/build/lib/lean/Dep.ilean": {
+          "sha256": "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+          "size": 289,
+          "mtime_ns": 1790725131889301590
+        },
+        ".lake/build/lib/lean/Dep.ilean.hash": {
+          "sha256": "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+          "size": 16,
+          "mtime_ns": 1790725131889400548
+        },
+        ".lake/build/lib/lean/Dep.olean": {
+          "sha256": "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+          "size": 4616,
+          "mtime_ns": 1790725131888853173
+        },
+        ".lake/build/lib/lean/Dep.olean.hash": {
+          "sha256": "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+          "size": 16,
+          "mtime_ns": 1790725131888979673
+        },
+        ".lake/build/lib/lean/Dep.trace": {
+          "sha256": "71b3e7f704321ddd7153c0cbb1f049e4072e81bba1c9ea3646074f51001b572d",
+          "size": 234,
+          "mtime_ns": 1790725131888326132
+        },
+        ".lake/config/probe_dep/lakefile.olean": {
+          "sha256": "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+          "size": 96288,
+          "mtime_ns": 1790725131886609466
+        },
+        ".lake/config/probe_dep/lakefile.olean.trace": {
+          "sha256": "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+          "size": 182,
+          "mtime_ns": 1790725131855313849
+        },
+        "Dep.lean": {
+          "sha256": "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+          "size": 24,
+          "mtime_ns": 1790725131436478007
+        },
+        "lakefile.lean": {
+          "sha256": "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+          "size": 75,
+          "mtime_ns": 1790725131436399549
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790725131436552715
+        }
+      },
+      "consumer_after": {
+        ".lake/build/ir/Generated.c": {
+          "sha256": "d18ac49a927969b7fb46c06339291a1160c07ca38489acb819e14dac70038b2b",
+          "size": 1265,
+          "mtime_ns": 1790725131891329506
+        },
+        ".lake/build/ir/Generated.c.hash": {
+          "sha256": "7a731d12e01f8d14c66ad20f265a07fea72d72004bc068fdee44e789710e4fe0",
+          "size": 16,
+          "mtime_ns": 1790725131891404173
+        },
+        ".lake/build/lib/lean/Generated.ilean": {
+          "sha256": "bd66e1ed60db0206bb1e9ad9b2e3dfe36b37071aebc4f19df7f8c160a8b1477a",
+          "size": 381,
+          "mtime_ns": 1790725131890921590
+        },
+        ".lake/build/lib/lean/Generated.ilean.hash": {
+          "sha256": "d593c92a0d91d7372916ff6feb8c3b5b04e87c0df932007fa76ab43a0cb3f7c4",
+          "size": 16,
+          "mtime_ns": 1790725131891011923
+        },
+        ".lake/build/lib/lean/Generated.olean": {
+          "sha256": "e807370f82380c588dad12a60d8e2475ac82fc5232cffbbf68a8b1a7dbef9401",
+          "size": 6152,
+          "mtime_ns": 1790725131890497840
+        },
+        ".lake/build/lib/lean/Generated.olean.hash": {
+          "sha256": "d42ffe3effa7e4650a2054e0bfeee30d44d6d1fcfbb954d527703ff2fc9c4ed7",
+          "size": 16,
+          "mtime_ns": 1790725131890615756
+        },
+        ".lake/build/lib/lean/Generated.trace": {
+          "sha256": "f2c46710e2859e7bdbb2788e5cda8e45331fb4ea61adff3bfddb6d1b7bda4685",
+          "size": 234,
+          "mtime_ns": 1790725131890223298
+        },
+        ".lake/config/[anonymous]/lakefile.olean": {
+          "sha256": "b14e1bbac7ece9818f6f3dac1f25a49d8f825bb402b406b729faa007fecb6f67",
+          "size": 108432,
+          "mtime_ns": 1790725131850724851
+        },
+        ".lake/config/[anonymous]/lakefile.olean.trace": {
+          "sha256": "7d5612c273bf2488d76aa2a1f7f6d17dbeaff617b35f024f1475b0df9b91d1de",
+          "size": 184,
+          "mtime_ns": 1790725131482549453
+        },
+        "Generated.lean": {
+          "sha256": "9a5ce7609d511a241f3f6707309c5de09b544bbb053cfce65ccbe7d0f99d898b",
+          "size": 124,
+          "mtime_ns": 1790725131436709674
+        },
+        "lake-manifest.json": {
+          "sha256": "3c7645369d322de36fde6c8056e660d5e8a32c511b81bb2e99d050737e1ecfe2",
+          "size": 372,
+          "mtime_ns": 1790725131436890091
+        },
+        "lakefile.lean": {
+          "sha256": "ce6671f23829ea8fa98c3b249acf4629884388e416f4cbc955bca3f610470ea1",
+          "size": 123,
+          "mtime_ns": 1790725131436633341
+        },
+        "lean-toolchain": {
+          "sha256": "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+          "size": 29,
+          "mtime_ns": 1790725131436788341
+        }
+      }
+    }
+  },
+  "source": "import Dep\ntheorem generatedEq : depValue + 1 = 8 := by\n  trace_state\n  decide\n#print axioms generatedEq\n#eval depValue + 1\n"
+}
