@@ -4,7 +4,7 @@
 
 Issue #3731 consolidates #3730 into 159 investigation IDs and its follow-up comment preserves the 174-item #3730-to-#3731 crosswalk plus 15 scope extensions. The full investigation ledger and crosswalk are included in `support/`.
 
-This pass added three experiment report packages: a bounded identity/projection/publication suite, a direct Lean-server dependency-generation probe, and a concurrent Aeneas generation probe. They provide new evidence for subsets of 40 agenda IDs; none of the 159 investigations is declared complete by this audit. Existing reports remain evidence for their identified subjects, while their boundaries still apply. The ledger records prior report pointers, new evidence links, and the remaining delta for every I001–I159 item.
+This pass added four experiment report packages: a bounded identity/projection/publication suite, direct Lean-server dependency-generation probes across Lean 4.29 and 4.30-rc2, and a concurrent Aeneas generation probe. They provide new evidence for subsets of 41 agenda IDs; none of the 159 investigations is declared complete by this audit. Existing reports remain evidence for their identified subjects, while their boundaries still apply. The ledger records prior report pointers, new evidence links, and the remaining delta for every I001–I159 item.
 
 The work is not a claim that all experiments in either issue have been executed. Human/agent evaluations, independent reproduction, broad concurrency/resource sweeps, other operating systems/filesystems, real MCP/editor vertical slices, and selected cross-version matrices remain open or conditional.
 
@@ -50,11 +50,18 @@ It partially informs I011/I025–I032/I045/I051–I053/I097/I105–I109/I112/I13
 
 `lean-same-server-dependency-generation-v4-30-0-rc2` uses the pinned Lean 4.30.0-rc2 binary directly with `lean --server`. It rebuilt an imported `.olean` while leaving a proof document open. That worker continued to report “no goals”; opening an identical second document in the same server process reported a remaining goal and a failing diagnostic. Closing/reopening the first URI also reported the goal, and fresh batch Lean exited 1. Thus workers in one process can answer against distinct imported generations in this fixture, and per-file worker replacement was sufficient here to pick up the new artifact.
 
-This extends the prior generated V1 `lake env lean --server` stale-import report with a direct-server case. It partially informs I041–I050/I098–I099/I131/I147. It does not compare `lake serve`, direct prepared Lean, or Lake `setup-file`; the source and artifact changed together; only two document workers were exercised; and no real Anneal generated project, concurrent query race, or full batch/live matrix was run.
+This extends the prior generated V1 `lake env lean --server` stale-import report with a direct-server case. It partially informs I041–I050/I098–I099/I131/I147. It does not compare `lake serve`, `lake env lean --server`, direct prepared Lean, or Lake `setup-file`; the source and artifact changed together; only two document workers were exercised; and no real Anneal generated project, concurrent query race, or full batch/live matrix was run.
+
+
+### The stale-worker contrast repeated under Lean 4.29.0
+
+`lean-import-refresh-cross-version-v4-29-to-v4-30-rc2` reran the same direct-server fixture with Lean 4.29.0. It observed the same old-worker “no goals” response after the imported artifact rebuild, while a new or reopened worker and fresh batch Lean exposed the remaining goal/failure. This extends the observation across two pinned Lean versions, but does not substitute for the launch-mode matrix or a 4.31 candidate upgrade suite.
+
+Basis: **execution** in the v4.29 transcript and the paired v4.30 report.
 
 ### Coverage remains partial across the agenda
 
-The ledger has 159 rows and 174 crosswalk rows. Forty IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here.
+The ledger has 159 rows and 174 crosswalk rows. Forty-one IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here.
 
 A useful next execution tranche is to use the installed pinned project tools for: (1) a real generated-workspace import-refresh matrix across `lake serve`, `lake env lean --server`, and direct prepared Lean; (2) a reproducible projection/parser fixture with real annotation syntax and version-checked edit application; (3) a two-consumer Lake prepared archive and interrupted publication control; and (4) an Aeneas/Charon generation manifest and same-process/concurrent-call probe. Before scaling past small consumer counts, measure live host memory and process usage. Human/agent evaluation and independent reproduction need separate operators and must not be inferred from local automation.
 
@@ -63,7 +70,7 @@ A useful next execution tranche is to use the installed pinned project tools for
 - The ledger was built from the two issue bodies/comment and relevant package navigation pointers. It is not a re-review of every technical claim in every referenced package.
 - “159 investigations” does not mean 159 report packages. The 174-row crosswalk is a mapping of suggestions, not completion evidence.
 - A linked prior package may contain strong execution evidence for a narrow pin while leaving the broader requested dimensions open; the ledger does not promote it to complete.
-- The new state model is finite and illustrative; the APFS pointer experiment is not a Lake cache or crash-durability test. The Aeneas concurrency probe used identical input and did not inject process failure or compile the generated files.
+- The new state model is finite and illustrative; the APFS pointer experiment is not a Lake cache or crash-durability test. The Aeneas concurrency probe used identical input and did not inject process failure or compile the generated files. The Lean comparison is limited to two pins and direct server launch.
 - The direct Lean experiment applies to `v4.30.0-rc2` on arm64 macOS and the minimal fixture. It does not establish general stale-import behavior beyond the observed state.
 - No claim is made that #3730 or #3731 is complete, that Anneal has adopted any proposed design, or that an implementation is safe/unsafe as a whole.
 
@@ -74,6 +81,7 @@ A useful next execution tranche is to use the installed pinned project tools for
 - `anneal-interactive-model-probes-2026-09-29/REPORT.md` and its support artifacts — finite identity, coordinate, schedule, and APFS experiments.
 - `lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md` and its support artifacts — direct Lean server/batch comparison.
 - `aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md` and its support artifacts — split-output concurrency and shared-generator-destination probe.
+- `lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md` and its support artifacts — v4.29/v4.30-rc2 direct-server comparison.
 - Existing relevant report packages are named per row in the ledger. They are contextual corpus evidence, not re-executed by this audit.
 
 The issue body/comment hashes and corpus tip are preserved in `REPORT.json`. Evidence roles for this report are **source** for agenda wording, **execution** for the two new packages, and **derived** for grouping and remaining-delta judgments.

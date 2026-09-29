@@ -4886,6 +4886,41 @@
         "lean/navigation"
       ]
     },
+    "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "98dc76e3c0a9b856c9b98726b713fb04fab16740",
+            "version": "v4.29.0"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "launch_mode": "lean --server with LEAN_PATH",
+            "repository": "google/zerocopy",
+            "revision": "8c257ec3f4e067963e12441ce5b261714a005c74"
+          },
+          "name": "Lean direct server fixture"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/dependency-invalidation",
+        "lean/toolchain-upgrades",
+        "anneal/interactive-freshness"
+      ]
+    },
     "lean-infotree-elaboration-info-v4-30-0-rc2": {
       "observed_at": "2026-09-27",
       "subjects": [
