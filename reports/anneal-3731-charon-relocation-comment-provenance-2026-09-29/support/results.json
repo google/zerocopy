@@ -1,0 +1,147 @@
+{
+  "cases": {
+    "comment": {
+      "aeneas": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/comment/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/comment/lean/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.119745 seconds\n"
+      },
+      "charon": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "has_errors": false,
+      "lean_files": {
+        "Probe.lean": {
+          "bytes": 868,
+          "sha256": "1faf6714f0c4223c7a4490f0741540d01abed941a0f17798be3846c05b0ee3fd"
+        }
+      },
+      "llbc_bytes": 6882,
+      "llbc_sha256": "e0bb9a17968ce4ef49d8c56980bbaf421f8466742e3b246a7c9e8643472f9d8e",
+      "local_file": {
+        "contents": "pub fn bump(x: u32) -> u32 { x.wrapping_add(1) }\n// Inert fixture note after the function.\n",
+        "crate_name": "probe",
+        "id": 0,
+        "name": {
+          "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/work/origin-root/src/lib.rs"
+        }
+      },
+      "source_bytes": 91,
+      "source_sha256": "174c26fec68c96a5149cc9934e2eec8758a329b0b2875bab478af8f231cc53da"
+    },
+    "origin": {
+      "aeneas": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/origin/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/origin/lean/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120280 seconds\n"
+      },
+      "charon": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "has_errors": false,
+      "lean_files": {
+        "Probe.lean": {
+          "bytes": 868,
+          "sha256": "1faf6714f0c4223c7a4490f0741540d01abed941a0f17798be3846c05b0ee3fd"
+        }
+      },
+      "llbc_bytes": 6838,
+      "llbc_sha256": "c74fa3a03570a3fab2756faf6315567f07bd58485793f62c52bf536e04948a33",
+      "local_file": {
+        "contents": "pub fn bump(x: u32) -> u32 { x.wrapping_add(1) }\n",
+        "crate_name": "probe",
+        "id": 0,
+        "name": {
+          "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/work/origin-root/src/lib.rs"
+        }
+      },
+      "source_bytes": 49,
+      "source_sha256": "f665adfda34d93ee8dd8db1ee7d798dc449d7e498bffd31634eec59d8f243b94"
+    },
+    "relocated": {
+      "aeneas": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/relocated/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/relocated/lean/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120331 seconds\n"
+      },
+      "charon": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "has_errors": false,
+      "lean_files": {
+        "Probe.lean": {
+          "bytes": 867,
+          "sha256": "adbae3ebd13d127c24c6ddc0e53051dc16eae0183da50de2413473aaa01db790"
+        }
+      },
+      "llbc_bytes": 6840,
+      "llbc_sha256": "3a33acaa608834a6e1dff2d27a2aae3c573061d9481876170f8b67caddc19b82",
+      "local_file": {
+        "contents": "pub fn bump(x: u32) -> u32 { x.wrapping_add(1) }\n",
+        "crate_name": "probe",
+        "id": 0,
+        "name": {
+          "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/work/other-root/src/lib.rs"
+        }
+      },
+      "source_bytes": 49,
+      "source_sha256": "f665adfda34d93ee8dd8db1ee7d798dc449d7e498bffd31634eec59d8f243b94"
+    },
+    "repeat": {
+      "aeneas": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/repeat/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/artifacts/repeat/lean/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.120316 seconds\n"
+      },
+      "charon": {
+        "returncode": 0,
+        "stderr": "",
+        "stdout": ""
+      },
+      "has_errors": false,
+      "lean_files": {
+        "Probe.lean": {
+          "bytes": 868,
+          "sha256": "1faf6714f0c4223c7a4490f0741540d01abed941a0f17798be3846c05b0ee3fd"
+        }
+      },
+      "llbc_bytes": 6838,
+      "llbc_sha256": "051b9f8f9584f10b475c4c6c38531e7f5487aca2519eedfaff193761a26ef9ea",
+      "local_file": {
+        "contents": "pub fn bump(x: u32) -> u32 { x.wrapping_add(1) }\n",
+        "crate_name": "probe",
+        "id": 0,
+        "name": {
+          "Local": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-charon-relocation-comment-provenance-2026-09-29/support/work/origin-root/src/lib.rs"
+        }
+      },
+      "source_bytes": 49,
+      "source_sha256": "f665adfda34d93ee8dd8db1ee7d798dc449d7e498bffd31634eec59d8f243b94"
+    }
+  },
+  "lean_equal": {
+    "origin_comment": true,
+    "origin_relocated": false,
+    "origin_repeat": true
+  },
+  "normalized_diff_paths": {
+    "origin_comment": [
+      "$.translated.files[0].contents"
+    ],
+    "origin_relocated": [
+      "$.translated.files[0].name.Local"
+    ],
+    "origin_repeat": []
+  },
+  "tools": {
+    "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "rustc": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)\nbinary: rustc\ncommit-hash: f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1\ncommit-date: 2026-05-30\nhost: aarch64-apple-darwin\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6\n"
+  }
+}

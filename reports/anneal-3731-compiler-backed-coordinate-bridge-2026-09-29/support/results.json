@@ -1,0 +1,595 @@
+{
+  "subject": {
+    "rust_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "source": {
+    "host_sha256": "64dbfcf5bcbd82a399770d6a2d6f303989fde875cd08130b80e9388d1f9134dd",
+    "projected_sha256": "e489c64eb703e56718f2239f26896398177344f0d07b499b21abc7d1f218dec5",
+    "host_payload_start": 42,
+    "projected_payload_start": 13,
+    "payload_length": 31
+  },
+  "rust": {
+    "rc": 1,
+    "messages": [
+      {
+        "$message_type": "diagnostic",
+        "message": "cannot find value `missingRust` in this scope",
+        "code": {
+          "code": "E0425",
+          "explanation": "An unresolved name was used.\n\nErroneous code examples:\n\n```compile_fail,E0425\nsomething_that_doesnt_exist::foo;\n// error: unresolved name `something_that_doesnt_exist::foo`\n\n// or:\n\ntrait Foo {\n    fn bar() {\n        Self; // error: unresolved name `Self`\n    }\n}\n\n// or:\n\nlet x = unknown_variable;  // error: unresolved name `unknown_variable`\n```\n\nPlease verify that the name wasn't misspelled and ensure that the\nidentifier being referred to is valid for the given situation. Example:\n\n```\nenum something_that_does_exist {\n    Foo,\n}\n```\n\nOr:\n\n```\nmod something_that_does_exist {\n    pub static foo : i32 = 0i32;\n}\n\nsomething_that_does_exist::foo; // ok!\n```\n\nOr:\n\n```\nlet unknown_variable = 12u32;\nlet x = unknown_variable; // ok!\n```\n\nIf the item is not defined in the current module, it must be imported using a\n`use` statement, like so:\n\n```\n# mod foo { pub fn bar() {} }\n# fn main() {\nuse foo::bar;\nbar();\n# }\n```\n\nIf the item you are importing is not defined in some super-module of the\ncurrent module, then it must also be declared as public (e.g., `pub fn`).\n"
+        },
+        "level": "error",
+        "spans": [
+          {
+            "file_name": "Host.rs",
+            "byte_start": 112,
+            "byte_end": 123,
+            "line_start": 3,
+            "line_end": 3,
+            "column_start": 34,
+            "column_end": 45,
+            "is_primary": true,
+            "text": [
+              {
+                "text": "pub fn probe() { let _ = (\"🙂é\",\tmissingRust); }",
+                "highlight_start": 34,
+                "highlight_end": 45
+              }
+            ],
+            "label": "not found in this scope",
+            "suggested_replacement": null,
+            "suggestion_applicability": null,
+            "expansion": null
+          }
+        ],
+        "children": [],
+        "rendered": "error[E0425]: cannot find value `missingRust` in this scope\n --> Host.rs:3:34\n  |\n3 | pub fn probe() { let _ = (\"🙂é\",    missingRust); }\n  |                                     ^^^^^^^^^^^ not found in this scope\n\n"
+      },
+      {
+        "$message_type": "diagnostic",
+        "message": "aborting due to 1 previous error",
+        "code": null,
+        "level": "error",
+        "spans": [],
+        "children": [],
+        "rendered": "error: aborting due to 1 previous error\n\n"
+      },
+      {
+        "$message_type": "diagnostic",
+        "message": "For more information about this error, try `rustc --explain E0425`.",
+        "code": null,
+        "level": "failure-note",
+        "spans": [],
+        "children": [],
+        "rendered": "For more information about this error, try `rustc --explain E0425`.\n"
+      }
+    ]
+  },
+  "lean_batch": {
+    "rc": 1,
+    "messages": [
+      {
+        "caption": "",
+        "data": "Unknown identifier `missingLean`",
+        "endPos": {
+          "column": 26,
+          "line": 2
+        },
+        "fileName": "Projected.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "lean.unknownIdentifier._namedError",
+        "pos": {
+          "column": 15,
+          "line": 2
+        },
+        "severity": "error"
+      },
+      {
+        "caption": "",
+        "data": "(\"🙂é\", sorry) : String × ?m.2",
+        "endPos": {
+          "column": 6,
+          "line": 2
+        },
+        "fileName": "Projected.lean",
+        "isSilent": false,
+        "keepFullRange": false,
+        "kind": "[anonymous]",
+        "pos": {
+          "column": 0,
+          "line": 2
+        },
+        "severity": "information"
+      }
+    ]
+  },
+  "lean_lsp": {
+    "wait": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "notifications": [
+      {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 1
+              },
+              "start": {
+                "character": 16,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `missingLean`",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 1
+              },
+              "start": {
+                "character": 16,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "(\"🙂é\", sorry) : String × ?m.2",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      },
+      {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    ]
+  },
+  "boundaries": [
+    {
+      "host_byte": 42,
+      "projected_byte": 13,
+      "host": {
+        "line": 1,
+        "scalar": 4,
+        "utf16": 4
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 0,
+        "utf16": 0
+      }
+    },
+    {
+      "host_byte": 43,
+      "projected_byte": 14,
+      "host": {
+        "line": 1,
+        "scalar": 5,
+        "utf16": 5
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 1,
+        "utf16": 1
+      }
+    },
+    {
+      "host_byte": 44,
+      "projected_byte": 15,
+      "host": {
+        "line": 1,
+        "scalar": 6,
+        "utf16": 6
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 2,
+        "utf16": 2
+      }
+    },
+    {
+      "host_byte": 45,
+      "projected_byte": 16,
+      "host": {
+        "line": 1,
+        "scalar": 7,
+        "utf16": 7
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 3,
+        "utf16": 3
+      }
+    },
+    {
+      "host_byte": 46,
+      "projected_byte": 17,
+      "host": {
+        "line": 1,
+        "scalar": 8,
+        "utf16": 8
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 4,
+        "utf16": 4
+      }
+    },
+    {
+      "host_byte": 47,
+      "projected_byte": 18,
+      "host": {
+        "line": 1,
+        "scalar": 9,
+        "utf16": 9
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 5,
+        "utf16": 5
+      }
+    },
+    {
+      "host_byte": 48,
+      "projected_byte": 19,
+      "host": {
+        "line": 1,
+        "scalar": 10,
+        "utf16": 10
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 6,
+        "utf16": 6
+      }
+    },
+    {
+      "host_byte": 49,
+      "projected_byte": 20,
+      "host": {
+        "line": 1,
+        "scalar": 11,
+        "utf16": 11
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 7,
+        "utf16": 7
+      }
+    },
+    {
+      "host_byte": 50,
+      "projected_byte": 21,
+      "host": {
+        "line": 1,
+        "scalar": 12,
+        "utf16": 12
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 8,
+        "utf16": 8
+      }
+    },
+    {
+      "host_byte": 51,
+      "projected_byte": 22,
+      "host": {
+        "line": 1,
+        "scalar": 13,
+        "utf16": 13
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 9,
+        "utf16": 9
+      }
+    },
+    {
+      "host_byte": 55,
+      "projected_byte": 26,
+      "host": {
+        "line": 1,
+        "scalar": 14,
+        "utf16": 15
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 10,
+        "utf16": 11
+      }
+    },
+    {
+      "host_byte": 56,
+      "projected_byte": 27,
+      "host": {
+        "line": 1,
+        "scalar": 15,
+        "utf16": 16
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 11,
+        "utf16": 12
+      }
+    },
+    {
+      "host_byte": 58,
+      "projected_byte": 29,
+      "host": {
+        "line": 1,
+        "scalar": 16,
+        "utf16": 17
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 12,
+        "utf16": 13
+      }
+    },
+    {
+      "host_byte": 59,
+      "projected_byte": 30,
+      "host": {
+        "line": 1,
+        "scalar": 17,
+        "utf16": 18
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 13,
+        "utf16": 14
+      }
+    },
+    {
+      "host_byte": 60,
+      "projected_byte": 31,
+      "host": {
+        "line": 1,
+        "scalar": 18,
+        "utf16": 19
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 14,
+        "utf16": 15
+      }
+    },
+    {
+      "host_byte": 61,
+      "projected_byte": 32,
+      "host": {
+        "line": 1,
+        "scalar": 19,
+        "utf16": 20
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 15,
+        "utf16": 16
+      }
+    },
+    {
+      "host_byte": 62,
+      "projected_byte": 33,
+      "host": {
+        "line": 1,
+        "scalar": 20,
+        "utf16": 21
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 16,
+        "utf16": 17
+      }
+    },
+    {
+      "host_byte": 63,
+      "projected_byte": 34,
+      "host": {
+        "line": 1,
+        "scalar": 21,
+        "utf16": 22
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 17,
+        "utf16": 18
+      }
+    },
+    {
+      "host_byte": 64,
+      "projected_byte": 35,
+      "host": {
+        "line": 1,
+        "scalar": 22,
+        "utf16": 23
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 18,
+        "utf16": 19
+      }
+    },
+    {
+      "host_byte": 65,
+      "projected_byte": 36,
+      "host": {
+        "line": 1,
+        "scalar": 23,
+        "utf16": 24
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 19,
+        "utf16": 20
+      }
+    },
+    {
+      "host_byte": 66,
+      "projected_byte": 37,
+      "host": {
+        "line": 1,
+        "scalar": 24,
+        "utf16": 25
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 20,
+        "utf16": 21
+      }
+    },
+    {
+      "host_byte": 67,
+      "projected_byte": 38,
+      "host": {
+        "line": 1,
+        "scalar": 25,
+        "utf16": 26
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 21,
+        "utf16": 22
+      }
+    },
+    {
+      "host_byte": 68,
+      "projected_byte": 39,
+      "host": {
+        "line": 1,
+        "scalar": 26,
+        "utf16": 27
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 22,
+        "utf16": 23
+      }
+    },
+    {
+      "host_byte": 69,
+      "projected_byte": 40,
+      "host": {
+        "line": 1,
+        "scalar": 27,
+        "utf16": 28
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 23,
+        "utf16": 24
+      }
+    },
+    {
+      "host_byte": 70,
+      "projected_byte": 41,
+      "host": {
+        "line": 1,
+        "scalar": 28,
+        "utf16": 29
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 24,
+        "utf16": 25
+      }
+    },
+    {
+      "host_byte": 71,
+      "projected_byte": 42,
+      "host": {
+        "line": 1,
+        "scalar": 29,
+        "utf16": 30
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 25,
+        "utf16": 26
+      }
+    },
+    {
+      "host_byte": 72,
+      "projected_byte": 43,
+      "host": {
+        "line": 1,
+        "scalar": 30,
+        "utf16": 31
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 26,
+        "utf16": 27
+      }
+    },
+    {
+      "host_byte": 73,
+      "projected_byte": 44,
+      "host": {
+        "line": 1,
+        "scalar": 31,
+        "utf16": 32
+      },
+      "projected": {
+        "line": 1,
+        "scalar": 27,
+        "utf16": 28
+      }
+    }
+  ],
+  "invalid": {
+    "host_interior_utf8": "UnicodeDecodeError",
+    "projected_interior_utf8": "UnicodeDecodeError",
+    "host_surrogate_interior": "ValueError",
+    "projected_surrogate_interior": "ValueError",
+    "host_crlf_interior": "ValueError",
+    "synthetic_projected": "ValueError",
+    "rust_outside_payload": "ValueError"
+  }
+}

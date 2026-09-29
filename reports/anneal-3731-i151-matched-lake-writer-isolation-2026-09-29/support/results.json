@@ -1,0 +1,366 @@
+{
+  "schema": "i151-matched-lake-writer-isolation-v1",
+  "subject": {
+    "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "cells": [
+    {
+      "cell": "shared-kill-A",
+      "preflight": {
+        "disk_free_bytes": 48122621952,
+        "memory_free_percent": 42
+      },
+      "events": [
+        "A_entered_7",
+        "shared_source_changed_to_9",
+        "B_entered_9",
+        "killed_A",
+        "released_B"
+      ],
+      "records": [
+        {
+          "label": "prime_A",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (657ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "killed_A",
+          "exit": -9,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "survivor",
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (736ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "no_build",
+          "argv": [
+            "lake",
+            "--no-build",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "All targets up-to-date (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_7",
+          "argv": [
+            "lean",
+            "Check7.lean"
+          ],
+          "exit": 1,
+          "stdout": "Check7.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  7\n\n\u22a2 depValue = 7\n9\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_9",
+          "argv": [
+            "lean",
+            "Check9.lean"
+          ],
+          "exit": 0,
+          "stdout": "9\n",
+          "stderr": ""
+        }
+      ],
+      "peak_sampled_rss_kib": 3642960,
+      "gate_pids": [
+        43651,
+        43657,
+        43668,
+        43674
+      ],
+      "survivor_root": "B",
+      "source_sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09",
+      "artifact_sha256": "d934a89791cbb4236eca9f88c4e3f5d7136c47c8f3aecc965f476df32f69b15c",
+      "trace_sha256": "a373cb6a9c945cbb64c106f4a5b7c86adcae979de8b64c492decf627875c6162",
+      "trace_after_no_build_sha256": "a373cb6a9c945cbb64c106f4a5b7c86adcae979de8b64c492decf627875c6162",
+      "no_build_trace_sha256": null
+    },
+    {
+      "cell": "isolated-kill-A",
+      "preflight": {
+        "disk_free_bytes": 48122703872,
+        "memory_free_percent": 42
+      },
+      "events": [
+        "A_entered_7",
+        "B_entered_9",
+        "killed_A",
+        "released_B"
+      ],
+      "records": [
+        {
+          "label": "prime_A",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (647ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "prime_B",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (648ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "killed_A",
+          "exit": -9,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "survivor",
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (682ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "no_build",
+          "argv": [
+            "lake",
+            "--no-build",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "All targets up-to-date (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_7",
+          "argv": [
+            "lean",
+            "Check7.lean"
+          ],
+          "exit": 1,
+          "stdout": "Check7.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  7\n\n\u22a2 depValue = 7\n9\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_9",
+          "argv": [
+            "lean",
+            "Check9.lean"
+          ],
+          "exit": 0,
+          "stdout": "9\n",
+          "stderr": ""
+        }
+      ],
+      "peak_sampled_rss_kib": 3624800,
+      "gate_pids": [
+        43693,
+        43699,
+        43710,
+        43716
+      ],
+      "survivor_root": "B",
+      "source_sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09",
+      "artifact_sha256": "d934a89791cbb4236eca9f88c4e3f5d7136c47c8f3aecc965f476df32f69b15c",
+      "trace_sha256": "cfa6f5dab44eccf935d28249736117c2792b9083ec8586fbfe6313d5aff0dedc",
+      "trace_after_no_build_sha256": "cfa6f5dab44eccf935d28249736117c2792b9083ec8586fbfe6313d5aff0dedc",
+      "no_build_trace_sha256": null
+    },
+    {
+      "cell": "shared-kill-B",
+      "preflight": {
+        "disk_free_bytes": 48122564608,
+        "memory_free_percent": 42
+      },
+      "events": [
+        "A_entered_7",
+        "shared_source_changed_to_9",
+        "B_entered_9",
+        "killed_B",
+        "released_A"
+      ],
+      "records": [
+        {
+          "label": "prime_A",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (648ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "killed_B",
+          "exit": -9,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "survivor",
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (1.6s)\nBuild completed successfully (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "no_build",
+          "argv": [
+            "lake",
+            "--no-build",
+            "build",
+            "Dep"
+          ],
+          "exit": 3,
+          "stdout": "\u2716 [2/3] Building Dep\nerror: target is out-of-date and needs to be rebuilt\nSome required targets logged failures:\n- Dep\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_7",
+          "argv": [
+            "lean",
+            "Check7.lean"
+          ],
+          "exit": 0,
+          "stdout": "7\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_9",
+          "argv": [
+            "lean",
+            "Check9.lean"
+          ],
+          "exit": 1,
+          "stdout": "Check9.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  9\n\n\u22a2 depValue = 9\n7\n",
+          "stderr": ""
+        }
+      ],
+      "peak_sampled_rss_kib": 3622560,
+      "gate_pids": [
+        43732,
+        43738,
+        43749,
+        43755
+      ],
+      "survivor_root": "A",
+      "source_sha256": "155cbd57a60f7bdebd27f1c14f5701b14394a6690821a0bf981865312ff7af09",
+      "artifact_sha256": "17bae46ced2944349a85c534f3e6240dc96b89da2569fe358620932df0c8f89c",
+      "trace_sha256": "b344aa84416c541d3393cd9a7ffb75b83da2cd83ac42e5f838790ac7f4b8e9eb",
+      "trace_after_no_build_sha256": "b344aa84416c541d3393cd9a7ffb75b83da2cd83ac42e5f838790ac7f4b8e9eb",
+      "no_build_trace_sha256": "90bb290e97b6275215e2ed40940441e992c79aab1a4357a57ec8979cf699ddf4"
+    },
+    {
+      "cell": "isolated-kill-B",
+      "preflight": {
+        "disk_free_bytes": 48122621952,
+        "memory_free_percent": 42
+      },
+      "events": [
+        "A_entered_7",
+        "B_entered_9",
+        "killed_B",
+        "released_A"
+      ],
+      "records": [
+        {
+          "label": "prime_A",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (646ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "prime_B",
+          "argv": [
+            "lake",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (646ms)\nBuild completed successfully (3 jobs).\n",
+          "stderr": "info: probe: no previous manifest, creating one from scratch\ninfo: toolchain not updated; already up-to-date\n"
+        },
+        {
+          "label": "killed_B",
+          "exit": -9,
+          "stdout": "",
+          "stderr": ""
+        },
+        {
+          "label": "survivor",
+          "exit": 0,
+          "stdout": "\u2714 [2/3] Built Dep (1.6s)\nBuild completed successfully (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "no_build",
+          "argv": [
+            "lake",
+            "--no-build",
+            "build",
+            "Dep"
+          ],
+          "exit": 0,
+          "stdout": "All targets up-to-date (3 jobs).\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_7",
+          "argv": [
+            "lean",
+            "Check7.lean"
+          ],
+          "exit": 0,
+          "stdout": "7\n",
+          "stderr": ""
+        },
+        {
+          "label": "fresh_9",
+          "argv": [
+            "lean",
+            "Check9.lean"
+          ],
+          "exit": 1,
+          "stdout": "Check9.lean:2:35: error: Tactic `rfl` failed: The left-hand side\n  depValue\nis not definitionally equal to the right-hand side\n  9\n\n\u22a2 depValue = 9\n7\n",
+          "stderr": ""
+        }
+      ],
+      "peak_sampled_rss_kib": 3614416,
+      "gate_pids": [
+        43773,
+        43779,
+        43790,
+        43796
+      ],
+      "survivor_root": "A",
+      "source_sha256": "91f4231747346746189c4216d7e9dbe5bd3c7ff0a75d84a7d80bd7f187acc4d1",
+      "artifact_sha256": "17bae46ced2944349a85c534f3e6240dc96b89da2569fe358620932df0c8f89c",
+      "trace_sha256": "22f44326a35dac5de27aab0cf2487bd599615a5cccd4ff1772161566058a9b10",
+      "trace_after_no_build_sha256": "22f44326a35dac5de27aab0cf2487bd599615a5cccd4ff1772161566058a9b10",
+      "no_build_trace_sha256": null
+    }
+  ]
+}

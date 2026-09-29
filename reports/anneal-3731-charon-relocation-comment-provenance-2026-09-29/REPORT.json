@@ -1,0 +1,35 @@
+{
+  "topics": [
+    "anneal/interactive-workspaces",
+    "charon/llbc",
+    "aeneas/generated-lean",
+    "translation/provenance"
+  ],
+  "subjects": [
+    {
+      "name": "Charon 0.1.210 release binary",
+      "identity": {
+        "repository": "charon-lang/charon",
+        "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+        "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Aeneas nightly 2026.06.03 release binary",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "Rust nightly 2026-05-31",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

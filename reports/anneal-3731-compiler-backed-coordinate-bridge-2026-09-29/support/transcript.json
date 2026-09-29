@@ -1,0 +1,603 @@
+[
+  {
+    "seq": 0,
+    "ms": 272.5,
+    "kind": "subject",
+    "rust_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "host_sha256": "64dbfcf5bcbd82a399770d6a2d6f303989fde875cd08130b80e9388d1f9134dd",
+    "projected_sha256": "e489c64eb703e56718f2239f26896398177344f0d07b499b21abc7d1f218dec5"
+  },
+  {
+    "seq": 1,
+    "ms": 4231.7,
+    "kind": "batch",
+    "tool": "rustc",
+    "rc": 1,
+    "stdout": "",
+    "stderr": "{\"$message_type\":\"diagnostic\",\"message\":\"cannot find value `missingRust` in this scope\",\"code\":{\"code\":\"E0425\",\"explanation\":\"An unresolved name was used.\\n\\nErroneous code examples:\\n\\n```compile_fail,E0425\\nsomething_that_doesnt_exist::foo;\\n// error: unresolved name `something_that_doesnt_exist::foo`\\n\\n// or:\\n\\ntrait Foo {\\n    fn bar() {\\n        Self; // error: unresolved name `Self`\\n    }\\n}\\n\\n// or:\\n\\nlet x = unknown_variable;  // error: unresolved name `unknown_variable`\\n```\\n\\nPlease verify that the name wasn't misspelled and ensure that the\\nidentifier being referred to is valid for the given situation. Example:\\n\\n```\\nenum something_that_does_exist {\\n    Foo,\\n}\\n```\\n\\nOr:\\n\\n```\\nmod something_that_does_exist {\\n    pub static foo : i32 = 0i32;\\n}\\n\\nsomething_that_does_exist::foo; // ok!\\n```\\n\\nOr:\\n\\n```\\nlet unknown_variable = 12u32;\\nlet x = unknown_variable; // ok!\\n```\\n\\nIf the item is not defined in the current module, it must be imported using a\\n`use` statement, like so:\\n\\n```\\n# mod foo { pub fn bar() {} }\\n# fn main() {\\nuse foo::bar;\\nbar();\\n# }\\n```\\n\\nIf the item you are importing is not defined in some super-module of the\\ncurrent module, then it must also be declared as public (e.g., `pub fn`).\\n\"},\"level\":\"error\",\"spans\":[{\"file_name\":\"Host.rs\",\"byte_start\":112,\"byte_end\":123,\"line_start\":3,\"line_end\":3,\"column_start\":34,\"column_end\":45,\"is_primary\":true,\"text\":[{\"text\":\"pub fn probe() { let _ = (\\\"🙂é\\\",\\tmissingRust); }\",\"highlight_start\":34,\"highlight_end\":45}],\"label\":\"not found in this scope\",\"suggested_replacement\":null,\"suggestion_applicability\":null,\"expansion\":null}],\"children\":[],\"rendered\":\"error[E0425]: cannot find value `missingRust` in this scope\\n --> Host.rs:3:34\\n  |\\n3 | pub fn probe() { let _ = (\\\"🙂é\\\",    missingRust); }\\n  |                                     ^^^^^^^^^^^ not found in this scope\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"aborting due to 1 previous error\",\"code\":null,\"level\":\"error\",\"spans\":[],\"children\":[],\"rendered\":\"error: aborting due to 1 previous error\\n\\n\"}\n{\"$message_type\":\"diagnostic\",\"message\":\"For more information about this error, try `rustc --explain E0425`.\",\"code\":null,\"level\":\"failure-note\",\"spans\":[],\"children\":[],\"rendered\":\"For more information about this error, try `rustc --explain E0425`.\\n\"}\n"
+  },
+  {
+    "seq": 2,
+    "ms": 4231.7,
+    "kind": "batch",
+    "tool": "lean",
+    "rc": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"Unknown identifier `missingLean`\",\"endPos\":{\"column\":26,\"line\":2},\"fileName\":\"Projected.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"lean.unknownIdentifier._namedError\",\"pos\":{\"column\":15,\"line\":2},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"(\\\"🙂é\\\", sorry) : String × ?m.2\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"Projected.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 3,
+    "ms": 4265.3,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 44716,
+        "rootUri": "$HERE_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 4,
+    "ms": 4266.4,
+    "kind": "recv",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 4266.4,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 4266.4,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\r\n#check (\"🙂é\", missingLean)\r\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 4266.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 4267.2,
+    "kind": "recv",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 4267.2,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 4267.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 4344.5,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 4505.7,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 4505.7,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 4824.6,
+    "kind": "recv",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 4925.3,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 28,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 4925.5,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 4926.4,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "code": "lean.unknownIdentifier",
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 1
+              },
+              "start": {
+                "character": 16,
+                "line": 1
+              }
+            },
+            "message": "Unknown identifier `missingLean`",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 1
+              },
+              "start": {
+                "character": 16,
+                "line": 1
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 6,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "message": "(\"🙂é\", sorry) : String × ?m.2",
+            "range": {
+              "end": {
+                "character": 6,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            },
+            "severity": 3,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 4926.6,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 4926.6,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 4926.8,
+    "kind": "recv",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 4926.8,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didClose",
+      "params": {
+        "textDocument": {
+          "uri": "$HERE_URI/Projected.lean"
+        }
+      }
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 4926.8,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 4926.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$HERE_URI/Projected.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 4927.0,
+    "kind": "recv",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 4927.0,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 4944.1,
+    "kind": "stop",
+    "rc": 0,
+    "stderr": ""
+  }
+]

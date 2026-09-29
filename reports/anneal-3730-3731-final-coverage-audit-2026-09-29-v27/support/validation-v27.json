@@ -1,0 +1,101 @@
+{
+  "bounded_context_ids": [
+    "A02",
+    "A08",
+    "B02",
+    "B03",
+    "D05",
+    "D06",
+    "D07",
+    "I009",
+    "I044",
+    "I074",
+    "I080",
+    "I108",
+    "I113",
+    "J01",
+    "J02",
+    "K01"
+  ],
+  "changed_gate_ids": [],
+  "changed_prerequisite_ids": [
+    "C02",
+    "E06",
+    "E07",
+    "F12",
+    "I025",
+    "I043",
+    "I079",
+    "I148",
+    "I151"
+  ],
+  "changed_residual_ids": [
+    "C02",
+    "E06",
+    "E07",
+    "F12",
+    "I025",
+    "I043",
+    "I079",
+    "I148",
+    "I151"
+  ],
+  "changed_status_ids": [],
+  "direct_evidence_ids": [
+    "C02",
+    "E06",
+    "E07",
+    "F12",
+    "I025",
+    "I043",
+    "I046",
+    "I079",
+    "I148",
+    "I151"
+  ],
+  "evidence_only_ids": [
+    "I046"
+  ],
+  "generated_sha256": {
+    "3730-crosswalk-final-v27.csv": "83f4449293f02f4c81925a5d5d031b6988b2fda63d978cfe351b099bd3a0df6e",
+    "investigation-final-v27.csv": "5773c739583ab976889d5a4cc5c947a25c37a80af0676de0c0f5268264accc4a",
+    "row-challenge-v27.json": "9ec8bb96dbf66f45397362c439379ea4bf6bbabcabd7cffa509e9456014142ce",
+    "source-package-inventory-v27.csv": "d6bb8c3e1665a8036ab5efa37f30d870e53b5b7cdef6256e4e8ceee576fecc93"
+  },
+  "input_sha256": {
+    "live-issue-snapshot-v27.json": "d580ee2cccd740552e7560c345eed3643f73e803a2170736b4dce36ff94ec7af",
+    "v22/issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "v26/3730-crosswalk-final-v26.csv": "7cd601ae38e9d699e332e99588e2767d43200740aa3fb4e2c0f59fee34dd0104",
+    "v26/investigation-final-v26.csv": "f003a2ce92e3ebeb5d221654f7df71f19ee1e6d61cff7e228975a9322f890d17",
+    "v26/row-challenge-v26.json": "b5c250d2a8dec9721102f2bd8c0ee3225cf93539806ba2b7827237f2a9ea93b2"
+  },
+  "inventory_files": 56,
+  "investigation_count": 159,
+  "reference_tip_at_start": "087760fd8bccaa8852390f189d8daf01f0958b19",
+  "row_count": 333,
+  "source_anneal_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+  "source_packages": [
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v26",
+    "anneal-3731-charon-relocation-comment-provenance-2026-09-29",
+    "anneal-3731-rich-goal-unsaved-recovery-v4-30-0-rc2",
+    "anneal-3731-i151-matched-lake-writer-isolation-2026-09-29",
+    "anneal-3731-compiler-backed-coordinate-bridge-2026-09-29"
+  ],
+  "source_reference_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v26",
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 3,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 162
+    }
+  },
+  "suggestion_count": 174,
+  "suggestion_destination_links": 345
+}

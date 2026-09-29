@@ -1866,6 +1866,58 @@
         "rust/charon"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v27": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "reference_revision": "087760fd8bccaa8852390f189d8daf01f0958b19",
+            "repository": "google/zerocopy",
+            "row_challenge_sha256": "b5c250d2a8dec9721102f2bd8c0ee3225cf93539806ba2b7827237f2a9ea93b2"
+          },
+          "name": "Published v26 coverage ledgers"
+        },
+        {
+          "identity": {
+            "comment_3730_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+            "comment_3731_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+            "issue_3730_body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+            "issue_3731_body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+            "repository": "google/zerocopy"
+          },
+          "name": "Public issues 3730 and 3731"
+        },
+        {
+          "identity": {
+            "anneal_source_revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988",
+            "fixture_host_sha256": "64dbfcf5bcbd82a399770d6a2d6f303989fde875cd08130b80e9388d1f9134dd",
+            "fixture_projected_sha256": "e489c64eb703e56718f2239f26896398177344f0d07b499b21abc7d1f218dec5"
+          },
+          "name": "Pinned rustc and Lean coordinate-bridge execution"
+        },
+        {
+          "identity": {
+            "aeneas_executable_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_executable_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+          },
+          "name": "Pinned Charon and Aeneas relocation/comment execution"
+        },
+        {
+          "identity": {
+            "lake_executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "lean_revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Pinned Lean and Lake rich-goal and writer executions"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-verification",
+        "anneal/investigation-coverage",
+        "anneal/suggestion-crosswalk",
+        "lean/lake"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -5875,6 +5927,77 @@
         "lean/claim-oracle"
       ]
     },
+    "anneal-3731-charon-relocation-comment-provenance-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "repository": "charon-lang/charon",
+            "revision": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1"
+          },
+          "name": "Charon 0.1.210 release binary"
+        },
+        {
+          "identity": {
+            "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "ac9f1bc5262a5e4ff1e24ca78617121382202727"
+          },
+          "name": "Aeneas nightly 2026.06.03 release binary"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Rust nightly 2026-05-31"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-workspaces",
+        "charon/llbc",
+        "aeneas/generated-lean",
+        "translation/provenance"
+      ]
+    },
+    "anneal-3731-compiler-backed-coordinate-bridge-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "bd0956be95c5f798f0c0484921b9b9d1fc6e9988"
+          },
+          "name": "Anneal V2 source snapshot"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "rustc_binary_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+            "version": "nightly-2026-05-31"
+          },
+          "name": "Rust nightly compiler"
+        },
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 batch compiler and direct server"
+        }
+      ],
+      "topics": [
+        "anneal/source-map",
+        "rust/diagnostics",
+        "lean/diagnostics",
+        "lsp/coordinates"
+      ]
+    },
     "anneal-3731-embedded-proof-generated-model-vertical-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6251,6 +6374,26 @@
         "lake/artifact-identity"
       ]
     },
+    "anneal-3731-i151-matched-lake-writer-isolation-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake and Lean 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/3731",
+        "lake",
+        "lake/concurrency",
+        "lake/build-cache"
+      ]
+    },
     "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -6362,6 +6505,25 @@
         "lean/batch-checking",
         "lean/language-server",
         "filesystem/atomic-publication"
+      ]
+    },
+    "anneal-3731-rich-goal-unsaved-recovery-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct server and batch compiler"
+        }
+      ],
+      "topics": [
+        "lean/language-server",
+        "lean/tactic-state",
+        "lean/rpc"
       ]
     },
     "anneal-archive-read-only-behavior-main-41f5b37": {

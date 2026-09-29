@@ -1,0 +1,2740 @@
+{
+  "subject": {
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "disk_sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+  "positions": {
+    "outer_have": [
+      3,
+      2
+    ],
+    "inner_start": [
+      4,
+      4
+    ],
+    "inner_inside": [
+      4,
+      8
+    ],
+    "inner_end": [
+      4,
+      24
+    ],
+    "after_inner": [
+      5,
+      2
+    ],
+    "tail": [
+      8,
+      2
+    ]
+  },
+  "batch": {
+    "valid": {
+      "rc": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "syntax": {
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unexpected token ')'; expected '{' or tactic\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"$HERE/Batch-syntax.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":27,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":27,\"line\":4},\"fileName\":\"$HERE/Batch-syntax.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":25,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\nhz : n + 0 = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":27,\"line\":4},\"fileName\":\"$HERE/Batch-syntax.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":52,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    "unknown": {
+      "rc": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"unknown tactic\",\"endPos\":null,\"fileName\":\"$HERE/Batch-unknown.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":5,\"line\":5},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":24,\"line\":5},\"fileName\":\"$HERE/Batch-unknown.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":25,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\nhz : n + 0 = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":24,\"line\":5},\"fileName\":\"$HERE/Batch-unknown.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":52,\"line\":3},\"severity\":\"error\"}\n",
+      "stderr": ""
+    }
+  },
+  "cases": [
+    {
+      "version": 1,
+      "label": "valid",
+      "source_sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+      "wait": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "samples": {
+        "outer_have": {
+          "plain": {
+            "id": 12,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 13,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "9"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "0"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "1"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "2"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "3"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.4",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "4"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "5"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "6"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "7"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "8"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_start": {
+          "plain": {
+            "id": 14,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 15,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "19"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "10"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "11"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "12"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "13"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.104",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "14"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "diffStatus": "willChange",
+                                "info": {
+                                  "p": "15"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "16"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "17"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "18"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_inside": {
+          "plain": {
+            "id": 16,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 17,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "27"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "20"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "21"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "22"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "23"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.130",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "24"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "diffStatus": "wasChanged",
+                                "info": {
+                                  "p": "25"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "26"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_end": {
+          "plain": {
+            "id": 18,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          },
+          "rich": {
+            "id": 19,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": []
+            }
+          }
+        },
+        "after_inner": {
+          "plain": {
+            "id": 20,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 21,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "42"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "28"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "29"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "30"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "31"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.105"
+                      ],
+                      "names": [
+                        "hz"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "32"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "33"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "append": [
+                                      {
+                                        "tag": [
+                                          {
+                                            "info": {
+                                              "p": "34"
+                                            },
+                                            "subexprPos": "/0/1/0/1"
+                                          },
+                                          {
+                                            "text": "n"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "text": " + "
+                                      },
+                                      {
+                                        "tag": [
+                                          {
+                                            "info": {
+                                              "p": "35"
+                                            },
+                                            "subexprPos": "/0/1/1"
+                                          },
+                                          {
+                                            "text": "0"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "36"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.131.106",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "37"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "38"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "39"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "40"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "41"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "tail": {
+          "plain": {
+            "id": 22,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "rich": {
+            "id": 23,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "44"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.136.2",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "43"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "True"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "version": 2,
+      "label": "syntax",
+      "source_sha256": "4ab2703df8c5c52443893dc73d527fa4ead1b512b5b7b357fe6bccc7bbc70a3a",
+      "wait": {
+        "id": 24,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "samples": {
+        "outer_have": {
+          "plain": {
+            "id": 25,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 26,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "54"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "45"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "46"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "47"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "48"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.4",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "49"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "50"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "51"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "52"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "53"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_start": {
+          "plain": {
+            "id": 27,
+            "jsonrpc": "2.0",
+            "result": null
+          },
+          "rich": {
+            "id": 28,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        "inner_inside": {
+          "plain": {
+            "id": 29,
+            "jsonrpc": "2.0",
+            "result": null
+          },
+          "rich": {
+            "id": 30,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        "inner_end": {
+          "plain": {
+            "id": 31,
+            "jsonrpc": "2.0",
+            "result": null
+          },
+          "rich": {
+            "id": 32,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        "after_inner": {
+          "plain": {
+            "id": 33,
+            "jsonrpc": "2.0",
+            "result": null
+          },
+          "rich": {
+            "id": 34,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        "tail": {
+          "plain": {
+            "id": 35,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "rich": {
+            "id": 36,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "56"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.136.2",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "55"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "True"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "version": 3,
+      "label": "unknown",
+      "source_sha256": "1508ceb8aa625f0ecd94353561385a32ef1738a852bd7eddc8440f29c0ca9056",
+      "wait": {
+        "id": 37,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "samples": {
+        "outer_have": {
+          "plain": {
+            "id": 38,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 39,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "66"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "57"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "58"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "59"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "60"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.4",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "61"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "62"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "63"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "64"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "65"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_start": {
+          "plain": {
+            "id": 40,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 41,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "76"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "67"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "68"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "69"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "70"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "mvarId": "_uniq.131.104",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "71"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "72"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "73"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "74"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "75"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_inside": {
+          "plain": {
+            "id": 42,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 43,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "86"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "77"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "78"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "79"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "80"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "mvarId": "_uniq.131.104",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "81"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "82"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "83"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "84"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "85"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_end": {
+          "plain": {
+            "id": 44,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 45,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "96"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "87"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "88"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "89"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "90"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "mvarId": "_uniq.131.104",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "91"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "92"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "93"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "94"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "95"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "after_inner": {
+          "plain": {
+            "id": 46,
+            "jsonrpc": "2.0",
+            "result": null
+          },
+          "rich": {
+            "id": 47,
+            "jsonrpc": "2.0",
+            "result": null
+          }
+        },
+        "tail": {
+          "plain": {
+            "id": 48,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "rich": {
+            "id": 49,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "98"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.136.2",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "97"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "True"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    },
+    {
+      "version": 4,
+      "label": "recovered",
+      "source_sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+      "wait": {
+        "id": 50,
+        "jsonrpc": "2.0",
+        "result": {}
+      },
+      "samples": {
+        "outer_have": {
+          "plain": {
+            "id": 51,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 52,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "108"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "99"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "100"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "101"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "102"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.4",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "103"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "104"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "105"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "106"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "107"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_start": {
+          "plain": {
+            "id": 53,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 54,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "118"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "109"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "110"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "111"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "112"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.104",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "113"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "diffStatus": "willChange",
+                                "info": {
+                                  "p": "114"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "115"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "116"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "117"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_inside": {
+          "plain": {
+            "id": 55,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\n⊢ n = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 56,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "126"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "119"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "120"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "121"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "122"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isInserted": false,
+                  "mvarId": "_uniq.131.130",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "123"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "diffStatus": "wasChanged",
+                                "info": {
+                                  "p": "124"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "text": "n"
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "125"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "inner_end": {
+          "plain": {
+            "id": 57,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [],
+              "rendered": "no goals"
+            }
+          },
+          "rich": {
+            "id": 58,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": []
+            }
+          }
+        },
+        "after_inner": {
+          "plain": {
+            "id": 59,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+              ],
+              "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+            }
+          },
+          "rich": {
+            "id": 60,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "141"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [
+                    {
+                      "fvarIds": [
+                        "_uniq.131.2"
+                      ],
+                      "names": [
+                        "n"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "127"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "text": "Nat"
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.3"
+                      ],
+                      "names": [
+                        "h"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "128"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "129"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "text": "n"
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "130"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    },
+                    {
+                      "fvarIds": [
+                        "_uniq.131.105"
+                      ],
+                      "names": [
+                        "hz"
+                      ],
+                      "type": {
+                        "tag": [
+                          {
+                            "info": {
+                              "p": "131"
+                            },
+                            "subexprPos": "/"
+                          },
+                          {
+                            "append": [
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "132"
+                                    },
+                                    "subexprPos": "/0/1"
+                                  },
+                                  {
+                                    "append": [
+                                      {
+                                        "tag": [
+                                          {
+                                            "info": {
+                                              "p": "133"
+                                            },
+                                            "subexprPos": "/0/1/0/1"
+                                          },
+                                          {
+                                            "text": "n"
+                                          }
+                                        ]
+                                      },
+                                      {
+                                        "text": " + "
+                                      },
+                                      {
+                                        "tag": [
+                                          {
+                                            "info": {
+                                              "p": "134"
+                                            },
+                                            "subexprPos": "/0/1/1"
+                                          },
+                                          {
+                                            "text": "0"
+                                          }
+                                        ]
+                                      }
+                                    ]
+                                  }
+                                ]
+                              },
+                              {
+                                "text": " = "
+                              },
+                              {
+                                "tag": [
+                                  {
+                                    "info": {
+                                      "p": "135"
+                                    },
+                                    "subexprPos": "/1"
+                                  },
+                                  {
+                                    "text": "0"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.131.106",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "136"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "append": [
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "137"
+                                },
+                                "subexprPos": "/0/1"
+                              },
+                              {
+                                "append": [
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "138"
+                                        },
+                                        "subexprPos": "/0/1/0/1"
+                                      },
+                                      {
+                                        "text": "n"
+                                      }
+                                    ]
+                                  },
+                                  {
+                                    "text": " + "
+                                  },
+                                  {
+                                    "tag": [
+                                      {
+                                        "info": {
+                                          "p": "139"
+                                        },
+                                        "subexprPos": "/0/1/1"
+                                      },
+                                      {
+                                        "text": "0"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "text": " = "
+                          },
+                          {
+                            "tag": [
+                              {
+                                "info": {
+                                  "p": "140"
+                                },
+                                "subexprPos": "/1"
+                              },
+                              {
+                                "text": "0"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        },
+        "tail": {
+          "plain": {
+            "id": 61,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                "⊢ True"
+              ],
+              "rendered": "```lean\n⊢ True\n```"
+            }
+          },
+          "rich": {
+            "id": 62,
+            "jsonrpc": "2.0",
+            "result": {
+              "goals": [
+                {
+                  "ctx": {
+                    "p": "143"
+                  },
+                  "goalPrefix": "⊢ ",
+                  "hyps": [],
+                  "isRemoved": true,
+                  "mvarId": "_uniq.136.2",
+                  "type": {
+                    "tag": [
+                      {
+                        "info": {
+                          "p": "142"
+                        },
+                        "subexprPos": "/"
+                      },
+                      {
+                        "text": "True"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        }
+      }
+    }
+  ]
+}
