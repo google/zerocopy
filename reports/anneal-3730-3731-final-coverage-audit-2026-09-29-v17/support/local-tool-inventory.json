@@ -1,0 +1,83 @@
+{
+  "filesystem_free_bytes": 51635699712,
+  "host_memory_bytes": 8589934592,
+  "local_tool_root": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools",
+  "observed_at_utc": "2026-09-29T16:58:06.516942+00:00",
+  "ocaml_family_local_root_matches": [],
+  "ocaml_family_nix_store_matches": [],
+  "ocaml_family_path_lookup": {
+    "dune": null,
+    "ocaml": null,
+    "opam": null
+  },
+  "pins": {
+    "aeneas": {
+      "bytes": 28061048,
+      "relative_path": "aeneas-release/aeneas",
+      "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+    },
+    "aeneas-older-pair": {
+      "bytes": 28018456,
+      "relative_path": "scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+      "sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22"
+    },
+    "aeneas-source": {
+      "git_head": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "relative_path": "sources/aeneas"
+    },
+    "charon": {
+      "bytes": 11682416,
+      "relative_path": "aeneas-release/charon",
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+    },
+    "charon-may31": {
+      "bytes": 11869024,
+      "relative_path": "scratch/20260928-reference-open-checks/charon_revision/may31/charon",
+      "sha256": "4c77ef61ab38ba88369406460dd992b6ae38375774747f979e0ce0801a88dc9e"
+    },
+    "charon-older": {
+      "bytes": 11885504,
+      "relative_path": "scratch/20260928-reference-open-checks/charon_revision/old/charon",
+      "sha256": "094ba2dc1d23f82be5ad2bb378e94ce8c66ca9d13c551edfeb8597b392558272"
+    },
+    "charon-older-pair": {
+      "bytes": 11732880,
+      "relative_path": "scratch/20260928-reference-open-checks/aeneas_revision/old/charon",
+      "sha256": "6b53eb746f512191b8408cd9c1c71f674406232ffe3b44cbd50b777ae9e63ec6"
+    },
+    "charon-source": {
+      "git_head": "0c91ca1a8e002d6bfa8d8f1f452804fce2f92cf1",
+      "relative_path": "sources/charon"
+    },
+    "lake-4.29": {
+      "bytes": 51344,
+      "relative_path": "elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+      "sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+    },
+    "lake-4.30-rc2": {
+      "bytes": 51840,
+      "relative_path": "elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+      "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+    },
+    "lean-4.29": {
+      "bytes": 49968,
+      "relative_path": "elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+      "sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+    },
+    "lean-4.30-rc2": {
+      "bytes": 49968,
+      "relative_path": "elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "lean4-source": {
+      "git_head": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+      "relative_path": "sources/lean4"
+    },
+    "nix": {
+      "path": "/nix/var/nix/profiles/default/bin/nix",
+      "sha256": "9ba5b17bfb6e32f2650671092ddeabed094e722d5f923005cbf5acdc27df10af",
+      "version": "nix (Nix) 2.35.2"
+    }
+  },
+  "scope_note": "Inventory only; no install or download; executable search is PATH, local tool root to depth 6 and Nix store */bin. Source files named dune are excluded."
+}

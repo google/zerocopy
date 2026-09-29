@@ -1465,6 +1465,36 @@
         "anneal/coverage-audit"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v17": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_hashes": "support/live-issue-hashes.json",
+            "issue_snapshot": "support/issue-scope-snapshot.json",
+            "issues": "#3730 and #3731",
+            "reference_revision": "2c45d74f7176d15a417f9a78a60afaf66eb2fdf2",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference and issue scope"
+        },
+        {
+          "identity": {
+            "inventory": "support/local-tool-inventory.json",
+            "lean_versions": "4.29.0 and 4.30.0-rc2",
+            "nix_version": "2.35.2",
+            "translator_pair": "locally compiled Charon and Aeneas binaries, including retained older pair"
+          },
+          "name": "Local pinned research tools"
+        }
+      ],
+      "topics": [
+        "anneal/coverage",
+        "anneal/interactive-architecture",
+        "anneal/lake-observability",
+        "anneal/dependency-gates"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [

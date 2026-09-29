@@ -1,0 +1,74 @@
+{
+  "generated_sha256": {
+    "3730-crosswalk-final-v17.csv": "099c32e58ca353e95163b4cfe5555cf097979e5d9881523afa679e0a5abd94c9",
+    "investigation-final-v17.csv": "fc7263e96c0f6e16aec3ffa5ab0bacd4bbe89c0ef115422a7bd51f0f7c39e4f1",
+    "post-v16-file-inventory.csv": "7ea3f5995ad2f2ce21406ed4265b424ec0308742bd0d1f0104bd76822911f43e",
+    "post-v16-package-review.csv": "bdcd4258d218d3c63ae0bc5445f1eff457442df402b0e5bfd8e816c9f63443f1"
+  },
+  "input_sha256": {
+    "audit-snapshot.json": "08927f2176176aabdd1c25442be44221f782171bed27232487fbd55a2890d488",
+    "issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "live-issue-hashes.json": "4a542f613d6273815c6b2c0f5196d399477c1ddcad5e3137b40bda423c438327",
+    "local-tool-inventory.json": "ca111f59c450c5f4aaf40900e1dc8367c4bc7ad588cd8e90113d54782d6b8949",
+    "row-challenge-v17.json": "47bd482bbbebc363b99ba49fcfd48fb9e7b6b2bb7676cb1ba42c79330720d7dd"
+  },
+  "issue_3730_heading_count": 174,
+  "issue_3731_id_count": 159,
+  "issue_fetched_at_utc": "2026-09-29T16:57:41.659064+00:00",
+  "issue_hashes": {
+    "3730": {
+      "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+      "comments": [
+        {
+          "body_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+          "id": 5884380373,
+          "updated_at": "2026-09-29T05:39:32Z"
+        }
+      ],
+      "number": 3730,
+      "state": "closed",
+      "updated_at": "2026-09-29T05:40:03Z"
+    },
+    "3731": {
+      "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+      "comments": [
+        {
+          "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+          "id": 5884299718,
+          "updated_at": "2026-09-29T05:32:10Z"
+        }
+      ],
+      "number": 3731,
+      "state": "open",
+      "updated_at": "2026-09-29T05:39:11Z"
+    }
+  },
+  "new_distinct_cached_only_experiment_count": 0,
+  "observer_row_ids": [
+    "I095",
+    "I104",
+    "F10",
+    "F16"
+  ],
+  "post_v16_file_count": 10,
+  "post_v16_packages": [
+    "anneal-3730-five-original-packages-rereview-2026-09-29",
+    "anneal-3730-lake-unprivileged-file-event-observability-2026-09-29"
+  ],
+  "reference_commit": "2c45d74f7176d15a417f9a78a60afaf66eb2fdf2",
+  "row_challenge_count": 333,
+  "status_counts": {
+    "investigation": {
+      "complete": 2,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 153
+    },
+    "suggestion": {
+      "complete": 4,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 161
+    }
+  }
+}

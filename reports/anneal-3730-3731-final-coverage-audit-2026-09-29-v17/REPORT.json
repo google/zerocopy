@@ -1,0 +1,30 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/interactive-architecture",
+    "anneal/lake-observability",
+    "anneal/dependency-gates"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "2c45d74f7176d15a417f9a78a60afaf66eb2fdf2",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Local pinned research tools",
+      "identity": {
+        "inventory": "support/local-tool-inventory.json",
+        "nix_version": "2.35.2",
+        "lean_versions": "4.29.0 and 4.30.0-rc2",
+        "translator_pair": "locally compiled Charon and Aeneas binaries, including retained older pair"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,11 @@
+{
+  "audit_scope": "159 I001-I159 investigations and 174 A01-O10 mapped suggestions",
+  "new_experiment_count": 0,
+  "post_v16_packages": [
+    "anneal-3730-five-original-packages-rereview-2026-09-29",
+    "anneal-3730-lake-unprivileged-file-event-observability-2026-09-29"
+  ],
+  "reason": "Only two post-v16 packages were published; earlier sandbox-exec denial already covers the discovered local control, and the observer supplies the sole new component evidence.",
+  "reference_commit": "2c45d74f7176d15a417f9a78a60afaf66eb2fdf2",
+  "v16_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v16"
+}
