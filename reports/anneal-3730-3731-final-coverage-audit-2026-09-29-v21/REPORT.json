@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/generation-garbage-collection",
+    "anneal/real-generated-model",
+    "filesystem/reader-leases"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "c89f1410d4f1cfbd9b654ea5268b38f5c81e115e",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Disposable independent-reader lease and GC experiment",
+      "identity": {
+        "package": "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2",
+        "evidence": "support/new-package-review-v21.csv",
+        "boundary": "fixture-owned advisory locks and GC with retained real Charon/Aeneas/Lean A/B artifact families"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

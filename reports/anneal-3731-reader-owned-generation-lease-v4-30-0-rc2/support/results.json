@@ -1,0 +1,334 @@
+{
+  "reference_head": "c89f1410d4f1cfbd9b654ea5268b38f5c81e115e",
+  "tool": {
+    "lean": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "scratch": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run"
+  },
+  "expected": {
+    "A": {
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+      "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+    },
+    "B": {
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+      "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+    }
+  },
+  "generation_ids": {
+    "A": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+    "B": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b"
+  },
+  "initial": {
+    "classification": "A",
+    "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+    "files": {
+      "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+      "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+    }
+  },
+  "acquired": {
+    "reader-one": {
+      "family": {
+        "classification": "A",
+        "files": {
+          "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+          "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a"
+        },
+        "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9"
+      },
+      "lease_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A/lease.lock",
+      "name": "reader-one",
+      "reader_pid": 15964,
+      "shared_lock_acquired": true,
+      "time_ns": 1790706432738245000
+    },
+    "reader-two": {
+      "family": {
+        "classification": "A",
+        "files": {
+          "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+          "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+          "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+          "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+          "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+          "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+          "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a"
+        },
+        "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9"
+      },
+      "lease_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A/lease.lock",
+      "name": "reader-two",
+      "reader_pid": 15965,
+      "shared_lock_acquired": true,
+      "time_ns": 1790706432738248000
+    }
+  },
+  "published_time_ns": 1790706432747111000,
+  "selected_b": {
+    "classification": "B",
+    "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+    "files": {
+      "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+      "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+      "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+      "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+      "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+      "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+      "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+    }
+  },
+  "gc_both": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--gc",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers"
+    ],
+    "rc": 0,
+    "stdout": "{\"time_ns\": 1790706432785711000, \"gc_pid\": 15966, \"selected\": {\"classification\": \"B\", \"generation_id\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\", \"files\": {\"current.llbc\": \"f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\", \"Current/Funs.olean\": \"57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"exclusive_lock_acquired\": false, \"outcome\": \"deferred-reader-lease\", \"a_exists\": true, \"bytes_before\": 44471, \"bytes_after\": 44471}\n",
+    "stderr": "",
+    "time_ns": 1790706432785711000,
+    "gc_pid": 15966,
+    "selected": {
+      "classification": "B",
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "files": {
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+      }
+    },
+    "exclusive_lock_acquired": false,
+    "outcome": "deferred-reader-lease",
+    "a_exists": true,
+    "bytes_before": 44471,
+    "bytes_after": 44471
+  },
+  "killed_reader": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--reader",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers",
+      "reader-one"
+    ],
+    "pid": 15964,
+    "rc": -9,
+    "stdout": "",
+    "stderr": "",
+    "completed_time_ns": 1790706432790126000
+  },
+  "gc_after_kill": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--gc",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers"
+    ],
+    "rc": 0,
+    "stdout": "{\"time_ns\": 1790706432826256000, \"gc_pid\": 15967, \"selected\": {\"classification\": \"B\", \"generation_id\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\", \"files\": {\"current.llbc\": \"f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\", \"Current/Funs.olean\": \"57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"exclusive_lock_acquired\": false, \"outcome\": \"deferred-reader-lease\", \"a_exists\": true, \"bytes_before\": 44471, \"bytes_after\": 44471}\n",
+    "stderr": "",
+    "time_ns": 1790706432826256000,
+    "gc_pid": 15967,
+    "selected": {
+      "classification": "B",
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "files": {
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+      }
+    },
+    "exclusive_lock_acquired": false,
+    "outcome": "deferred-reader-lease",
+    "a_exists": true,
+    "bytes_before": 44471,
+    "bytes_after": 44471
+  },
+  "reader_two_done": {
+    "family": {
+      "classification": "A",
+      "files": {
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+        "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "current.llbc": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a"
+      },
+      "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9"
+    },
+    "lease_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A/lease.lock",
+    "name": "reader-two",
+    "oracles": [
+      {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-1/Proof1.lean"
+        ],
+        "generation_classification": "A",
+        "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A",
+        "proof_value": 1,
+        "rc": 0,
+        "source_sha256": "9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738",
+        "stderr": "",
+        "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-1/Proof1.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n"
+      },
+      {
+        "argv": [
+          "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+          "--json",
+          "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean"
+        ],
+        "generation_classification": "A",
+        "generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+        "generation_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A",
+        "proof_value": 2,
+        "rc": 1,
+        "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+        "stderr": "",
+        "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  golden_vertical.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 2#u32\\n\\n\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n"
+      }
+    ],
+    "reader_pid": 15965,
+    "selected_after_publish": {
+      "classification": "B",
+      "files": {
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78"
+      },
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b"
+    },
+    "shared_lock_acquired": true,
+    "time_ns": 1790706436781735000
+  },
+  "gc_after_import": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--gc",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers"
+    ],
+    "rc": 0,
+    "stdout": "{\"time_ns\": 1790706436822047000, \"gc_pid\": 15973, \"selected\": {\"classification\": \"B\", \"generation_id\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\", \"files\": {\"current.llbc\": \"f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\", \"Current/Funs.olean\": \"57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"exclusive_lock_acquired\": false, \"outcome\": \"deferred-reader-lease\", \"a_exists\": true, \"bytes_before\": 44471, \"bytes_after\": 44471}\n",
+    "stderr": "",
+    "time_ns": 1790706436822047000,
+    "gc_pid": 15973,
+    "selected": {
+      "classification": "B",
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "files": {
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+      }
+    },
+    "exclusive_lock_acquired": false,
+    "outcome": "deferred-reader-lease",
+    "a_exists": true,
+    "bytes_before": 44471,
+    "bytes_after": 44471
+  },
+  "reader_two_exit": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--reader",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers",
+      "reader-two"
+    ],
+    "pid": 15965,
+    "rc": 0,
+    "stdout": "{\"reader_pid\": 15965, \"name\": \"reader-two\", \"lease_path\": \"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A/lease.lock\", \"shared_lock_acquired\": true, \"family\": {\"classification\": \"A\", \"generation_id\": \"bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9\", \"files\": {\"current.llbc\": \"7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551\", \"Current/Funs.olean\": \"2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"selected_after_publish\": {\"classification\": \"B\", \"generation_id\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\", \"files\": {\"current.llbc\": \"f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\", \"Current/Funs.olean\": \"57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"oracles\": [{\"generation_path\": \"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A\", \"generation_id\": \"bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9\", \"generation_classification\": \"A\", \"proof_value\": 1, \"source_sha256\": \"9e2d3005abdec6952aa9c5469b6282e5e8b7884f7599ba601cfea39659df8738\", \"argv\": [\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean\", \"--json\", \"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-1/Proof1.lean\"], \"rc\": 0, \"stdout\": \"{\\\"caption\\\":\\\"\\\",\\\"data\\\":\\\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\\\",\\\"endPos\\\":{\\\"column\\\":6,\\\"line\\\":5},\\\"fileName\\\":\\\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-1/Proof1.lean\\\",\\\"isSilent\\\":false,\\\"keepFullRange\\\":false,\\\"kind\\\":\\\"[anonymous]\\\",\\\"pos\\\":{\\\"column\\\":0,\\\"line\\\":5},\\\"severity\\\":\\\"information\\\"}\\n\", \"stderr\": \"\"}, {\"generation_path\": \"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/A\", \"generation_id\": \"bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9\", \"generation_classification\": \"A\", \"proof_value\": 2, \"source_sha256\": \"56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0\", \"argv\": [\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean\", \"--json\", \"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean\"], \"rc\": 1, \"stdout\": \"{\\\"caption\\\":\\\"\\\",\\\"data\\\":\\\"Tactic `rfl` failed: The left-hand side\\\\n  golden_vertical.inc 0#u32\\\\nis not definitionally equal to the right-hand side\\\\n  Aeneas.Std.Result.ok 2#u32\\\\n\\\\n\\u22a2 golden_vertical.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\\\",\\\"endPos\\\":{\\\"column\\\":5,\\\"line\\\":3},\\\"fileName\\\":\\\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean\\\",\\\"isSilent\\\":false,\\\"keepFullRange\\\":false,\\\"kind\\\":\\\"[anonymous]\\\",\\\"pos\\\":{\\\"column\\\":2,\\\"line\\\":3},\\\"severity\\\":\\\"error\\\"}\\n{\\\"caption\\\":\\\"\\\",\\\"data\\\":\\\"'obl_inc' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\\\",\\\"endPos\\\":{\\\"column\\\":6,\\\"line\\\":5},\\\"fileName\\\":\\\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/reader-two-proof-2/Proof2.lean\\\",\\\"isSilent\\\":false,\\\"keepFullRange\\\":false,\\\"kind\\\":\\\"[anonymous]\\\",\\\"pos\\\":{\\\"column\\\":0,\\\"line\\\":5},\\\"severity\\\":\\\"information\\\"}\\n\", \"stderr\": \"\"}]}\n",
+    "stderr": ""
+  },
+  "gc_after_exit": {
+    "argv": [
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3731-reader-owned-generation-lease-v4-30-0-rc2/support/probe.py",
+      "--gc",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers"
+    ],
+    "rc": 0,
+    "stdout": "{\"time_ns\": 1790706436867356000, \"gc_pid\": 15974, \"selected\": {\"classification\": \"B\", \"generation_id\": \"620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b\", \"files\": {\"current.llbc\": \"f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78\", \"Current/Types.lean\": \"de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3\", \"Current/Types.olean\": \"787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93\", \"Current/Funs.lean\": \"f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257\", \"Current/Funs.olean\": \"57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871\", \"Current.lean\": \"c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e\", \"Current.olean\": \"34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149\"}}, \"exclusive_lock_acquired\": true, \"outcome\": \"removed\", \"a_exists\": false, \"bytes_before\": 44471, \"bytes_after\": 0}\n",
+    "stderr": "",
+    "time_ns": 1790706436867356000,
+    "gc_pid": 15974,
+    "selected": {
+      "classification": "B",
+      "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+      "files": {
+        "current.llbc": "f3d266ebbcb327ea6c450bc7d97dc3baef0c61cf1b382fa6ec197bf645d41e78",
+        "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+        "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+        "Current/Funs.lean": "f45d572ab60869ad200d1cf66a4973941029ba4d90c51e041ff8725d27752257",
+        "Current/Funs.olean": "57bcadabf1795a8540685e174966444097701f49da4c704446a2bb5ae5d94871",
+        "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+        "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+      }
+    },
+    "exclusive_lock_acquired": true,
+    "outcome": "removed",
+    "a_exists": false,
+    "bytes_before": 44471,
+    "bytes_after": 0
+  },
+  "b_proof_after_gc": {
+    "generation_path": "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/generations/B",
+    "generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+    "generation_classification": "B",
+    "proof_value": 2,
+    "source_sha256": "56090687141b87914d7bd51e4627a36fafd47ae5921cc6111bf5fe23957437a0",
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/after-b-new/Proof2.lean"
+    ],
+    "rc": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"/Users/josh/Codex/Meta/Data/20260929-issue-3730-3731-publish/reader-owned-lease-run/two-readers/after-b-new/Proof2.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  "a_exists_after_gc": false
+}

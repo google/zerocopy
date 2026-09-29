@@ -1,0 +1,9 @@
+{
+  "new_complete_ids": [],
+  "new_packages": [
+    "anneal-3731-reader-owned-generation-lease-v4-30-0-rc2"
+  ],
+  "prior_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v20",
+  "reference_commit": "c89f1410d4f1cfbd9b654ea5268b38f5c81e115e",
+  "scope_note": "Independent reader-owned cooperative flock leases across a worker SIGKILL narrow I121/J11; Anneal-owned lease and GC implementation, pending query and scratch-fork lifetimes, replay, supervisor reconciliation, durability and platform policy remain open."
+}
