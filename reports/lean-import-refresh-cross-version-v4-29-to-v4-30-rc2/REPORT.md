@@ -21,7 +21,7 @@ In both runs, the proof `sharedValue = 3 := by rfl` initially produced no goals 
 
 An identical newly opened document in the same server process reported `⊢ sharedValue = 3` and an `rfl` diagnostic. After that document's readiness barrier and an additional 0.5-second wait, a fresh readiness request and goal query on the still-open original document again returned no goals in **both** versions. Closing and reopening the original URI produced the remaining goal. Batch Lean exited 1. The earlier independent 4.30-rc2 report records the same immediate contrast. The transcripts do not record child process PIDs; “worker” identifies the server's per-document elaboration behavior, not a separately attested process identity.
 
-Basis: **execution** in `support/v429/transcript.json` and the linked 4.30-rc2 report.
+Basis: **execution** in `support/v429/transcript.json` and `support/v430/transcript.json`. The linked earlier 4.30-rc2 report independently supports the core old/new-document contrast.
 
 ### The cross-version result supports a conservative refresh boundary, not a universal rule
 
@@ -41,6 +41,7 @@ Basis: **derived** from two pinned executions.
 ## Evidence
 
 - `support/v429/probe.py` and `support/v430/probe.py` — byte-identical direct-server procedures with delayed-query control. They acknowledge server-initiated JSON-RPC requests before matching client replies.
+- The probe scripts generate the fixture at run time; their SHA-256 digests in `REPORT.json` identify that procedure. The two Lean revisions and executable hashes identify the observed toolchains.
 - `support/v429/transcript.json` and `support/v430/transcript.json` — versions, artifact hashes, LSP messages, goals, diagnostics, and batch exits.
 - `support/v429/fixture/` and `support/v430/fixture/` — final proof sources and each version's pre/post-rebuild `Dep.olean` artifacts.
 - `support/check.py` — read-only checks of both retained runs, exact local binary/script identities, delayed queries, and the earlier independent 4.30 transcript.

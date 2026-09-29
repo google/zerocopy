@@ -305,6 +305,18 @@
         "start": 4,
         "end": 6,
         "accepted": false
+      },
+      {
+        "name": "stale projection digest",
+        "start": 4,
+        "end": 6,
+        "accepted": false
+      },
+      {
+        "name": "stale document version",
+        "start": 4,
+        "end": 6,
+        "accepted": false
       }
     ],
     "stale_patch_cas_rejected": true
@@ -350,6 +362,7 @@
         "publishB"
       ]
     ],
+    "safe_stale_publishes": 0,
     "safe_current_generation_guard": true
   },
   "limits": [

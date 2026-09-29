@@ -92,6 +92,8 @@ try:
  new_path,new_uri,new_barrier=srv.open_doc('NewOpen.lean',proof)
  new_goal=srv.goal(new_uri,1)
  record('new_worker_same_server_after_dependency_rebuild',barrier=new_barrier,goal=new_goal,source_sha256=digest(proof))
+ old_late=srv.goal(old_uri,1)
+ record('old_worker_after_new_worker',goal=old_late,source_sha256=digest(proof))
  srv.close_doc(old_uri)
  reopened_path,reopened_uri,reopen_barrier=srv.open_doc('OldOpen.lean',proof,version=2)
  reopened_goal=srv.goal(reopened_uri,2)
@@ -100,7 +102,7 @@ try:
  record('fresh_batch_after_dependency_rebuild',returncode=batch.returncode,stdout=batch.stdout,stderr=batch.stderr,source_sha256=digest(proof))
  srv.stop()
  diagnostics=[e['message']['params'] for e in EVENTS if e.get('kind')=='server_message' and e['message'].get('method')=='textDocument/publishDiagnostics']
- result={'lean_version':subprocess.check_output([str(LEAN),'--version'],text=True).strip(),'old_olean_sha256':old_olean_hash,'new_olean_sha256':new_olean_hash,'old_worker_goal_before':old_before,'old_worker_goal_after':old_after,'new_worker_goal_same_server':new_goal,'reopened_worker_goal_same_server':reopened_goal,'fresh_batch_returncode':batch.returncode,'diagnostics':diagnostics,'events':EVENTS}
+ result={'lean_version':subprocess.check_output([str(LEAN),'--version'],text=True).strip(),'old_olean_sha256':old_olean_hash,'new_olean_sha256':new_olean_hash,'old_worker_goal_before':old_before,'old_worker_goal_after':old_after,'new_worker_goal_same_server':new_goal,'old_worker_goal_after_new_worker':old_late,'reopened_worker_goal_same_server':reopened_goal,'fresh_batch_returncode':batch.returncode,'diagnostics':diagnostics,'events':EVENTS}
  raw=json.dumps(result,indent=2)+'\n'
  raw=raw.replace(str(FIXTURE),'$FIXTURE').replace(str(LEAN),'$LEAN_BIN')
  (ROOT/'transcript.json').write_text(raw)

@@ -13,7 +13,9 @@
         "repository": "google/zerocopy",
         "reference_revision": "335cf976f507b1bc65fea2e4742cd41a710e17d8",
         "source_commits": "41e3f34 and 9641a9e",
-        "review_manifest": "support/review.json"
+        "review_manifest": "support/review.json",
+        "second_pass_base_revision": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+        "second_pass_observed_utc": "2026-09-29T18:15:15Z"
       }
     },
     {

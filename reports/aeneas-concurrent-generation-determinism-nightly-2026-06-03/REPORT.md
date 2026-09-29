@@ -11,7 +11,7 @@ This is a narrow same-input, no-failure case. It shows that this tiny run comple
 - Aeneas release binary SHA-256: `f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03`; release label `nightly-2026.06.03` resolves to source revision `AeneasVerif/aeneas@ac9f1bc5262a5e4ff1e24ca78617121382202727` as documented in the related compatibility report. The measured binary hash pins this execution; it does not independently attest how that binary was built.
 - Input: fixed serialized LLBC, SHA-256 `b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098`, 19,827 bytes.
 - Flags: Lean backend, no progress bar, sequential internal processing, split files, generated library entry.
-- Host: macOS arm64. Each parallel run uses an independent Aeneas process. “Concurrent” means post-spawn-to-collection intervals overlapped; no single-instant sample proved that every child was still alive together, and this does not assert simultaneous execution on every CPU core.
+- Host: macOS arm64. Each parallel run uses an independent Aeneas process. “Concurrent” means post-spawn-to-collection intervals overlapped. The end timestamps were taken after `communicate()` returned, not at child exit; no single-instant sample proved that every child was still alive together, and this does not assert simultaneous execution on every CPU core.
 - The subprocess working directory was the parent of the `reference-publish` checkout, resolved from the report fixture. Input, executable, and destination paths were absolute, so this run did not test relative-path resolution from an Anneal workspace.
 
 ## Findings
@@ -50,8 +50,8 @@ Basis: **execution scope** plus **derived** distinction between generator output
 
 ## Evidence
 
-- `support/probe.py` — executable barrier-started independent and shared-destination runs, including observed child PID/lifetime intervals and pinned binary/input checks; set `AENEAS_BIN` to the pinned release binary.
-- `support/check.py` — verifies the retained transcript against all generated files, the fixed fixture, the optional local pinned binary, process outcomes, and child-lifetime overlap.
+- `support/probe.py` — executable barrier-started independent and shared-destination runs, including child PIDs, post-spawn observations, collection timestamps, and pinned binary/input checks; set `AENEAS_BIN` to the pinned release binary.
+- `support/check.py` — verifies the retained transcript against all generated files, the fixed fixture, the optional local pinned binary, process outcomes, and post-spawn-to-collection interval overlap.
 - `support/review-checks.json` — independent review's exact tag query, fixture/binary hashes, retained verifier result, and replay summary.
 - `support/fixture/probe.llbc` — fixed serialized input.
 - `support/concurrency-transcript.json` — run intervals, exit codes, stdout/stderr, inventories, hashes, and overlap checks, with local absolute paths scrubbed.
@@ -76,4 +76,4 @@ From the package directory, set `AENEAS_BIN` to the binary identified above and 
 AENEAS_BIN=/absolute/path/to/aeneas python3 support/probe.py
 ```
 
-The script removes and reconstructs only its `parallel-independent/` and `parallel-shared-dest/` fixture directories. It asserts the pinned input/binary hashes, successful complete output inventories, final shared/isolated equality, and overlapping observed child lifetimes. Then run `AENEAS_BIN=/absolute/path/to/aeneas python3 support/check.py` to verify the retained transcript and files. Do not infer general shared-writer safety from the same-input case.
+The script removes and reconstructs only its `parallel-independent/` and `parallel-shared-dest/` fixture directories. It asserts the pinned input/binary hashes, successful complete output inventories, final shared/isolated equality, and overlapping post-spawn-to-collection intervals with each child observed alive after spawn. Then run `AENEAS_BIN=/absolute/path/to/aeneas python3 support/check.py` to verify the retained transcript and files. Do not infer general shared-writer safety from the same-input case.

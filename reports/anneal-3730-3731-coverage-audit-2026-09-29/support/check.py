@@ -21,7 +21,11 @@ comment_3731 = (source / 'comment3731.txt').read_text()
 item_pattern = re.compile(r'^\*\*(I\d{3}) — (.*?) \[([^]]+)\]\.\*\* (.+)$', re.M)
 items = {m[1]: (m[2], m[3], m[4])
          for text in (issue_3731, comment_3731) for m in item_pattern.finditer(text)}
-matrix = list(csv.DictReader((support / 'investigation-matrix.csv').open(newline='')))
+with (support / 'investigation-matrix.csv').open(newline='') as stream:
+    reader = csv.DictReader(stream)
+    matrix = list(reader)
+    assert all(set(row) == set(reader.fieldnames) and all(value is not None for value in row.values())
+               for row in matrix), 'investigation matrix has shifted or missing CSV columns'
 assert len(items) == len(matrix) == 159
 assert [r['id'] for r in matrix] == [f'I{i:03}' for i in range(1, 160)]
 for row in matrix:

@@ -37,5 +37,52 @@
     }
   },
   "reference_head": "335cf976f507b1bc65fea2e4742cd41a710e17d8",
-  "reviewed_at_utc": "2026-09-29T16:45:25Z"
+  "reviewed_at_utc": "2026-09-29T16:45:25Z",
+  "second_pass": {
+    "reviewed_at_utc": "2026-09-29T18:15:15Z",
+    "checkout_base_commit": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+    "point": "working-tree contents identified by files_sha256; first-pass pins remain in top-level files_sha256",
+    "dispositions": {
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03": "timing language narrowed to post-spawn-to-collection overlap because end timestamps follow communicate()",
+      "anneal-3730-3731-coverage-audit-2026-09-29": "I151 CSV quoting fixed; checker rejects missing or extra columns",
+      "anneal-interactive-model-probes-2026-09-29": "separate stale host/projection/version cases, independent UTF-16 encoding check, read-only fresh model replay, tightened schedule and APFS record assertions",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2": "non-existent generated-fixture source-revision identity removed; both pinned v429/v430 replay transcripts cited",
+      "lean-same-server-dependency-generation-v4-30-0-rc2": "supplementary post-new-result old-URI query retained; old no-goals and new remaining-goal results coexist before close in one server"
+    },
+    "files_sha256": {
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.json": "91a97d03adaa0efc4bad563dbccadef26d9a95f671654ca069325cd068bf7f79",
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md": "db8f5fb7ef40586242c1f067cadc40ee98fb889f1e70b202b195006b0077db63",
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03/support/check.py": "eae050189d2ef82116446cf57345f46fbdb5d5826cdf2f1ac64e7f39240d299b",
+      "anneal-3730-3731-coverage-audit-2026-09-29/REPORT.json": "819fd6aad3d9475a2e445b5b8c9f0fa633b65efe65026b0c1fe698a31165fbdf",
+      "anneal-3730-3731-coverage-audit-2026-09-29/REPORT.md": "5dcbfbc9732d971d9446c0d9f225e2703c6577c7ba9660a85287e58ec9a810c9",
+      "anneal-3730-3731-coverage-audit-2026-09-29/support/check.py": "01fdbebd37ea6d28107237243d1ca3de9c6694ed26eb011151a5272668e5f77a",
+      "anneal-interactive-model-probes-2026-09-29/REPORT.json": "20229de41aecd7772cbdce393ed36c96637ee462953b1fcade1eff92254fffb0",
+      "anneal-interactive-model-probes-2026-09-29/REPORT.md": "9a3415bdc0d6040e1b4e470ccdda8d8afc30d33a29f42fcb7915fcec30e0e30a",
+      "anneal-interactive-model-probes-2026-09-29/support/check.py": "0e106a5023544fb2239bb14c1c004a0120adcafc4fa197b4072b1cf2a7e939a9",
+      "anneal-interactive-model-probes-2026-09-29/support/model-probes.json": "b637f568f02e9be4953dd2017ea379de724d1ed576110943aeb565f764b313ed",
+      "anneal-interactive-model-probes-2026-09-29/support/model_probes.py": "c1818e96d9d0fbb4c46cd6007d1d2021d3c9f66edd87186dd3611f198afb966e",
+      "anneal-interactive-model-probes-2026-09-29/support/publication_probe.py": "4bc9133703ec349181090d0bf30d850c98a5a0283523e5e1395deb25ed996811",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.json": "7d8ab285d43bc8b777085624375fe7efbed90f6332ffaa85bbb58e8934c818d3",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md": "99ca35b53b1e050eaf6fe852d28c2b732e449b5b053fd01198abee1ab76e669b",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/support/check.py": "451038ade58a24ec6e7ba8a76e39eaa82e43be8cdc4b3b6cf9ff6da283bb296c",
+      "lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.json": "e779303dfd1e1ecf3a6a5603669c2dd4e77f1e90641181d692d983db9afe4b2f",
+      "lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md": "ab40be9d039aef31a71ec5660848bbb54b0caee5e04e006746b166d20beec0be",
+      "lean-same-server-dependency-generation-v4-30-0-rc2/support/check.py": "bf0405dc274c99144a195d8646b19aa4059d6999122e8e19d08fa16d6dcd81bf",
+      "aeneas-concurrent-generation-determinism-nightly-2026-06-03/support/concurrency-transcript.json": "4974a46b736bd338813ee239caeeeed4c8f62ee47e4534a3d80228a2f52136ba",
+      "anneal-3730-3731-coverage-audit-2026-09-29/support/investigation-matrix.csv": "1d2fe1b4309c93160788fc67c490331fdd4c05335b51665266a251685ff75be7",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/support/v429/transcript.json": "6a98c98769f91b7587395e14d7fb3b923bf75f340f678997abbdb99cf6dbb70f",
+      "lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/support/v430/transcript.json": "aed1373f9e5f55c434031d0f5257e31cc081aa5602f73c65a0976446d5e09e36",
+      "lean-same-server-dependency-generation-v4-30-0-rc2/support/probe.py": "6ece16cbce20da90f037379274c4707002133d5459c1740c6c7403f642b17744",
+      "lean-same-server-dependency-generation-v4-30-0-rc2/support/simultaneous-transcript.json": "92c79b615686dce3c6d8bb29956e149ef17488cee3a0cff7cf61634bed0fd658"
+    },
+    "validation": {
+      "five_package_checkers": "passed locally against retained package contents",
+      "same_server_alternate_transcripts": [
+        "revalidation-transcript.json",
+        "simultaneous-transcript.json"
+      ],
+      "lean_binary_replay_in_review_package_update": false,
+      "apfs_publication_probe_regenerated_in_review_package_update": false
+    }
+  }
 }

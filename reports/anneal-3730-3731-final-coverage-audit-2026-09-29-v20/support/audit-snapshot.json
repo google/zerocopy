@@ -1,0 +1,9 @@
+{
+  "new_complete_ids": [],
+  "new_packages": [
+    "anneal-3731-real-generation-gc-lease-v4-30-0-rc2"
+  ],
+  "prior_audit_package": "anneal-3730-3731-final-coverage-audit-2026-09-29-v19",
+  "reference_commit": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+  "scope_note": "Cooperative GC lease fixture with real generated A/B artifacts narrows I121/J11; Anneal production lease/GC ownership and broader reader lifetimes remain open."
+}

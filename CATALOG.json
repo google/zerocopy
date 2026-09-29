@@ -1581,6 +1581,35 @@
         "research/gap-analysis"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v20": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue_hashes": "support/live-issue-hashes.json",
+            "issue_snapshot": "support/issue-scope-snapshot.json",
+            "issues": "#3730 and #3731",
+            "reference_revision": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference and issue scope"
+        },
+        {
+          "identity": {
+            "boundary": "fixture-owned advisory lease and GC with retained real Charon/Aeneas/Lean A/B artifact families",
+            "evidence": "support/new-package-review-v20.csv",
+            "package": "anneal-3731-real-generation-gc-lease-v4-30-0-rc2"
+          },
+          "name": "Disposable real-generation cooperative lease and GC experiment"
+        }
+      ],
+      "topics": [
+        "anneal/coverage",
+        "anneal/generation-publication",
+        "anneal/real-generated-model",
+        "filesystem/atomic-publication"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v3": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3076,6 +3105,8 @@
             "reference_revision": "335cf976f507b1bc65fea2e4742cd41a710e17d8",
             "repository": "google/zerocopy",
             "review_manifest": "support/review.json",
+            "second_pass_base_revision": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+            "second_pass_observed_utc": "2026-09-29T18:15:15Z",
             "source_commits": "41e3f34 and 9641a9e"
           },
           "name": "Five original #3730/#3731 report packages"
@@ -5544,6 +5575,43 @@
         "anneal/model-change-vertical"
       ]
     },
+    "anneal-3731-real-generation-gc-lease-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "new_generation_id": "620055318c21f7616fb671ce0c33f3f289b9a6f237d21aeddb48c0fa5c5d4e4b",
+            "old_generation_id": "bc62fce58f5d7edca726224f9174b1bc41ed706a4ced9bca8bafaededd6da2a9",
+            "old_origin_reference_commit": "b1787210c0143a705f6bbbf2da3b2fba30cc5718"
+          },
+          "name": "retained Charon/Aeneas generated A and B model families"
+        },
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct batch checker and language server"
+        },
+        {
+          "identity": {
+            "input_family": "retained real generated A/B seven-file LLBC/Lean/OLean family",
+            "sha256": "5851d5d0902ea92faa110ffee0442e81af02f5f8fcc78687cedf5d0403eb4c47",
+            "source": "support/probe.py"
+          },
+          "name": "disposable cooperative generation lease and GC fixture"
+        }
+      ],
+      "topics": [
+        "anneal/generation-garbage-collection",
+        "anneal/real-generated-model",
+        "lean/language-server",
+        "lean/batch-checking",
+        "filesystem/reader-leases"
+      ]
+    },
     "anneal-3731-real-generation-publication-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -5823,7 +5891,7 @@
         {
           "identity": {
             "artifact": "new Python standard-library research harness in this package",
-            "model_probes_sha256": "ed7c35407db2f5e9313aeeee7a860e64b2bffb1d781dd57e1e72727e0c1bf212",
+            "model_probes_sha256": "c1818e96d9d0fbb4c46cd6007d1d2021d3c9f66edd87186dd3611f198afb966e",
             "publication_probe_sha256": "4bc9133703ec349181090d0bf30d850c98a5a0283523e5e1395deb25ed996811",
             "repository": "google/zerocopy",
             "revision": "8c257ec3f4e067963e12441ce5b261714a005c74"
@@ -9275,8 +9343,6 @@
         {
           "identity": {
             "launch_mode": "lean --server with LEAN_PATH",
-            "repository": "google/zerocopy",
-            "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
             "v429_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717",
             "v430_probe_sha256": "d269f82a96279482f4e0fc82f3bf1434fcd2dd0b86e8414cfa3e5a6193334717"
           },

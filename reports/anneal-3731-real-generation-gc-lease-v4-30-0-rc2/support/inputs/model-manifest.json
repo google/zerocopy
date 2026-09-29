@@ -1,0 +1,20 @@
+{
+  "origin_report": "anneal-3730-rust-charon-aeneas-lean-golden-vertical-2026-09-29",
+  "origin_case": "base-cold",
+  "origin_reference_tip": "b1787210c0143a705f6bbbf2da3b2fba30cc5718",
+  "rust_source_sha256": "4d39ee7a9118684caa597d21c353b11632370c62d8eac52d1eb5730e71fe29db",
+  "llbc_sha256": "7032ef983ec41624dc31c6380414c4be6b8807ca6605c13686861e98da86790a",
+  "generated_files_sha256": {
+    "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+    "Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+    "Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3"
+  },
+  "files": {
+    "Current/Funs.lean": "e671fd230e9f048cd3b5ea2e20c19a5899ec7f990889a3943e0f7df6644dd551",
+    "Current/Funs.olean": "2320c0125c0e0748942a5fde0e6d204b4f77b9cd3f6ac7abf7f43f9c97c4546c",
+    "Current/Types.lean": "de058a468912dbea2a520d18a284902398be9f263c0106da939d56b5135968a3",
+    "Current/Types.olean": "787be623d8754cb4f5e6f15f7eeef2b06c812d98f8ac96c80722943ef8136f93",
+    "Current.lean": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+    "Current.olean": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+  }
+}

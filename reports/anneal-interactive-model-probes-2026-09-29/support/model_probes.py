@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Small executable counterexamples for identity, projection, and publication."""
-import hashlib, itertools, json, random
+import hashlib, itertools, json, random, sys
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[1]
@@ -69,7 +69,8 @@ for s in corpus:
  for i in range(len(s)+1):
   b=byte_offset(s,i); u=utf16_offset(s,i)
   assert s.encode('utf-8')[:b].decode('utf-8') == s[:i]
-  assert utf16_units(s[:i]) == u
+  assert s.encode('utf-16-le')[:2*u].decode('utf-16-le') == s[:i]
+  assert len(s[:i].encode('utf-16-le')) == 2*u
   coordinate_rows.append({'text_sha256':sha(s),'scalar_index':i,'utf8_byte':b,'utf16_units':u})
 
 # Projection segments are authored spans separated by synthetic scaffolding.
@@ -92,16 +93,18 @@ for name,start,end,observed in [
  ('inside one segment',4,6,patch_expected),
  ('touches synthetic prefix',2,4,patch_expected),
  ('crosses synthetic gap',8,21,patch_expected),
- ('stale host digest',4,6,{'host_sha256':'hB','projection_sha256':'pB','document_version':6}),
+ ('stale host digest',4,6,patch_expected | {'host_sha256':'hB'}),
+ ('stale projection digest',4,6,patch_expected | {'projection_sha256':'pB'}),
+ ('stale document version',4,6,patch_expected | {'document_version':6}),
 ]:
  accepted=apply_patch(start,end,patch_expected,observed)
  patch_cases.append({'name':name,'start':start,'end':end,'accepted':accepted})
-assert [x['accepted'] for x in patch_cases]==[True,False,False,False]
+assert [x['accepted'] for x in patch_cases]==[True,False,False,False,False,False]
 
 # 3. Generation publication model: staged output is visible only after complete
 # generation and current-token check. Enumerate all event orderings for two jobs.
 events=['stageA','stageB','cancelA','publishA','publishB']
-valid=0; rejected=0; unsafe_naive=0; counterexamples=[]
+valid=0; rejected=0; unsafe_naive=0; safe_stale_publishes=0; counterexamples=[]
 for order in itertools.permutations(events):
  current='A'; staged=set(); canceled=set(); published=[]; naive_published=[]
  for event in order:
@@ -110,13 +113,14 @@ for order in itertools.permutations(events):
   elif event.startswith('publish'):
    g=event[-1]
    if g in staged and g not in canceled and g==current:
-    published.append(g)
+    published.append((g,current))
    elif g in staged and g not in canceled:
     naive_published.append((g,current))
     rejected+=1
   if event=='stageB': current='B'
- # Safe protocol never publishes stale A after B is current.
- assert not any(g=='A' for g in published[1:]) or current=='A'
+ # Check the recorded generation at each accepted publication event.
+ safe_stale_publishes += sum(g!=then_current for g,then_current in published)
+ assert safe_stale_publishes==0
  # Naive path/last-writer behavior would accept any complete uncancelled stage.
  if any(g=='A' and current_at_publish=='B' for g,current_at_publish in naive_published):
   unsafe_naive += 1
@@ -126,9 +130,16 @@ assert valid==120 and rejected>0 and unsafe_naive>0
 
 result={
  'identity_ablation':{'cases':identity_rows,'cache_content_identity_example':{'a_to_b_content_changes':content_a!=content_b,'a_to_b_to_a_content_recurs':content_a==content_a_again,'causal_tags_all_distinct':len({causal_tag_a,causal_tag_b,causal_tag_a_again})==3,'content_keys':[content_a,content_b,content_a_again],'causal_tags':[causal_tag_a,causal_tag_b,causal_tag_a_again]}},
- 'projection_coordinates':{'corpus_strings':len(corpus),'valid_scalar_boundaries_checked':len(coordinate_rows),'coordinate_sample':coordinate_rows[:12],'all_utf8_utf16_roundtrips':True,'projection_segments':segments,'mapped_positions':[map_pos(x) for x in [3,5,9,10,19,20,22,26,27]],'patch_cases':patch_cases,'stale_patch_cas_rejected':not patch_cases[-1]['accepted']},
- 'generation_schedule_model':{'permutations':valid,'stale_publish_rejections':rejected,'naive_late_publish_counterexample_count':unsafe_naive,'counterexample_orders':counterexamples,'safe_current_generation_guard':True},
+ 'projection_coordinates':{'corpus_strings':len(corpus),'valid_scalar_boundaries_checked':len(coordinate_rows),'coordinate_sample':coordinate_rows[:12],'all_utf8_utf16_roundtrips':True,'projection_segments':segments,'mapped_positions':[map_pos(x) for x in [3,5,9,10,19,20,22,26,27]],'patch_cases':patch_cases,'stale_patch_cas_rejected':not any(case['accepted'] for case in patch_cases[-3:])},
+ 'generation_schedule_model':{'permutations':valid,'stale_publish_rejections':rejected,'naive_late_publish_counterexample_count':unsafe_naive,'counterexample_orders':counterexamples,'safe_stale_publishes':safe_stale_publishes,'safe_current_generation_guard':safe_stale_publishes==0},
  'limits':['Finite illustrative model only; it does not establish implementation behavior.','Projection segments are a test oracle fixture, not an implemented Rust parser or Lean projection engine.','UTF-16 positions inside a surrogate pair are not invertible; test only source scalar boundaries.']
 }
-(OUT/'support'/'model-probes.json').write_text(json.dumps(result,indent=2)+'\n')
-print(json.dumps({k:(v if k=='identity_ablation' else {kk:vv for kk,vv in v.items() if kk not in ('coordinate_sample','counterexample_orders')}) for k,v in result.items() if k!='limits'},indent=2))
+output=OUT/'support'/'model-probes.json'
+if sys.argv[1:]==['--check']:
+ assert json.loads(output.read_text())==json.loads(json.dumps(result)), 'retained model result differs from a fresh run'
+ print('PASS: retained model result matches a fresh run')
+elif not sys.argv[1:]:
+ output.write_text(json.dumps(result,indent=2)+'\n')
+ print(json.dumps({k:(v if k=='identity_ablation' else {kk:vv for kk,vv in v.items() if kk not in ('coordinate_sample','counterexample_orders')}) for k,v in result.items() if k!='limits'},indent=2))
+else:
+ raise SystemExit('usage: model_probes.py [--check]')

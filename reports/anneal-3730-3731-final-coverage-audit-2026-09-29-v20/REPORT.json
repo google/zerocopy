@@ -1,0 +1,29 @@
+{
+  "topics": [
+    "anneal/coverage",
+    "anneal/generation-publication",
+    "anneal/real-generated-model",
+    "filesystem/atomic-publication"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy reference and issue scope",
+      "identity": {
+        "repository": "google/zerocopy",
+        "reference_revision": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+        "issues": "#3730 and #3731",
+        "issue_snapshot": "support/issue-scope-snapshot.json",
+        "issue_hashes": "support/live-issue-hashes.json"
+      }
+    },
+    {
+      "name": "Disposable real-generation cooperative lease and GC experiment",
+      "identity": {
+        "package": "anneal-3731-real-generation-gc-lease-v4-30-0-rc2",
+        "evidence": "support/new-package-review-v20.csv",
+        "boundary": "fixture-owned advisory lease and GC with retained real Charon/Aeneas/Lean A/B artifact families"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

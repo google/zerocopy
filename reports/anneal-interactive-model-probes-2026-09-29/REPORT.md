@@ -4,7 +4,7 @@
 
 Three small experiments support distinct contracts: URI/path or document-version identity alone collides across changed source/import state; source-map edits must reject synthetic gaps and compare the host/projection generation before applying; and replacing a mutable generation pointer does not make a multi-file read coherent unless the consumer pins one immutable generation directory. A forced pointer to an incomplete stage exposes a missing file. These are bounded model/filesystem results, not proof that a specific Anneal implementation follows or violates the contracts.
 
-The Python harness checked ten **distinct** single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`. An independent re-review replaced one duplicated worker-epoch case with a symbolic LLBC-identity change; the other model and filesystem controls are unchanged.
+The Python harness checked ten **distinct** single-field identity mutations, an explicit A→B→A content-recurrence example, 2,092 valid Unicode scalar boundaries, all 120 orderings of a five-event two-generation schedule, and a controlled APFS pointer-swap interleaving. Raw outcomes, replay scripts, and a read-only retained-result checker are included under `support/`. Independent re-reviews replaced one duplicated worker-epoch case with a symbolic LLBC-identity change, separated the three stale-patch controls, and added a fresh model replay to the checker. The filesystem controls are unchanged.
 
 ## Applicability
 
@@ -28,7 +28,7 @@ Basis: **execution** of `support/model_probes.py`; **derived** interpretation of
 
 Across 59 deterministic strings, the harness checked 2,092 scalar boundaries. UTF-8 byte prefixes decoded back to the original scalar prefix, and UTF-16 code-unit counts matched the expected prefix length. Supplementary characters occupy two UTF-16 units; combining marks remain separate scalar/code-unit positions. This validates the conversion arithmetic used by the fixture, not any editor's coordinate negotiation or a Rust parser's annotation spans.
 
-The piecewise fixture mapped authored segments and rejected positions in synthetic gaps. Its version/hash compare-and-swap control rejects a patch after either the host or projection changes, even if a stored offset still maps to a plausible location. The exact projection parser, completion edits, diagnostics, and formatter behavior remain untested.
+The piecewise fixture mapped authored segments and rejected positions in synthetic gaps. Its version/hash compare-and-swap control separately rejects a patch after a host digest, projection digest, or document version change, even if a stored offset still maps to a plausible location. The exact projection parser, completion edits, diagnostics, and formatter behavior remain untested.
 
 Basis: **execution** of `support/model_probes.py`; **derived** for the safe-patch rule.
 
@@ -55,10 +55,10 @@ Basis: **execution** on APFS using `support/publication_probe.py`; broader Lake/
 - `support/publication_probe.py` — controlled APFS generation-pointer swap.
 - `support/publication-fixture/` — disposable A/B generations and unpublished partial C generation.
 - `support/publication-fixture/publication-probe.json` — per-file hashes and observed interleaving.
-- `support/check.py` — read-only checks of the retained counts, A→B→A sequence, file hashes, final pointer, and forced-incomplete negative control.
+- `support/check.py` — read-only fresh model replay and checks of retained counts, A→B→A sequence, file hashes, final pointer, and forced-incomplete negative control.
 
 Issue alignment: #3730 A01–A08, B02–B05, K01, F15, N01/N02/N07/N09/N12, and #3731 I011, I025–I032, I045, I051–I053, I097, I133–I135, I145, and I151 are only partially informed by these probes. The complete per-investigation ledger is in the companion #3730/#3731 coverage report.
 
 ## Revalidation
 
-Run `python3 support/check.py` from the package root to validate the retained result without changing the fixture. To regenerate it, run `python3 support/model_probes.py` and `python3 support/publication_probe.py`; the latter deletes and recreates only its own `support/publication-fixture/` contents. The filesystem probe should be repeated on each supported filesystem before generalizing rename or pointer behavior. Replace the hand-authored segments with a real parser/projection implementation before treating the coordinate results as product evidence.
+Run `python3 support/check.py` from the package root to validate the retained result without changing the fixture; it also reruns the finite model in read-only check mode. To regenerate it, run `python3 support/model_probes.py` and `python3 support/publication_probe.py`; the latter deletes and recreates only its own `support/publication-fixture/` contents. The filesystem probe should be repeated on each supported filesystem before generalizing rename or pointer behavior. Replace the hand-authored segments with a real parser/projection implementation before treating the coordinate results as product evidence.

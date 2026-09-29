@@ -36,6 +36,14 @@ for kind in ('old_worker_before_change', 'new_worker_same_server_after_dependenc
 
 assert data['old_worker_goal_before']['result'] == {'goals': [], 'rendered': 'no goals'}
 assert data['old_worker_goal_after']['result'] == {'goals': [], 'rendered': 'no goals'}
+late_old = by_kind('old_worker_after_new_worker')
+if transcript.name == 'simultaneous-transcript.json':
+    assert len(late_old) == 1
+if late_old:
+    assert len(late_old) == 1
+    assert data['old_worker_goal_after_new_worker']['result'] == {'goals': [], 'rendered': 'no goals'}
+    assert late_old[0]['goal'] == data['old_worker_goal_after_new_worker']
+    assert late_old[0]['source_sha256'] == proof_hash
 for key in ('new_worker_goal_same_server', 'reopened_worker_goal_same_server'):
     assert data[key]['result']['goals'] == ['⊢ sharedValue = 3']
 assert data['fresh_batch_returncode'] == 1
@@ -47,6 +55,9 @@ assert by_kind('server_exit')[0]['returncode'] == 0
 assert index('old_worker_before_change') < index('artifact_changed') < index('old_worker_after_dependency_rebuild')
 assert index('old_worker_after_dependency_rebuild') < index('new_worker_same_server_after_dependency_rebuild')
 assert index('new_worker_same_server_after_dependency_rebuild') < index('closed_reopened_worker_after_dependency_rebuild')
+if late_old:
+    assert index('new_worker_same_server_after_dependency_rebuild') < index('old_worker_after_new_worker')
+    assert index('old_worker_after_new_worker') < index('closed_reopened_worker_after_dependency_rebuild')
 assert index('closed_reopened_worker_after_dependency_rebuild') < index('fresh_batch_after_dependency_rebuild')
 assert any(e.get('message', {}).get('method') == 'workspace/didChangeWatchedFiles'
            for e in events[index('artifact_changed'):index('old_worker_after_dependency_rebuild')])

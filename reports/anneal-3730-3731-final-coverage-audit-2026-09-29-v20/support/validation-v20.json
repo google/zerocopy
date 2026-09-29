@@ -1,0 +1,70 @@
+{
+  "generated_sha256": {
+    "3730-crosswalk-final-v20.csv": "9e70de51293da14e22c3768eb7f90da98ea7beceb06c229d64b2729cd9b3b5e0",
+    "investigation-final-v20.csv": "0f6521b769ee4c11f4163bdbac9c382ce05164cd982fa7722668e462ac3de762",
+    "new-file-inventory-v20.csv": "d03ec865fc1ba5e9b83b96ae97f86d93e0ee177a5ccad1a5f314e60416d3f54e",
+    "new-package-review-v20.csv": "94c41681100aa33ef60cf0322b3b6abf58700409571ae295bbbfedd2cddcc126",
+    "unrun-conditional-inputs-v20.csv": "c7b77e18c232b747e11b3d2a6469123c9b803ebd7ad356fa27b2a7c67038a014"
+  },
+  "input_sha256": {
+    "audit-snapshot.json": "b9b7a2c6ed7acb1ca1850652f2e5b45d7f10ed08eb9542e68053dfccc993bc8d",
+    "issue-scope-snapshot.json": "5c261d44e788ac96a0cb2d347752d01bbc51ffb03697a6a08a76e02f55469a6d",
+    "live-issue-hashes.json": "535574e2a1008a04e6e5fc1086aaca4577ed78ab6c48291568e59038c546feae",
+    "resource-recheck.json": "28c4b155520c9c5d6085c9b4f6d56ee75a5d11150245c52ca238749d88c27719",
+    "row-challenge-v20.json": "f40c3bfe9eac33415f373e7493e4da9d135f9dcbbdeb32dcb7f7df313799f077"
+  },
+  "issue_3730_heading_count": 174,
+  "issue_3731_id_count": 159,
+  "issue_fetched_at_utc": "2026-09-29T18:05:22.845453+00:00",
+  "issue_hashes": {
+    "3730": {
+      "body_sha256": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+      "comments": [
+        {
+          "body_sha256": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+          "id": 5884380373,
+          "updated_at": "2026-09-29T05:39:32Z"
+        }
+      ],
+      "number": 3730,
+      "state": "closed",
+      "updated_at": "2026-09-29T05:40:03Z"
+    },
+    "3731": {
+      "body_sha256": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+      "comments": [
+        {
+          "body_sha256": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488",
+          "id": 5884299718,
+          "updated_at": "2026-09-29T05:32:10Z"
+        }
+      ],
+      "number": 3731,
+      "state": "open",
+      "updated_at": "2026-09-29T05:39:11Z"
+    }
+  },
+  "new_complete_ids": [],
+  "new_distinct_cached_only_experiment_count": 0,
+  "new_package_file_count": 24,
+  "new_packages": [
+    "anneal-3731-real-generation-gc-lease-v4-30-0-rc2"
+  ],
+  "reference_commit": "df4f6d6c84f936489c01edfa5ff19b2ee005f4d0",
+  "row_challenge_count": 333,
+  "status_counts": {
+    "investigations": {
+      "complete": 4,
+      "conditional": 3,
+      "not-run": 1,
+      "partial": 151
+    },
+    "suggestions": {
+      "complete": 4,
+      "conditional": 4,
+      "not-run": 5,
+      "partial": 161
+    }
+  },
+  "unrun_conditional_count": 13
+}
