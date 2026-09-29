@@ -436,7 +436,23 @@ pub struct SizeError<Src, Dst: ?Sized> {
 }
 
 impl<Src, Dst: ?Sized> SizeError<Src, Dst> {
-    pub(crate) fn new(src: Src) -> Self {
+    /// Constructs a new `SizeError`.
+    ///
+    /// This can be used to propagate a size error out of code which knows,
+    /// out-of-band, that a conversion would fail due to an incorrect source
+    /// size, without needing to actually perform a failing conversion just to
+    /// obtain the error.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::error::{ConvertError, SizeError};
+    ///
+    /// let err: SizeError<(), u32> = SizeError::new(());
+    /// let err: ConvertError<(), SizeError<(), u32>, ()> = err.into();
+    /// ```
+    #[inline]
+    pub fn new(src: Src) -> Self {
         Self { src, _dst: SendSyncPhantomData::default() }
     }
 
@@ -595,7 +611,24 @@ pub struct ValidityError<Src, Dst: ?Sized + TryFromBytes> {
 }
 
 impl<Src, Dst: ?Sized + TryFromBytes> ValidityError<Src, Dst> {
-    pub(crate) fn new(src: Src) -> Self {
+    /// Constructs a new `ValidityError`.
+    ///
+    /// This can be used to propagate a validity error out of code which
+    /// knows, out-of-band, that a conversion would fail due to invalid
+    /// source data, without needing to actually perform a failing conversion
+    /// just to obtain the error.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use zerocopy::error::{ConvertError, ValidityError};
+    /// use zerocopy::FromBytes;
+    ///
+    /// let err: ValidityError<(), bool> = ValidityError::new(());
+    /// let err: ConvertError<(), (), ValidityError<(), bool>> = err.into();
+    /// ```
+    #[inline]
+    pub fn new(src: Src) -> Self {
         Self { src, _dst: SendSyncPhantomData::default() }
     }
 
