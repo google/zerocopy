@@ -1,0 +1,15 @@
+{
+  "topics": [
+    "anneal/issue-3730",
+    "anneal/issue-3731",
+    "anneal/research-coverage",
+    "lean/language-server",
+    "lean/lake"
+  ],
+  "subjects": [
+    {"name": "google/zerocopy issue #3730", "identity": {"repository": "google/zerocopy", "issue": "3730"}},
+    {"name": "google/zerocopy issue #3731", "identity": {"repository": "google/zerocopy", "issue": "3731"}},
+    {"name": "google/zerocopy reference", "identity": {"repository": "google/zerocopy", "commit": "c7abd976962801c3a3a1796c072a3530b3a78921"}}
+  ],
+  "observed_at": "2026-09-29"
+}

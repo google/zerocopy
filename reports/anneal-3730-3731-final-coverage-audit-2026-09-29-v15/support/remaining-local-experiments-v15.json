@@ -1,0 +1,25 @@
+{
+  "snapshot_utc": "2026-09-29T15:45:57.030574+00:00",
+  "focused_new_component_suites": [
+    "anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29",
+    "anneal-3730-lake-frozen-index-collision-2026-09-29",
+    "anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2",
+    "anneal-3730-prefix-edit-cancellation-v4-30-0-rc2"
+  ],
+  "focused_challenge": "See candidate-review-v15.csv for 21 named rows. I033/I047 direct Lean/Lake residuals beyond the eight-proof report duplicate prior corpus; I037/I056 remaining product mapping/invalidation requires Anneal implementation. I090 frozen mismatch, I043 unsaved nested errors and I036 prefix cancellation yielded distinct local controls.",
+  "explicit_not_run": [
+    "I072 existing real Lean MCP adapter absent",
+    "F03 later-than-4.30 compatible Lean/Lake binary absent",
+    "F04 built actual Anneal omnibus archive absent",
+    "G03 existing current-wire MCP adapter/client interoperability absent",
+    "G15 producer-authenticated navigation and agent trial absent",
+    "L09 real adapter integrated with Anneal workspace absent"
+  ],
+  "not_exhaustive": "No claim that all 153 partial I rows or 161 partial suggestion rows are exhausted by local component experiments. Resource-gated R48 two-worker full chain and privileged syscall read/transient-write provenance remain unexecuted.",
+  "product_human_platform_gates": [
+    "Anneal V2 generated workspace, Rust editor, exact-revision broker and sound invalidation implementation",
+    "actual prepared archive and matching consumer",
+    "MCP adapter and independent clients",
+    "human study and independent platform validation"
+  ]
+}

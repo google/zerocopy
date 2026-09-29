@@ -1,0 +1,1916 @@
+[
+  {
+    "seq": 0,
+    "ms": 28.7,
+    "kind": "subject",
+    "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "free_disk_bytes": 52645982208,
+    "source_sha256": {
+      "1": "bcb0a47742336c3651b4423d9694cbf53780ca82ab22e9aa98c29578dd1f8f0d",
+      "2": "e06274619013eed0246033eb8bfa916d3989d8ab7caa6f324365a2bd2c5603e5",
+      "3": "775aacc36f395630fae95cbb9c5be0b82155aa056e411dbf7ce8386d1053862a"
+    }
+  },
+  {
+    "seq": 1,
+    "ms": 656.4,
+    "kind": "batch",
+    "version": 1,
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "markers": [
+      "A",
+      "B1",
+      "C1"
+    ]
+  },
+  {
+    "seq": 2,
+    "ms": 1277.7,
+    "kind": "batch",
+    "version": 3,
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "markers": [
+      "A",
+      "B1",
+      "C1",
+      "A",
+      "B3",
+      "C3"
+    ]
+  },
+  {
+    "seq": 3,
+    "ms": 1300.1,
+    "kind": "server_start",
+    "pid": 2832
+  },
+  {
+    "seq": 4,
+    "ms": 1300.2,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 2828,
+        "rootUri": "$WORK_URI",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 5,
+    "ms": 1337.5,
+    "kind": "recv",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "ms": 1337.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 7,
+    "ms": 1337.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\ndef generated : Nat := 1\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B1\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C1\\n\")\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 8,
+    "ms": 1337.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Active.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "ms": 1361.2,
+    "kind": "recv",
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "ms": 1361.2,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 11,
+    "ms": 1373.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 12,
+    "ms": 1408.3,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Active.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "ms": 1588.3,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "ms": 1611.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Active.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "ms": 1908.3,
+    "kind": "recv",
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 16,
+    "ms": 2007.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 22,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 17,
+    "ms": 2019.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "ms": 2045.5,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 1
+              },
+              "start": {
+                "character": 0,
+                "line": 1
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "ms": 2060.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "ms": 2071.4,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 44,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "ms": 2082.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 22,
+    "ms": 2094.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 23,
+    "ms": 2109.6,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 24,
+                "line": 6
+              },
+              "start": {
+                "character": 0,
+                "line": 6
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "ms": 2121.4,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 10
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "ms": 2132.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "ms": 2144.0,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "ms": 2161.6,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 43,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "ms": 2172.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 43,
+                "line": 11
+              },
+              "start": {
+                "character": 37,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "ms": 2184.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 43,
+                "line": 11
+              },
+              "start": {
+                "character": 37,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "ms": 2195.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 43,
+                "line": 11
+              },
+              "start": {
+                "character": 37,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "ms": 2206.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 43,
+                "line": 11
+              },
+              "start": {
+                "character": 37,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "ms": 2217.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "ms": 2229.7,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 34,
+    "ms": 2240.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Active.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 35,
+    "ms": 2251.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 11
+              },
+              "start": {
+                "character": 0,
+                "line": 11
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "ms": 2262.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 45,
+                "line": 15
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "ms": 2285.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "ms": 2298.0,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "ms": 2308.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "ms": 2319.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 12
+              },
+              "start": {
+                "character": 0,
+                "line": 12
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 16
+              },
+              "start": {
+                "character": 0,
+                "line": 16
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "ms": 2330.9,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "ms": 2342.1,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "ms": 2353.0,
+    "kind": "recv",
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 44,
+    "ms": 2353.2,
+    "kind": "ready",
+    "version": 1,
+    "response": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "markers": [
+      "A",
+      "B1",
+      "C1"
+    ]
+  },
+  {
+    "seq": 45,
+    "ms": 2353.3,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\ndef generated : Nat := 2\nrun_cmd do\n  liftIO <| IO.FS.writeFile \"gate.entered\" \"entered\"\n  while !(← (System.FilePath.mk \"gate.release\").pathExists) do\n    liftIO <| IO.sleep 10\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B2\\n\")\ntheorem target : generated = 1 := by decide\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C2\\n\")\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "ms": 2353.3,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Active.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "ms": 2380.5,
+    "kind": "gate_entered",
+    "markers": [
+      "A",
+      "B1",
+      "C1"
+    ],
+    "gate_sha256": "e9b72a02344d78edf0dde7d94ebb8e07ddd699d602634019e0e842289c921a1e"
+  },
+  {
+    "seq": 48,
+    "ms": 2380.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\nopen Lean Elab Command\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"A\\n\")\ndef generated : Nat := 3\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"B3\\n\")\ntheorem target : generated = 3 := by decide\nrun_cmd do\n  let p := \"markers.txt\"\n  let old ← liftIO <| IO.FS.readFile p <|> pure \"\"\n  liftIO <| IO.FS.writeFile p (old ++ \"C3\\n\")\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "ms": 2380.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/cancelRequest",
+      "params": {
+        "id": 20
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "ms": 2380.6,
+    "kind": "edit_and_cancel_sent",
+    "markers": [
+      "A",
+      "B1",
+      "C1"
+    ]
+  },
+  {
+    "seq": 51,
+    "ms": 2380.8,
+    "kind": "gate_released",
+    "markers": [
+      "A",
+      "B1",
+      "C1"
+    ]
+  },
+  {
+    "seq": 52,
+    "ms": 2380.8,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$WORK_URI/Active.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "ms": 2437.0,
+    "kind": "recv",
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 54,
+    "ms": 2585.2,
+    "kind": "recv",
+    "message": {
+      "error": {
+        "code": -32800,
+        "message": ""
+      },
+      "id": 20,
+      "jsonrpc": "2.0"
+    }
+  },
+  {
+    "seq": 55,
+    "ms": 2607.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 56,
+    "ms": 2618.8,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "ms": 2632.5,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Active.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "ms": 2643.5,
+    "kind": "recv",
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 59,
+    "ms": 2643.7,
+    "kind": "wait_replies",
+    "responses": {
+      "20": {
+        "error": {
+          "code": -32800,
+          "message": ""
+        },
+        "id": 20,
+        "jsonrpc": "2.0"
+      },
+      "21": {
+        "id": 21,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    "pending": [],
+    "markers": [
+      "A",
+      "B1",
+      "C1",
+      "B3",
+      "C3"
+    ]
+  },
+  {
+    "seq": 60,
+    "ms": 2643.7,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$WORK_URI/Active.lean"
+        },
+        "position": {
+          "line": 11,
+          "character": 37
+        }
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "ms": 2666.4,
+    "kind": "recv",
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ generated = 3"
+        ],
+        "rendered": "```lean\n⊢ generated = 3\n```"
+      }
+    }
+  },
+  {
+    "seq": 62,
+    "ms": 2666.6,
+    "kind": "final_goal",
+    "position": {
+      "line": 11,
+      "character": 37
+    },
+    "response": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ generated = 3"
+        ],
+        "rendered": "```lean\n⊢ generated = 3\n```"
+      }
+    },
+    "markers": [
+      "A",
+      "B1",
+      "C1",
+      "B3",
+      "C3"
+    ]
+  },
+  {
+    "seq": 63,
+    "ms": 2666.6,
+    "kind": "completed",
+    "markers": [
+      "A",
+      "B1",
+      "C1",
+      "B3",
+      "C3"
+    ]
+  },
+  {
+    "seq": 64,
+    "ms": 2666.8,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 65,
+    "ms": 2692.2,
+    "kind": "recv",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$WORK_URI/Active.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 66,
+    "ms": 2714.5,
+    "kind": "recv",
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 67,
+    "ms": 2714.5,
+    "kind": "send",
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 68,
+    "ms": 2719.2,
+    "kind": "server_stop",
+    "returncode": 0,
+    "stderr": "",
+    "peak_sampled_rss_bytes": 1388740608,
+    "rss_cap_bytes": 1500000000
+  }
+]

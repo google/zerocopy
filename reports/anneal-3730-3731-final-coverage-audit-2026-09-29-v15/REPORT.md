@@ -1,0 +1,32 @@
+# #3730/#3731 coverage audit v15: live import generations and remaining local probes
+
+## Snapshot and method
+
+This audit uses a fresh public [#3730](https://github.com/google/zerocopy/issues/3730) and [#3731](https://github.com/google/zerocopy/issues/3731) body/comment snapshot at **2026-09-29T15:45:57Z** and upstream `reference` commit `c7abd976962801c3a3a1796c072a3530b3a78921`. All four body/comment SHA-256 values in [`support/validation-v15.json`](support/validation-v15.json) match v14; #3730 remains closed and #3731 open. The offline builder rechecks all 159 distinct I001–I159 headings, all 174 #3730 suggestions and their crosswalk destinations, validates every substantive #3730 report package with `reference._load_report`, and hashes each file in the newly accounted packages.
+
+The [investigation ledger](support/investigation-final-v15.csv) and [suggestion crosswalk](support/3730-crosswalk-final-v15.csv) retain requested scope, prior and new evidence, status, actual procedure, boundary and a specific remaining delta **for every row**. The [new package review](support/new-package-review-v15.csv) and [file inventory](support/new-file-inventory-v15.csv) give exact package methods and hashes. The [21-row candidate review](support/candidate-review-v15.csv) revisits the v14 candidates plus I036/I037/I043, stating what the corpus already covered, available host scope, a new probe or no-op reason, and the residual.
+
+| Scope | Complete | Partial | Not run | Conditional |
+| --- | ---: | ---: | ---: | ---: |
+| #3731 investigations, 159 | 2 | 153 | 1 | 3 |
+| #3730 suggestions, 174 | 4 | 161 | 5 | 4 |
+
+The narrowly complete rows remain I046/I049 and C03/C04/C13/N11. I072 remains the sole not-run investigation; F03, F04, G03, G15 and L09 remain not-run suggestions. No row moves from v14: the added direct Lean/Lake observations narrow partial component evidence without establishing Anneal V2 product behavior. The corpus is **not 100% complete**.
+
+## New evidence and exact limits
+
+The [eight-proof live stale-oracle fanout](../anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29/REPORT.md) extends I056/C10 and I047/A05. Eight unchanged proof files imported one tiny Model→Helper graph. Fresh batch accepted model 8 and rejected model 7. Four bounded two-proof waves then rebuilt both OLeans while old direct or `lake serve` workers stayed open. All eight old workers still returned empty solved goals after identical version-2 text and a completed wait; fresh workers returned a goal and error. The old Lake workers also warned that imports were out of date. This is a negative control for accepting an old worker's goal alone. It is a manually materialized Lean graph, not an Anneal generated workspace, eight simultaneous workers, a historical broker or representative retention economics.
+
+The [frozen Lake dependency-index control](../anneal-3730-lake-frozen-index-collision-2026-09-29/REPORT.md) extends I090/F01/F05. A tiny producer prepared at index 1 was reused by a frozen matching consumer without producer inventory changes. A frozen consumer assigning the same producer index 2 failed on a producer compiled-configuration lock; after thaw, the same consumer succeeded and rewrote its configuration OLean/trace while the module replayed. The first denied lock does not identify every write Lake would attempt. The control does not derive a complete multi-identity preparation key or test the actual Anneal archive.
+
+The [nested unsaved recovery grid](../anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2/REPORT.md) extends I043/C02. One pinned direct Lean server processed four versions of one URI: valid, nested syntax error, unknown nested tactic, and recovery to valid text, while disk bytes stayed valid. Fresh batch controls and 28 exact goal positions show that a syntax failure yielded `null` at the failed nested location while an unknown tactic yielded an unresolved goal; a later theorem's goal survived both errors. This is one direct file, not rich RPC, macro-expanded/generated proof, projection mapping or an Anneal adapter.
+
+The [prefix-edit cancellation control](../anneal-3730-prefix-edit-cancellation-v4-30-0-rc2/REPORT.md) extends I036. A deterministic `run_cmd` gate held a version-2 early generated-definition edit while the client sent a version-3 edit and canceled the pending version-2 wait. After release, the older wait returned `-32800`, the new wait completed with `⊢ generated = 3`, and the marker ledger omitted the stale version-2 suffix. This is one bounded direct-Lean synthetic prefix; the effects of superseding edit and explicit cancellation were not separated because both preceded release, and no Anneal generator was exercised.
+
+The separate document/history review found no additional distinct cached-only control for I033/H01–H04 or I047/A05–A06: prior reports already include direct/Lake URI forms, setup-file physical-file behavior, separate historical URIs, close/reopen/fresh recomputation, old-version protocol races, retention tiers and the new live stale-oracle waves. Their remaining requirements are an actual Anneal projected editor and an implemented exact-revision broker with expiry, restart and comparable cost measurements. I037 requires Anneal's actual wrapper and Rust-subject/proposition mapping. I056 still requires sound product invalidation on generated graphs; another tiny Lean graph would not answer that.
+
+## Rebuild and remaining work
+
+Run `python3 reports/anneal-3730-3731-final-coverage-audit-2026-09-29-v15/support/build_audit.py` from this checkout. It regenerates LF-only CSVs deterministically from the frozen issue snapshot, v14 ledgers and current package evidence; it does not fetch dependencies, edit prior reports or update `CATALOG.json`. All four new offline checkers, all five `reference._load_report` calls, the 112-package audit builder, a second byte-identical build of the ten generated files, and a fresh live issue-hash check passed before publication.
+
+The exact remaining deltas are in the ledgers and [`support/remaining-local-experiments-v15.json`](support/remaining-local-experiments-v15.json). They include a real Anneal workspace/editor and historical query service; a content-identified prepared archive; a later compatible Lake release; an existing MCP adapter/client; human and other-platform work; and resource-gated multi-worker full-chain cells. The focused local probes here do not convert those gaps to complete status.

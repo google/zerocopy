@@ -1,0 +1,3238 @@
+[
+  {
+    "seq": 0,
+    "kind": "subject",
+    "ms": 55.2,
+    "version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+    "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "disk_sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28"
+  },
+  {
+    "seq": 1,
+    "kind": "batch",
+    "ms": 646.1,
+    "version": 1,
+    "label": "valid",
+    "sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "seq": 2,
+    "kind": "batch",
+    "ms": 1230.7,
+    "version": 2,
+    "label": "syntax",
+    "sha256": "4ab2703df8c5c52443893dc73d527fa4ead1b512b5b7b357fe6bccc7bbc70a3a",
+    "returncode": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"unexpected token ')'; expected '{' or tactic\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"$ROOT/variants/2-syntax.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":27,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":27,\"line\":4},\"fileName\":\"$ROOT/variants/2-syntax.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":25,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\nhz : n + 0 = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":27,\"line\":4},\"fileName\":\"$ROOT/variants/2-syntax.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":52,\"line\":3},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 3,
+    "kind": "batch",
+    "ms": 1817.1,
+    "version": 3,
+    "label": "unknown",
+    "sha256": "1508ceb8aa625f0ecd94353561385a32ef1738a852bd7eddc8440f29c0ca9056",
+    "returncode": 1,
+    "stdout": "{\"caption\":\"\",\"data\":\"unknown tactic\",\"endPos\":null,\"fileName\":\"$ROOT/variants/3-unknown.lean\",\"isSilent\":false,\"keepFullRange\":true,\"kind\":\"[anonymous]\",\"pos\":{\"column\":5,\"line\":5},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":24,\"line\":5},\"fileName\":\"$ROOT/variants/3-unknown.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":25,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"unsolved goals\\nn : Nat\\nh : n = 0\\nhz : n + 0 = 0\\n⊢ n + 0 = 0\",\"endPos\":{\"column\":24,\"line\":5},\"fileName\":\"$ROOT/variants/3-unknown.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"Tactic.unsolvedGoals\",\"pos\":{\"column\":52,\"line\":3},\"severity\":\"error\"}\n",
+    "stderr": ""
+  },
+  {
+    "seq": 4,
+    "kind": "start",
+    "ms": 1836.9,
+    "pid": 2543
+  },
+  {
+    "seq": 5,
+    "kind": "send",
+    "ms": 1837.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "method": "initialize",
+      "params": {
+        "processId": 2537,
+        "rootUri": "$URI_ROOT",
+        "capabilities": {},
+        "initializationOptions": {
+          "hasWidgets": false
+        }
+      }
+    }
+  },
+  {
+    "seq": 6,
+    "kind": "recv",
+    "ms": 1862.0,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "result": {
+        "capabilities": {
+          "callHierarchyProvider": true,
+          "codeActionProvider": {
+            "codeActionKinds": [
+              "quickfix",
+              "refactor",
+              "source.organizeImports"
+            ],
+            "resolveProvider": true,
+            "workDoneProgress": false
+          },
+          "colorProvider": {
+            "workDoneProgress": false
+          },
+          "completionProvider": {
+            "resolveProvider": true,
+            "triggerCharacters": [
+              "."
+            ]
+          },
+          "declarationProvider": true,
+          "definitionProvider": true,
+          "documentHighlightProvider": true,
+          "documentSymbolProvider": true,
+          "experimental": {
+            "moduleHierarchyProvider": {},
+            "rpcProvider": {
+              "highlightMatchesProvider": {},
+              "rpcWireFormat": "v1"
+            }
+          },
+          "foldingRangeProvider": true,
+          "hoverProvider": true,
+          "inlayHintProvider": {
+            "resolveProvider": false,
+            "workDoneProgress": false
+          },
+          "referencesProvider": true,
+          "renameProvider": {
+            "prepareProvider": true
+          },
+          "semanticTokensProvider": {
+            "full": true,
+            "legend": {
+              "tokenModifiers": [
+                "declaration",
+                "definition",
+                "readonly",
+                "static",
+                "deprecated",
+                "abstract",
+                "async",
+                "modification",
+                "documentation",
+                "defaultLibrary"
+              ],
+              "tokenTypes": [
+                "keyword",
+                "variable",
+                "property",
+                "function",
+                "namespace",
+                "type",
+                "class",
+                "enum",
+                "interface",
+                "struct",
+                "typeParameter",
+                "parameter",
+                "enumMember",
+                "event",
+                "method",
+                "macro",
+                "modifier",
+                "comment",
+                "string",
+                "number",
+                "regexp",
+                "operator",
+                "decorator",
+                "leanSorryLike"
+              ]
+            },
+            "range": true
+          },
+          "signatureHelpProvider": {
+            "triggerCharacters": [
+              " "
+            ],
+            "workDoneProgress": false
+          },
+          "textDocumentSync": {
+            "change": 2,
+            "openClose": true,
+            "save": {
+              "includeText": true
+            },
+            "willSave": false,
+            "willSaveWaitUntil": false
+          },
+          "typeDefinitionProvider": true,
+          "workspaceSymbolProvider": true
+        },
+        "serverInfo": {
+          "name": "Lean 4 Server",
+          "version": "0.3.0"
+        }
+      }
+    }
+  },
+  {
+    "seq": 7,
+    "kind": "send",
+    "ms": 1862.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "initialized",
+      "params": {}
+    }
+  },
+  {
+    "seq": 8,
+    "kind": "send",
+    "ms": 1862.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didOpen",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "languageId": "lean",
+          "version": 1,
+          "text": "import Lean\n\ntheorem nested (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  have hz : n + 0 = 0 := by\n    simpa using h\n  exact hz\n\ntheorem tail : True := by\n  trivial\n"
+        }
+      }
+    }
+  },
+  {
+    "seq": 9,
+    "kind": "send",
+    "ms": 1862.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 10,
+    "kind": "recv",
+    "ms": 1862.2,
+    "message": {
+      "id": "register_lean_watcher",
+      "jsonrpc": "2.0",
+      "method": "client/registerCapability",
+      "params": {
+        "registrations": [
+          {
+            "id": "lean_watcher",
+            "method": "workspace/didChangeWatchedFiles",
+            "registerOptions": {
+              "watchers": [
+                {
+                  "globPattern": "**/*.lean"
+                },
+                {
+                  "globPattern": "**/*.ilean"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 11,
+    "kind": "send",
+    "ms": 1862.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": "register_lean_watcher",
+      "result": null
+    }
+  },
+  {
+    "seq": 12,
+    "kind": "recv",
+    "ms": 1862.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 13,
+    "kind": "recv",
+    "ms": 1918.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 14,
+    "kind": "recv",
+    "ms": 2099.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 0
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 15,
+    "kind": "recv",
+    "ms": 2099.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 16,
+    "kind": "recv",
+    "ms": 2419.5,
+    "message": {
+      "id": 0,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 17,
+    "kind": "recv",
+    "ms": 2492.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 18,
+    "kind": "recv",
+    "ms": 2492.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 19,
+    "kind": "recv",
+    "ms": 2494.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 20,
+    "kind": "recv",
+    "ms": 2494.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 8
+              },
+              "start": {
+                "character": 2,
+                "line": 8
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 21,
+    "kind": "recv",
+    "ms": 2494.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 8
+              },
+              "start": {
+                "character": 2,
+                "line": 8
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 22,
+    "kind": "recv",
+    "ms": 2494.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 8
+              },
+              "start": {
+                "character": 2,
+                "line": 8
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 23,
+    "kind": "recv",
+    "ms": 2495.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 9,
+                "line": 8
+              },
+              "start": {
+                "character": 2,
+                "line": 8
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 9
+              },
+              "start": {
+                "character": 0,
+                "line": 9
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 24,
+    "kind": "recv",
+    "ms": 2495.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 2,
+                "line": 3
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 25,
+    "kind": "recv",
+    "ms": 2495.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 17,
+                "line": 4
+              },
+              "start": {
+                "character": 4,
+                "line": 4
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 10,
+                "line": 5
+              },
+              "start": {
+                "character": 2,
+                "line": 5
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 26,
+    "kind": "recv",
+    "ms": 2497.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 27,
+    "kind": "recv",
+    "ms": 2497.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          },
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 7
+              },
+              "start": {
+                "character": 0,
+                "line": 7
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 28,
+    "kind": "recv",
+    "ms": 2497.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 29,
+    "kind": "recv",
+    "ms": 2497.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 1
+      }
+    }
+  },
+  {
+    "seq": 30,
+    "kind": "recv",
+    "ms": 2497.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [
+          {
+            "kind": 1,
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 2
+              },
+              "start": {
+                "character": 0,
+                "line": 2
+              }
+            }
+          }
+        ],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 31,
+    "kind": "recv",
+    "ms": 2497.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 32,
+    "kind": "recv",
+    "ms": 2497.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  {
+    "seq": 33,
+    "kind": "recv",
+    "ms": 2498.1,
+    "message": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 34,
+    "kind": "ready",
+    "ms": 2498.1,
+    "version": 1,
+    "label": "valid",
+    "sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+    "response": {
+      "id": 10,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 35,
+    "kind": "send",
+    "ms": 2498.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 36,
+    "kind": "recv",
+    "ms": 2499.2,
+    "message": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 37,
+    "kind": "goal",
+    "ms": 2499.2,
+    "version": 1,
+    "label": "valid",
+    "name": "nested_before",
+    "position": {
+      "line": 4,
+      "character": 4
+    },
+    "response": {
+      "id": 11,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 38,
+    "kind": "send",
+    "ms": 2499.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 6
+        }
+      }
+    }
+  },
+  {
+    "seq": 39,
+    "kind": "recv",
+    "ms": 2499.6,
+    "message": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 40,
+    "kind": "goal",
+    "ms": 2499.6,
+    "version": 1,
+    "label": "valid",
+    "name": "nested_mid",
+    "position": {
+      "line": 4,
+      "character": 6
+    },
+    "response": {
+      "id": 12,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 41,
+    "kind": "send",
+    "ms": 2499.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 17
+        }
+      }
+    }
+  },
+  {
+    "seq": 42,
+    "kind": "recv",
+    "ms": 2499.8,
+    "message": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 43,
+    "kind": "goal",
+    "ms": 2499.8,
+    "version": 1,
+    "label": "valid",
+    "name": "nested_end",
+    "position": {
+      "line": 4,
+      "character": 17
+    },
+    "response": {
+      "id": 13,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 44,
+    "kind": "send",
+    "ms": 2499.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 45,
+    "kind": "recv",
+    "ms": 2500.4,
+    "message": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 46,
+    "kind": "goal",
+    "ms": 2500.4,
+    "version": 1,
+    "label": "valid",
+    "name": "outer_exact",
+    "position": {
+      "line": 5,
+      "character": 2
+    },
+    "response": {
+      "id": 14,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 47,
+    "kind": "send",
+    "ms": 2500.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 15,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 48,
+    "kind": "recv",
+    "ms": 2500.6,
+    "message": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 49,
+    "kind": "goal",
+    "ms": 2500.6,
+    "version": 1,
+    "label": "valid",
+    "name": "tail_before",
+    "position": {
+      "line": 8,
+      "character": 2
+    },
+    "response": {
+      "id": 15,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 50,
+    "kind": "send",
+    "ms": 2500.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 51,
+    "kind": "recv",
+    "ms": 2500.8,
+    "message": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 52,
+    "kind": "goal",
+    "ms": 2500.8,
+    "version": 1,
+    "label": "valid",
+    "name": "tail_after",
+    "position": {
+      "line": 8,
+      "character": 9
+    },
+    "response": {
+      "id": 16,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 53,
+    "kind": "send",
+    "ms": 2500.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 9,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 54,
+    "kind": "recv",
+    "ms": 2501.0,
+    "message": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 55,
+    "kind": "goal",
+    "ms": 2501.0,
+    "version": 1,
+    "label": "valid",
+    "name": "eof",
+    "position": {
+      "line": 9,
+      "character": 0
+    },
+    "response": {
+      "id": 17,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 56,
+    "kind": "send",
+    "ms": 2501.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 2
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\n\ntheorem nested (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  have hz : n + 0 = 0 := by\n    )\n  exact hz\n\ntheorem tail : True := by\n  trivial\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 57,
+    "kind": "send",
+    "ms": 2501.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 58,
+    "kind": "recv",
+    "ms": 2712.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 59,
+    "kind": "recv",
+    "ms": 2712.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 60,
+    "kind": "recv",
+    "ms": 2712.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 4
+              },
+              "start": {
+                "character": 27,
+                "line": 3
+              }
+            },
+            "message": "unexpected token ')'; expected '{' or tactic",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 4
+              },
+              "start": {
+                "character": 27,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 3
+              },
+              "start": {
+                "character": 25,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 27,
+                "line": 3
+              },
+              "start": {
+                "character": 25,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 27,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 2
+      }
+    }
+  },
+  {
+    "seq": 61,
+    "kind": "recv",
+    "ms": 2713.2,
+    "message": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 62,
+    "kind": "ready",
+    "ms": 2713.2,
+    "version": 2,
+    "label": "syntax",
+    "sha256": "4ab2703df8c5c52443893dc73d527fa4ead1b512b5b7b357fe6bccc7bbc70a3a",
+    "response": {
+      "id": 18,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 63,
+    "kind": "send",
+    "ms": 2713.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 64,
+    "kind": "recv",
+    "ms": 2713.5,
+    "message": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 65,
+    "kind": "goal",
+    "ms": 2713.5,
+    "version": 2,
+    "label": "syntax",
+    "name": "nested_before",
+    "position": {
+      "line": 4,
+      "character": 4
+    },
+    "response": {
+      "id": 19,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 66,
+    "kind": "send",
+    "ms": 2713.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 67,
+    "kind": "recv",
+    "ms": 2713.7,
+    "message": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 68,
+    "kind": "goal",
+    "ms": 2713.7,
+    "version": 2,
+    "label": "syntax",
+    "name": "nested_mid",
+    "position": {
+      "line": 4,
+      "character": 5
+    },
+    "response": {
+      "id": 20,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 69,
+    "kind": "send",
+    "ms": 2713.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 5
+        }
+      }
+    }
+  },
+  {
+    "seq": 70,
+    "kind": "recv",
+    "ms": 2713.8,
+    "message": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 71,
+    "kind": "goal",
+    "ms": 2713.8,
+    "version": 2,
+    "label": "syntax",
+    "name": "nested_end",
+    "position": {
+      "line": 4,
+      "character": 5
+    },
+    "response": {
+      "id": 21,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 72,
+    "kind": "send",
+    "ms": 2713.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 73,
+    "kind": "recv",
+    "ms": 2714.0,
+    "message": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 74,
+    "kind": "goal",
+    "ms": 2714.0,
+    "version": 2,
+    "label": "syntax",
+    "name": "outer_exact",
+    "position": {
+      "line": 5,
+      "character": 2
+    },
+    "response": {
+      "id": 22,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 75,
+    "kind": "send",
+    "ms": 2714.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 76,
+    "kind": "recv",
+    "ms": 2714.3,
+    "message": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 77,
+    "kind": "goal",
+    "ms": 2714.3,
+    "version": 2,
+    "label": "syntax",
+    "name": "tail_before",
+    "position": {
+      "line": 8,
+      "character": 2
+    },
+    "response": {
+      "id": 23,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 78,
+    "kind": "send",
+    "ms": 2714.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 24,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 79,
+    "kind": "recv",
+    "ms": 2714.5,
+    "message": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 80,
+    "kind": "goal",
+    "ms": 2714.5,
+    "version": 2,
+    "label": "syntax",
+    "name": "tail_after",
+    "position": {
+      "line": 8,
+      "character": 9
+    },
+    "response": {
+      "id": 24,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 81,
+    "kind": "send",
+    "ms": 2714.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 9,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 82,
+    "kind": "recv",
+    "ms": 2714.7,
+    "message": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 83,
+    "kind": "goal",
+    "ms": 2714.7,
+    "version": 2,
+    "label": "syntax",
+    "name": "eof",
+    "position": {
+      "line": 9,
+      "character": 0
+    },
+    "response": {
+      "id": 25,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 84,
+    "kind": "send",
+    "ms": 2714.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 3
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\n\ntheorem nested (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  have hz : n + 0 = 0 := by\n    this_is_not_a_tactic\n  exact hz\n\ntheorem tail : True := by\n  trivial\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 85,
+    "kind": "send",
+    "ms": 2714.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 86,
+    "kind": "recv",
+    "ms": 2921.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 87,
+    "kind": "recv",
+    "ms": 2921.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 3
+        }
+      }
+    }
+  },
+  {
+    "seq": 88,
+    "kind": "recv",
+    "ms": 2921.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [
+          {
+            "fullRange": {
+              "end": {
+                "character": 5,
+                "line": 4
+              },
+              "start": {
+                "character": 5,
+                "line": 4
+              }
+            },
+            "message": "unknown tactic",
+            "range": {
+              "end": {
+                "character": 5,
+                "line": 4
+              },
+              "start": {
+                "character": 5,
+                "line": 4
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 24,
+                "line": 4
+              },
+              "start": {
+                "character": 25,
+                "line": 3
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 4
+              },
+              "start": {
+                "character": 25,
+                "line": 3
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          },
+          {
+            "fullRange": {
+              "end": {
+                "character": 24,
+                "line": 4
+              },
+              "start": {
+                "character": 52,
+                "line": 2
+              }
+            },
+            "leanTags": [
+              1
+            ],
+            "message": "unsolved goals\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0",
+            "range": {
+              "end": {
+                "character": 0,
+                "line": 3
+              },
+              "start": {
+                "character": 52,
+                "line": 2
+              }
+            },
+            "severity": 1,
+            "source": "Lean 4"
+          }
+        ],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 3
+      }
+    }
+  },
+  {
+    "seq": 89,
+    "kind": "recv",
+    "ms": 2921.9,
+    "message": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 90,
+    "kind": "ready",
+    "ms": 2921.9,
+    "version": 3,
+    "label": "unknown",
+    "sha256": "1508ceb8aa625f0ecd94353561385a32ef1738a852bd7eddc8440f29c0ca9056",
+    "response": {
+      "id": 26,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 91,
+    "kind": "send",
+    "ms": 2921.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 92,
+    "kind": "recv",
+    "ms": 2922.4,
+    "message": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 93,
+    "kind": "goal",
+    "ms": 2922.4,
+    "version": 3,
+    "label": "unknown",
+    "name": "nested_before",
+    "position": {
+      "line": 4,
+      "character": 4
+    },
+    "response": {
+      "id": 27,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 94,
+    "kind": "send",
+    "ms": 2922.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 28,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 6
+        }
+      }
+    }
+  },
+  {
+    "seq": 95,
+    "kind": "recv",
+    "ms": 2922.8,
+    "message": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 96,
+    "kind": "goal",
+    "ms": 2922.8,
+    "version": 3,
+    "label": "unknown",
+    "name": "nested_mid",
+    "position": {
+      "line": 4,
+      "character": 6
+    },
+    "response": {
+      "id": 28,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 97,
+    "kind": "send",
+    "ms": 2922.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 29,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 24
+        }
+      }
+    }
+  },
+  {
+    "seq": 98,
+    "kind": "recv",
+    "ms": 2923.2,
+    "message": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 99,
+    "kind": "goal",
+    "ms": 2923.2,
+    "version": 3,
+    "label": "unknown",
+    "name": "nested_end",
+    "position": {
+      "line": 4,
+      "character": 24
+    },
+    "response": {
+      "id": 29,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 100,
+    "kind": "send",
+    "ms": 2923.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 30,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 101,
+    "kind": "recv",
+    "ms": 2923.3,
+    "message": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 102,
+    "kind": "goal",
+    "ms": 2923.3,
+    "version": 3,
+    "label": "unknown",
+    "name": "outer_exact",
+    "position": {
+      "line": 5,
+      "character": 2
+    },
+    "response": {
+      "id": 30,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 103,
+    "kind": "send",
+    "ms": 2923.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 31,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 104,
+    "kind": "recv",
+    "ms": 2923.5,
+    "message": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 105,
+    "kind": "goal",
+    "ms": 2923.5,
+    "version": 3,
+    "label": "unknown",
+    "name": "tail_before",
+    "position": {
+      "line": 8,
+      "character": 2
+    },
+    "response": {
+      "id": 31,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 106,
+    "kind": "send",
+    "ms": 2923.5,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 32,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 107,
+    "kind": "recv",
+    "ms": 2923.6,
+    "message": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 108,
+    "kind": "goal",
+    "ms": 2923.6,
+    "version": 3,
+    "label": "unknown",
+    "name": "tail_after",
+    "position": {
+      "line": 8,
+      "character": 9
+    },
+    "response": {
+      "id": 32,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 109,
+    "kind": "send",
+    "ms": 2923.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 33,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 9,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 110,
+    "kind": "recv",
+    "ms": 2923.8,
+    "message": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 111,
+    "kind": "goal",
+    "ms": 2923.8,
+    "version": 3,
+    "label": "unknown",
+    "name": "eof",
+    "position": {
+      "line": 9,
+      "character": 0
+    },
+    "response": {
+      "id": 33,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 112,
+    "kind": "send",
+    "ms": 2923.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/didChange",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 4
+        },
+        "contentChanges": [
+          {
+            "text": "import Lean\n\ntheorem nested (n : Nat) (h : n = 0) : n + 0 = 0 := by\n  have hz : n + 0 = 0 := by\n    simpa using h\n  exact hz\n\ntheorem tail : True := by\n  trivial\n"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "seq": 113,
+    "kind": "send",
+    "ms": 2923.8,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 34,
+      "method": "textDocument/waitForDiagnostics",
+      "params": {
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 114,
+    "kind": "recv",
+    "ms": 2946.4,
+    "message": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "workspace/inlayHint/refresh"
+    }
+  },
+  {
+    "seq": 115,
+    "kind": "recv",
+    "ms": 3135.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 116,
+    "kind": "recv",
+    "ms": 3135.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "$/lean/fileProgress",
+      "params": {
+        "processing": [],
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean",
+          "version": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 117,
+    "kind": "recv",
+    "ms": 3135.2,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 118,
+    "kind": "recv",
+    "ms": 3136.5,
+    "message": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 119,
+    "kind": "ready",
+    "ms": 3136.5,
+    "version": 4,
+    "label": "recovered",
+    "sha256": "0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28",
+    "response": {
+      "id": 34,
+      "jsonrpc": "2.0",
+      "result": {}
+    }
+  },
+  {
+    "seq": 120,
+    "kind": "send",
+    "ms": 3136.6,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 35,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 4
+        }
+      }
+    }
+  },
+  {
+    "seq": 121,
+    "kind": "recv",
+    "ms": 3137.4,
+    "message": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 122,
+    "kind": "goal",
+    "ms": 3137.4,
+    "version": 4,
+    "label": "recovered",
+    "name": "nested_before",
+    "position": {
+      "line": 4,
+      "character": 4
+    },
+    "response": {
+      "id": 35,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 123,
+    "kind": "send",
+    "ms": 3137.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 36,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 6
+        }
+      }
+    }
+  },
+  {
+    "seq": 124,
+    "kind": "recv",
+    "ms": 3137.9,
+    "message": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 125,
+    "kind": "goal",
+    "ms": 3137.9,
+    "version": 4,
+    "label": "recovered",
+    "name": "nested_mid",
+    "position": {
+      "line": 4,
+      "character": 6
+    },
+    "response": {
+      "id": 36,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\n⊢ n = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\n⊢ n = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 126,
+    "kind": "send",
+    "ms": 3137.9,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 37,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 4,
+          "character": 17
+        }
+      }
+    }
+  },
+  {
+    "seq": 127,
+    "kind": "recv",
+    "ms": 3138.1,
+    "message": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 128,
+    "kind": "goal",
+    "ms": 3138.1,
+    "version": 4,
+    "label": "recovered",
+    "name": "nested_end",
+    "position": {
+      "line": 4,
+      "character": 17
+    },
+    "response": {
+      "id": 37,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 129,
+    "kind": "send",
+    "ms": 3138.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 38,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 5,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 130,
+    "kind": "recv",
+    "ms": 3138.7,
+    "message": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 131,
+    "kind": "goal",
+    "ms": 3138.7,
+    "version": 4,
+    "label": "recovered",
+    "name": "outer_exact",
+    "position": {
+      "line": 5,
+      "character": 2
+    },
+    "response": {
+      "id": 38,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0"
+        ],
+        "rendered": "```lean\nn : Nat\nh : n = 0\nhz : n + 0 = 0\n⊢ n + 0 = 0\n```"
+      }
+    }
+  },
+  {
+    "seq": 132,
+    "kind": "send",
+    "ms": 3138.7,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 39,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 2
+        }
+      }
+    }
+  },
+  {
+    "seq": 133,
+    "kind": "recv",
+    "ms": 3138.9,
+    "message": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 134,
+    "kind": "goal",
+    "ms": 3138.9,
+    "version": 4,
+    "label": "recovered",
+    "name": "tail_before",
+    "position": {
+      "line": 8,
+      "character": 2
+    },
+    "response": {
+      "id": 39,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "⊢ True"
+        ],
+        "rendered": "```lean\n⊢ True\n```"
+      }
+    }
+  },
+  {
+    "seq": 135,
+    "kind": "send",
+    "ms": 3139.0,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 40,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 8,
+          "character": 9
+        }
+      }
+    }
+  },
+  {
+    "seq": 136,
+    "kind": "recv",
+    "ms": 3139.1,
+    "message": {
+      "id": 40,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 137,
+    "kind": "goal",
+    "ms": 3139.1,
+    "version": 4,
+    "label": "recovered",
+    "name": "tail_after",
+    "position": {
+      "line": 8,
+      "character": 9
+    },
+    "response": {
+      "id": 40,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 138,
+    "kind": "send",
+    "ms": 3139.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 41,
+      "method": "$/lean/plainGoal",
+      "params": {
+        "textDocument": {
+          "uri": "$URI_ROOT/Nested.lean"
+        },
+        "position": {
+          "line": 9,
+          "character": 0
+        }
+      }
+    }
+  },
+  {
+    "seq": 139,
+    "kind": "recv",
+    "ms": 3139.4,
+    "message": {
+      "id": 41,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 140,
+    "kind": "goal",
+    "ms": 3139.4,
+    "version": 4,
+    "label": "recovered",
+    "name": "eof",
+    "position": {
+      "line": 9,
+      "character": 0
+    },
+    "response": {
+      "id": 41,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [],
+        "rendered": "no goals"
+      }
+    }
+  },
+  {
+    "seq": 141,
+    "kind": "completed",
+    "ms": 3139.4
+  },
+  {
+    "seq": 142,
+    "kind": "send",
+    "ms": 3139.4,
+    "message": {
+      "jsonrpc": "2.0",
+      "id": 99,
+      "method": "shutdown",
+      "params": null
+    }
+  },
+  {
+    "seq": 143,
+    "kind": "recv",
+    "ms": 3140.3,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "textDocument/publishDiagnostics",
+      "params": {
+        "diagnostics": [],
+        "uri": "$URI_ROOT/Nested.lean",
+        "version": 4
+      }
+    }
+  },
+  {
+    "seq": 144,
+    "kind": "recv",
+    "ms": 3161.1,
+    "message": {
+      "id": 99,
+      "jsonrpc": "2.0",
+      "result": null
+    }
+  },
+  {
+    "seq": 145,
+    "kind": "send",
+    "ms": 3161.1,
+    "message": {
+      "jsonrpc": "2.0",
+      "method": "exit"
+    }
+  },
+  {
+    "seq": 146,
+    "kind": "stop",
+    "ms": 3165.9,
+    "returncode": 0,
+    "stderr": ""
+  }
+]

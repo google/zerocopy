@@ -1407,6 +1407,39 @@
         "lean/lake"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v15": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "c7abd976962801c3a3a1796c072a3530b3a78921",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "lean/language-server",
+        "lean/lake"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -2773,6 +2806,31 @@
         "anneal/cancellation-model"
       ]
     },
+    "anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "version": "5.0.0-src+3dc1a08"
+          },
+          "name": "Lake v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lake",
+        "anneal/interactive",
+        "anneal/invalidation"
+      ]
+    },
     "anneal-3730-external-model-without-codegen-change-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3161,6 +3219,26 @@
         "anneal/lake",
         "anneal/3730-3731-coverage",
         "anneal/configuration-identity"
+      ]
+    },
+    "anneal-3730-lake-frozen-index-collision-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lake frozen producer consumer-index probe"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "lake",
+        "lake/package-identity",
+        "lake/configuration-ownership",
+        "lake/read-only-consumption"
       ]
     },
     "anneal-3730-lake-identity-matrix-v4-30-0-rc2": {
@@ -4125,6 +4203,25 @@
         "anneal/interactive"
       ]
     },
+    "anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/tactic-state",
+        "anneal/interactive"
+      ]
+    },
     "anneal-3730-partial-elaboration-queries-v4-30-0-rc2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -4238,6 +4335,25 @@
         "anneal/platform-portability",
         "filesystem/rename-and-unlink",
         "filesystem/locking"
+      ]
+    },
+    "anneal-3730-prefix-edit-cancellation-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/server",
+        "lean/elaboration",
+        "anneal/interactive"
       ]
     },
     "anneal-3730-projection-macro-doccomment-patch-matrix-2026-09-29": {

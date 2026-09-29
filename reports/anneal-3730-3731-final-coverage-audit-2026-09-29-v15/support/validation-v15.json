@@ -1,0 +1,51 @@
+{
+  "snapshot_utc": "2026-09-29T15:45:57.030574+00:00",
+  "reference_commit": "c7abd976962801c3a3a1796c072a3530b3a78921",
+  "issue_3730_state": "closed",
+  "issue_3731_state": "open",
+  "issue_sha256": {
+    "3730_body": "81bdc705843328085400eb3816ccd473266a95723cfcdba94c753bc22617e6f0",
+    "3730_comment": "7544fde70a98d0fdc6ffa14a7bb08827e1b40ad7b8f8eb4263a0f67d0491531e",
+    "3731_body": "0375e6dc74b7f89e170c6c1a699212c1cf82b4260dfda4f14a02bcb54b2c4a88",
+    "3731_comment": "4cc532789c728ce2cfaca08d7636c6f0fd91f0710fd9e90de74a25993b43f488"
+  },
+  "investigation_rows": 159,
+  "investigation_statuses": {
+    "partial": 153,
+    "complete": 2,
+    "not-run": 1,
+    "conditional": 3
+  },
+  "crosswalk_rows": 174,
+  "crosswalk_statuses": {
+    "partial": 161,
+    "complete": 4,
+    "conditional": 4,
+    "not-run": 5
+  },
+  "all_substantive_packages": 112,
+  "prior_accounted_packages": 108,
+  "new_package_count": 4,
+  "new_packages": [
+    "anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29",
+    "anneal-3730-lake-frozen-index-collision-2026-09-29",
+    "anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2",
+    "anneal-3730-prefix-edit-cancellation-v4-30-0-rc2"
+  ],
+  "new_inspected_file_count": 66,
+  "new_inspected_bytes": 795877,
+  "candidate_review_rows": 21,
+  "source_v14_investigation_sha256": "64c8b48b522c91472d3b85e202ec562f506f6c38bfec222712955aa6bc6ba237",
+  "source_v14_crosswalk_sha256": "375ef152d06ad409728891edf6348e5a8a7420cc9c6f82780fe48d17ebdd0d3d",
+  "not_run_investigations": [
+    "I072"
+  ],
+  "not_run_suggestions": [
+    "F03",
+    "F04",
+    "G03",
+    "G15",
+    "L09"
+  ],
+  "status_changes_from_v14": []
+}

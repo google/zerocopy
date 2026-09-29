@@ -1,0 +1,32 @@
+# Eight-proof stale-oracle fanout over a tiny Model→Helper graph
+
+Observed 2026-09-29 with cached Lean/Lake 4.30.0-rc2 on arm64 macOS. This is direct lower-layer evidence for #3730 C10 and the recomputation boundary of A05, mapped primarily to #3731 I056/I047. The earlier [URI, history and import report](../anneal-3730-lean-uri-history-import-boundaries-2026-09-29/REPORT.md) already ran eight **fresh batch** proof files through a model change, but did not compare eight live dependent workers with fresh oracles. The [same-server import report](../lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md) established a one-old/one-new-worker split. This probe joins those controls in four resource-bounded two-proof waves.
+
+## Question, fixture and procedure
+
+The question was whether a completed live `waitForDiagnostics` and successful local tactic-goal query on each unchanged proof could still reflect an older imported `Model.olean`/`Helper.olean` after both artifacts had been rebuilt. A fresh batch or newly opened worker agreeing with the old worker after the model change would have refuted the stale-versus-fresh split for this fixture.
+
+The private Lake project has `Model.lean` defining `model : Nat := 8` or 7 and `Helper.lean` importing Model and defining `helper := model`. Eight distinct `Proof0.lean`…`Proof7.lean` files each import Helper, evaluate `helper`, and prove `helper = 8` by `rfl`. Their source bytes never changed. `lake --keep-toolchain --no-cache build Helper` produced a stable base OLean pair and a distinct stable edited pair across four restore/change cycles. Both full OLean pairs are retained in `support/artifacts/`.
+
+First, fresh `lean --json` with the exact built import path checked all eight files at value 8. After the first change to value 7, the same fresh batch command checked all eight again. Each live wave then restored value 8, opened exactly two of the eight proofs in one server, waited for version 1 and queried `$/lean/plainGoal` after `rfl`. While those workers remained open, Lake rebuilt Model and Helper for value 7. The client sent `workspace/didChangeWatchedFiles`, resent **identical proof text** as document version 2, waited for that version, and queried the old workers again. After stopping that server, a new server in the same launch mode opened the same two proof files and queried their goals. Waves 0–1 used direct `lean --server` with `LEAN_PATH`; waves 2–3 used `lake serve`. There was only one watchdog/server at a time and at most two proof workers open in a wave. `LEAN_NUM_THREADS=1`, `LAKE_NO_NET=1`, and a 3.5 GiB sampled process-tree RSS cap bounded the run; no package was fetched or installed.
+
+## Result
+
+All eight fresh batch checks at value 8 exited 0 and printed 8. All eight fresh batch checks after the value-7 rebuild exited 1, printed 7, and reported that `rfl` failed on `⊢ helper = 8`. Every wave reproduced the same artifact identities: base Model `8c104a28…`, base Helper `8de87e62…`; edited Model `eb45899e…`, edited Helper `e07f4a8c…` (full SHA-256 values in `support/results.json`).
+
+| Live launch | Proofs | Old worker after value-7 rebuild and version-2 wait | Fresh worker at value 7 |
+| --- | --- | --- | --- |
+| Direct Lean, wave 0 | 0–1 | Both `goals: []`; `#eval` diagnostics still 8 | Both `⊢ helper = 8`; diagnostics printed 7 and `rfl` error |
+| Direct Lean, wave 1 | 2–3 | Same | Same |
+| `lake serve`, wave 2 | 4–5 | Both `goals: []`; diagnostics still printed 8 **and warned that imports were out of date** | Both `⊢ helper = 8`; diagnostics printed 7 and `rfl` error |
+| `lake serve`, wave 3 | 6–7 | Same | Same |
+
+The Lake old-worker warning is material: its diagnostic channel signaled outdated imports even though its tactic-goal response remained solved. The direct old-worker sessions did not emit that warning in this run. A client that treated only the empty goal array or only the successful versioned wait as acceptance would have returned a stale success for all eight files. A client that recognized and acted on Lake's warning could reject the old Lake result; this probe did not exercise a production client policy. Watched-file notification has no processing acknowledgment, so this sequence shows the subsequent old-worker observations, not a guarantee about when that notification was handled.
+
+The maximum sampled process-tree RSS was 1,719,320,576 bytes, below the 3.5 GiB cap. Direct sessions had a watchdog plus two workers; Lake sessions also had a Lake process. The RSS sum can double-count shared memory and misses between-sample peaks. The initial Lake build took 3.12 s; restore/change rebuilds took roughly 0.43–0.83 s. These are run observations, not a speed comparison or a retention-cost benchmark.
+
+## Evidence, replay and limits
+
+`support/results.json` retains 651 ordered command/protocol/resource events, all sixteen batch results, every wait/goal reply, diagnostic stream, source hashes and OLean hashes. `support/work/` retains the final tiny project and its edited artifacts; `support/artifacts/{8,7}/` retains both OLean generations. `support/check.py` verifies all eight base/edited batch controls, the four two-worker old/fresh splits, the Lake-only warning, artifact and source identities, resource cap and eight clean server shutdowns. Run `python3 support/check.py` for an offline evidence check. To rerun, copy this package, delete only the **copied** `support/work` and `support/artifacts` directories, then run `python3 support/probe.py` and `python3 support/check.py` in the copy. The script requires the pinned local binary paths and at least 3 GiB free disk; it does not download dependencies.
+
+This is a tiny manually materialized Lean graph, not Aeneas output or an Anneal generated workspace. Four two-proof waves exercise eight unique proofs but do not simulate eight simultaneous workers or measure Anneal scheduling, a real agent workflow, a snapshot broker, an exact historical-query API, retention tier costs, or representative many-proof scaling. Thus C10/I056 gain a bounded live-fanout negative control, while their production scheduling and dependency-classification questions remain open. A05/I047 gain a resident-versus-fresh recomputation distinction, but no equivalent-workload economics or expiry policy. Whole-file batch failure and the new-worker tactic goal identify the edited generation's mismatch; the old empty goal alone cannot certify the current imported generation.

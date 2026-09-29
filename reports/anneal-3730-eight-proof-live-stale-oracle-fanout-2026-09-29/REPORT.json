@@ -1,0 +1,8 @@
+{
+  "topics": ["lean", "lake", "anneal/interactive", "anneal/invalidation"],
+  "subjects": [
+    {"name": "Lean v4.30.0-rc2", "identity": {"version": "v4.30.0-rc2", "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"}},
+    {"name": "Lake v4.30.0-rc2", "identity": {"version": "5.0.0-src+3dc1a08", "executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"}}
+  ],
+  "observed_at": "2026-09-29"
+}

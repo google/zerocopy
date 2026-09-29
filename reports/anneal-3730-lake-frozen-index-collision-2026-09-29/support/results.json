@@ -1,0 +1,379 @@
+{
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "producer_after_match": {
+    ".lake/build/ir/Dep.c": [
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      1366,
+      292
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      16,
+      292
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      127,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      289,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      4616,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      "655c5af87c864e937e096a42a018acdbc8b7d16a8aaf3819c35ac6341d580e9f",
+      2013,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      96288,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      182,
+      292
+    ],
+    "Dep.lean": [
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      24,
+      292
+    ],
+    "lake-manifest.json": [
+      "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+      150,
+      292
+    ],
+    "lakefile.lean": [
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      75,
+      292
+    ],
+    "lean-toolchain": [
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      29,
+      292
+    ]
+  },
+  "producer_after_shift": {
+    ".lake/build/ir/Dep.c": [
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      1366,
+      292
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      16,
+      292
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      127,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      289,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      4616,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      "655c5af87c864e937e096a42a018acdbc8b7d16a8aaf3819c35ac6341d580e9f",
+      2013,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      96288,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      182,
+      292
+    ],
+    "Dep.lean": [
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      24,
+      292
+    ],
+    "lake-manifest.json": [
+      "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+      150,
+      292
+    ],
+    "lakefile.lean": [
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      75,
+      292
+    ],
+    "lean-toolchain": [
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      29,
+      292
+    ]
+  },
+  "producer_after_writable_shift": {
+    ".lake/build/ir/Dep.c": [
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      1366,
+      420
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      16,
+      420
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      127,
+      420
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      289,
+      420
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      16,
+      420
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      4616,
+      420
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      16,
+      420
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      "655c5af87c864e937e096a42a018acdbc8b7d16a8aaf3819c35ac6341d580e9f",
+      2013,
+      420
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      "1ba2692296cff0139042a74c4218e0c1e1988881afa2f80cff23a98e900fe4d3",
+      96472,
+      420
+    ],
+    ".lake/config/probe_dep/lakefile.olean.lock": [
+      "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      0,
+      420
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      "14117e2aed33b8c765506d28ffbc42506f25e9a830edb0a57f520af9a736f08f",
+      182,
+      420
+    ],
+    "Dep.lean": [
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      24,
+      420
+    ],
+    "lake-manifest.json": [
+      "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+      150,
+      420
+    ],
+    "lakefile.lean": [
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      75,
+      420
+    ],
+    "lean-toolchain": [
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      29,
+      420
+    ]
+  },
+  "producer_before": {
+    ".lake/build/ir/Dep.c": [
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e",
+      1366,
+      292
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274",
+      16,
+      292
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059",
+      127,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5",
+      289,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b",
+      4616,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479",
+      16,
+      292
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      "655c5af87c864e937e096a42a018acdbc8b7d16a8aaf3819c35ac6341d580e9f",
+      2013,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75",
+      96288,
+      292
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935",
+      182,
+      292
+    ],
+    "Dep.lean": [
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2",
+      24,
+      292
+    ],
+    "lake-manifest.json": [
+      "fe1966137bdd62617f655d13fc4bd5e51980fb3e888c781c8ba4e5850f3baf81",
+      150,
+      292
+    ],
+    "lakefile.lean": [
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad",
+      75,
+      292
+    ],
+    "lean-toolchain": [
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61",
+      29,
+      292
+    ]
+  },
+  "producer_prime_trace": {
+    "configHash": "ba08543c33d179c7",
+    "idx": 1,
+    "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "name": "probe_dep",
+    "options": {},
+    "platform": "arm64-apple-darwin24.6.0"
+  },
+  "producer_shift_trace": {
+    "configHash": "ba08543c33d179c7",
+    "idx": 1,
+    "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "name": "probe_dep",
+    "options": {},
+    "platform": "arm64-apple-darwin24.6.0"
+  },
+  "producer_writable_trace": {
+    "configHash": "ba08543c33d179c7",
+    "idx": 2,
+    "leanHash": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+    "name": "probe_dep",
+    "options": {},
+    "platform": "arm64-apple-darwin24.6.0"
+  },
+  "runs": [
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "label": "prime-index-1",
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Built Dep (174ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (175ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/base/Generated.lean -o $WORK/base/.lake/build/lib/lean/Generated.olean -i $WORK/base/.lake/build/lib/lean/Generated.ilean -c $WORK/base/.lake/build/ir/Generated.c --setup $WORK/base/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:3:0: 7\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "label": "frozen-matching-index-1",
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (178ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/matching/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/matching/Generated.lean -o $WORK/matching/.lake/build/lib/lean/Generated.olean -i $WORK/matching/.lake/build/lib/lean/Generated.ilean -c $WORK/matching/.lake/build/ir/Generated.c --setup $WORK/matching/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:3:0: 7\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "exit": 1,
+      "label": "frozen-shifted-index-2",
+      "stderr": "error: permission denied (error code: 13)\n  file: $WORK/producer/.lake/config/probe_dep/lakefile.olean.lock\n",
+      "stdout": ""
+    },
+    {
+      "argv": [
+        "--keep-toolchain",
+        "--no-cache",
+        "--no-ansi",
+        "-v",
+        "build",
+        "Generated"
+      ],
+      "exit": 0,
+      "label": "writable-shifted-index-2",
+      "stderr": "",
+      "stdout": "\u2714 [0/5] Ran job computation\n\u2714 [1/5] Ran consumer:extraDep\n\u2714 [2/5] Ran probe_dep:extraDep\n\u2139 [3/5] Replayed Dep\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/base/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/producer/Dep.lean -o $WORK/producer/.lake/build/lib/lean/Dep.olean -i $WORK/producer/.lake/build/lib/lean/Dep.ilean -c $WORK/producer/.lake/build/ir/Dep.c --setup $WORK/producer/.lake/build/ir/Dep.setup.json --json\n\u2139 [4/5] Built Generated (177ms)\ntrace: .> LEAN_PATH=$WORK/producer/.lake/build/lib/lean:$WORK/dummy/.lake/build/lib/lean:$WORK/shifted/.lake/build/lib/lean $TOOLCHAIN_BIN/lean $WORK/shifted/Generated.lean -o $WORK/shifted/.lake/build/lib/lean/Generated.olean -i $WORK/shifted/.lake/build/lib/lean/Generated.ilean -c $WORK/shifted/.lake/build/ir/Generated.c --setup $WORK/shifted/.lake/build/ir/Generated.setup.json --json\ninfo: Generated.lean:3:0: 7\n\u2714 [5/5] Ran consumer/Generated:default\nBuild completed successfully (5 jobs).\n"
+    }
+  ]
+}

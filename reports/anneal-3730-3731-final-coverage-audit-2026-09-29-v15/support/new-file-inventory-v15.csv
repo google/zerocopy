@@ -1,0 +1,67 @@
+package,relative_file,bytes,sha256,inspection
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,REPORT.json,461,9de763841dec94501516ff4194014dbb37d27d813d04c61124e55e59d65fc310,parsed JSON
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,REPORT.md,6494,e474bfbbb26066f9d258b7392a7c667cb0cd9fb60da47bb85b3e459513d0d332,32 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/artifacts/7/Helper.olean,4352,e07f4a8c68a54c7afed415f43b867d4689cd5e2c4df452c87aee1d7329470a24,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/artifacts/7/Model.olean,4608,eb45899e309d751c694ff9d90d1eef70b2c0d6e059738a3f7c933de672589554,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/artifacts/8/Helper.olean,4352,8de87e62d673fabf3b79d0220692cb07861c59bc378e9b5a597e5deb4f1bbdc4,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/artifacts/8/Model.olean,4608,8c104a289183ed1f096af1ff76c4f7b119d9f12f41ad2046d59e3372bb0f8ec2,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/check.py,4426,2ae2f3d50dc16a09edea0ac31042da8225871929680895b578736a298b7a20db,75 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/probe.py,9895,bd05859be09053101a72928ac9d72984c2d813fbd812b7f45fcc67f0dc18a05d,201 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/results.json,453976,04c15a7c9f2085b78ef61a671e46a4df0e014f3a7b07bee47bb37137b5b4b0ba,parsed JSON
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Helper.c,1574,149bdefd92ac3e1c540007eddc4ccf922dea7d3ef74b19b452a27210e1944871,48 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Helper.c.hash,16,1335d932de7d6b8c7cad820047afee2b6cbe18b4092c00ce0f5261c2f66349f1,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Helper.setup.json,375,b79f2a4ac8f106be1fc94906cd83a332caab1b52a4a0cd0f1c624dd9990f349a,parsed JSON
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Model.c,1373,60b986dbb9af94422c23f9adc2036d9249078023541d029c70bffe14b3a1d613,44 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Model.c.hash,16,8a196c8da05aa6680a2a55bcf99470dff376c508ce43802d8e1e70a27eff65c9,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/ir/Model.setup.json,132,99d3e2da7bc2e5c52b1a934bccbeba0d3cd651d9757ec9fd994372d4e419ef82,parsed JSON
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Helper.ilean,412,f118370ef4b1f417ac852cde2e215738a1261f3d180c1b179276bdeeb0561a08,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Helper.ilean.hash,16,90be10a3243aa1e1b44575a9b2debaa45b920cd32be360dadfe4ff58223d8006,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Helper.olean,4352,e07f4a8c68a54c7afed415f43b867d4689cd5e2c4df452c87aee1d7329470a24,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Helper.olean.hash,16,26dd14be69497c9c5a06b85caf39b5f8a204527fcbc9e3bcfba874ba65ceba07,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Helper.trace,2786,8c947f4c1620e7e68f33d5940781e99de17d83f7486ef8dd3156f1251458bd50,33 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Model.ilean,282,d7f0c8de07b40f1b273a6a8be6865ea51e76a703affb25f070164bba87a7d65e,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Model.ilean.hash,16,062fbde9d0f9896bd52e99bce9e69af7028930633f46b67644ba2c20d8fa526c,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Model.olean,4608,eb45899e309d751c694ff9d90d1eef70b2c0d6e059738a3f7c933de672589554,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Model.olean.hash,16,6a395169a8dc4aef39c64abcf6296cb9a4d325ab7d2760ad53082e3c581d6b2f,0 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/build/lib/lean/Model.trace,2676,6e36d5864bdef4cf9d4cc63ad59aab866f55307f210c6c3c5dbe411c050f6200,31 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/config/[anonymous]/lakefile.olean,109960,1154dbce317827ad1d4d1c8ee13a127b0f7834a204098d88a9987e91ef2a16c9,binary
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/.lake/config/[anonymous]/lakefile.olean.trace,184,08eada050245565d918e13f838f5b24bc506c3973d7f0d00d8c4db1203f90c83,6 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Helper.lean,39,981288625250e0f1e61a98e9477539de35acaba045d30597c4e1b8b3a1fa876a,2 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Model.lean,21,1b57bb633dfea89b0bb783829aba3691089877f95ed91f62779552c706c4ddf1,1 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof0.lean,68,812519b22ce8aaadee1d118bbbe63874664eb4e1a6da0b37d58c5971ab9070f4,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof1.lean,68,ec5e49a10dcfbdff00a9815e0575e9fdac20a922c68b471deb4e96a039903ace,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof2.lean,68,ff778665995b7eeb2ee268d0e7024d814b98aba1989dd1334e9b77851cccbb9e,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof3.lean,68,d489611287d57849e30df479ca65015be66364dec4b36c3e30213f9396eefa04,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof4.lean,68,34e473008a652bb365c871a482587f63c6ffc32e46e08bd8a4498b85630a0b53,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof5.lean,68,a3f893b89d18a665b1d24b8c6987d3773e40f7f3f7759cb050b3c9ad7cedb066,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof6.lean,68,9bde0e739f19aa7268d13c0e41aeff5116d6b143500f1176925272c5ee27af67,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/Proof7.lean,68,a2eb426bbba7014dd6fe3d2e78fe4ea6f1bcb410c10ab9f456f49690e04289a7,4 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/lake-manifest.json,144,83ec4d66c6523d589fc2af922c08428d13fa2559ae18a81e2c1c2c07dd60b851,parsed JSON
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/lakefile.lean,78,245134892567e7e110c927a10610ca18a06ffd5671bf7785518edf5f474e0fd0,5 UTF-8 lines
+anneal-3730-eight-proof-live-stale-oracle-fanout-2026-09-29,support/work/lean-toolchain,29,ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61,1 UTF-8 lines
+anneal-3730-lake-frozen-index-collision-2026-09-29,REPORT.json,436,72139a924ea509810013a6ee18bb591a3f353921fd617703ca6993581af28a00,parsed JSON
+anneal-3730-lake-frozen-index-collision-2026-09-29,REPORT.md,6217,209315708b0c6d52b8db7b6198b86c50c41c808868dc528f758a1e4bee9b8fa9,44 UTF-8 lines
+anneal-3730-lake-frozen-index-collision-2026-09-29,support/check.py,1628,b16c62989dac20c7f52131da5ca7d604f211121c4d7cbe33a294f339b1122a0d,28 UTF-8 lines
+anneal-3730-lake-frozen-index-collision-2026-09-29,support/probe.py,4780,5a5c1d5f6acc8ac5b5766a6ba57e2e2785b6c95b61912ea775a5c39d2c22885c,109 UTF-8 lines
+anneal-3730-lake-frozen-index-collision-2026-09-29,support/results.json,12988,ce5ea489ba0872944dc6690a122a4c9e953eb1841b6e1e6f13704f278cceb5cd,parsed JSON
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,REPORT.json,351,c5d6e4dc42e3af3c6cfe51c4fc5b99992eda5c71d014d3f44def8e23492c1b5f,parsed JSON
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,REPORT.md,5775,8b44f99a97f9b4206bd9544134cd0d9f2b35963d3486ef8f36ae61515f921865,46 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/Nested.lean,162,0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28,9 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/check.py,4205,912befc05ef8ccda21b73084275b34909f0b1d4a3208e383fae3158627105079,77 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/probe.py,7704,feb81b9fb5afe5502cea53a6cc98c83ea7c97477f32ba6a8997f52707615b854,162 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/transcript.json,65414,9af1f3c455aa04d7c04e66de39b3dad209ff003533e3c1c222532056f3d2f77a,parsed JSON
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/variants/1-valid.lean,162,0f262ebe59eeef631b313d59110c403d36256634200b0a16c4a621da40a3ab28,9 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/variants/2-syntax.lean,150,4ab2703df8c5c52443893dc73d527fa4ead1b512b5b7b357fe6bccc7bbc70a3a,9 UTF-8 lines
+anneal-3730-nested-unsaved-recovery-grid-v4-30-0-rc2,support/variants/3-unknown.lean,169,1508ceb8aa625f0ecd94353561385a32ef1738a852bd7eddc8440f29c0ca9056,9 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,REPORT.json,350,dee34ddac4c857472ec2930336f687bf18d21e77704dd91ab7f41a5cec58e83d,parsed JSON
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,REPORT.md,6397,51087ed5bc9909bba29c475b30c26cda7bb9107b0401cd2e775c7f8b987c74b0,35 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/check.py,3632,f21c9500fae2ab19ad69e776353d25a7360e748c742ec71a2d1774bf6bc80eeb,63 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/probe.py,10082,2e23e31412f13e6c5016b4274b6bd8c20d12842fa825a5717704a327240d6408,219 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/transcript.json,40223,09234ebeb3fbd993302ee405588d51d470ec73a5ec196572aee7e570b5817853,parsed JSON
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/Active.lean,508,bcb0a47742336c3651b4423d9694cbf53780ca82ab22e9aa98c29578dd1f8f0d,16 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/V1.lean,508,bcb0a47742336c3651b4423d9694cbf53780ca82ab22e9aa98c29578dd1f8f0d,16 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/V2.lean,663,e06274619013eed0246033eb8bfa916d3989d8ab7caa6f324365a2bd2c5603e5,20 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/V3.lean,508,775aacc36f395630fae95cbb9c5be0b82155aa056e411dbf7ce8386d1053862a,16 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/gate.entered,7,e9b72a02344d78edf0dde7d94ebb8e07ddd699d602634019e0e842289c921a1e,0 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/gate.release,7,a4d451ec23463726f72c43d64c710968f6b602cd653b4de8adee1b556240a829,0 UTF-8 lines
+anneal-3730-prefix-edit-cancellation-v4-30-0-rc2,support/work/markers.txt,14,d13ece29ba3de8e0efae2edb1df4856229f6ca5433175a6a7b6dc2879663e8a0,5 UTF-8 lines
