@@ -12,7 +12,9 @@
       "identity": {
         "repository": "google/zerocopy",
         "revision": "8c257ec3f4e067963e12441ce5b261714a005c74",
-        "artifact": "new Python standard-library research harness in this package"
+        "artifact": "new Python standard-library research harness in this package",
+        "model_probes_sha256": "f848a8f14a9ca6447b0eb0909867155978f913b59c6ecfaf9ff4fdb179527a0a",
+        "publication_probe_sha256": "4bc9133703ec349181090d0bf30d850c98a5a0283523e5e1395deb25ed996811"
       }
     },
     {

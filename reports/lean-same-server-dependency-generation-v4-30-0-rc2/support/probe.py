@@ -39,7 +39,8 @@ class Server:
     if not sizes or len(body)<sizes[0]: break
     raw,self.buf=body[:sizes[0]],body[sizes[0]:]
     msg=json.loads(raw); record('server_message',message=msg)
-    if msg.get('method')=='client/registerCapability' and 'id' in msg: self.send({'jsonrpc':'2.0','id':msg['id'],'result':None})
+    if 'method' in msg and 'id' in msg:
+     self.send({'jsonrpc':'2.0','id':msg['id'],'result':None})
     return msg
    ready,_,_=select.select([self.p.stdout],[],[],min(.2,max(0,deadline-time.monotonic())))
    if ready:
@@ -52,7 +53,7 @@ class Server:
   deadline=time.monotonic()+timeout
   while time.monotonic()<deadline:
    msg=self.recv(max(.1,deadline-time.monotonic()))
-   if msg.get('id')==rid: return msg
+   if 'method' not in msg and msg.get('id')==rid: return msg
   raise TimeoutError(f'No result for {method} id={rid}')
  def open_doc(self,name,text,version=1):
   path=FIXTURE/name; path.write_text(text)

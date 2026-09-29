@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Small executable counterexamples for identity, projection, and publication."""
-import hashlib, itertools, json, os, random, tempfile
+import hashlib, itertools, json, random
 from pathlib import Path
 
 OUT = Path(__file__).resolve().parents[1]
@@ -17,7 +17,7 @@ scenarios = [
  ('same code, Charon configuration changes', {'charon':'c1/cfg2'}),
  ('same LLBC, Aeneas configuration changes', {'aeneas':'a1/cfg2'}),
  ('same generated source, Lake environment changes', {'env':'lake2'}),
- ('same bytes after A→B→A, later causal generation', {'worker':5}),
+ ('same bytes, later worker epoch', {'worker':5}),
  ('same document version after worker restart', {'worker':5}),
  ('same worker, RPC session reconnected', {'rpc':10}),
 ]
@@ -44,11 +44,14 @@ assert 'proof_hash' in identity_rows[2]['insufficient_keys_colliding']
 
 # Byte-identical content may be reusable as an artifact, but the returned result
 # must still carry the current causal generation.
-cache_content_key=('sourceA','llbcA','generatedA','importsA','toolTupleA')
-cache_content_key_aba=cache_content_key
+content_a=('sourceA','llbcA','generatedA','importsA','toolTupleA')
+content_b=('sourceB','llbcB','generatedB','importsB','toolTupleA')
+content_a_again=('sourceA','llbcA','generatedA','importsA','toolTupleA')
 causal_tag_a=('workspace1',12,3,8)
-causal_tag_b=('workspace1',14,5,11)
-assert cache_content_key == cache_content_key_aba and causal_tag_a != causal_tag_b
+causal_tag_b=('workspace1',13,4,10)
+causal_tag_a_again=('workspace1',14,5,11)
+assert content_a != content_b and content_a == content_a_again
+assert len({causal_tag_a,causal_tag_b,causal_tag_a_again})==3
 
 # 2. UTF-8 bytes, Unicode scalar, and UTF-16 positions. Round-trip only at valid
 # scalar boundaries; UTF-16 midpoint of a supplementary character is invalid.
@@ -121,7 +124,7 @@ for order in itertools.permutations(events):
 assert valid==120 and rejected>0 and unsafe_naive>0
 
 result={
- 'identity_ablation':{'cases':identity_rows,'cache_content_identity_example':{'equal_content_key':cache_content_key==cache_content_key_aba,'distinct_causal_tags':causal_tag_a!=causal_tag_b}},
+ 'identity_ablation':{'cases':identity_rows,'cache_content_identity_example':{'a_to_b_content_changes':content_a!=content_b,'a_to_b_to_a_content_recurs':content_a==content_a_again,'causal_tags_all_distinct':len({causal_tag_a,causal_tag_b,causal_tag_a_again})==3,'content_keys':[content_a,content_b,content_a_again],'causal_tags':[causal_tag_a,causal_tag_b,causal_tag_a_again]}},
  'projection_coordinates':{'corpus_strings':len(corpus),'valid_scalar_boundaries_checked':len(coordinate_rows),'coordinate_sample':coordinate_rows[:12],'all_utf8_utf16_roundtrips':True,'projection_segments':segments,'mapped_positions':[map_pos(x) for x in [3,5,9,10,19,20,22,26,27]],'patch_cases':patch_cases,'stale_patch_cas_rejected':not patch_cases[-1]['accepted']},
  'generation_schedule_model':{'permutations':valid,'stale_publish_rejections':rejected,'naive_late_publish_counterexample_count':unsafe_naive,'counterexample_orders':counterexamples,'safe_current_generation_guard':True},
  'limits':['Finite illustrative model only; it does not establish implementation behavior.','Projection segments are a test oracle fixture, not an implemented Rust parser or Lean projection engine.','UTF-16 positions inside a surrogate pair are not invertible; test only source scalar boundaries.']

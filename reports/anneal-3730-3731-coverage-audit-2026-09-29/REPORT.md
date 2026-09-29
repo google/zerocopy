@@ -2,7 +2,7 @@
 
 ## Summary
 
-Issue #3731 consolidates #3730 into 159 investigation IDs and its follow-up comment preserves the 174-item #3730-to-#3731 crosswalk plus 15 scope extensions. The full investigation ledger and crosswalk are included in `support/`.
+Issue #3731 consolidates #3730 into 159 investigation IDs and its follow-up comment preserves the 174-item #3730-to-#3731 crosswalk, 15 new investigations, and 64 explicit extensions to earlier IDs. The investigation ledger, extension ledger, and crosswalk are included in `support/`.
 
 This pass added four experiment report packages: a bounded identity/projection/publication suite, direct Lean-server dependency-generation probes across Lean 4.29 and 4.30-rc2, and a concurrent Aeneas generation probe. They provide new evidence for subsets of 41 agenda IDs; none of the 159 investigations is declared complete by this audit. Existing reports remain evidence for their identified subjects, while their boundaries still apply. The ledger records prior report pointers, new evidence links, and the remaining delta for every I001–I159 item.
 
@@ -10,9 +10,9 @@ The work is not a claim that all experiments in either issue have been executed.
 
 ## Applicability
 
-The agenda scope is read from public GitHub issues #3730 and #3731, including #3731 extension comment `5884299718` and the #3730 closure comment `5884380373`. The latter confirms #3730 was closed as a duplicate backlog, not as completed research; #3731 remains open. Their SHA-256 values are in `REPORT.json`. The corpus snapshot was `google/zerocopy@8c257ec3f4e067963e12441ce5b261714a005c74`, the fetched `reference` tip at the time of review.
+The agenda scope is read from public GitHub issues #3730 and #3731, including #3731 extension comment `5884299718` and the #3730 closure comment `5884380373`. The latter confirms #3730 was closed as a duplicate backlog, not as completed research; #3731 remains open. `REPORT.json` retains the original review's source hashes. The public #3731 body and extension comment were edited afterward; `support/source-snapshot/` preserves their later text and hashes for this independent check. All 159 base rows, 64 extension rows, and 174 crosswalk rows match that retained later snapshot exactly. The corpus snapshot was `google/zerocopy@8c257ec3f4e067963e12441ce5b261714a005c74`, the fetched `reference` tip at the time of review.
 
-At review, #3730 was closed as a duplicate backlog and #3731 remained open. The #3730 closure comment explicitly says consolidation does not complete research. The issue bodies describe proposed investigations, not adopted implementation requirements. This audit uses “prior evidence” as a navigation pointer to relevant existing packages, not as a finding that each package satisfies every method or scope extension. `support/investigation-matrix.csv` preserves each agenda item's requested method and scope, the report pointers, supplemental evidence added in this pass, and what remains. `support/3730-to-3731-crosswalk.csv` preserves all 174 original suggestions and their consolidated destinations.
+At review, #3730 was closed as a duplicate backlog and #3731 remained open. The #3730 closure comment explicitly says consolidation does not complete research. The issue bodies describe proposed investigations, not adopted implementation requirements. This audit uses “prior evidence” as a navigation pointer to relevant existing packages, not as a finding that each package satisfies every method or scope extension. `support/investigation-matrix.csv` preserves each base item's method and scope, report pointers, supplemental evidence added in this pass, and remaining delta; `support/scope-extensions.csv` supplies the 64 additional clauses that must be read together with those base rows. `support/3730-to-3731-crosswalk.csv` preserves all 174 original suggestions and their consolidated destinations.
 
 Disposition terms in the ledger are deliberately conservative:
 
@@ -61,7 +61,7 @@ Basis: **execution** in the v4.29 transcript and the paired v4.30 report.
 
 ### Coverage remains partial across the agenda
 
-The ledger has 159 rows and 174 crosswalk rows. Forty-one IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here.
+The ledger has 159 base rows, 64 extension rows, and 174 crosswalk rows. Forty-one IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here. The I151 pointer to a same-input Aeneas generated-source destination was removed during review: it does not exercise the shared writable Lake build-tree behavior requested there. Its APFS generation-pointer analogue remains labeled as such, with the Lake writer cells open.
 
 A useful next execution tranche is to use the installed pinned project tools for: (1) a real generated-workspace import-refresh matrix across `lake serve`, `lake env lean --server`, and direct prepared Lean; (2) a reproducible projection/parser fixture with real annotation syntax and version-checked edit application; (3) a two-consumer Lake prepared archive and interrupted publication control; and (4) an Aeneas/Charon generation manifest and same-process/concurrent-call probe. Before scaling past small consumer counts, measure live host memory and process usage. Human/agent evaluation and independent reproduction need separate operators and must not be inferred from local automation.
 
@@ -76,16 +76,18 @@ A useful next execution tranche is to use the installed pinned project tools for
 
 ## Evidence
 
-- `support/investigation-matrix.csv` — all I001–I159 entries, exact titles/methods/scope text, relevant existing report pointers, new experiment links, disposition, and remaining delta.
+- `support/investigation-matrix.csv` — all I001–I159 entries, exact base titles/methods/scope text, relevant existing report pointers, new experiment links, disposition, and remaining delta.
+- `support/scope-extensions.csv` — all 64 extra clauses merged into I001–I144 by the #3731 consolidation comment.
 - `support/3730-to-3731-crosswalk.csv` — every original #3730 suggestion and its consolidated #3731 destination (174 rows).
+- `support/source-snapshot/` — retained public issue/comment text and SHA-256 manifest from the independent re-review; `support/check.py` verifies source-derived rows, counts, file hashes, and report-pointer existence offline. The evidence mappings themselves remain editorial judgments, not deterministic output of the source parser.
 - `anneal-interactive-model-probes-2026-09-29/REPORT.md` and its support artifacts — finite identity, coordinate, schedule, and APFS experiments.
 - `lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md` and its support artifacts — direct Lean server/batch comparison.
 - `aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md` and its support artifacts — split-output concurrency and shared-generator-destination probe.
 - `lean-import-refresh-cross-version-v4-29-to-v4-30-rc2/REPORT.md` and its support artifacts — v4.29/v4.30-rc2 direct-server comparison.
 - Existing relevant report packages are named per row in the ledger. They are contextual corpus evidence, not re-executed by this audit.
 
-The issue body/comment hashes and corpus tip are preserved in `REPORT.json`. Evidence roles for this report are **source** for agenda wording, **execution** for the two new packages, and **derived** for grouping and remaining-delta judgments.
+The original issue body/comment hashes and corpus tip are preserved in `REPORT.json`; the later re-review hashes are in `support/source-snapshot/manifest.json`. The original source bytes were not retained in this package, so the earlier hashes cannot be reconstructed from its files. Evidence roles for this report are **source** for agenda wording, **execution** for the linked new packages, and **derived** for grouping and remaining-delta judgments.
 
 ## Revalidation
 
-Fetch the current `reference` tip and reread #3730, #3731, and comment `5884299718`. Confirm that the 159 IDs and 174 crosswalk rows remain current; compare new reports against every ledger row; update the relevant evidence pointer and remaining delta without converting topical overlap into completion. Re-run each report's included harness at its identified subject. Add cross-platform, human, or independent evidence only when the corresponding target/operator is explicitly selected.
+Run `python3 support/check.py` from this package directory to check the retained source-derived rows, 64 extensions, crosswalk, hashes, and pointer existence. Then fetch the current `reference` tip and reread #3730, #3731, and comment `5884299718`. Confirm that the 159 IDs, 64 extension clauses, and 174 crosswalk rows remain current; compare new reports against every base and extension row; update the relevant evidence pointer and remaining delta without converting topical overlap into completion. Re-run each report's included harness at its identified subject. Add cross-platform, human, or independent evidence only when the corresponding target/operator is explicitly selected.

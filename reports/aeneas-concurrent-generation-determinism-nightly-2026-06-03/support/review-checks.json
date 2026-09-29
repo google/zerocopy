@@ -1,0 +1,66 @@
+{
+  "reviewed_at_utc": "2026-09-29T13:12:11Z",
+  "tag_query": {
+    "argv": [
+      "git",
+      "ls-remote",
+      "https://github.com/AeneasVerif/aeneas.git",
+      "refs/tags/nightly-2026.06.03"
+    ],
+    "stdout": "ac9f1bc5262a5e4ff1e24ca78617121382202727\trefs/tags/nightly-2026.06.03"
+  },
+  "binary_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+  "fixture_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098",
+  "fixture_matches_prior_golden": true,
+  "retained_check": {
+    "argv": [
+      "AENEAS_BIN=$PINNED_AENEAS",
+      "python3",
+      "support/check.py"
+    ],
+    "exit_code": 0,
+    "stdout": "PASS: 7 pinned Aeneas processes, overlapping post-spawn intervals, matching retained outputs"
+  },
+  "reference_load_report": {
+    "valid": true,
+    "problem_count": 0
+  },
+  "replay_summary": {
+    "independent_all_exit_0": true,
+    "independent_outputs_identical": true,
+    "independent_inventory": {
+      "Funs.lean": {
+        "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+        "bytes": 1260
+      },
+      "Probe.lean": {
+        "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "bytes": 18
+      },
+      "Types.lean": {
+        "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+        "bytes": 506
+      }
+    },
+    "shared_all_exit_0": true,
+    "shared_final_inventory": {
+      "Funs.lean": {
+        "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+        "bytes": 1260
+      },
+      "Probe.lean": {
+        "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "bytes": 18
+      },
+      "Types.lean": {
+        "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+        "bytes": 506
+      }
+    },
+    "shared_process_inventories_identical": true,
+    "shared_outputs_complete": true,
+    "shared_final_matches_independent": true,
+    "independent_runs_overlapped": true,
+    "shared_runs_overlapped": true
+  }
+}

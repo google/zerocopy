@@ -29,14 +29,16 @@
   "incomplete_stage": {
     "stage": "gen-C missing Funs.lean",
     "visible_generation_before": "gen-B",
-    "current_after": "gen-B",
-    "visible_state": [
+    "visible_state_before_forced_swap": [
       "-- generation gen-B",
       "-- generation gen-B",
       "gen-B",
       "olean:gen-B"
     ],
-    "published_incomplete": false
+    "forced_current": "gen-C",
+    "forced_publish_missing_file": true,
+    "restored_current": "gen-B",
+    "published_incomplete_at_end": false
   },
   "old_generation_retained_after_swap": true
 }

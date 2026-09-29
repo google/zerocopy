@@ -88,7 +88,7 @@
         "full_causal_identity_changes": true
       },
       {
-        "scenario": "same bytes after A\u2192B\u2192A, later causal generation",
+        "scenario": "same bytes, later worker epoch",
         "changed_fields": [
           "worker"
         ],
@@ -131,8 +131,52 @@
       }
     ],
     "cache_content_identity_example": {
-      "equal_content_key": true,
-      "distinct_causal_tags": true
+      "a_to_b_content_changes": true,
+      "a_to_b_to_a_content_recurs": true,
+      "causal_tags_all_distinct": true,
+      "content_keys": [
+        [
+          "sourceA",
+          "llbcA",
+          "generatedA",
+          "importsA",
+          "toolTupleA"
+        ],
+        [
+          "sourceB",
+          "llbcB",
+          "generatedB",
+          "importsB",
+          "toolTupleA"
+        ],
+        [
+          "sourceA",
+          "llbcA",
+          "generatedA",
+          "importsA",
+          "toolTupleA"
+        ]
+      ],
+      "causal_tags": [
+        [
+          "workspace1",
+          12,
+          3,
+          8
+        ],
+        [
+          "workspace1",
+          13,
+          4,
+          10
+        ],
+        [
+          "workspace1",
+          14,
+          5,
+          11
+        ]
+      ]
     }
   },
   "projection_coordinates": {

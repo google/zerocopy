@@ -1,7 +1,7 @@
 {
-  "lean_version": "Lean (version 4.29.0, arm64-apple-darwin24.6.0, commit 98dc76e3c0a9b856c9b98726b713fb04fab16740, Release)",
-  "old_olean_sha256": "de0d1e6355e2fc7d1baf45002361ffa24ebd8a0ba8e64ae12fce9e0eab2c36a9",
-  "new_olean_sha256": "9d5fcb2cc8995b0e7423230ba6597cb004a7574b62501960ea29d1f9ec6e7cf8",
+  "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "old_olean_sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71",
+  "new_olean_sha256": "142f9093501e0337ed2634fe0070957086cead5140326fd70b7fc6c6e29bbaeb",
   "old_worker_goal_before": {
     "id": 3,
     "jsonrpc": "2.0",
@@ -105,6 +105,11 @@
       "version": 2
     },
     {
+      "diagnostics": [],
+      "uri": "file://$FIXTURE/OldOpen.lean",
+      "version": 2
+    },
+    {
       "diagnostics": [
         {
           "fullRange": {
@@ -149,7 +154,7 @@
   "events": [
     {
       "kind": "build_dependency",
-      "time_monotonic": 1968744.293135916,
+      "time_monotonic": 1968889.509327083,
       "value": 3,
       "argv": [
         "$LEAN_BIN",
@@ -161,12 +166,12 @@
       "stdout": "",
       "stderr": "",
       "source_sha256": "3f73ffee4b6b6612fd97b89a1a9f46db69eb6a200ce3f4d322fba02e803c0b60",
-      "olean_sha256": "de0d1e6355e2fc7d1baf45002361ffa24ebd8a0ba8e64ae12fce9e0eab2c36a9"
+      "olean_sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71"
     },
     {
       "kind": "server_start",
-      "time_monotonic": 1968744.2948505,
-      "pid": 86339,
+      "time_monotonic": 1968889.511066208,
+      "pid": 86452,
       "argv": [
         "$LEAN_BIN",
         "--server"
@@ -176,13 +181,13 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.321762166,
+      "time_monotonic": 1968889.533104791,
       "message": {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "initialize",
         "params": {
-          "processId": 86337,
+          "processId": 86450,
           "rootUri": "file://$FIXTURE",
           "capabilities": {},
           "initializationOptions": {
@@ -193,7 +198,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.323468708,
+      "time_monotonic": 1968889.541213166,
       "message": {
         "id": 1,
         "jsonrpc": "2.0",
@@ -225,7 +230,8 @@
             "experimental": {
               "moduleHierarchyProvider": {},
               "rpcProvider": {
-                "highlightMatchesProvider": {}
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
               }
             },
             "foldingRangeProvider": true,
@@ -309,7 +315,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.323484916,
+      "time_monotonic": 1968889.541233791,
       "message": {
         "jsonrpc": "2.0",
         "method": "initialized",
@@ -318,7 +324,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.323687833,
+      "time_monotonic": 1968889.541467291,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/didOpen",
@@ -334,7 +340,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.323695791,
+      "time_monotonic": 1968889.541475166,
       "message": {
         "jsonrpc": "2.0",
         "id": 2,
@@ -347,7 +353,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.324614666,
+      "time_monotonic": 1968889.542548166,
       "message": {
         "id": "register_lean_watcher",
         "jsonrpc": "2.0",
@@ -374,7 +380,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.324621583,
+      "time_monotonic": 1968889.542554541,
       "message": {
         "jsonrpc": "2.0",
         "id": "register_lean_watcher",
@@ -383,7 +389,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.3256965,
+      "time_monotonic": 1968889.543680375,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -412,7 +418,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.415817333,
+      "time_monotonic": 1968889.626406416,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -425,7 +431,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.563131958,
+      "time_monotonic": 1968889.783337125,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -440,7 +446,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.56315575,
+      "time_monotonic": 1968889.783358666,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -455,7 +461,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.563160958,
+      "time_monotonic": 1968889.783390833,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -468,7 +474,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.563593458,
+      "time_monotonic": 1968889.784415166,
       "message": {
         "id": 2,
         "jsonrpc": "2.0",
@@ -477,7 +483,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.563630625,
+      "time_monotonic": 1968889.784449708,
       "message": {
         "jsonrpc": "2.0",
         "id": 3,
@@ -496,7 +502,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.564738958,
+      "time_monotonic": 1968889.785343916,
       "message": {
         "id": 3,
         "jsonrpc": "2.0",
@@ -508,7 +514,7 @@
     },
     {
       "kind": "old_worker_before_change",
-      "time_monotonic": 1968744.564757625,
+      "time_monotonic": 1968889.785361375,
       "barrier": {
         "id": 2,
         "jsonrpc": "2.0",
@@ -526,7 +532,7 @@
     },
     {
       "kind": "build_dependency",
-      "time_monotonic": 1968744.727459916,
+      "time_monotonic": 1968889.959353875,
       "value": 4,
       "argv": [
         "$LEAN_BIN",
@@ -538,18 +544,18 @@
       "stdout": "",
       "stderr": "",
       "source_sha256": "c9d2489f2aab1d2e058b7952c3c179fa39a8b9ce2edcf63bb6d0070c27c0943d",
-      "olean_sha256": "9d5fcb2cc8995b0e7423230ba6597cb004a7574b62501960ea29d1f9ec6e7cf8"
+      "olean_sha256": "142f9093501e0337ed2634fe0070957086cead5140326fd70b7fc6c6e29bbaeb"
     },
     {
       "kind": "artifact_changed",
-      "time_monotonic": 1968744.727505791,
-      "old_olean_sha256": "de0d1e6355e2fc7d1baf45002361ffa24ebd8a0ba8e64ae12fce9e0eab2c36a9",
-      "new_olean_sha256": "9d5fcb2cc8995b0e7423230ba6597cb004a7574b62501960ea29d1f9ec6e7cf8",
+      "time_monotonic": 1968889.959393333,
+      "old_olean_sha256": "b44f5db11021e43a35d340478ec38ecf5b2e7f2b363da6d81591d3d115cfec71",
+      "new_olean_sha256": "142f9093501e0337ed2634fe0070957086cead5140326fd70b7fc6c6e29bbaeb",
       "changed": true
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.727587625,
+      "time_monotonic": 1968889.959460458,
       "message": {
         "jsonrpc": "2.0",
         "method": "workspace/didChangeWatchedFiles",
@@ -565,7 +571,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.727599125,
+      "time_monotonic": 1968889.959471333,
       "message": {
         "jsonrpc": "2.0",
         "id": 4,
@@ -584,7 +590,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.72794025,
+      "time_monotonic": 1968889.959832375,
       "message": {
         "id": 4,
         "jsonrpc": "2.0",
@@ -596,7 +602,7 @@
     },
     {
       "kind": "old_worker_after_dependency_rebuild",
-      "time_monotonic": 1968744.727942291,
+      "time_monotonic": 1968889.959834333,
       "goal": {
         "id": 4,
         "jsonrpc": "2.0",
@@ -608,7 +614,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.72814875,
+      "time_monotonic": 1968889.960055875,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/didOpen",
@@ -624,7 +630,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.728158291,
+      "time_monotonic": 1968889.960065041,
       "message": {
         "jsonrpc": "2.0",
         "id": 5,
@@ -637,7 +643,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.728342916,
+      "time_monotonic": 1968889.960257291,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -666,7 +672,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.783767166,
+      "time_monotonic": 1968890.01868975,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -679,7 +685,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.882229125,
+      "time_monotonic": 1968890.102235541,
       "message": {
         "id": 0,
         "jsonrpc": "2.0",
@@ -688,7 +694,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.88225625,
+      "time_monotonic": 1968890.102260833,
       "message": {
         "jsonrpc": "2.0",
         "id": 0,
@@ -697,7 +703,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.972403291,
+      "time_monotonic": 1968890.203739916,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -712,7 +718,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.972414583,
+      "time_monotonic": 1968890.203754916,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -727,7 +733,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.972469333,
+      "time_monotonic": 1968890.203832208,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -766,7 +772,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.97322825,
+      "time_monotonic": 1968890.203976666,
       "message": {
         "id": 5,
         "jsonrpc": "2.0",
@@ -775,7 +781,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968744.973268833,
+      "time_monotonic": 1968890.20400975,
       "message": {
         "jsonrpc": "2.0",
         "id": 6,
@@ -794,7 +800,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968744.973955208,
+      "time_monotonic": 1968890.204406,
       "message": {
         "id": 6,
         "jsonrpc": "2.0",
@@ -808,7 +814,7 @@
     },
     {
       "kind": "new_worker_same_server_after_dependency_rebuild",
-      "time_monotonic": 1968744.973968916,
+      "time_monotonic": 1968890.204417166,
       "barrier": {
         "id": 5,
         "jsonrpc": "2.0",
@@ -828,7 +834,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.4840695,
+      "time_monotonic": 1968890.715340791,
       "message": {
         "jsonrpc": "2.0",
         "id": 7,
@@ -841,7 +847,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.484105833,
+      "time_monotonic": 1968890.715433416,
       "message": {
         "id": 1,
         "jsonrpc": "2.0",
@@ -850,7 +856,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484113708,
+      "time_monotonic": 1968890.715451,
       "message": {
         "jsonrpc": "2.0",
         "id": 1,
@@ -859,7 +865,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.48411975,
+      "time_monotonic": 1968890.715465791,
       "message": {
         "id": 2,
         "jsonrpc": "2.0",
@@ -868,7 +874,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484124291,
+      "time_monotonic": 1968890.715478833,
       "message": {
         "jsonrpc": "2.0",
         "id": 2,
@@ -877,7 +883,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.484445333,
+      "time_monotonic": 1968890.72412675,
       "message": {
         "id": 7,
         "jsonrpc": "2.0",
@@ -886,7 +892,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484463125,
+      "time_monotonic": 1968890.724185875,
       "message": {
         "jsonrpc": "2.0",
         "id": 8,
@@ -905,7 +911,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.484638291,
+      "time_monotonic": 1968890.724677541,
       "message": {
         "id": 8,
         "jsonrpc": "2.0",
@@ -917,7 +923,7 @@
     },
     {
       "kind": "old_worker_after_new_worker_ready_and_delay",
-      "time_monotonic": 1968745.484640125,
+      "time_monotonic": 1968890.724682166,
       "barrier": {
         "id": 7,
         "jsonrpc": "2.0",
@@ -935,7 +941,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484657041,
+      "time_monotonic": 1968890.724722458,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/didClose",
@@ -948,7 +954,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484895291,
+      "time_monotonic": 1968890.727576458,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/didOpen",
@@ -964,7 +970,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.484901291,
+      "time_monotonic": 1968890.727586083,
       "message": {
         "jsonrpc": "2.0",
         "id": 9,
@@ -977,7 +983,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.485058916,
+      "time_monotonic": 1968890.727625666,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -990,7 +996,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.485234,
+      "time_monotonic": 1968890.728177625,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
@@ -1019,7 +1025,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.544638166,
+      "time_monotonic": 1968890.802503291,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -1032,12 +1038,26 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.726884791,
+      "time_monotonic": 1968890.968425416,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
         "params": {
-          "processing": [],
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
           "textDocument": {
             "uri": "file://$FIXTURE/OldOpen.lean",
             "version": 2
@@ -1047,12 +1067,52 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.726904458,
+      "time_monotonic": 1968890.968449416,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$FIXTURE/OldOpen.lean",
+          "version": 2
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.97605875,
       "message": {
         "jsonrpc": "2.0",
         "method": "$/lean/fileProgress",
         "params": {
-          "processing": [],
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
           "textDocument": {
             "uri": "file://$FIXTURE/OldOpen.lean",
             "version": 2
@@ -1062,7 +1122,301 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.726960625,
+      "time_monotonic": 1968890.976077583,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.976667416,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.976986916,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 3
+                },
+                "start": {
+                  "character": 0,
+                  "line": 3
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.977058875,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.977286041,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 5,
+                  "line": 2
+                },
+                "start": {
+                  "character": 2,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.977499208,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.97754225,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.977765,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -1101,7 +1455,66 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.727061583,
+      "time_monotonic": 1968890.97799375,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.97799875,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.978007541,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$FIXTURE/OldOpen.lean",
+            "version": 2
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "time_monotonic": 1968890.978105875,
       "message": {
         "id": 9,
         "jsonrpc": "2.0",
@@ -1110,7 +1523,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.727092833,
+      "time_monotonic": 1968890.978137958,
       "message": {
         "jsonrpc": "2.0",
         "id": 10,
@@ -1129,7 +1542,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.727439833,
+      "time_monotonic": 1968890.9785045,
       "message": {
         "id": 10,
         "jsonrpc": "2.0",
@@ -1143,7 +1556,7 @@
     },
     {
       "kind": "closed_reopened_worker_after_dependency_rebuild",
-      "time_monotonic": 1968745.727451458,
+      "time_monotonic": 1968890.978517083,
       "barrier": {
         "id": 9,
         "jsonrpc": "2.0",
@@ -1163,7 +1576,7 @@
     },
     {
       "kind": "fresh_batch_after_dependency_rebuild",
-      "time_monotonic": 1968745.9132945,
+      "time_monotonic": 1968891.170617875,
       "returncode": 1,
       "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  sharedValue\\nis not definitionally equal to the right-hand side\\n  3\\n\\n\u22a2 sharedValue = 3\",\"endPos\":{\"column\":5,\"line\":3},\"fileName\":\"$FIXTURE/NewOpen.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"error\"}\n",
       "stderr": "",
@@ -1171,7 +1584,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.913360625,
+      "time_monotonic": 1968891.170678208,
       "message": {
         "jsonrpc": "2.0",
         "id": 11,
@@ -1181,7 +1594,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.913432708,
+      "time_monotonic": 1968891.170738875,
       "message": {
         "id": 3,
         "jsonrpc": "2.0",
@@ -1190,7 +1603,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.913440375,
+      "time_monotonic": 1968891.170746958,
       "message": {
         "jsonrpc": "2.0",
         "id": 3,
@@ -1199,7 +1612,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.913781208,
+      "time_monotonic": 1968891.171121875,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -1212,7 +1625,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.9139905,
+      "time_monotonic": 1968891.171313666,
       "message": {
         "jsonrpc": "2.0",
         "method": "textDocument/publishDiagnostics",
@@ -1225,7 +1638,7 @@
     },
     {
       "kind": "server_message",
-      "time_monotonic": 1968745.920638833,
+      "time_monotonic": 1968891.178689041,
       "message": {
         "id": 11,
         "jsonrpc": "2.0",
@@ -1234,7 +1647,7 @@
     },
     {
       "kind": "client_message",
-      "time_monotonic": 1968745.920658458,
+      "time_monotonic": 1968891.178720833,
       "message": {
         "jsonrpc": "2.0",
         "method": "exit"
@@ -1242,8 +1655,8 @@
     },
     {
       "kind": "server_exit",
-      "time_monotonic": 1968745.925322666,
-      "pid": 86339,
+      "time_monotonic": 1968891.18342225,
+      "pid": 86452,
       "returncode": 0,
       "stderr": ""
     }

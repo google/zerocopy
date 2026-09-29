@@ -2,7 +2,7 @@
   "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
   "input_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098",
   "input_bytes": 19827,
-  "cwd": "repository root (recorded relative to report fixture)",
+  "cwd": "parent of reference-publish checkout (resolved from report fixture)",
   "processes": {
     "independent_destination": [
       {
@@ -16,11 +16,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959639964291,
-        "ended_ns": 1942959914417166,
-        "elapsed_ms": 274.453,
+        "started_ns": 1968614359302791,
+        "spawned_ns": 1968614363037583,
+        "spawned_alive": true,
+        "pid": 86172,
+        "ended_ns": 1968614647466000,
+        "elapsed_ms": 288.163,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-0\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173187 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-0\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.175470 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -48,11 +51,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959640000083,
-        "ended_ns": 1942959914459458,
-        "elapsed_ms": 274.459,
+        "started_ns": 1968614359338333,
+        "spawned_ns": 1968614363009333,
+        "spawned_alive": true,
+        "pid": 86170,
+        "ended_ns": 1968614647354291,
+        "elapsed_ms": 288.016,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-1\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173316 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-1\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.175470 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -80,11 +86,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959640043125,
-        "ended_ns": 1942959915458958,
-        "elapsed_ms": 275.416,
+        "started_ns": 1968614359476333,
+        "spawned_ns": 1968614363071541,
+        "spawned_alive": true,
+        "pid": 86173,
+        "ended_ns": 1968614647376458,
+        "elapsed_ms": 287.9,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-2\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.172964 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-2\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.175462 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -112,11 +121,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959639888125,
-        "ended_ns": 1942959914478041,
-        "elapsed_ms": 274.59,
+        "started_ns": 1968614359223125,
+        "spawned_ns": 1968614362833875,
+        "spawned_alive": true,
+        "pid": 86171,
+        "ended_ns": 1968614647229000,
+        "elapsed_ms": 288.006,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-3\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173312 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-3\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.175428 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -146,11 +158,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959916392291,
-        "ended_ns": 1942960185490000,
-        "elapsed_ms": 269.098,
+        "started_ns": 1968614649051541,
+        "spawned_ns": 1968614651570458,
+        "spawned_alive": true,
+        "pid": 86175,
+        "ended_ns": 1968614918375583,
+        "elapsed_ms": 269.324,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170263 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.169928 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -178,11 +193,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959916428791,
-        "ended_ns": 1942960185302666,
-        "elapsed_ms": 268.874,
+        "started_ns": 1968614649074333,
+        "spawned_ns": 1968614651439583,
+        "spawned_alive": true,
+        "pid": 86174,
+        "ended_ns": 1968614918422250,
+        "elapsed_ms": 269.348,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170183 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.169946 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -210,11 +228,14 @@
           "-split-files",
           "-gen-lib-entry"
         ],
-        "started_ns": 1942959916318958,
-        "ended_ns": 1942960185359291,
-        "elapsed_ms": 269.04,
+        "started_ns": 1968614648985875,
+        "spawned_ns": 1968614651599666,
+        "spawned_alive": true,
+        "pid": 86176,
+        "ended_ns": 1968614918533791,
+        "elapsed_ms": 269.548,
         "returncode": 0,
-        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170320 seconds\n",
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.169907 seconds\n",
         "stderr": "",
         "inventory": {
           "Funs.lean": {
@@ -267,6 +288,7 @@
     },
     "shared_process_inventories_identical": true,
     "shared_outputs_complete": true,
+    "shared_final_matches_independent": true,
     "independent_runs_overlapped": true,
     "shared_runs_overlapped": true
   }
