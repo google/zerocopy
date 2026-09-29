@@ -1,0 +1,1485 @@
+{
+  "scope": "stdlib local test bridge; no SDK, Anneal or Lean",
+  "spec_revision": "2026-07-28",
+  "modern": {
+    "wrong_version_discover": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32022,
+        "message": "Unsupported protocol version",
+        "data": {
+          "supported": [
+            "2026-07-28"
+          ],
+          "requested": "1900-01-01"
+        }
+      }
+    },
+    "discover": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "resultType": "complete",
+        "supportedVersions": [
+          "2026-07-28"
+        ],
+        "capabilities": {
+          "tools": {},
+          "extensions": {
+            "io.modelcontextprotocol/tasks": {}
+          }
+        },
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "local-wire-model",
+            "version": "1"
+          }
+        }
+      }
+    },
+    "missing_version": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "error": {
+        "code": -32602,
+        "message": "Missing protocol version"
+      }
+    },
+    "modern_initialize": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "error": {
+        "code": -32601,
+        "message": "initialize unsupported in modern era"
+      }
+    },
+    "no_opt_in": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": {
+        "resultType": "complete",
+        "content": [
+          {
+            "type": "text",
+            "text": "sync fallback"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "start": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-1",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.384122Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.384122Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "immediate_get": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-1",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.384122Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.384122Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "obsolete_result_method": {
+      "jsonrpc": "2.0",
+      "id": 8,
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      }
+    },
+    "wrong_version_get": {
+      "jsonrpc": "2.0",
+      "id": 9,
+      "error": {
+        "code": -32022,
+        "message": "Unsupported protocol version",
+        "data": {
+          "supported": [
+            "2026-07-28"
+          ],
+          "requested": "1900-01-01"
+        }
+      }
+    },
+    "completed": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-1",
+        "status": "completed",
+        "statusMessage": "finished",
+        "createdAt": "2026-09-29T14:39:41.384122Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.384553Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "fixture result"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    "completion_states": [
+      "completed"
+    ],
+    "expired": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "error": {
+        "code": -32602,
+        "message": "Failed to retrieve task: Task has expired"
+      }
+    },
+    "unknown": {
+      "jsonrpc": "2.0",
+      "id": 13,
+      "error": {
+        "code": -32602,
+        "message": "Failed to retrieve task: Task not found"
+      }
+    },
+    "tool_error_start": {
+      "jsonrpc": "2.0",
+      "id": 14,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-2",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.775933Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.775933Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "tool_error": {
+      "jsonrpc": "2.0",
+      "id": 16,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-2",
+        "status": "completed",
+        "statusMessage": "finished",
+        "createdAt": "2026-09-29T14:39:41.775933Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.776736Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "fixture result"
+            }
+          ],
+          "isError": true
+        }
+      }
+    },
+    "rpc_failure_start": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-3",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.777138Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.777138Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "rpc_failure": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-3",
+        "status": "failed",
+        "statusMessage": "injected JSON-RPC failure",
+        "createdAt": "2026-09-29T14:39:41.777138Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.777527Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10,
+        "error": {
+          "code": -32603,
+          "message": "injected JSON-RPC failure"
+        }
+      }
+    },
+    "cancel_start": {
+      "jsonrpc": "2.0",
+      "id": 20,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-4",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.777793Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "after_wrong_cancel": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-4",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.777793Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "cancel_ack": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "result": {
+        "resultType": "complete"
+      }
+    },
+    "after_cancel_ack": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-4",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:39:41.777793Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "cancelled": {
+      "jsonrpc": "2.0",
+      "id": 25,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-4",
+        "status": "cancelled",
+        "statusMessage": "cancelled after cooperative gate",
+        "createdAt": "2026-09-29T14:39:41.777793Z",
+        "lastUpdatedAt": "2026-09-29T14:39:41.778548Z",
+        "ttlMs": 350,
+        "pollIntervalMs": 10
+      }
+    },
+    "cancel_states": [
+      "cancelled"
+    ],
+    "cancel_unknown": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "error": {
+        "code": -32602,
+        "message": "Failed to retrieve task: Task not found"
+      }
+    }
+  },
+  "modern_transcript": [
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "1900-01-01",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "error": {
+          "code": -32022,
+          "message": "Unsupported protocol version",
+          "data": {
+            "supported": [
+              "2026-07-28"
+            ],
+            "requested": "1900-01-01"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "resultType": "complete",
+          "supportedVersions": [
+            "2026-07-28"
+          ],
+          "capabilities": {
+            "tools": {},
+            "extensions": {
+              "io.modelcontextprotocol/tasks": {}
+            }
+          },
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "local-wire-model",
+              "version": "1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "probe"
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "error": {
+          "code": -32602,
+          "message": "Missing protocol version"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "initialize",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "error": {
+          "code": -32601,
+          "message": "initialize unsupported in modern era"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {},
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "sync fallback"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {
+            "scenario": "success"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.384122Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.384122Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.384122Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.384122Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "tasks/result",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "error": {
+          "code": -32601,
+          "message": "Method not found"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "1900-01-01",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "error": {
+          "code": -32022,
+          "message": "Unsupported protocol version",
+          "data": {
+            "supported": [
+              "2026-07-28"
+            ],
+            "requested": "1900-01-01"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "completed",
+          "statusMessage": "finished",
+          "createdAt": "2026-09-29T14:39:41.384122Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.384553Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10,
+          "result": {
+            "resultType": "complete",
+            "content": [
+              {
+                "type": "text",
+                "text": "fixture result"
+              }
+            ],
+            "isError": false
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "error": {
+          "code": -32602,
+          "message": "Failed to retrieve task: Task has expired"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-missing",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "error": {
+          "code": -32602,
+          "message": "Failed to retrieve task: Task not found"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {
+            "scenario": "tool_error"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-2",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.775933Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.775933Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-2",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-2",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-2",
+          "status": "completed",
+          "statusMessage": "finished",
+          "createdAt": "2026-09-29T14:39:41.775933Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.776736Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10,
+          "result": {
+            "resultType": "complete",
+            "content": [
+              {
+                "type": "text",
+                "text": "fixture result"
+              }
+            ],
+            "isError": true
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {
+            "scenario": "rpc_failure"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.777138Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.777138Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "failed",
+          "statusMessage": "injected JSON-RPC failure",
+          "createdAt": "2026-09-29T14:39:41.777138Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.777527Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10,
+          "error": {
+            "code": -32603,
+            "message": "injected JSON-RPC failure"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {},
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-4",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.777793Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "notifications/cancelled",
+        "params": {
+          "requestId": 20
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-4",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-4",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.777793Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "method": "tasks/cancel",
+        "params": {
+          "taskId": "task-4",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-4",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-4",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:39:41.777793Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.777793Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-4",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-4",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-4",
+          "status": "cancelled",
+          "statusMessage": "cancelled after cooperative gate",
+          "createdAt": "2026-09-29T14:39:41.777793Z",
+          "lastUpdatedAt": "2026-09-29T14:39:41.778548Z",
+          "ttlMs": 350,
+          "pollIntervalMs": 10
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "method": "tasks/cancel",
+        "params": {
+          "taskId": "task-missing",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "error": {
+          "code": -32602,
+          "message": "Failed to retrieve task: Task not found"
+        }
+      }
+    }
+  ],
+  "modern_process": {
+    "pid": 97450,
+    "exit": 0,
+    "stderr": ""
+  },
+  "legacy": {
+    "discover": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      }
+    },
+    "initialize": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "protocolVersion": "2025-11-25",
+        "capabilities": {
+          "tools": {}
+        },
+        "serverInfo": {
+          "name": "legacy-model",
+          "version": "1"
+        }
+      }
+    },
+    "sync": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "legacy sync fallback"
+          }
+        ],
+        "isError": false
+      }
+    },
+    "tasks_get": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "error": {
+        "code": -32601,
+        "message": "Method not found"
+      }
+    }
+  },
+  "legacy_transcript": [
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "local-raw-client",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "error": {
+          "code": -32601,
+          "message": "Method not found"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "initialize",
+        "params": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {},
+          "clientInfo": {
+            "name": "local-raw-client",
+            "version": "1"
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "protocolVersion": "2025-11-25",
+          "capabilities": {
+            "tools": {}
+          },
+          "serverInfo": {
+            "name": "legacy-model",
+            "version": "1"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "notifications/initialized",
+        "params": {}
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "probe",
+          "arguments": {}
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": {
+          "content": [
+            {
+              "type": "text",
+              "text": "legacy sync fallback"
+            }
+          ],
+          "isError": false
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "x"
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "error": {
+          "code": -32601,
+          "message": "Method not found"
+        }
+      }
+    }
+  ],
+  "legacy_process": {
+    "pid": 97451,
+    "exit": 0,
+    "stderr": ""
+  },
+  "inferences": {
+    "recognized_modern_error_retried_without_initialize": true,
+    "legacy_nonmodern_error_fell_back_to_initialize": true,
+    "task_progress_polled_not_progress_notification": true,
+    "expired_error_is_this_bridge_policy_not_required_timing": true
+  }
+}

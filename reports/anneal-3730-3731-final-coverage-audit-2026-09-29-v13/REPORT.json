@@ -1,0 +1,9 @@
+{
+  "topics": ["anneal/issue-3730", "anneal/issue-3731", "anneal/research-coverage", "mcp/tasks"],
+  "subjects": [
+    {"name": "google/zerocopy issue #3730", "identity": {"repository": "google/zerocopy", "issue": "3730"}},
+    {"name": "google/zerocopy issue #3731", "identity": {"repository": "google/zerocopy", "issue": "3731"}},
+    {"name": "google/zerocopy reference", "identity": {"repository": "google/zerocopy", "commit": "dee4c4d22bae91da4b68019db8898952ea0fbd12"}}
+  ],
+  "observed_at": "2026-09-29"
+}

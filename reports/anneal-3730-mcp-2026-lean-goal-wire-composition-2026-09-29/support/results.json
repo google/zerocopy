@@ -1,0 +1,3359 @@
+{
+  "scope": "stdlib modern wire shape with real pinned Lean LSP goal; no SDK/Anneal adapter",
+  "preflight": {
+    "free_memory_percent": 46,
+    "free_disk_bytes": 53170761728
+  },
+  "pins": {
+    "lean": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+    "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+    "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+    "bridge_sha256": "b4b76f12b82bb0676851a8962f7777366802ae134532fe0f0d778d9b60574d50",
+    "probe_sha256": "f40e522554ba89f855feca07fcb3380f490bb7b7db2b327d0d2fcdda099ff2d0",
+    "slow_source_sha256": "76870144a8a735b238cff305eb85c686c6bf6d45987fc355a7f44e8cdcfe6928"
+  },
+  "cases": {
+    "wrong_version": {
+      "jsonrpc": "2.0",
+      "id": 1,
+      "error": {
+        "code": -32022,
+        "message": "unsupported protocol version",
+        "data": {
+          "supported": [
+            "2026-07-28"
+          ]
+        }
+      }
+    },
+    "discover": {
+      "jsonrpc": "2.0",
+      "id": 2,
+      "result": {
+        "resultType": "complete",
+        "supportedVersions": [
+          "2026-07-28"
+        ],
+        "capabilities": {
+          "tools": {},
+          "extensions": {
+            "io.modelcontextprotocol/tasks": {}
+          }
+        },
+        "_meta": {
+          "io.modelcontextprotocol/serverInfo": {
+            "name": "lean-goal-test-bridge",
+            "version": "1"
+          }
+        }
+      }
+    },
+    "stale": {
+      "jsonrpc": "2.0",
+      "id": 3,
+      "error": {
+        "code": -32602,
+        "message": "stale source",
+        "data": {
+          "current_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c"
+        }
+      }
+    },
+    "sync": {
+      "jsonrpc": "2.0",
+      "id": 4,
+      "result": {
+        "resultType": "complete",
+        "content": [
+          {
+            "type": "text",
+            "text": "⊢ True"
+          }
+        ],
+        "isError": false,
+        "_meta": {
+          "sourceSha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+          "lspExit": 0,
+          "trackedAfter": []
+        }
+      }
+    },
+    "start": {
+      "jsonrpc": "2.0",
+      "id": 5,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-1",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:53:12.989163Z",
+        "lastUpdatedAt": "2026-09-29T14:53:12.989163Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "initial": {
+      "jsonrpc": "2.0",
+      "id": 6,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-1",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:53:12.989163Z",
+        "lastUpdatedAt": "2026-09-29T14:53:12.989163Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "old_result_method": {
+      "jsonrpc": "2.0",
+      "id": 7,
+      "error": {
+        "code": -32601,
+        "message": "method not found"
+      }
+    },
+    "completed": {
+      "jsonrpc": "2.0",
+      "id": 17,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-1",
+        "status": "completed",
+        "statusMessage": "Lean goal returned",
+        "createdAt": "2026-09-29T14:53:12.989163Z",
+        "lastUpdatedAt": "2026-09-29T14:53:13.432465Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "⊢ True"
+            }
+          ],
+          "isError": false,
+          "_meta": {
+            "sourceSha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "lspExit": 0,
+            "trackedAfter": []
+          }
+        }
+      }
+    },
+    "states": [
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "completed"
+    ],
+    "cancel_start": {
+      "jsonrpc": "2.0",
+      "id": 18,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-2",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:53:13.472129Z",
+        "lastUpdatedAt": "2026-09-29T14:53:13.472129Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "cancel_ack": {
+      "jsonrpc": "2.0",
+      "id": 19,
+      "result": {
+        "resultType": "complete"
+      }
+    },
+    "cancelled": {
+      "jsonrpc": "2.0",
+      "id": 21,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-2",
+        "status": "cancelled",
+        "statusMessage": "cancelled before Lean start",
+        "createdAt": "2026-09-29T14:53:13.472129Z",
+        "lastUpdatedAt": "2026-09-29T14:53:13.472477Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "cancel_states": [
+      "cancelled"
+    ],
+    "before_slow_stats": {
+      "jsonrpc": "2.0",
+      "id": 22,
+      "result": {
+        "resultType": "complete",
+        "queryCount": 2,
+        "activeQueries": 0,
+        "queries": [
+          {
+            "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "wait": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "⊢ True"
+                ],
+                "rendered": "```lean\n⊢ True\n```"
+              }
+            },
+            "upstream_cancel_sent": false,
+            "cleanup": {
+              "pid": 97831,
+              "exit": 0,
+              "before": [
+                {
+                  "pid": 97831,
+                  "ppid": 97830,
+                  "pgid": 97831,
+                  "rss_kib": 74864,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                },
+                {
+                  "pid": 97832,
+                  "ppid": 97831,
+                  "pgid": 97832,
+                  "rss_kib": 373968,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                }
+              ],
+              "tracked_after": [],
+              "stderr": ""
+            }
+          },
+          {
+            "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "wait": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "⊢ True"
+                ],
+                "rendered": "```lean\n⊢ True\n```"
+              }
+            },
+            "upstream_cancel_sent": false,
+            "cleanup": {
+              "pid": 97836,
+              "exit": 0,
+              "before": [
+                {
+                  "pid": 97836,
+                  "ppid": 97830,
+                  "pgid": 97836,
+                  "rss_kib": 74816,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                },
+                {
+                  "pid": 97837,
+                  "ppid": 97836,
+                  "pgid": 97837,
+                  "rss_kib": 374384,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                }
+              ],
+              "tracked_after": [],
+              "stderr": ""
+            }
+          }
+        ]
+      }
+    },
+    "slow_start": {
+      "jsonrpc": "2.0",
+      "id": 23,
+      "result": {
+        "resultType": "task",
+        "taskId": "task-3",
+        "status": "working",
+        "statusMessage": "waiting at test gate",
+        "createdAt": "2026-09-29T14:53:13.472998Z",
+        "lastUpdatedAt": "2026-09-29T14:53:13.472998Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "slow_inflight": {
+      "jsonrpc": "2.0",
+      "id": 26,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-3",
+        "status": "working",
+        "statusMessage": "Lean waitForDiagnostics in flight",
+        "createdAt": "2026-09-29T14:53:13.472998Z",
+        "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "slow_cancel_ack": {
+      "jsonrpc": "2.0",
+      "id": 27,
+      "result": {
+        "resultType": "complete"
+      }
+    },
+    "slow_cancelled": {
+      "jsonrpc": "2.0",
+      "id": 65,
+      "result": {
+        "resultType": "complete",
+        "taskId": "task-3",
+        "status": "cancelled",
+        "statusMessage": "result suppressed after in-flight cancellation",
+        "createdAt": "2026-09-29T14:53:13.472998Z",
+        "lastUpdatedAt": "2026-09-29T14:53:15.880523Z",
+        "ttlMs": 10000,
+        "pollIntervalMs": 50
+      }
+    },
+    "slow_states": [
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "working",
+      "cancelled"
+    ],
+    "stats": {
+      "jsonrpc": "2.0",
+      "id": 66,
+      "result": {
+        "resultType": "complete",
+        "queryCount": 3,
+        "activeQueries": 0,
+        "queries": [
+          {
+            "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "wait": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "⊢ True"
+                ],
+                "rendered": "```lean\n⊢ True\n```"
+              }
+            },
+            "upstream_cancel_sent": false,
+            "cleanup": {
+              "pid": 97831,
+              "exit": 0,
+              "before": [
+                {
+                  "pid": 97831,
+                  "ppid": 97830,
+                  "pgid": 97831,
+                  "rss_kib": 74864,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                },
+                {
+                  "pid": 97832,
+                  "ppid": 97831,
+                  "pgid": 97832,
+                  "rss_kib": 373968,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                }
+              ],
+              "tracked_after": [],
+              "stderr": ""
+            }
+          },
+          {
+            "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "wait": {
+              "id": 2,
+              "jsonrpc": "2.0",
+              "result": {}
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "⊢ True"
+                ],
+                "rendered": "```lean\n⊢ True\n```"
+              }
+            },
+            "upstream_cancel_sent": false,
+            "cleanup": {
+              "pid": 97836,
+              "exit": 0,
+              "before": [
+                {
+                  "pid": 97836,
+                  "ppid": 97830,
+                  "pgid": 97836,
+                  "rss_kib": 74816,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                },
+                {
+                  "pid": 97837,
+                  "ppid": 97836,
+                  "pgid": 97837,
+                  "rss_kib": 374384,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                }
+              ],
+              "tracked_after": [],
+              "stderr": ""
+            }
+          },
+          {
+            "source_sha256": "76870144a8a735b238cff305eb85c686c6bf6d45987fc355a7f44e8cdcfe6928",
+            "wait": {
+              "error": {
+                "code": -32800,
+                "message": ""
+              },
+              "id": 2,
+              "jsonrpc": "2.0"
+            },
+            "goal": {
+              "id": 3,
+              "jsonrpc": "2.0",
+              "result": {
+                "goals": [
+                  "⊢ True"
+                ],
+                "rendered": "```lean\n⊢ True\n```"
+              }
+            },
+            "upstream_cancel_sent": true,
+            "cleanup": {
+              "pid": 97841,
+              "exit": 0,
+              "before": [
+                {
+                  "pid": 97841,
+                  "ppid": 97830,
+                  "pgid": 97841,
+                  "rss_kib": 287920,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                },
+                {
+                  "pid": 97842,
+                  "ppid": 97841,
+                  "pgid": 97842,
+                  "rss_kib": 1190608,
+                  "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                }
+              ],
+              "tracked_after": [],
+              "stderr": ""
+            }
+          }
+        ]
+      }
+    }
+  },
+  "transcript": [
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "1900-01-01",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "error": {
+          "code": -32022,
+          "message": "unsupported protocol version",
+          "data": {
+            "supported": [
+              "2026-07-28"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "server/discover",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": {
+          "resultType": "complete",
+          "supportedVersions": [
+            "2026-07-28"
+          ],
+          "capabilities": {
+            "tools": {},
+            "extensions": {
+              "io.modelcontextprotocol/tasks": {}
+            }
+          },
+          "_meta": {
+            "io.modelcontextprotocol/serverInfo": {
+              "name": "lean-goal-test-bridge",
+              "version": "1"
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "tools/call",
+        "params": {
+          "name": "lean_goal",
+          "arguments": {
+            "expected_sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "error": {
+          "code": -32602,
+          "message": "stale source",
+          "data": {
+            "current_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c"
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "tools/call",
+        "params": {
+          "name": "lean_goal",
+          "arguments": {
+            "expected_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": {
+          "resultType": "complete",
+          "content": [
+            {
+              "type": "text",
+              "text": "⊢ True"
+            }
+          ],
+          "isError": false,
+          "_meta": {
+            "sourceSha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+            "lspExit": 0,
+            "trackedAfter": []
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "method": "tools/call",
+        "params": {
+          "name": "lean_goal",
+          "arguments": {
+            "expected_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:12.989163Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:12.989163Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "method": "tasks/result",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "error": {
+          "code": -32601,
+          "message": "method not found"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:12.989163Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 13,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 14,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 15,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 16,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.023003Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-1",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 17,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-1",
+          "status": "completed",
+          "statusMessage": "Lean goal returned",
+          "createdAt": "2026-09-29T14:53:12.989163Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.432465Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50,
+          "result": {
+            "resultType": "complete",
+            "content": [
+              {
+                "type": "text",
+                "text": "⊢ True"
+              }
+            ],
+            "isError": false,
+            "_meta": {
+              "sourceSha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+              "lspExit": 0,
+              "trackedAfter": []
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "method": "tools/call",
+        "params": {
+          "name": "lean_goal",
+          "arguments": {
+            "expected_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 18,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-2",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:13.472129Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.472129Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "method": "tasks/cancel",
+        "params": {
+          "taskId": "task-2",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 19,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-2",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 20,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-2",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 21,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-2",
+          "status": "cancelled",
+          "statusMessage": "cancelled before Lean start",
+          "createdAt": "2026-09-29T14:53:13.472129Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.472477Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "method": "test/stats",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 22,
+        "result": {
+          "resultType": "complete",
+          "queryCount": 2,
+          "activeQueries": 0,
+          "queries": [
+            {
+              "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "⊢ True"
+                  ],
+                  "rendered": "```lean\n⊢ True\n```"
+                }
+              },
+              "upstream_cancel_sent": false,
+              "cleanup": {
+                "pid": 97831,
+                "exit": 0,
+                "before": [
+                  {
+                    "pid": 97831,
+                    "ppid": 97830,
+                    "pgid": 97831,
+                    "rss_kib": 74864,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  },
+                  {
+                    "pid": 97832,
+                    "ppid": 97831,
+                    "pgid": 97832,
+                    "rss_kib": 373968,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  }
+                ],
+                "tracked_after": [],
+                "stderr": ""
+              }
+            },
+            {
+              "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "⊢ True"
+                  ],
+                  "rendered": "```lean\n⊢ True\n```"
+                }
+              },
+              "upstream_cancel_sent": false,
+              "cleanup": {
+                "pid": 97836,
+                "exit": 0,
+                "before": [
+                  {
+                    "pid": 97836,
+                    "ppid": 97830,
+                    "pgid": 97836,
+                    "rss_kib": 74816,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  },
+                  {
+                    "pid": 97837,
+                    "ppid": 97836,
+                    "pgid": 97837,
+                    "rss_kib": 374384,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  }
+                ],
+                "tracked_after": [],
+                "stderr": ""
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "method": "tools/call",
+        "params": {
+          "name": "lean_goal",
+          "arguments": {
+            "slow": true,
+            "expected_sha256": "76870144a8a735b238cff305eb85c686c6bf6d45987fc355a7f44e8cdcfe6928"
+          },
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 23,
+        "result": {
+          "resultType": "task",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.472998Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "method": "test/release",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 24,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 25,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "waiting at test gate",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.472998Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 26,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 27,
+        "method": "tasks/cancel",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 27,
+        "result": {
+          "resultType": "complete"
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 28,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 28,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 29,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 29,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 30,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 30,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 31,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 31,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 32,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 32,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 33,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 33,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 34,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 34,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 35,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 35,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 36,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 36,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 37,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 37,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 38,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 38,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 39,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 39,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 40,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 40,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 41,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 41,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 42,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 42,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 43,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 43,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 44,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 44,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 45,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 45,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 46,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 46,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 47,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 47,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 48,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 48,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 49,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 49,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 50,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 50,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 51,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 51,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 52,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 52,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 53,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 53,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 54,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 54,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 55,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 55,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 56,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 56,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 57,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 57,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 58,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 58,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 59,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 59,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 60,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 60,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 61,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 61,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 62,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 62,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 63,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 63,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 64,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 64,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "working",
+          "statusMessage": "Lean waitForDiagnostics in flight",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:13.513290Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 65,
+        "method": "tasks/get",
+        "params": {
+          "taskId": "task-3",
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {
+              "extensions": {
+                "io.modelcontextprotocol/tasks": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 65,
+        "result": {
+          "resultType": "complete",
+          "taskId": "task-3",
+          "status": "cancelled",
+          "statusMessage": "result suppressed after in-flight cancellation",
+          "createdAt": "2026-09-29T14:53:13.472998Z",
+          "lastUpdatedAt": "2026-09-29T14:53:15.880523Z",
+          "ttlMs": 10000,
+          "pollIntervalMs": 50
+        }
+      }
+    },
+    {
+      "direction": "client",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 66,
+        "method": "test/stats",
+        "params": {
+          "_meta": {
+            "io.modelcontextprotocol/protocolVersion": "2026-07-28",
+            "io.modelcontextprotocol/clientInfo": {
+              "name": "raw-local-test",
+              "version": "1"
+            },
+            "io.modelcontextprotocol/clientCapabilities": {}
+          }
+        }
+      }
+    },
+    {
+      "direction": "server",
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 66,
+        "result": {
+          "resultType": "complete",
+          "queryCount": 3,
+          "activeQueries": 0,
+          "queries": [
+            {
+              "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "⊢ True"
+                  ],
+                  "rendered": "```lean\n⊢ True\n```"
+                }
+              },
+              "upstream_cancel_sent": false,
+              "cleanup": {
+                "pid": 97831,
+                "exit": 0,
+                "before": [
+                  {
+                    "pid": 97831,
+                    "ppid": 97830,
+                    "pgid": 97831,
+                    "rss_kib": 74864,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  },
+                  {
+                    "pid": 97832,
+                    "ppid": 97831,
+                    "pgid": 97832,
+                    "rss_kib": 373968,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  }
+                ],
+                "tracked_after": [],
+                "stderr": ""
+              }
+            },
+            {
+              "source_sha256": "a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c",
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "⊢ True"
+                  ],
+                  "rendered": "```lean\n⊢ True\n```"
+                }
+              },
+              "upstream_cancel_sent": false,
+              "cleanup": {
+                "pid": 97836,
+                "exit": 0,
+                "before": [
+                  {
+                    "pid": 97836,
+                    "ppid": 97830,
+                    "pgid": 97836,
+                    "rss_kib": 74816,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  },
+                  {
+                    "pid": 97837,
+                    "ppid": 97836,
+                    "pgid": 97837,
+                    "rss_kib": 374384,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  }
+                ],
+                "tracked_after": [],
+                "stderr": ""
+              }
+            },
+            {
+              "source_sha256": "76870144a8a735b238cff305eb85c686c6bf6d45987fc355a7f44e8cdcfe6928",
+              "wait": {
+                "error": {
+                  "code": -32800,
+                  "message": ""
+                },
+                "id": 2,
+                "jsonrpc": "2.0"
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "⊢ True"
+                  ],
+                  "rendered": "```lean\n⊢ True\n```"
+                }
+              },
+              "upstream_cancel_sent": true,
+              "cleanup": {
+                "pid": 97841,
+                "exit": 0,
+                "before": [
+                  {
+                    "pid": 97841,
+                    "ppid": 97830,
+                    "pgid": 97841,
+                    "rss_kib": 287920,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  },
+                  {
+                    "pid": 97842,
+                    "ppid": 97841,
+                    "pgid": 97842,
+                    "rss_kib": 1190608,
+                    "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+                  }
+                ],
+                "tracked_after": [],
+                "stderr": ""
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "bridge_process": {
+    "pid": 97830,
+    "exit": 0,
+    "stderr": ""
+  },
+  "batch": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Proof.lean"
+    ],
+    "exit": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"⊢ True\",\"endPos\":{\"column\":13,\"line\":2},\"fileName\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'target' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n",
+    "stderr": ""
+  },
+  "slow_batch": {
+    "argv": [
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "--json",
+      "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Slow.lean"
+    ],
+    "exit": 0,
+    "stdout": "{\"caption\":\"\",\"data\":\"⊢ True\",\"endPos\":{\"column\":13,\"line\":7},\"fileName\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Slow.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":7},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'target' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":9},\"fileName\":\"/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29/support/Slow.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":9},\"severity\":\"information\"}\n",
+    "stderr": ""
+  }
+}

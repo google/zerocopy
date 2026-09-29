@@ -1,0 +1,15 @@
+package,relative_file,bytes,sha256,inspection
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,REPORT.json,514,25a49b5c7c07004cf954e99bf215d3447ef06e236e4b9b3dd46fbbc1f71bbae7,parsed JSON
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,REPORT.md,5929,b2fed316982178a76f7abd795482105e5b3aea00cdd30baa0613b34361cf449d,32 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/Proof.lean,73,a778c8b26a072c7fb5700ebeb1f60d7dd786268207739040a587d1a8a80fc88c,4 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/Slow.lean,187,76870144a8a735b238cff305eb85c686c6bf6d45987fc355a7f44e8cdcfe6928,9 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/bridge.py,11622,b4b76f12b82bb0676851a8962f7777366802ae134532fe0f0d778d9b60574d50,199 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/check.py,3792,bba793409b594dfd7bcd6c7fb3d69cf4ad54987c95ff7b31b77a0d941a1c4e99,57 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/probe.py,8791,f40e522554ba89f855feca07fcb3380f490bb7b7db2b327d0d2fcdda099ff2d0,130 UTF-8 lines
+anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29,support/results.json,94414,da73524c33bda49a43866ed84a34ed7a6c3d36354a379d1da26881d2d02db347,parsed JSON
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,REPORT.json,963,64b5e3201cbaabf342ce45250f79e719a0217b77fdaa85fccd9a7232c05b12da,parsed JSON
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,REPORT.md,9731,6bf0a1d772709a64603044a55d1fe204d21f9514ad6cb5419405b66511f71afc,56 UTF-8 lines
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,support/bridge.py,5742,2fe6aa257a42f02deade18f1a9ecb9862eb3b8c1bf3c809211f906853c56165e,117 UTF-8 lines
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,support/check.py,2443,e51c9679d583c88a47597634e59c252a6ba0973b5b726aeaff1e9a17d5481ec0,39 UTF-8 lines
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,support/probe.py,8500,154579a8f76b421cca54fe25fb2304aa1fb9d01e11c9f727f01af5b96b14df8b,138 UTF-8 lines
+anneal-3730-mcp-2026-task-wire-controls-2026-09-29,support/results.json,36509,a6fca5636e69da22c5b9a527875c190f83abfa7116d6f950c5d4065f625a6c20,parsed JSON

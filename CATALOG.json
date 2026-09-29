@@ -1342,6 +1342,38 @@
         "anneal/interactive-verification"
       ]
     },
+    "anneal-3730-3731-final-coverage-audit-2026-09-29-v13": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "dee4c4d22bae91da4b68019db8898952ea0fbd12",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy reference"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "anneal/research-coverage",
+        "mcp/tasks"
+      ]
+    },
     "anneal-3730-3731-final-coverage-audit-2026-09-29-v2": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3816,6 +3848,71 @@
         "lake",
         "anneal/invalidation",
         "anneal/performance"
+      ]
+    },
+    "anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "issue": "3730",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3730"
+        },
+        {
+          "identity": {
+            "issue": "3731",
+            "repository": "google/zerocopy"
+          },
+          "name": "google/zerocopy issue #3731"
+        },
+        {
+          "identity": {
+            "commit": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "4.30.0-rc2"
+          },
+          "name": "Lean 4.30.0-rc2"
+        }
+      ],
+      "topics": [
+        "anneal/issue-3730",
+        "anneal/issue-3731",
+        "mcp/tasks",
+        "lean/lsp",
+        "anneal/interactive-verification"
+      ]
+    },
+    "anneal-3730-mcp-2026-task-wire-controls-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "revision": "2026-07-28",
+            "source": "https://modelcontextprotocol.io/specification/2026-07-28/basic/versioning"
+          },
+          "name": "Model Context Protocol base specification"
+        },
+        {
+          "identity": {
+            "revision": "2026-07-28 draft as read 2026-09-29",
+            "source": "https://tasks.extensions.modelcontextprotocol.io/specification/draft/tasks"
+          },
+          "name": "MCP Tasks extension specification"
+        },
+        {
+          "identity": {
+            "bridge": "support/bridge.py",
+            "bridge_sha256": "2fe6aa257a42f02deade18f1a9ecb9862eb3b8c1bf3c809211f906853c56165e",
+            "probe_sha256": "154579a8f76b421cca54fe25fb2304aa1fb9d01e11c9f727f01af5b96b14df8b"
+          },
+          "name": "Local raw stdio bridge and client probe"
+        }
+      ],
+      "topics": [
+        "mcp/version-negotiation",
+        "mcp/task-lifecycle",
+        "anneal/interactive-architecture"
       ]
     },
     "anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29": {

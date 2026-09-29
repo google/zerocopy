@@ -1,0 +1,5 @@
+{
+  "I065": "The stdlib 2026-07-28 wire model covers discovery, per-request metadata, version retry, task opt-in and legacy fallback; a second current-wire toy bridge carried an actual pinned Lean goal and stale source digest. No SDK/client interoperability, existing Lean adapter, authenticated task store or Anneal MCP implementation was exercised.",
+  "I071": "The stdlib wire model covers polling, final result, cooperative task cancel and error classes; the Lean-backed composition shows cancel-before-start avoids a query and in-flight tasks/cancel forwards Lean $/cancelRequest with -32800, then suppresses the task result while a later goal query succeeds. Actual MCP client backpressure/subscriptions, durable reconnect, early compute interruption and Anneal task ownership remain untested.",
+  "I072": "No installed existing Lean MCP adapter was exercised. The current-wire plus actual Lean goal bridge is still standard-library toy code with a raw test client; two real clients sharing an Anneal workspace remain unrun."
+}

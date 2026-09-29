@@ -1,0 +1,21 @@
+{
+  "newly_exposed_cached_only_suite": {
+    "suite": "R49",
+    "package": "anneal-3730-mcp-2026-lean-goal-wire-composition-2026-09-29",
+    "target": "I065/I071/G03",
+    "why_distinct": "The prior current-wire bridge returned fixture text, while the prior Lean-backed task bridge used invented wire methods. R49 composed the current-shaped envelope with pinned actual Lean LSP and fresh batch.",
+    "completed": true,
+    "observed": "Sync and task paths returned the real Lean goal; stale hash rejected; cancel-before-start avoided a Lean query; in-flight tasks/cancel forwarded Lean $/cancelRequest and saw -32800, then suppressed final task result while a later goal query still succeeded.",
+    "boundary": "Toy stdio bridge/raw test client only; no existing SDK/adapter, durable cross-client task store, Anneal workspace or early compute-interruption claim."
+  },
+  "further_distinct_safe_cached_only_suite_now_identified": [],
+  "resource_gated_local_cell": "The R48 two-worker Lake/server cell remains unexecuted under its host-memory admission rule.",
+  "external_or_product_gates": [
+    "F03 later compatible Lean/Lake release absent locally",
+    "F04 built prepared Anneal archive absent in bounded inventory",
+    "G03/L09/I072 existing Lean MCP adapter and independent real clients absent locally",
+    "G15/product rows require implemented Anneal workspace, editor/MCP, scheduler or producer-authenticated mapping",
+    "Same-process Aeneas item API requires OCaml/Dune/opam or implementation work",
+    "Human study and independent host/native-platform trials require those participants or environments"
+  ]
+}
