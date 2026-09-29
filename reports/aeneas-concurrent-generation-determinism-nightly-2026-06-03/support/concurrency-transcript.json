@@ -1,0 +1,273 @@
+{
+  "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+  "input_sha256": "b98023ca3d222796ed4f08e9331e8ffa750c8971daeb786fea37a888b8c8d098",
+  "input_bytes": 19827,
+  "cwd": "repository root (recorded relative to report fixture)",
+  "processes": {
+    "independent_destination": [
+      {
+        "label": "worker-0",
+        "destination": "worker-0",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959639964291,
+        "ended_ns": 1942959914417166,
+        "elapsed_ms": 274.453,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-0\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-0/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173187 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      },
+      {
+        "label": "worker-1",
+        "destination": "worker-1",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959640000083,
+        "ended_ns": 1942959914459458,
+        "elapsed_ms": 274.459,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-1\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-1/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173316 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      },
+      {
+        "label": "worker-2",
+        "destination": "worker-2",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959640043125,
+        "ended_ns": 1942959915458958,
+        "elapsed_ms": 275.416,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-2\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-2/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.172964 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      },
+      {
+        "label": "worker-3",
+        "destination": "worker-3",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959639888125,
+        "ended_ns": 1942959914478041,
+        "elapsed_ms": 274.59,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Creating missing directory: $REPORT_SUPPORT/parallel-independent/worker-3\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-independent/worker-3/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.173312 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      }
+    ],
+    "same_writable_destination": [
+      {
+        "label": "shared-0",
+        "destination": "parallel-shared-dest",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959916392291,
+        "ended_ns": 1942960185490000,
+        "elapsed_ms": 269.098,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170263 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      },
+      {
+        "label": "shared-1",
+        "destination": "parallel-shared-dest",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959916428791,
+        "ended_ns": 1942960185302666,
+        "elapsed_ms": 268.874,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170183 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      },
+      {
+        "label": "shared-2",
+        "destination": "parallel-shared-dest",
+        "argv_flags": [
+          "-backend",
+          "lean",
+          "-no-progress-bar",
+          "-sequential",
+          "-split-files",
+          "-gen-lib-entry"
+        ],
+        "started_ns": 1942959916318958,
+        "ended_ns": 1942960185359291,
+        "elapsed_ms": 269.04,
+        "returncode": 0,
+        "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: $REPORT_SUPPORT/fixture/probe.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: $REPORT_SUPPORT/parallel-shared-dest/Probe.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.170320 seconds\n",
+        "stderr": "",
+        "inventory": {
+          "Funs.lean": {
+            "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+            "bytes": 1260
+          },
+          "Probe.lean": {
+            "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+            "bytes": 18
+          },
+          "Types.lean": {
+            "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+            "bytes": 506
+          }
+        }
+      }
+    ]
+  },
+  "summary": {
+    "independent_all_exit_0": true,
+    "independent_outputs_identical": true,
+    "independent_inventory": {
+      "Funs.lean": {
+        "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+        "bytes": 1260
+      },
+      "Probe.lean": {
+        "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "bytes": 18
+      },
+      "Types.lean": {
+        "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+        "bytes": 506
+      }
+    },
+    "shared_all_exit_0": true,
+    "shared_final_inventory": {
+      "Funs.lean": {
+        "sha256": "9fdb9d4781b4754efe0bd15153605dd2fb306bd186c5e2ff1e3390521de2ac25",
+        "bytes": 1260
+      },
+      "Probe.lean": {
+        "sha256": "88d15c5183e48c512f4ecfb38c430356859b255fe1dcf6a613fd51c7ba36820d",
+        "bytes": 18
+      },
+      "Types.lean": {
+        "sha256": "6451d177e48eacec9f29fd8557abbfb0fbbd8091164a1758465fe839d45083cd",
+        "bytes": 506
+      }
+    },
+    "shared_process_inventories_identical": true,
+    "shared_outputs_complete": true,
+    "independent_runs_overlapped": true,
+    "shared_runs_overlapped": true
+  }
+}

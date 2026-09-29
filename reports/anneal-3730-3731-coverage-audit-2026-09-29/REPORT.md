@@ -4,7 +4,7 @@
 
 Issue #3731 consolidates #3730 into 159 investigation IDs and its follow-up comment preserves the 174-item #3730-to-#3731 crosswalk plus 15 scope extensions. The full investigation ledger and crosswalk are included in `support/`.
 
-This pass added two report packages: a bounded executable identity/projection/publication suite and a direct Lean-server dependency-generation probe. They provide new evidence for subsets of 38 agenda IDs; none of the 159 investigations is declared complete by this audit. Existing reports remain evidence for their identified subjects, while their boundaries still apply. The ledger records prior report pointers, new evidence links, and the remaining delta for every I001–I159 item.
+This pass added three experiment report packages: a bounded identity/projection/publication suite, a direct Lean-server dependency-generation probe, and a concurrent Aeneas generation probe. They provide new evidence for subsets of 40 agenda IDs; none of the 159 investigations is declared complete by this audit. Existing reports remain evidence for their identified subjects, while their boundaries still apply. The ledger records prior report pointers, new evidence links, and the remaining delta for every I001–I159 item.
 
 The work is not a claim that all experiments in either issue have been executed. Human/agent evaluations, independent reproduction, broad concurrency/resource sweeps, other operating systems/filesystems, real MCP/editor vertical slices, and selected cross-version matrices remain open or conditional.
 
@@ -54,7 +54,7 @@ This extends the prior generated V1 `lake env lean --server` stale-import report
 
 ### Coverage remains partial across the agenda
 
-The ledger has 159 rows and 174 crosswalk rows. Thirty-eight IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here.
+The ledger has 159 rows and 174 crosswalk rows. Forty IDs point to one of this pass's bounded experiments; those are still partial. The rest point to relevant existing packages by research area or remain conditional. No item is declared complete because the issue items often require independent matrices, failure injection, exact toolchain tuples, or evaluation beyond the evidence acquired here.
 
 A useful next execution tranche is to use the installed pinned project tools for: (1) a real generated-workspace import-refresh matrix across `lake serve`, `lake env lean --server`, and direct prepared Lean; (2) a reproducible projection/parser fixture with real annotation syntax and version-checked edit application; (3) a two-consumer Lake prepared archive and interrupted publication control; and (4) an Aeneas/Charon generation manifest and same-process/concurrent-call probe. Before scaling past small consumer counts, measure live host memory and process usage. Human/agent evaluation and independent reproduction need separate operators and must not be inferred from local automation.
 
@@ -63,7 +63,7 @@ A useful next execution tranche is to use the installed pinned project tools for
 - The ledger was built from the two issue bodies/comment and relevant package navigation pointers. It is not a re-review of every technical claim in every referenced package.
 - “159 investigations” does not mean 159 report packages. The 174-row crosswalk is a mapping of suggestions, not completion evidence.
 - A linked prior package may contain strong execution evidence for a narrow pin while leaving the broader requested dimensions open; the ledger does not promote it to complete.
-- The new state model is finite and illustrative; the APFS pointer experiment is not a Lake cache or crash-durability test.
+- The new state model is finite and illustrative; the APFS pointer experiment is not a Lake cache or crash-durability test. The Aeneas concurrency probe used identical input and did not inject process failure or compile the generated files.
 - The direct Lean experiment applies to `v4.30.0-rc2` on arm64 macOS and the minimal fixture. It does not establish general stale-import behavior beyond the observed state.
 - No claim is made that #3730 or #3731 is complete, that Anneal has adopted any proposed design, or that an implementation is safe/unsafe as a whole.
 
@@ -73,6 +73,7 @@ A useful next execution tranche is to use the installed pinned project tools for
 - `support/3730-to-3731-crosswalk.csv` — every original #3730 suggestion and its consolidated #3731 destination (174 rows).
 - `anneal-interactive-model-probes-2026-09-29/REPORT.md` and its support artifacts — finite identity, coordinate, schedule, and APFS experiments.
 - `lean-same-server-dependency-generation-v4-30-0-rc2/REPORT.md` and its support artifacts — direct Lean server/batch comparison.
+- `aeneas-concurrent-generation-determinism-nightly-2026-06-03/REPORT.md` and its support artifacts — split-output concurrency and shared-generator-destination probe.
 - Existing relevant report packages are named per row in the ledger. They are contextual corpus evidence, not re-executed by this audit.
 
 The issue body/comment hashes and corpus tip are preserved in `REPORT.json`. Evidence roles for this report are **source** for agenda wording, **execution** for the two new packages, and **derived** for grouping and remaining-delta judgments.
