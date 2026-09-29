@@ -1,0 +1,860 @@
+{
+  "tools": {
+    "charon": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+    },
+    "aeneas": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+      "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+    },
+    "cargo": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+      "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+    },
+    "lean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "aeneas_olean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean",
+      "sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+    }
+  },
+  "preflight": {
+    "disk_free_bytes": 53740617728,
+    "memory_free_percent": 47,
+    "ram_bytes": 8589934592
+  },
+  "cells": [
+    {
+      "label": "serial-2",
+      "admission": {
+        "free_percent": 47,
+        "allowed": true
+      },
+      "workers": 2,
+      "parallel": false,
+      "seconds": 44.276,
+      "sampled_peak_rss_kib": 1999008,
+      "sampled_peak_processes": 3,
+      "peak_tree": {
+        "count": 1,
+        "rss_kib": 1999008,
+        "processes": [
+          {
+            "pid": 92206,
+            "ppid": 91477,
+            "pgid": 92206,
+            "rss_kib": 1999008,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ]
+      },
+      "footprint_samples": [],
+      "group_footprint_samples": [],
+      "samples": 595,
+      "min_free_percent": 36,
+      "abort": null,
+      "errors": [],
+      "lean_limit": null,
+      "units": [
+        {
+          "unit": 0,
+          "seconds": 30.92,
+          "commands": [
+            {
+              "label": "u0:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0",
+              "exit": 0,
+              "seconds": 0.521,
+              "stdout": "",
+              "stderr": "   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s\n"
+            },
+            {
+              "label": "u0:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0",
+              "exit": 0,
+              "seconds": 0.239,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.139472 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/consumer",
+              "exit": 0,
+              "seconds": 9.705,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/consumer",
+              "exit": 0,
+              "seconds": 6.314,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/consumer",
+              "exit": 0,
+              "seconds": 7.277,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u0/consumer",
+              "exit": 0,
+              "seconds": 6.862,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "ae8d4908a4f7c84902d2da499210d58c117a264ea10c0aa1b25df9e402fd355c",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        },
+        {
+          "unit": 1,
+          "seconds": 13.319,
+          "commands": [
+            {
+              "label": "u1:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1",
+              "exit": 0,
+              "seconds": 0.604,
+              "stdout": "",
+              "stderr": "   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.43s\n"
+            },
+            {
+              "label": "u1:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1",
+              "exit": 0,
+              "seconds": 0.281,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.147225 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/consumer",
+              "exit": 0,
+              "seconds": 6.47,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/consumer",
+              "exit": 0,
+              "seconds": 2.101,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/consumer",
+              "exit": 0,
+              "seconds": 2.071,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/serial-2/u1/consumer",
+              "exit": 0,
+              "seconds": 1.79,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "c6c04e6c92cd263fb9509c0a2aa6ce4fd4a61e63ae781edc1b504e11cd933ced",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        }
+      ],
+      "cleanup_tree": {
+        "count": 0,
+        "rss_kib": 0,
+        "processes": []
+      }
+    },
+    {
+      "label": "parallel-2",
+      "admission": {
+        "free_percent": 38,
+        "allowed": true
+      },
+      "workers": 2,
+      "parallel": true,
+      "seconds": 25.946,
+      "sampled_peak_rss_kib": 3599968,
+      "sampled_peak_processes": 6,
+      "peak_tree": {
+        "count": 2,
+        "rss_kib": 3599968,
+        "processes": [
+          {
+            "pid": 92570,
+            "ppid": 91477,
+            "pgid": 92570,
+            "rss_kib": 1800048,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          },
+          {
+            "pid": 92571,
+            "ppid": 91477,
+            "pgid": 92571,
+            "rss_kib": 1799920,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ]
+      },
+      "footprint_samples": [],
+      "group_footprint_samples": [],
+      "samples": 357,
+      "min_free_percent": 35,
+      "abort": null,
+      "errors": [],
+      "lean_limit": null,
+      "units": [
+        {
+          "unit": 0,
+          "seconds": 25.922,
+          "commands": [
+            {
+              "label": "u0:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0",
+              "exit": 0,
+              "seconds": 0.501,
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s\n"
+            },
+            {
+              "label": "u0:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0",
+              "exit": 0,
+              "seconds": 0.277,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.146988 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/consumer",
+              "exit": 0,
+              "seconds": 6.522,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/consumer",
+              "exit": 0,
+              "seconds": 5.752,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/consumer",
+              "exit": 0,
+              "seconds": 6.866,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u0/consumer",
+              "exit": 0,
+              "seconds": 6.003,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "0bd78b780eeba59325096c41a0941f498b9ff21f1bacc76ec8be1d49b76f246c",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        },
+        {
+          "unit": 1,
+          "seconds": 25.916,
+          "commands": [
+            {
+              "label": "u1:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1",
+              "exit": 0,
+              "seconds": 0.501,
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.36s\n"
+            },
+            {
+              "label": "u1:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1",
+              "exit": 0,
+              "seconds": 0.277,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.146975 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/consumer",
+              "exit": 0,
+              "seconds": 6.529,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/consumer",
+              "exit": 0,
+              "seconds": 5.752,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/consumer",
+              "exit": 0,
+              "seconds": 6.866,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2/u1/consumer",
+              "exit": 0,
+              "seconds": 5.989,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "d444abf9efcecf28eea410c10ad1beb68f8301d857c395313cc948b1450fdb00",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        }
+      ],
+      "cleanup_tree": {
+        "count": 0,
+        "rss_kib": 0,
+        "processes": []
+      }
+    },
+    {
+      "label": "parallel-2-lean1",
+      "admission": {
+        "free_percent": 37,
+        "allowed": true
+      },
+      "workers": 2,
+      "parallel": true,
+      "seconds": 25.868,
+      "sampled_peak_rss_kib": 1999216,
+      "sampled_peak_processes": 6,
+      "peak_tree": {
+        "count": 1,
+        "rss_kib": 1999216,
+        "processes": [
+          {
+            "pid": 93103,
+            "ppid": 91477,
+            "pgid": 93103,
+            "rss_kib": 1999216,
+            "comm": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean"
+          }
+        ]
+      },
+      "footprint_samples": [],
+      "group_footprint_samples": [],
+      "samples": 350,
+      "min_free_percent": 37,
+      "abort": null,
+      "errors": [],
+      "lean_limit": 1,
+      "units": [
+        {
+          "unit": 0,
+          "seconds": 25.85,
+          "commands": [
+            {
+              "label": "u0:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0",
+              "exit": 0,
+              "seconds": 0.546,
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s\n"
+            },
+            {
+              "label": "u0:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0",
+              "exit": 0,
+              "seconds": 0.283,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.148986 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/consumer",
+              "exit": 0,
+              "seconds": 1.717,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/consumer",
+              "exit": 0,
+              "seconds": 1.791,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/consumer",
+              "exit": 0,
+              "seconds": 1.746,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u0:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u0/consumer",
+              "exit": 0,
+              "seconds": 1.671,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "c9dbe65869e29ac8f0a0ddb351918b0ec069dac1236b61a84e4130d97b2c8986",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        },
+        {
+          "unit": 1,
+          "seconds": 18.923,
+          "commands": [
+            {
+              "label": "u1:charon",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+                "cargo",
+                "--preset",
+                "aeneas",
+                "--dest-file",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/current.llbc",
+                "--",
+                "--manifest-path",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/crate/Cargo.toml",
+                "--lib",
+                "--offline",
+                "--locked",
+                "-j",
+                "1"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1",
+              "exit": 0,
+              "seconds": 0.545,
+              "stdout": "",
+              "stderr": "    Blocking waiting for file lock on package cache\n    Blocking waiting for file lock on package cache\n   Compiling pipeline_workload v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s\n"
+            },
+            {
+              "label": "u1:aeneas",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+                "-backend",
+                "lean",
+                "-no-progress-bar",
+                "-sequential",
+                "-split-files",
+                "-gen-lib-entry",
+                "-dest",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/generated",
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/current.llbc"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1",
+              "exit": 0,
+              "seconds": 0.282,
+              "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.148987 seconds\n",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Types",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Types.olean",
+                "Current/Types.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/consumer",
+              "exit": 0,
+              "seconds": 8.103,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current/Funs",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current/Funs.olean",
+                "Current/Funs.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/consumer",
+              "exit": 0,
+              "seconds": 4.913,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:Current",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "-o",
+                "Current.olean",
+                "Current.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/consumer",
+              "exit": 0,
+              "seconds": 3.326,
+              "stdout": "",
+              "stderr": ""
+            },
+            {
+              "label": "u1:lean:proof",
+              "argv": [
+                "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+                "Proof.lean"
+              ],
+              "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-combined-pipeline-concurrency-2026-09-29/support/work/parallel-2-lean1/u1/consumer",
+              "exit": 0,
+              "seconds": 1.751,
+              "stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+              "stderr": ""
+            }
+          ],
+          "hashes": {
+            "rust": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622",
+            "llbc": "0db255b43b7d0a318c0476691bc723501197f7b594255556627b982e3fcc0c15",
+            "types": "2117be5691a2bb932beae6c2d4d68ab6025eb7ff28c29282c05215885599655e",
+            "funs": "9f46bcf2a3adc9f3574b5f14b607d9e11ad1de3007d6113add5f715fd6f72ce7",
+            "entry": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e",
+            "proof": "487cc2eb0993a04ce40fde059b225a91d944ee6899663ef85407cb75e3c12ec1",
+            "funs_olean": "e04ad2a37e3f2c5d45b35d16bf468cde46e10627c83409a69cf3d920acd7df0b"
+          },
+          "axiom_stdout": "'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\n'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\n"
+        }
+      ],
+      "cleanup_tree": {
+        "count": 0,
+        "rss_kib": 0,
+        "processes": []
+      }
+    },
+    {
+      "label": "parallel-4",
+      "admission": {
+        "free_percent": 38,
+        "allowed": false,
+        "reason": "requires >=45% free, 2-worker sampled peak <1,000,000 KiB, and >15 GiB disk"
+      }
+    }
+  ],
+  "guards": {
+    "rss_cap_kib": 4000000,
+    "process_cap": 40,
+    "cell_cap_s": 90
+  },
+  "footprint_mode": "off",
+  "output_comparison": {
+    "rust": true,
+    "types": true,
+    "funs": true,
+    "entry": true,
+    "funs_olean": true
+  }
+}

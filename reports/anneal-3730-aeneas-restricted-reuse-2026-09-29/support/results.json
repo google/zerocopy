@@ -1,0 +1,732 @@
+{
+  "tools": {
+    "charon": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+      "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+    },
+    "aeneas": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+      "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+    },
+    "lean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    },
+    "aeneas_olean": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean",
+      "sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+    }
+  },
+  "commands": [
+    {
+      "label": "base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_reuse",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.383
+    },
+    {
+      "label": "base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/base",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/base/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/base/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/base/Fixture.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.125008 seconds\n",
+      "stderr": "",
+      "seconds": 0.223
+    },
+    {
+      "label": "body:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_reuse",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.053
+    },
+    {
+      "label": "body:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/body",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/body/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/body/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/body/Fixture.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.124118 seconds\n",
+      "stderr": "",
+      "seconds": 0.211
+    },
+    {
+      "label": "signature:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "trait_reuse",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 0.052
+    },
+    {
+      "label": "signature:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/bin/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/signature",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/fixture.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/signature/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/signature/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/outputs/signature/Fixture.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.124676 seconds\n",
+      "stderr": "",
+      "seconds": 0.212
+    },
+    {
+      "label": "full-base:compile:Fixture/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Types.olean",
+        "Fixture/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 5.852
+    },
+    {
+      "label": "full-base:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.993
+    },
+    {
+      "label": "full-base:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.759
+    },
+    {
+      "label": "full-base:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-base",
+      "exit": 0,
+      "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 1.611
+    },
+    {
+      "label": "full-body:compile:Fixture/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Types.olean",
+        "Fixture/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-body",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.737
+    },
+    {
+      "label": "full-body:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-body",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.621
+    },
+    {
+      "label": "full-body:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-body",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 2.135
+    },
+    {
+      "label": "full-body:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-body",
+      "exit": 0,
+      "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 2.371
+    },
+    {
+      "label": "full-signature:compile:Fixture/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Types.olean",
+        "Fixture/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.855
+    },
+    {
+      "label": "full-signature:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.696
+    },
+    {
+      "label": "full-signature:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.778
+    },
+    {
+      "label": "full-signature:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/full-signature",
+      "exit": 0,
+      "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 1.645
+    },
+    {
+      "label": "hybrid-body:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-body",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.622
+    },
+    {
+      "label": "hybrid-body:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-body",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 5.764
+    },
+    {
+      "label": "hybrid-body:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-body",
+      "exit": 0,
+      "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 14.059
+    },
+    {
+      "label": "hybrid-signature:compile:Fixture/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Types.olean",
+        "Fixture/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 11.624
+    },
+    {
+      "label": "hybrid-signature:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 3.633
+    },
+    {
+      "label": "hybrid-signature:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-signature",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 2.958
+    },
+    {
+      "label": "hybrid-signature:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/hybrid-signature",
+      "exit": 0,
+      "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 3.327
+    },
+    {
+      "label": "unsafe-body-funs:compile:Fixture",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture.olean",
+        "Fixture.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/unsafe-body-funs",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "",
+      "seconds": 1.653
+    },
+    {
+      "label": "unsafe-body-funs:proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/unsafe-body-funs",
+      "exit": 1,
+      "stdout": "Proof.lean:2:67: error: Tactic `rfl` failed: The left-hand side\n  trait_reuse.core.use_step 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 3#u32\n\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 3#u32\nProof.lean:3:64: error: Tactic `rfl` failed: The left-hand side\n  trait_reuse.combine 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 14#u32\n\n\u22a2 trait_reuse.combine 1#u32 = Aeneas.Std.Result.ok 14#u32\n'caller' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+      "stderr": "",
+      "seconds": 1.614
+    },
+    {
+      "label": "unsafe-signature-types:compile:Fixture/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Fixture/Funs.olean",
+        "Fixture/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-aeneas-restricted-reuse-2026-09-29/support/work/unsafe-signature-types",
+      "exit": 1,
+      "stdout": "Fixture/Funs.lean:29:10: error: Type mismatch\n  Trait_reuseCoreStep.step\nhas type\n  U32 \u2192 U32 \u2192 Result U32\nbut is expected to have type\n  U32 \u2192 Result U32\n",
+      "stderr": "",
+      "seconds": 1.681
+    }
+  ],
+  "variants": {
+    "base": {
+      "rust_sha256": "ed29b097aacbf211949aab72a03c28fbd7aab19bf8cebf18a1100f42a72ef773",
+      "llbc_sha256": "5604623aec7fbe2d2b7705ba1720eb1b252055f6900fd9a2edd357d8edf7f74c",
+      "generated": {
+        "Fixture.lean": {
+          "bytes": 20,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Funs.lean": {
+          "bytes": 2609,
+          "sha256": "95ebe7eceb08b6bad387a2aed200b95dddb47f4289ce69e4b28b0e67d51c6634"
+        },
+        "Types.lean": {
+          "bytes": 895,
+          "sha256": "1164c147f3b3a875b851e0031504bdcb7700e312bb6988a261223154b588c4f4"
+        }
+      },
+      "aeneas_seconds": 0.223,
+      "charon_seconds": 0.383,
+      "fresh_lean": {
+        "compile": {
+          "seconds": 9.604,
+          "exits": [
+            0,
+            0,
+            0
+          ],
+          "compiled": [
+            "Fixture/Types",
+            "Fixture/Funs",
+            "Fixture"
+          ]
+        },
+        "proof": {
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "proof_sha256": "ed1253b0fa56125b9df8a9de210c9aa5e6a98e04842be4159d941a174d4e201f"
+        }
+      }
+    },
+    "body": {
+      "rust_sha256": "4d2446f2b6e6fda42783eaecda2c2ff2e9cfec67ed659b423f3fd89d492a1232",
+      "llbc_sha256": "6b9e369b7250abf67afe6028c30d1525a466452de796c7a4dab986daf705089d",
+      "generated": {
+        "Fixture.lean": {
+          "bytes": 20,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Funs.lean": {
+          "bytes": 2609,
+          "sha256": "58da7d09d475c0e7c28ac43f666315d10633d231f5fd03511d9a1efa19b8e95e"
+        },
+        "Types.lean": {
+          "bytes": 895,
+          "sha256": "1164c147f3b3a875b851e0031504bdcb7700e312bb6988a261223154b588c4f4"
+        }
+      },
+      "aeneas_seconds": 0.211,
+      "charon_seconds": 0.053,
+      "fresh_lean": {
+        "compile": {
+          "seconds": 5.493,
+          "exits": [
+            0,
+            0,
+            0
+          ],
+          "compiled": [
+            "Fixture/Types",
+            "Fixture/Funs",
+            "Fixture"
+          ]
+        },
+        "proof": {
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "proof_sha256": "7e8f792f3aa033043a23c5bdbe0ba21486e7e3544d119d19cdc2cb0d261b02e0"
+        }
+      }
+    },
+    "signature": {
+      "rust_sha256": "85642b32d2c9e34c100b6e87a6854652ecea7b14a228e14ea95a4c686bd5d4eb",
+      "llbc_sha256": "2d189e18c1741db448adce9067859bbb78545c0d2fbe613a1c5ab68bc18e71fc",
+      "generated": {
+        "Fixture.lean": {
+          "bytes": 20,
+          "sha256": "f6d518cd848c23969e702224afa273b692578fbc0b5f3b48d2fbf31e4932d626"
+        },
+        "Funs.lean": {
+          "bytes": 2635,
+          "sha256": "32b50304abbabfe8ed524560f59e689e55e8c26ef0b8d4e9a312a6223d7c6987"
+        },
+        "Types.lean": {
+          "bytes": 907,
+          "sha256": "42711c5cd2a12df7e3ec5f34ef0340536944b21c71b7bcf871077ab11a67b118"
+        }
+      },
+      "aeneas_seconds": 0.212,
+      "charon_seconds": 0.052,
+      "fresh_lean": {
+        "compile": {
+          "seconds": 5.329,
+          "exits": [
+            0,
+            0,
+            0
+          ],
+          "compiled": [
+            "Fixture/Types",
+            "Fixture/Funs",
+            "Fixture"
+          ]
+        },
+        "proof": {
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "proof_sha256": "ed1253b0fa56125b9df8a9de210c9aa5e6a98e04842be4159d941a174d4e201f"
+        }
+      }
+    }
+  },
+  "policy": {
+    "body": {
+      "source_equal": {
+        "Fixture/Types": true,
+        "Fixture/Funs": false,
+        "Fixture": true
+      },
+      "artifact_reuse": {
+        "Fixture/Types": true,
+        "Fixture/Funs": false,
+        "Fixture": false
+      },
+      "graph": {
+        "Fixture/Types": [],
+        "Fixture/Funs": [
+          "Fixture/Types"
+        ],
+        "Fixture": [
+          "Fixture/Funs"
+        ]
+      },
+      "rule": "reuse compiled OLean only if module source bytes and all imported generated module artifacts are unchanged",
+      "hybrid": {
+        "compile": {
+          "seconds": 7.386,
+          "exits": [
+            0,
+            0
+          ],
+          "compiled": [
+            "Fixture/Funs",
+            "Fixture"
+          ]
+        },
+        "proof": {
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "proof_sha256": "7e8f792f3aa033043a23c5bdbe0ba21486e7e3544d119d19cdc2cb0d261b02e0"
+        },
+        "copied_source": [
+          "Fixture/Types",
+          "Fixture"
+        ],
+        "copied_olean": [
+          "Fixture/Types"
+        ]
+      }
+    },
+    "signature": {
+      "source_equal": {
+        "Fixture/Types": false,
+        "Fixture/Funs": false,
+        "Fixture": true
+      },
+      "artifact_reuse": {
+        "Fixture/Types": false,
+        "Fixture/Funs": false,
+        "Fixture": false
+      },
+      "graph": {
+        "Fixture/Types": [],
+        "Fixture/Funs": [
+          "Fixture/Types"
+        ],
+        "Fixture": [
+          "Fixture/Funs"
+        ]
+      },
+      "rule": "reuse compiled OLean only if module source bytes and all imported generated module artifacts are unchanged",
+      "hybrid": {
+        "compile": {
+          "seconds": 18.216,
+          "exits": [
+            0,
+            0,
+            0
+          ],
+          "compiled": [
+            "Fixture/Types",
+            "Fixture/Funs",
+            "Fixture"
+          ]
+        },
+        "proof": {
+          "exit": 0,
+          "stdout": "'caller' depends on axioms: [propext, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+          "proof_sha256": "ed1253b0fa56125b9df8a9de210c9aa5e6a98e04842be4159d941a174d4e201f"
+        },
+        "copied_source": [
+          "Fixture"
+        ],
+        "copied_olean": []
+      }
+    }
+  },
+  "controls": {
+    "stale_funs": {
+      "compile": {
+        "seconds": 1.653,
+        "exits": [
+          0
+        ],
+        "compiled": [
+          "Fixture"
+        ]
+      },
+      "proof": {
+        "exit": 1,
+        "stdout": "Proof.lean:2:67: error: Tactic `rfl` failed: The left-hand side\n  trait_reuse.core.use_step 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 3#u32\n\n\u22a2 trait_reuse.core.use_step 1#u32 = Aeneas.Std.Result.ok 3#u32\nProof.lean:3:64: error: Tactic `rfl` failed: The left-hand side\n  trait_reuse.combine 1#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 14#u32\n\n\u22a2 trait_reuse.combine 1#u32 = Aeneas.Std.Result.ok 14#u32\n'caller' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n'combined' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\n'side' depends on axioms: [propext, Classical.choice, Quot.sound]\n",
+        "proof_sha256": "7e8f792f3aa033043a23c5bdbe0ba21486e7e3544d119d19cdc2cb0d261b02e0"
+      }
+    },
+    "stale_types": {
+      "compile": {
+        "seconds": 1.681,
+        "exits": [
+          1
+        ],
+        "compiled": [
+          "Fixture/Funs"
+        ]
+      }
+    }
+  },
+  "generated_import_graph": {
+    "base": {
+      "Fixture/Types": [],
+      "Fixture/Funs": [
+        "Fixture/Types"
+      ],
+      "Fixture": [
+        "Fixture/Funs"
+      ]
+    },
+    "body": {
+      "Fixture/Types": [],
+      "Fixture/Funs": [
+        "Fixture/Types"
+      ],
+      "Fixture": [
+        "Fixture/Funs"
+      ]
+    },
+    "signature": {
+      "Fixture/Types": [],
+      "Fixture/Funs": [
+        "Fixture/Types"
+      ],
+      "Fixture": [
+        "Fixture/Funs"
+      ]
+    }
+  },
+  "limits": [
+    "one-shot whole-crate Aeneas CLI on every variant",
+    "oracle compares fresh generated bytes before allowing reuse",
+    "no Aeneas internal incremental API",
+    "module-level rather than declaration-level granularity",
+    "fresh Lean acceptance checks selected claims, not Rust-to-Lean semantic equivalence"
+  ]
+}

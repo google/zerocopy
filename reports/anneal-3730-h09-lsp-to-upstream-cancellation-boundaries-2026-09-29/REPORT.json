@@ -1,0 +1,28 @@
+{
+  "topics": [
+    "anneal/interactive-cancellation",
+    "lean/language-server",
+    "cargo/process-lifecycle",
+    "research/h09"
+  ],
+  "subjects": [
+    {
+      "name": "Lean direct-server cancellation fixture",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Cargo private process-group control",
+      "identity": {
+        "version": "1.98.1",
+        "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+        "host": "arm64-apple-darwin"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,42 @@
+{
+  "topics": [
+    "anneal/interactive-architecture",
+    "charon/concurrency",
+    "aeneas/concurrency",
+    "lean/resource-use"
+  ],
+  "subjects": [
+    {
+      "name": "Pinned local Charon CLI",
+      "identity": {
+        "version": "0.1.210",
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      }
+    },
+    {
+      "name": "Pinned local Aeneas CLI",
+      "identity": {
+        "release": "nightly-2026.06.03",
+        "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      }
+    },
+    {
+      "name": "Pinned local Rust nightly Cargo",
+      "identity": {
+        "toolchain": "nightly-2026-05-31-aarch64-apple-darwin",
+        "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+      }
+    },
+    {
+      "name": "Lean 4 batch checker and cached Aeneas library",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

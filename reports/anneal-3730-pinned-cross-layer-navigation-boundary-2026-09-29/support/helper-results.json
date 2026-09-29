@@ -1,0 +1,478 @@
+{
+  "schema": 1,
+  "commands": [
+    {
+      "label": "base-charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "loop_nav",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.176458 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-lean-compile-Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-lean-compile-Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-lean-compile-Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-lean-check-eval",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"loop_nav.sum_to_loop.body (n x i : Aeneas.Std.U32) :\\n  Aeneas.Std.Result (Aeneas.Std.ControlFlow (Aeneas.Std.U32 × Aeneas.Std.U32) Aeneas.Std.U32)\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"loop_nav.sum_to_loop (n x i : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"loop_nav.sum_to (n : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"Aeneas.Std.Result.ok { bv := 0x00000006#32 }\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-lean-rfl-attempt",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Attempt.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  loop_nav.sum_to 4#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 6#u32\\n\\n⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 6#u32\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Attempt.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 6#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Attempt.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "base-rustc",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition",
+        "2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "base-rust-oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "loop_nav",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.178196 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-lean-compile-Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-lean-compile-Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-lean-compile-Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-lean-check-eval",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Check.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"loop_nav.sum_to_loop.body (n x i : Aeneas.Std.U32) :\\n  Aeneas.Std.Result (Aeneas.Std.ControlFlow (Aeneas.Std.U32 × Aeneas.Std.U32) Aeneas.Std.U32)\",\"endPos\":{\"column\":6,\"line\":2},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":2},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"loop_nav.sum_to_loop (n x i : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"loop_nav.sum_to (n : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32\",\"endPos\":{\"column\":6,\"line\":4},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":4},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"Aeneas.Std.Result.ok { bv := 0x00000004#32 }\",\"endPos\":{\"column\":5,\"line\":5},\"fileName\":\"Check.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-lean-rfl-attempt",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Attempt.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  loop_nav.sum_to 4#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 4#u32\\n\\n⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 4#u32\",\"endPos\":{\"column\":5,\"line\":4},\"fileName\":\"Attempt.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":2,\"line\":4},\"severity\":\"error\"}\n{\"caption\":\"\",\"data\":\"⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 4#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Attempt.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "changed-rustc",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition",
+        "2021",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/RustOracle.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "changed-rust-oracle",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/rust-oracle"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "navigation": [
+    {
+      "case": "base",
+      "forward": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "charon_def_id": 0,
+          "obligation": "selected_value_eval",
+          "proof_line": 5,
+          "generated_decls": [
+            {
+              "name": "loop_nav.sum_to_loop.body",
+              "role": "loop_body",
+              "lines": [
+                22,
+                32
+              ]
+            },
+            {
+              "name": "loop_nav.sum_to_loop",
+              "role": "loop",
+              "lines": [
+                37,
+                42
+              ]
+            },
+            {
+              "name": "loop_nav.sum_to",
+              "role": "wrapper",
+              "lines": [
+                47,
+                48
+              ]
+            }
+          ]
+        }
+      ],
+      "reverse_helpers": [
+        {
+          "declaration": "loop_nav.sum_to_loop.body",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        },
+        {
+          "declaration": "loop_nav.sum_to_loop",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        },
+        {
+          "declaration": "loop_nav.sum_to",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        }
+      ],
+      "reverse_eval": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "rust_byte_range": [
+            21,
+            153
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ],
+      "reverse_goal_attempt": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "rust_byte_range": [
+            21,
+            153
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "changed",
+      "forward": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "charon_def_id": 0,
+          "obligation": "selected_value_eval",
+          "proof_line": 5,
+          "generated_decls": [
+            {
+              "name": "loop_nav.sum_to_loop.body",
+              "role": "loop_body",
+              "lines": [
+                22,
+                32
+              ]
+            },
+            {
+              "name": "loop_nav.sum_to_loop",
+              "role": "loop",
+              "lines": [
+                37,
+                42
+              ]
+            },
+            {
+              "name": "loop_nav.sum_to",
+              "role": "wrapper",
+              "lines": [
+                47,
+                48
+              ]
+            }
+          ]
+        }
+      ],
+      "reverse_helpers": [
+        {
+          "declaration": "loop_nav.sum_to_loop.body",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        },
+        {
+          "declaration": "loop_nav.sum_to_loop",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        },
+        {
+          "declaration": "loop_nav.sum_to",
+          "reverse": [
+            {
+              "rust_item": "loop_nav::sum_to",
+              "rust_byte_range": [
+                21,
+                153
+              ],
+              "charon_def_id": 0,
+              "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+            }
+          ]
+        }
+      ],
+      "reverse_eval": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "rust_byte_range": [
+            21,
+            153
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ],
+      "reverse_goal_attempt": [
+        {
+          "rust_item": "loop_nav::sum_to",
+          "rust_byte_range": [
+            21,
+            153
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ]
+    }
+  ],
+  "stale_rejections": {
+    "changed-source-under-base": "Rust source digest differs from selected generation",
+    "changed-helper-file-under-base": "generated_funs digest differs from selected generation"
+  },
+  "boundary": "One Charon local sum_to item and three Aeneas generated Lean defs; same-name/contained-span relation is derived, not producer-authenticated."
+}

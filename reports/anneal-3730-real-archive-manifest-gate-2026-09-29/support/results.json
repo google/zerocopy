@@ -1,0 +1,264 @@
+{
+  "subject": "synthetic local Lake producer/consumer, not Anneal archive",
+  "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+  "toolchain": "leanprover/lean4:v4.30.0-rc2",
+  "work": "$WORK",
+  "environment": {
+    "HOME": "$WORK/empty-home",
+    "XDG_CACHE_HOME": "$WORK/empty-cache",
+    "LAKE_CACHE_DIR": "",
+    "LAKE_ARTIFACT_CACHE": "false",
+    "LEAN_NUM_THREADS": "1",
+    "ELAN_TOOLCHAIN": "leanprover/lean4:v4.30.0-rc2",
+    "ELAN_HOME": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan"
+  },
+  "producer_inventory_before": {
+    ".lake/build/ir/Dep.c": [
+      1366,
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      16,
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274"
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      127,
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      289,
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      16,
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      4616,
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      16,
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479"
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      2656,
+      "f3708aff1a617b282311556f234c95640cb8bf5003abfffa01b99481f6d08ece"
+    ],
+    ".lake/config/[anonymous]/lakefile.olean": [
+      96672,
+      "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5"
+    ],
+    ".lake/config/[anonymous]/lakefile.olean.trace": [
+      184,
+      "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7"
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      96288,
+      "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      182,
+      "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+    ],
+    "Dep.lean": [
+      24,
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    ],
+    "lake-manifest.json": [
+      141,
+      "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10"
+    ],
+    "lakefile.lean": [
+      75,
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    ],
+    "lean-toolchain": [
+      29,
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    ]
+  },
+  "producer_inventory_after": {
+    ".lake/build/ir/Dep.c": [
+      1366,
+      "36383e740367044dc594c872922b0c37356a7c73a35f72ff5cdc252e829e052e"
+    ],
+    ".lake/build/ir/Dep.c.hash": [
+      16,
+      "81a0db98096573974e7bb672e19c1e07f2d8e0866efe3ec2ed159040faabd274"
+    ],
+    ".lake/build/ir/Dep.setup.json": [
+      127,
+      "729c52549fc5a892a5921f6b5d6a0fbeca2f8c409d76369c25b7332901c4b059"
+    ],
+    ".lake/build/lib/lean/Dep.ilean": [
+      289,
+      "ee34578f6077d4f2019dca615b30d0de14340a9d0d36cdb2870f3285adeb00e5"
+    ],
+    ".lake/build/lib/lean/Dep.ilean.hash": [
+      16,
+      "38cbde79f08f14b346e1cbef4cb532d9f8e69dcbb78823dbd06ec8759687cb42"
+    ],
+    ".lake/build/lib/lean/Dep.olean": [
+      4616,
+      "cebebbbc892381bd3920a0b12ab5e4d65f1804574357994ccb20f95f87f98f9b"
+    ],
+    ".lake/build/lib/lean/Dep.olean.hash": [
+      16,
+      "5757a56afdd183cc31485c7d051230316aee89345db9f80ef8fe438b128e6479"
+    ],
+    ".lake/build/lib/lean/Dep.trace": [
+      2656,
+      "f3708aff1a617b282311556f234c95640cb8bf5003abfffa01b99481f6d08ece"
+    ],
+    ".lake/config/[anonymous]/lakefile.olean": [
+      96672,
+      "a1eef42e284f30507d54a7f6b31f2f75257b7c65ff8fc48421d2f73f0da7a8d5"
+    ],
+    ".lake/config/[anonymous]/lakefile.olean.trace": [
+      184,
+      "60104303324389895d12a5a51e2f32ea4d2f0680de62572d30a282180f9937d7"
+    ],
+    ".lake/config/probe_dep/lakefile.olean": [
+      96288,
+      "5b9f58d6557128bc168e4930b4b7cdaa4edfb48e643f9c7b89dc0843d6996b75"
+    ],
+    ".lake/config/probe_dep/lakefile.olean.trace": [
+      182,
+      "ea2446d488ddcf5792e4df94a090ab2ad55b6271d902182ac7fb364aeaa8d935"
+    ],
+    "Dep.lean": [
+      24,
+      "15bbf60d162408dade43c6e618dd0d09b28c8fdeb7528c80e40329908f12b7a2"
+    ],
+    "lake-manifest.json": [
+      141,
+      "6b73c8625bc51f4f4204457edab42b8a20c3910ae7e428601844b6c085d48b10"
+    ],
+    "lakefile.lean": [
+      75,
+      "2f25e76df523b12c1cbb64e2fd9701e6eca8d501a630e70e5a9f3c82fbcef3ad"
+    ],
+    "lean-toolchain": [
+      29,
+      "ce4c4e3d87434b9663f46de25ce34b48a0cf0d392e0a320a0787b4674a2d7b61"
+    ]
+  },
+  "producer_unchanged": true,
+  "commands": [
+    {
+      "exit": 0,
+      "stdout": "\u2714 [2/3] Built Dep (175ms)\nBuild completed successfully (3 jobs).\n",
+      "stderr": "info: probe_dep: no previous manifest, creating one from scratch\n",
+      "label": "prepare-producer",
+      "argv": [
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "build",
+        "Dep"
+      ],
+      "cwd": "$WORK/producer",
+      "seconds": 0.585
+    },
+    {
+      "exit": 0,
+      "stdout": "\u2139 [4/5] Built Generated (175ms)\ninfo: Generated.lean:3:0: 'firstGoal' does not depend on any axioms\nBuild completed successfully (5 jobs).\n",
+      "stderr": "",
+      "label": "prime-consumer",
+      "argv": [
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "build",
+        "Generated"
+      ],
+      "cwd": "$WORK/primer",
+      "seconds": 0.58
+    },
+    {
+      "exit": 0,
+      "stdout": "{\"dynlibs\":[],\"importArts\":{\"Dep\":[\"$WORK/producer/.lake/build/lib/lean/Dep.olean\"]},\"isModule\":false,\"name\":\"Generated\",\"options\":{},\"package\":\"probe_consumer\",\"plugins\":[]}\n",
+      "stderr": "",
+      "label": "complete-setup",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*) (deny file-write* (subpath \"$WORK/producer\"))",
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/complete",
+      "seconds": 0.459
+    },
+    {
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'firstGoal' does not depend on any axioms\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Generated.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": "",
+      "label": "complete-batch",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*) (deny file-write* (subpath \"$WORK/producer\"))",
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/complete",
+      "seconds": 0.531
+    },
+    {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: operation not permitted (error code: 1)\n  file: $WORK/producer/.lake/config/probe_dep/lakefile.olean.lock\nFailed to load the Lake workspace.\n",
+      "label": "missing-setup",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*) (deny file-write* (subpath \"$WORK/producer\"))",
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/missing",
+      "seconds": 0.335
+    },
+    {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "info: probe_consumer: no previous manifest, creating one from scratch\nerror: operation not permitted (error code: 1)\n  file: $WORK/producer/.lake/config/probe_dep/lakefile.olean.lock\n",
+      "label": "missing-batch",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-p",
+        "(version 1) (allow default) (deny network*) (deny file-write* (subpath \"$WORK/producer\"))",
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "env",
+        "lean",
+        "--json",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/missing",
+      "seconds": 0.298
+    },
+    {
+      "exit": 1,
+      "stdout": "",
+      "stderr": "error: probe_dep: package directory not found: $WORK/complete/../producer\nFailed to load the Lake workspace.\n",
+      "label": "removed-setup",
+      "argv": [
+        "$TOOLCHAIN_BIN/lake",
+        "--keep-toolchain",
+        "setup-file",
+        "Generated.lean"
+      ],
+      "cwd": "$WORK/complete",
+      "seconds": 0.319
+    }
+  ]
+}

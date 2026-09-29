@@ -1,0 +1,127 @@
+{
+  "bundles": {
+    "june1": {
+      "aeneas_source_commit": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+      "charon_source_pin": "42836b36b666a980cbc9d438a8aed340ad3b848b",
+      "rust_toolchain": "nightly-2026-04-18-aarch64-apple-darwin",
+      "rust_toolchain_file": "[toolchain]\nchannel = \"nightly-2026-04-18\"\ncomponents = [ \"rustc-dev\", \"llvm-tools-preview\", \"rust-src\", \"miri\" ]\ntargets = [ \"x86_64-unknown-linux-gnu\", \"x86_64-apple-darwin\", \"x86_64-pc-windows-msvc\", \"aarch64-apple-darwin\", \"i686-unknown-linux-gnu\", \"powerpc64-unknown-linux-gnu\", \"riscv64gc-unknown-none-elf\" ]\n",
+      "lean_toolchain_file": "leanprover/lean4:v4.30.0-rc2",
+      "aeneas": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "bytes": 28018456,
+        "sha256": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22"
+      },
+      "charon": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/charon",
+        "bytes": 11732880,
+        "sha256": "6b53eb746f512191b8408cd9c1c71f674406232ffe3b44cbd50b777ae9e63ec6"
+      },
+      "charon_driver": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/charon-driver",
+        "bytes": 15515600,
+        "sha256": "7d2ab277bbe9fdead7c2aaed03df0f958199724af18783e7e508aef7a550e300"
+      },
+      "rustc": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/rustc",
+        "bytes": 412504,
+        "sha256": "5eb309f138d5f58e2ffe3f44eac3114e2ad10429b9e63a76fdb4f456a3526f83"
+      },
+      "cargo": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/cargo",
+        "bytes": 31819704,
+        "sha256": "8dc430d5dde6ffdc3dafda951a700d175858393fde86aa9b2af3bf9fcb9c65de"
+      },
+      "aeneas_olean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/backends/lean/.lake/build/lib/lean/Aeneas.olean",
+        "bytes": 1888,
+        "sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    },
+    "june3": {
+      "aeneas_source_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "charon_source_pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "rust_toolchain": "nightly-2026-05-31-aarch64-apple-darwin",
+      "rust_toolchain_file": "[toolchain]\nchannel = \"nightly-2026-05-31\"\ncomponents = [ \"rustc-dev\", \"llvm-tools-preview\", \"rust-src\", \"miri\" ]\ntargets = [ \"x86_64-unknown-linux-gnu\", \"x86_64-apple-darwin\", \"x86_64-pc-windows-msvc\", \"aarch64-apple-darwin\", \"i686-unknown-linux-gnu\", \"powerpc64-unknown-linux-gnu\", \"riscv64gc-unknown-none-elf\" ]\n",
+      "lean_toolchain_file": "leanprover/lean4:v4.30.0-rc2",
+      "aeneas": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "bytes": 28061048,
+        "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+      },
+      "charon": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "bytes": 11682416,
+        "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b"
+      },
+      "charon_driver": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon-driver",
+        "bytes": 16236032,
+        "sha256": "09a530746044c0ef169f7d0cfa099700c06934163a70b138cafc6d125d08037e"
+      },
+      "rustc": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "bytes": 412504,
+        "sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc"
+      },
+      "cargo": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "bytes": 31907720,
+        "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1"
+      },
+      "aeneas_olean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/backends/lean/.lake/build/lib/lean/Aeneas.olean",
+        "bytes": 1888,
+        "sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    }
+  },
+  "lean_pins": {
+    "leanprover--lean4---v4.29.0": {
+      "lean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lean",
+        "bytes": 49968,
+        "sha256": "2974847fff2e2621502841f4c2dbac4035b4847d6060a4f2087cbc0d04005e37"
+      },
+      "lake": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.29.0/bin/lake",
+        "bytes": 51344,
+        "sha256": "0e56506385ec20d56bffd7c031c4d48573ab5fdb74e5246ec8c45a220bebc68b"
+      }
+    },
+    "leanprover--lean4---v4.30.0-rc2": {
+      "lean": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "bytes": 49968,
+        "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      },
+      "lake": {
+        "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lake",
+        "bytes": 51840,
+        "sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"
+      }
+    }
+  },
+  "nix_lean_pins": [
+    {
+      "path": "/nix/store/wf1mr6pak9n88v5bwm6y749d8k19r0mw-lean-toolchain-aarch64-darwin-4.30.0-rc2/bin/lean",
+      "bytes": 49968,
+      "sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+    }
+  ],
+  "unpaired_cached_charon": {
+    "old": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/old/charon",
+      "bytes": 11885504,
+      "sha256": "094ba2dc1d23f82be5ad2bb378e94ce8c66ca9d13c551edfeb8597b392558272"
+    },
+    "may31": {
+      "path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/charon_revision/may31/charon",
+      "bytes": 11869024,
+      "sha256": "4c77ef61ab38ba88369406460dd992b6ae38375774747f979e0ce0801a88dc9e"
+    }
+  },
+  "disk_free_bytes_before_run": 53756276736,
+  "scope": "Known cached release bundles, Elan toolchains and Nix Lean toolchain paths; no downloads or installs.",
+  "f03_later_than_4_30_pins": [],
+  "f03_later_than_4_30_available": false
+}

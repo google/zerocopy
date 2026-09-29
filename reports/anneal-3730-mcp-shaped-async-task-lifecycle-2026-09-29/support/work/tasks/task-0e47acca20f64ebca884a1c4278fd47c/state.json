@@ -1,0 +1,13 @@
+{
+  "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+  "phase": "failed",
+  "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+  "ttl_ms": 2000,
+  "inject_failure": true,
+  "partial": {
+    "lsp_pid": 93157,
+    "goal_observed": true
+  },
+  "error": "injected failure after Lean goal before result publication",
+  "lsp_exit": 0
+}

@@ -1,0 +1,1294 @@
+{
+  "schema": 1,
+  "bundles": {
+    "june1": {
+      "aeneas_commit": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+      "charon_pin": "42836b36b666a980cbc9d438a8aed340ad3b848b",
+      "rust_toolchain": "nightly-2026-04-18-aarch64-apple-darwin",
+      "binary_sha256": {
+        "aeneas": "bfdb7610f994af03e0ad97ef640c7229880fc96a4a23cc4eda9a6b41c652bb22",
+        "charon": "6b53eb746f512191b8408cd9c1c71f674406232ffe3b44cbd50b777ae9e63ec6",
+        "charon-driver": "7d2ab277bbe9fdead7c2aaed03df0f958199724af18783e7e508aef7a550e300"
+      },
+      "rustc_sha256": "5eb309f138d5f58e2ffe3f44eac3114e2ad10429b9e63a76fdb4f456a3526f83",
+      "cargo_sha256": "8dc430d5dde6ffdc3dafda951a700d175858393fde86aa9b2af3bf9fcb9c65de",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+    },
+    "june3": {
+      "aeneas_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+      "charon_pin": "a535e914f74db4fd9e6be7048f4233270d8945c0",
+      "rust_toolchain": "nightly-2026-05-31-aarch64-apple-darwin",
+      "binary_sha256": {
+        "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "charon-driver": "09a530746044c0ef169f7d0cfa099700c06934163a70b138cafc6d125d08037e"
+      },
+      "rustc_sha256": "2ab7af1ea2ec5c69195fd8dfb0e1f91afdb7cc1e53127bba416616ce43a18dbc",
+      "cargo_sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+      "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+      "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+    }
+  },
+  "cases": {
+    "june1-base": {
+      "bundle": "june1",
+      "variant": "base",
+      "rust_values": [
+        1,
+        2,
+        3
+      ],
+      "source_sha256": "c571b242f56aea2c4ca6227b40590d982bb3ab674d0a24b8f32467407e139293",
+      "llbc_sha256": "d821b046d03f6ff5da29c204c3fff1151382b69b3e4c80c672bd890111e7ac2b",
+      "charon_version": "0.1.208",
+      "llbc_function_names": [
+        "inc",
+        "twice",
+        "choose",
+        "wrapping_add"
+      ],
+      "generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "consumer": {
+        "Admitted.lean": {
+          "bytes": 106,
+          "sha256": "ca0e6c57e34d5e6a36f36b294da2e9e25c0695bf4e136fb4d5e56cbac13c2b29"
+        },
+        "Current/Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Current/Funs.olean": {
+          "bytes": 23496,
+          "sha256": "ca69b5dc0c90278c5131f878f33697dc07477d6d8c3ede3f152e84919d885f09"
+        },
+        "Current/Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "Current/Types.olean": {
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Current.olean": {
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "Missing.lean": {
+          "bytes": 79,
+          "sha256": "dbcc6df6060558d98f033c866aea3ec1d9785b66338fdda4ee4b95228ad7383f"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "sha256": "6ac94761f534663c710b14916d1412d9a35d252bf5b20db6be9d9ae1c25d42d5"
+        },
+        "Wrong.lean": {
+          "bytes": 82,
+          "sha256": "cf76b0e1695e3583bbd1e114a6282d7db7f5c4958f54ccd5b0c0050462f7f54f"
+        }
+      },
+      "proof_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "proof_exit": 0,
+      "wrong_claim_exit": 1,
+      "missing_obligations_exit": 0,
+      "admitted_exit": 0,
+      "admitted_has_sorryAx": true,
+      "target_bytes_before_cleanup": 1084351
+    },
+    "june1-changed": {
+      "bundle": "june1",
+      "variant": "changed",
+      "rust_values": [
+        2,
+        4,
+        5
+      ],
+      "source_sha256": "dbc00097eb89527ec411dee5f437701c0aa9980bed747724dabe818daa428979",
+      "llbc_sha256": "eb710760439c8ba2a94e6530f05972ba610eb4184cf00ab2cad6202b053aad3b",
+      "charon_version": "0.1.208",
+      "llbc_function_names": [
+        "inc",
+        "twice",
+        "choose",
+        "wrapping_add"
+      ],
+      "generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "consumer": {
+        "Admitted.lean": {
+          "bytes": 106,
+          "sha256": "ca0e6c57e34d5e6a36f36b294da2e9e25c0695bf4e136fb4d5e56cbac13c2b29"
+        },
+        "Current/Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Current/Funs.olean": {
+          "bytes": 24392,
+          "sha256": "6785de9473752af8b4ad1a68fb6f44f1a505831889608fa919e2e43b09a4826f"
+        },
+        "Current/Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "Current/Types.olean": {
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Current.olean": {
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "Missing.lean": {
+          "bytes": 79,
+          "sha256": "791732ebce1e45bb73466fe1d243fd83a7f3e100dc73f5cc5df8efa9cca3d873"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "sha256": "73f1c4b3b51394c010a3a9e4f3b1501aede460568974be849cb1404106a6700c"
+        },
+        "Wrong.lean": {
+          "bytes": 82,
+          "sha256": "cf76b0e1695e3583bbd1e114a6282d7db7f5c4958f54ccd5b0c0050462f7f54f"
+        }
+      },
+      "proof_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "proof_exit": 0,
+      "wrong_claim_exit": 1,
+      "missing_obligations_exit": 0,
+      "admitted_exit": 0,
+      "admitted_has_sorryAx": true,
+      "target_bytes_before_cleanup": 1084388
+    },
+    "june3-base": {
+      "bundle": "june3",
+      "variant": "base",
+      "rust_values": [
+        1,
+        2,
+        3
+      ],
+      "source_sha256": "c571b242f56aea2c4ca6227b40590d982bb3ab674d0a24b8f32467407e139293",
+      "llbc_sha256": "7c7643ea2b4dbf613920d166adf3cdd26c5b040ea532b78b943ed646a944bbbd",
+      "charon_version": "0.1.210",
+      "llbc_function_names": [
+        "inc",
+        "twice",
+        "choose",
+        "wrapping_add"
+      ],
+      "generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "consumer": {
+        "Admitted.lean": {
+          "bytes": 106,
+          "sha256": "ca0e6c57e34d5e6a36f36b294da2e9e25c0695bf4e136fb4d5e56cbac13c2b29"
+        },
+        "Current/Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Current/Funs.olean": {
+          "bytes": 23496,
+          "sha256": "ca69b5dc0c90278c5131f878f33697dc07477d6d8c3ede3f152e84919d885f09"
+        },
+        "Current/Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "Current/Types.olean": {
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Current.olean": {
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "Missing.lean": {
+          "bytes": 79,
+          "sha256": "dbcc6df6060558d98f033c866aea3ec1d9785b66338fdda4ee4b95228ad7383f"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "sha256": "6ac94761f534663c710b14916d1412d9a35d252bf5b20db6be9d9ae1c25d42d5"
+        },
+        "Wrong.lean": {
+          "bytes": 82,
+          "sha256": "cf76b0e1695e3583bbd1e114a6282d7db7f5c4958f54ccd5b0c0050462f7f54f"
+        }
+      },
+      "proof_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "proof_exit": 0,
+      "wrong_claim_exit": 1,
+      "missing_obligations_exit": 0,
+      "admitted_exit": 0,
+      "admitted_has_sorryAx": true,
+      "target_bytes_before_cleanup": 1104452
+    },
+    "june3-changed": {
+      "bundle": "june3",
+      "variant": "changed",
+      "rust_values": [
+        2,
+        4,
+        5
+      ],
+      "source_sha256": "dbc00097eb89527ec411dee5f437701c0aa9980bed747724dabe818daa428979",
+      "llbc_sha256": "5e51de06bcc0eeb1e12c73a00fad80a8fe4ccdee9b2b2d05864286bbb9647bda",
+      "charon_version": "0.1.210",
+      "llbc_function_names": [
+        "inc",
+        "twice",
+        "choose",
+        "wrapping_add"
+      ],
+      "generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "consumer": {
+        "Admitted.lean": {
+          "bytes": 106,
+          "sha256": "ca0e6c57e34d5e6a36f36b294da2e9e25c0695bf4e136fb4d5e56cbac13c2b29"
+        },
+        "Current/Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Current/Funs.olean": {
+          "bytes": 24392,
+          "sha256": "6785de9473752af8b4ad1a68fb6f44f1a505831889608fa919e2e43b09a4826f"
+        },
+        "Current/Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "Current/Types.olean": {
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Current.olean": {
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "Missing.lean": {
+          "bytes": 79,
+          "sha256": "791732ebce1e45bb73466fe1d243fd83a7f3e100dc73f5cc5df8efa9cca3d873"
+        },
+        "Proof.lean": {
+          "bytes": 288,
+          "sha256": "73f1c4b3b51394c010a3a9e4f3b1501aede460568974be849cb1404106a6700c"
+        },
+        "Wrong.lean": {
+          "bytes": 82,
+          "sha256": "cf76b0e1695e3583bbd1e114a6282d7db7f5c4958f54ccd5b0c0050462f7f54f"
+        }
+      },
+      "proof_stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "proof_exit": 0,
+      "wrong_claim_exit": 1,
+      "missing_obligations_exit": 0,
+      "admitted_exit": 0,
+      "admitted_has_sorryAx": true,
+      "target_bytes_before_cleanup": 1104489
+    }
+  },
+  "cross_pair": {
+    "june1-on-june3-llbc": {
+      "exit": 1,
+      "stdout": "[\u001b[91mError\u001b[39m] error: Incompatible version of charon: this program supports llbc emitted by charon v0.1.208 but attempted to read a file emitted by charon v0.1.210.\n\n",
+      "stderr": "",
+      "inventory": {}
+    },
+    "june3-on-june1-llbc": {
+      "exit": 1,
+      "stdout": "[\u001b[91mError\u001b[39m] error: Incompatible version of charon: this program supports llbc emitted by charon v0.1.210 but attempted to read a file emitted by charon v0.1.208.\n\n",
+      "stderr": "",
+      "inventory": {}
+    }
+  },
+  "commands": [
+    {
+      "label": "june1-base:lock",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/crate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s\n"
+    },
+    {
+      "label": "june1-base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.136384 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:rust-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/target/debug/deps/behavior-2570a10aa5b4f9a7)\n"
+    },
+    {
+      "label": "june1-base:lean-compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:lean-compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:lean-compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:lean-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:wrong-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Wrong.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  bundle_golden.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 99#u32\\n\\n⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 99#u32\",\"endPos\":{\"column\":66,\"line\":2},\"fileName\":\"Wrong.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":63,\"line\":2},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:missing-obligations",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-base:admitted",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Admitted.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":16,\"line\":2},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n{\"caption\":\"\",\"data\":\"'admitted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:lock",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/crate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.31s\n"
+    },
+    {
+      "label": "june1-changed:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.140603 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:rust-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-04-18-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.33s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/target/debug/deps/behavior-2570a10aa5b4f9a7)\n"
+    },
+    {
+      "label": "june1-changed:lean-compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:lean-compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:lean-compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:lean-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:wrong-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Wrong.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  bundle_golden.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 99#u32\\n\\n⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 99#u32\",\"endPos\":{\"column\":66,\"line\":2},\"fileName\":\"Wrong.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":63,\"line\":2},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:missing-obligations",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june1-changed:admitted",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Admitted.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-changed/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":16,\"line\":2},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n{\"caption\":\"\",\"data\":\"'admitted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:lock",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/crate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.34s\n"
+    },
+    {
+      "label": "june3-base:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.138888 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:rust-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.35s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/target/debug/deps/behavior-dea3506018f6ad62)\n"
+    },
+    {
+      "label": "june3-base:lean-compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:lean-compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:lean-compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:lean-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:wrong-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Wrong.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  bundle_golden.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 99#u32\\n\\n⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 99#u32\",\"endPos\":{\"column\":66,\"line\":2},\"fileName\":\"Wrong.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":63,\"line\":2},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:missing-obligations",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-base:admitted",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Admitted.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":16,\"line\":2},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n{\"caption\":\"\",\"data\":\"'admitted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:lock",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "generate-lockfile",
+        "--offline"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/crate",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "cargo",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/current.llbc",
+        "--",
+        "--manifest-path",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/crate/Cargo.toml",
+        "--lib",
+        "--offline",
+        "--locked",
+        "-j",
+        "1"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed",
+      "exit": 0,
+      "stdout": "",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/crate)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s\n"
+    },
+    {
+      "label": "june3-changed:aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.139741 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:rust-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--test",
+        "behavior"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/crate",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest selected_values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": "   Compiling bundle_golden v0.1.0 (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/crate)\n    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.32s\n     Running tests/behavior.rs (/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/target/debug/deps/behavior-dea3506018f6ad62)\n"
+    },
+    {
+      "label": "june3-changed:lean-compile:Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:lean-compile:Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:lean-compile:Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:lean-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:wrong-claim",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Wrong.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 1,
+      "stdout": "{\"caption\":\"\",\"data\":\"Tactic `rfl` failed: The left-hand side\\n  bundle_golden.inc 0#u32\\nis not definitionally equal to the right-hand side\\n  Aeneas.Std.Result.ok 99#u32\\n\\n⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 99#u32\",\"endPos\":{\"column\":66,\"line\":2},\"fileName\":\"Wrong.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":63,\"line\":2},\"severity\":\"error\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:missing-obligations",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Missing.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "june3-changed:admitted",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Admitted.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-changed/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"declaration uses `sorry`\",\"endPos\":{\"column\":16,\"line\":2},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"hasSorry\",\"pos\":{\"column\":8,\"line\":2},\"severity\":\"warning\"}\n{\"caption\":\"\",\"data\":\"'admitted' depends on axioms: [propext, sorryAx, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Admitted.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1:stale-base-proof-after-source-change",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1:default-parallel:1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-1",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-1",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-1/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.138376 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1:default-parallel:2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-2",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-2",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-default-parallel-2/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.135746 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3:stale-base-proof-after-source-change",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/consumer",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"'obl_inc' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_twice' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":5},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":5},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"'obl_choose' depends on axioms: [propext, Classical.choice, Quot.sound]\",\"endPos\":{\"column\":6,\"line\":7},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"[anonymous]\",\"pos\":{\"column\":0,\"line\":7},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3:default-parallel:1",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-1",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-1",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-1/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-1/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-1/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.137697 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3:default-parallel:2",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-2",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-2",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-2/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-2/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-default-parallel-2/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.136808 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "june1-on-june3-llbc",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260928-reference-open-checks/aeneas_revision/old/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-on-june3-llbc",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-on-june3-llbc",
+      "exit": 1,
+      "stdout": "[\u001b[91mError\u001b[39m] error: Incompatible version of charon: this program supports llbc emitted by charon v0.1.208 but attempted to read a file emitted by charon v0.1.210.\n\n",
+      "stderr": ""
+    },
+    {
+      "label": "june3-on-june1-llbc",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-on-june1-llbc",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june1-base/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-compatible-bundle-upgrade-golden-2026-09-29/support/work/june3-on-june1-llbc",
+      "exit": 1,
+      "stdout": "[\u001b[91mError\u001b[39m] error: Incompatible version of charon: this program supports llbc emitted by charon v0.1.210 but attempted to read a file emitted by charon v0.1.208.\n\n",
+      "stderr": ""
+    }
+  ],
+  "comparisons": {
+    "base": {
+      "same_rust_source_sha256": true,
+      "raw_llbc_equal": false,
+      "generated_file_names_equal": true,
+      "generated_file_sha256_equal": true,
+      "old_generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "new_generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      }
+    },
+    "changed": {
+      "same_rust_source_sha256": true,
+      "raw_llbc_equal": false,
+      "generated_file_names_equal": true,
+      "generated_file_sha256_equal": true,
+      "old_generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      },
+      "new_generated": {
+        "Current.lean": {
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "Funs.lean": {
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "Types.lean": {
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        }
+      }
+    }
+  },
+  "freshness_controls": {
+    "june1": {
+      "stale_batch_exit": 0,
+      "old_import_source_sha256": "c571b242f56aea2c4ca6227b40590d982bb3ab674d0a24b8f32467407e139293",
+      "current_source_sha256": "dbc00097eb89527ec411dee5f437701c0aa9980bed747724dabe818daa428979",
+      "source_identity_gate_rejects": true
+    },
+    "june3": {
+      "stale_batch_exit": 0,
+      "old_import_source_sha256": "c571b242f56aea2c4ca6227b40590d982bb3ab674d0a24b8f32467407e139293",
+      "current_source_sha256": "dbc00097eb89527ec411dee5f437701c0aa9980bed747724dabe818daa428979",
+      "source_identity_gate_rejects": true
+    }
+  },
+  "parallel_option": {
+    "june1": {
+      "default_runs": [
+        {
+          "Current.lean": {
+            "bytes": 20,
+            "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+          },
+          "Funs.lean": {
+            "bytes": 1096,
+            "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+          },
+          "Types.lean": {
+            "bytes": 530,
+            "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+          }
+        },
+        {
+          "Current.lean": {
+            "bytes": 20,
+            "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+          },
+          "Funs.lean": {
+            "bytes": 1096,
+            "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+          },
+          "Types.lean": {
+            "bytes": 530,
+            "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+          }
+        }
+      ],
+      "two_defaults_equal": true,
+      "default_equals_sequential": true
+    },
+    "june3": {
+      "default_runs": [
+        {
+          "Current.lean": {
+            "bytes": 20,
+            "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+          },
+          "Funs.lean": {
+            "bytes": 1096,
+            "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+          },
+          "Types.lean": {
+            "bytes": 530,
+            "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+          }
+        },
+        {
+          "Current.lean": {
+            "bytes": 20,
+            "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+          },
+          "Funs.lean": {
+            "bytes": 1096,
+            "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+          },
+          "Types.lean": {
+            "bytes": 530,
+            "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+          }
+        }
+      ],
+      "two_defaults_equal": true,
+      "default_equals_sequential": true
+    }
+  },
+  "limits": [
+    "Two cached paired releases only; no isolated Aeneas-only comparison because cross-pair LLBC is rejected.",
+    "One tiny saved Rust crate and four sequential private targets; no Anneal generated workspace or service.",
+    "Fresh Lean checks use each bundle's cached Aeneas Lean backend plus already cached shared dependency packages.",
+    "Lean elaboration and selected Rust tests are not a proof of general translation soundness.",
+    "No later-than-4.30 Lean/Lake pin is installed for F03's requested upgrade cell."
+  ]
+}

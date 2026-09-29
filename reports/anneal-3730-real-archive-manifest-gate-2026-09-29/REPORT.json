@@ -1,0 +1,34 @@
+{
+  "topics": [
+    "anneal/prepared-environments",
+    "lake/manifest",
+    "lake/read-only-dependencies"
+  ],
+  "subjects": [
+    {
+      "name": "Lean and Lake 4.30.0-rc2 local executables",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "Aeneas macOS arm64 release tar, examined as an archive-availability distinction",
+      "identity": {
+        "artifact": "aeneas-macos-aarch64.tar.gz",
+        "sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61"
+      }
+    },
+    {
+      "name": "Synthetic prepared Lake producer and fresh consumers",
+      "identity": {
+        "artifact": "support/probe.py",
+        "sha256": "d1fc309aeeb98bf146cc5e2d078b2ae193c6fb4159f0b58c9dfe14c1c75414dd"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

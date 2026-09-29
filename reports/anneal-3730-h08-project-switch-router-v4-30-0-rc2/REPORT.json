@@ -1,0 +1,21 @@
+{
+  "topics": [
+    "anneal/project-routing",
+    "lean/language-server",
+    "lean/workspace-isolation",
+    "research/h08"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 direct-server A/B project-switch fixture",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+        "version": "v4.30.0-rc2",
+        "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "launch_mode": "separate direct lean --server processes with private LEAN_PATH"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

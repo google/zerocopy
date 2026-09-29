@@ -1,0 +1,7 @@
+{
+  "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+  "phase": "cancelled",
+  "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+  "ttl_ms": 2000,
+  "inject_failure": false
+}

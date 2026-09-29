@@ -1,0 +1,66 @@
+{
+  "handle": "task-cc38791ce67648efb1a8531284a5b003",
+  "phase": "complete",
+  "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+  "ttl_ms": 2000,
+  "inject_failure": false,
+  "partial": {
+    "lsp_pid": 93152,
+    "goal_observed": true
+  },
+  "result": {
+    "lsp_pid": 93152,
+    "wait": {
+      "id": 2,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "goal": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {
+        "goals": [
+          "n : Nat\n⊢ n + 0 = n"
+        ],
+        "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+      }
+    },
+    "diagnostics": {
+      "diagnostics": [
+        {
+          "fullRange": {
+            "end": {
+              "character": 6,
+              "line": 2
+            },
+            "start": {
+              "character": 41,
+              "line": 1
+            }
+          },
+          "leanTags": [
+            1
+          ],
+          "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+          "range": {
+            "end": {
+              "character": 0,
+              "line": 2
+            },
+            "start": {
+              "character": 41,
+              "line": 1
+            }
+          },
+          "severity": 1,
+          "source": "Lean 4"
+        }
+      ],
+      "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+      "version": 1
+    }
+  },
+  "completed_at": 1790689125.7941508,
+  "expires_at": 1790689127.7941508,
+  "lsp_exit": 0
+}

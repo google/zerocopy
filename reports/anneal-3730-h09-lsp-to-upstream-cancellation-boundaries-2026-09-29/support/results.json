@@ -1,0 +1,1199 @@
+{
+  "lean_version": "Lean (version 4.30.0-rc2, arm64-apple-darwin24.6.0, commit 3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc, Release)",
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "cargo_version": "cargo 1.98.1 (797e8a9bc 2026-08-05) (Homebrew)",
+  "cargo_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+  "preflight": {
+    "free_memory_percent": 46,
+    "disk_free_bytes": 53778845696
+  },
+  "lean": {
+    "source_sha256": "a0a9a0b77eaa62700033029fee8248b5315fa0c90a0c28fbbf088faf8f7cc280",
+    "request_id": 2,
+    "cancel_response": {
+      "error": {
+        "code": -32800,
+        "message": ""
+      },
+      "id": 2,
+      "jsonrpc": "2.0"
+    },
+    "later_wait_response": {
+      "id": 3,
+      "jsonrpc": "2.0",
+      "result": {}
+    },
+    "group_at_cancel": [
+      {
+        "pid": 87507,
+        "ppid": 87505,
+        "pgid": 87507,
+        "command": "$LEAN_BIN"
+      }
+    ],
+    "batch_returncode": 0,
+    "batch_stdout": "",
+    "batch_stderr": ""
+  },
+  "cargo": {
+    "victim_pid": 87527,
+    "peer_pid": 87553,
+    "victim_marker": "87549 87550",
+    "peer_marker": "87568 87569",
+    "victim_exit": -15,
+    "peer_exit": 0,
+    "retry_exit": 0,
+    "before": {
+      "victim": [
+        {
+          "pid": 87527,
+          "ppid": 87505,
+          "pgid": 87527,
+          "command": "$CARGO_BIN"
+        },
+        {
+          "pid": 87549,
+          "ppid": 87527,
+          "pgid": 87527,
+          "command": "$WORK/cargo-victim/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+        },
+        {
+          "pid": 87550,
+          "ppid": 87549,
+          "pgid": 87527,
+          "command": "/bin/sleep"
+        }
+      ],
+      "peer": [
+        {
+          "pid": 87553,
+          "ppid": 87505,
+          "pgid": 87553,
+          "command": "$CARGO_BIN"
+        },
+        {
+          "pid": 87568,
+          "ppid": 87553,
+          "pgid": 87553,
+          "command": "$WORK/cargo-peer/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+        },
+        {
+          "pid": 87569,
+          "ppid": 87568,
+          "pgid": 87553,
+          "command": "/bin/sleep"
+        }
+      ]
+    },
+    "after": {
+      "victim": [],
+      "peer": []
+    },
+    "peer_after_victim_cancel": {
+      "poll": null,
+      "group": [
+        {
+          "pid": 87553,
+          "ppid": 87505,
+          "pgid": 87553,
+          "command": "$CARGO_BIN"
+        },
+        {
+          "pid": 87568,
+          "ppid": 87553,
+          "pgid": 87553,
+          "command": "$WORK/cargo-peer/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+        },
+        {
+          "pid": 87569,
+          "ppid": 87568,
+          "pgid": 87553,
+          "command": "/bin/sleep"
+        }
+      ]
+    },
+    "victim_artifact_after_cancel": false,
+    "peer_artifact_after_completion": true,
+    "victim_artifact_after_retry": true,
+    "cargo_toml_sha256": "80f69d6473748e1f450a123684d1468222e921dbb2f13066e0d1cab0b56f4d93",
+    "build_script_sha256": "ea574cb29516fe9ebb21173ad1b0f129db8c515bd0f0b8ffef0c13ba01dd5f61"
+  },
+  "events": [
+    {
+      "kind": "lean_start",
+      "seconds": 0.0048,
+      "pid": 87507,
+      "argv": [
+        "$LEAN_BIN",
+        "--server"
+      ]
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.0278,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "method": "initialize",
+        "params": {
+          "processId": 87505,
+          "rootUri": "file://$WORK/lean",
+          "capabilities": {},
+          "initializationOptions": {
+            "hasWidgets": false
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.0317,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "result": {
+          "capabilities": {
+            "callHierarchyProvider": true,
+            "codeActionProvider": {
+              "codeActionKinds": [
+                "quickfix",
+                "refactor",
+                "source.organizeImports"
+              ],
+              "resolveProvider": true,
+              "workDoneProgress": false
+            },
+            "colorProvider": {
+              "workDoneProgress": false
+            },
+            "completionProvider": {
+              "resolveProvider": true,
+              "triggerCharacters": [
+                "."
+              ]
+            },
+            "declarationProvider": true,
+            "definitionProvider": true,
+            "documentHighlightProvider": true,
+            "documentSymbolProvider": true,
+            "experimental": {
+              "moduleHierarchyProvider": {},
+              "rpcProvider": {
+                "highlightMatchesProvider": {},
+                "rpcWireFormat": "v1"
+              }
+            },
+            "foldingRangeProvider": true,
+            "hoverProvider": true,
+            "inlayHintProvider": {
+              "resolveProvider": false,
+              "workDoneProgress": false
+            },
+            "referencesProvider": true,
+            "renameProvider": {
+              "prepareProvider": true
+            },
+            "semanticTokensProvider": {
+              "full": true,
+              "legend": {
+                "tokenModifiers": [
+                  "declaration",
+                  "definition",
+                  "readonly",
+                  "static",
+                  "deprecated",
+                  "abstract",
+                  "async",
+                  "modification",
+                  "documentation",
+                  "defaultLibrary"
+                ],
+                "tokenTypes": [
+                  "keyword",
+                  "variable",
+                  "property",
+                  "function",
+                  "namespace",
+                  "type",
+                  "class",
+                  "enum",
+                  "interface",
+                  "struct",
+                  "typeParameter",
+                  "parameter",
+                  "enumMember",
+                  "event",
+                  "method",
+                  "macro",
+                  "modifier",
+                  "comment",
+                  "string",
+                  "number",
+                  "regexp",
+                  "operator",
+                  "decorator",
+                  "leanSorryLike"
+                ]
+              },
+              "range": true
+            },
+            "signatureHelpProvider": {
+              "triggerCharacters": [
+                " "
+              ],
+              "workDoneProgress": false
+            },
+            "textDocumentSync": {
+              "change": 2,
+              "openClose": true,
+              "save": {
+                "includeText": true
+              },
+              "willSave": false,
+              "willSaveWaitUntil": false
+            },
+            "typeDefinitionProvider": true,
+            "workspaceSymbolProvider": true
+          },
+          "serverInfo": {
+            "name": "Lean 4 Server",
+            "version": "0.3.0"
+          }
+        }
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.0317,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "initialized",
+        "params": {}
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.0317,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/didOpen",
+        "params": {
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "languageId": "lean",
+            "version": 1,
+            "text": "import Lean\nopen Lean Elab Tactic\nelab \"pause\" : tactic => do\n  IO.sleep 3000\n  evalTactic (← `(tactic| trivial))\ntheorem slow : True := by\n  pause\n"
+          }
+        }
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.0317,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.4176,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/cancelRequest",
+        "params": {
+          "id": 2
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.4177,
+      "message": {
+        "id": "register_lean_watcher",
+        "jsonrpc": "2.0",
+        "method": "client/registerCapability",
+        "params": {
+          "registrations": [
+            {
+              "id": "lean_watcher",
+              "method": "workspace/didChangeWatchedFiles",
+              "registerOptions": {
+                "watchers": [
+                  {
+                    "globPattern": "**/*.lean"
+                  },
+                  {
+                    "globPattern": "**/*.ilean"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.4178,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": "register_lean_watcher",
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.4178,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.4178,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.4178,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 0
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.4178,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 0.5882,
+      "message": {
+        "id": 0,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 0.5882,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 0,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.1184,
+      "message": {
+        "id": 1,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 1.1185,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 1,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.2769,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 21,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.2769,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.277,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 1
+                },
+                "start": {
+                  "character": 0,
+                  "line": 1
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.2771,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 35,
+                  "line": 4
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.3075,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 0,
+                  "line": 2
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 7
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.3094,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            },
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 7,
+                  "line": 6
+                },
+                "start": {
+                  "character": 2,
+                  "line": 6
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 1.6398,
+      "message": {
+        "id": 2,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 1.6398,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 2,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 2.1515,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 2.1515,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 2.1699,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 2.1699,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 2.7001,
+      "message": {
+        "id": 5,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 2.7001,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 5,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 3.2242,
+      "message": {
+        "id": 6,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 3.2244,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 6,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 3.7396,
+      "message": {
+        "id": 7,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 3.7398,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 7,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.2321,
+      "message": {
+        "id": 8,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 4.2323,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 8,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.2552,
+      "message": {
+        "id": 9,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 4.2554,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 9,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3215,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3218,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [
+            {
+              "kind": 1,
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 5
+                },
+                "start": {
+                  "character": 0,
+                  "line": 5
+                }
+              }
+            }
+          ],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3227,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3227,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3228,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "$/lean/fileProgress",
+        "params": {
+          "processing": [],
+          "textDocument": {
+            "uri": "file://$WORK/lean/Slow.lean",
+            "version": 1
+          }
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3291,
+      "message": {
+        "error": {
+          "code": -32800,
+          "message": ""
+        },
+        "id": 2,
+        "jsonrpc": "2.0"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 4.3292,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 3,
+        "method": "textDocument/waitForDiagnostics",
+        "params": {
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 4.3297,
+      "message": {
+        "id": 3,
+        "jsonrpc": "2.0",
+        "result": {}
+      }
+    },
+    {
+      "kind": "lean_batch",
+      "seconds": 8.0562,
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "kind": "client_message",
+      "seconds": 8.0567,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 4,
+        "method": "shutdown",
+        "params": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 8.0568,
+      "message": {
+        "id": 10,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 8.0568,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 10,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 8.0569,
+      "message": {
+        "id": 11,
+        "jsonrpc": "2.0",
+        "method": "workspace/inlayHint/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 8.0569,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 11,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 8.0569,
+      "message": {
+        "id": 12,
+        "jsonrpc": "2.0",
+        "method": "workspace/semanticTokens/refresh"
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 8.0569,
+      "message": {
+        "jsonrpc": "2.0",
+        "id": 12,
+        "result": null
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 8.0586,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+          "diagnostics": [],
+          "uri": "file://$WORK/lean/Slow.lean",
+          "version": 1
+        }
+      }
+    },
+    {
+      "kind": "server_message",
+      "seconds": 8.0895,
+      "message": {
+        "id": 4,
+        "jsonrpc": "2.0",
+        "result": null
+      }
+    },
+    {
+      "kind": "client_message",
+      "seconds": 8.0895,
+      "message": {
+        "jsonrpc": "2.0",
+        "method": "exit"
+      }
+    },
+    {
+      "kind": "lean_exit",
+      "seconds": 8.2623,
+      "pid": 87507,
+      "returncode": 0,
+      "stderr": "",
+      "group_after": []
+    },
+    {
+      "kind": "cargo_stage",
+      "seconds": 20.2509,
+      "victim_pid": 87527,
+      "peer_pid": 87553,
+      "victim_marker": "87549 87550",
+      "peer_marker": "87568 87569",
+      "before": {
+        "victim": [
+          {
+            "pid": 87527,
+            "ppid": 87505,
+            "pgid": 87527,
+            "command": "$CARGO_BIN"
+          },
+          {
+            "pid": 87549,
+            "ppid": 87527,
+            "pgid": 87527,
+            "command": "$WORK/cargo-victim/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+          },
+          {
+            "pid": 87550,
+            "ppid": 87549,
+            "pgid": 87527,
+            "command": "/bin/sleep"
+          }
+        ],
+        "peer": [
+          {
+            "pid": 87553,
+            "ppid": 87505,
+            "pgid": 87553,
+            "command": "$CARGO_BIN"
+          },
+          {
+            "pid": 87568,
+            "ppid": 87553,
+            "pgid": 87553,
+            "command": "$WORK/cargo-peer/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+          },
+          {
+            "pid": 87569,
+            "ppid": 87568,
+            "pgid": 87553,
+            "command": "/bin/sleep"
+          }
+        ]
+      },
+      "after": {
+        "victim": [],
+        "peer": []
+      },
+      "peer_after_victim_cancel": {
+        "poll": null,
+        "group": [
+          {
+            "pid": 87553,
+            "ppid": 87505,
+            "pgid": 87553,
+            "command": "$CARGO_BIN"
+          },
+          {
+            "pid": 87568,
+            "ppid": 87553,
+            "pgid": 87553,
+            "command": "$WORK/cargo-peer/target/debug/build/cancel_probe-3ef51f78585e8bbf/build-script-build"
+          },
+          {
+            "pid": 87569,
+            "ppid": 87568,
+            "pgid": 87553,
+            "command": "/bin/sleep"
+          }
+        ]
+      },
+      "victim_artifact_after_cancel": false,
+      "peer_artifact_after_completion": true,
+      "victim_exit": -15,
+      "peer_exit": 0,
+      "retry_exit": 0,
+      "victim_stdout": "",
+      "victim_stderr": "   Compiling cancel_probe v0.1.0 ($WORK/cargo-victim)\n",
+      "peer_stdout": "",
+      "peer_stderr": "   Compiling cancel_probe v0.1.0 ($WORK/cargo-peer)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.50s\n",
+      "retry_stdout": "",
+      "retry_stderr": "   Compiling cancel_probe v0.1.0 ($WORK/cargo-victim)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.31s\n"
+    }
+  ]
+}

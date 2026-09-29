@@ -1,0 +1,26 @@
+{
+  "topics": [
+    "anneal/mcp-task-lifecycle",
+    "lean/lsp-goal-query",
+    "anneal/cancellation",
+    "anneal/reconnect-and-expiry",
+    "anneal/capability-negotiation"
+  ],
+  "subjects": [
+    {
+      "name": "cached Lean 4.30.0-rc2 language server",
+      "identity": {
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+      }
+    },
+    {
+      "name": "toy stdio task bridge and pinned fixture",
+      "identity": {
+        "bridge": "support/bridge.py",
+        "fixture_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "observations": "support/results.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

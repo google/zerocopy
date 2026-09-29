@@ -1,0 +1,533 @@
+{
+  "schema": 1,
+  "tool_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "generations": {
+    "base": {
+      "source_case": "base",
+      "artifacts": {
+        "rust_source": {
+          "path": "support/helper-artifacts/base/source.rs",
+          "bytes": 154,
+          "sha256": "1832cd4b44a37a5dba21751c7ecb0b4b942ff0ee9ed0aff1d06dfedf1ae9bc47"
+        },
+        "llbc": {
+          "path": "support/helper-artifacts/base/current.llbc",
+          "bytes": 16498,
+          "sha256": "b9f4ad090f10ccb428d43156f09f3d07a0c18c8f384550bedd53f784f2cc1449"
+        },
+        "generated_funs": {
+          "path": "support/helper-artifacts/base/generated/Funs.lean",
+          "bytes": 2041,
+          "sha256": "b197081a380ccbb407617fbf17493d938a7062f5cd01cdbe1ccdcca0ffbd0953"
+        },
+        "generated_types": {
+          "path": "support/helper-artifacts/base/generated/Types.lean",
+          "bytes": 515,
+          "sha256": "6e42a6f6721b1b7154b74a61f389284eb2ffe0cb5576e4a10b20842f212d145d"
+        },
+        "generated_entry": {
+          "path": "support/helper-artifacts/base/generated/Current.lean",
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "funs_olean": {
+          "path": "support/helper-artifacts/base/Current/Funs.olean",
+          "bytes": 43032,
+          "sha256": "7081b67680a339122f3312b27ff57d2d30c648dd8e7374bf2adbf8dba806c787"
+        },
+        "entry_olean": {
+          "path": "support/helper-artifacts/base/Current.olean",
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "lean_check": {
+          "path": "support/helper-artifacts/base/Check.lean",
+          "bytes": 127,
+          "sha256": "ce42cdc7fe5190f96bd759ea2b998903bf75097f373befe166b742875442fd24"
+        },
+        "goal_attempt": {
+          "path": "support/helper-artifacts/base/Attempt.lean",
+          "bytes": 94,
+          "sha256": "6af76adf995dd9543b0e4ed2276551196a06ce4dde8ad7a539275e1b69c218d0"
+        },
+        "rust_oracle": {
+          "path": "support/helper-artifacts/base/RustOracle.rs",
+          "bytes": 84,
+          "sha256": "eaacb7e7e560bc255cc77e35092fa9eaee8db7832c735ceab9a7d44558570c80"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "loop_nav::sum_to",
+            "byte_range": [
+              21,
+              153
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 132
+              }
+            },
+            "source_text_sha256": "7cc8f74b0b91e36390f56c59fecfa7713ac890063c8fc448c1eef9edbced4e1a"
+          },
+          "charon": {
+            "def_id": 0,
+            "file_id": 0
+          },
+          "aeneas": {
+            "declarations": [
+              {
+                "role": "loop_body",
+                "qualified_lean_name": "loop_nav.sum_to_loop.body",
+                "declaration_lines": [
+                  22,
+                  32
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 67
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 128
+                  }
+                },
+                "emitted_comment_kind": "loop body 0:"
+              },
+              {
+                "role": "loop",
+                "qualified_lean_name": "loop_nav.sum_to_loop",
+                "declaration_lines": [
+                  37,
+                  42
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 67
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 128
+                  }
+                },
+                "emitted_comment_kind": "loop 0:"
+              },
+              {
+                "role": "wrapper",
+                "qualified_lean_name": "loop_nav.sum_to",
+                "declaration_lines": [
+                  47,
+                  48
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/base/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 0
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 132
+                  }
+                },
+                "emitted_comment_kind": ""
+              }
+            ]
+          },
+          "obligation": {
+            "name": "selected_value_eval",
+            "proof_line": 5,
+            "goal_trace_line": 3,
+            "provenance": "fixture-authored evaluation and failed rfl attempt, not producer-issued"
+          },
+          "cross_stage_join_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ],
+      "lean_diagnostics": [
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to_loop.body (n x i : Aeneas.Std.U32) :\n  Aeneas.Std.Result (Aeneas.Std.ControlFlow (Aeneas.Std.U32 × Aeneas.Std.U32) Aeneas.Std.U32)",
+          "endPos": {
+            "column": 6,
+            "line": 2
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 2
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to_loop (n x i : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32",
+          "endPos": {
+            "column": 6,
+            "line": 3
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 3
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to (n : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32",
+          "endPos": {
+            "column": 6,
+            "line": 4
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 4
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "Aeneas.Std.Result.ok { bv := 0x00000006#32 }",
+          "endPos": {
+            "column": 5,
+            "line": 5
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 5
+          },
+          "severity": "information"
+        }
+      ],
+      "failed_rfl_diagnostics": [
+        {
+          "caption": "",
+          "data": "Tactic `rfl` failed: The left-hand side\n  loop_nav.sum_to 4#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 6#u32\n\n⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 6#u32",
+          "endPos": {
+            "column": 5,
+            "line": 4
+          },
+          "fileName": "Attempt.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 2,
+            "line": 4
+          },
+          "severity": "error"
+        },
+        {
+          "caption": "",
+          "data": "⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 6#u32",
+          "endPos": {
+            "column": 13,
+            "line": 3
+          },
+          "fileName": "Attempt.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "trace",
+          "pos": {
+            "column": 2,
+            "line": 3
+          },
+          "severity": "information"
+        }
+      ],
+      "selected_value": 6
+    },
+    "changed": {
+      "source_case": "changed",
+      "artifacts": {
+        "rust_source": {
+          "path": "support/helper-artifacts/changed/source.rs",
+          "bytes": 154,
+          "sha256": "d79691f4a311552db19d54234060665feeed79750b089576f832b3ba5b92d030"
+        },
+        "llbc": {
+          "path": "support/helper-artifacts/changed/current.llbc",
+          "bytes": 15760,
+          "sha256": "cad787a45cf2418470b38bcfe4991669136c1640093b1191d61abd7a969bc338"
+        },
+        "generated_funs": {
+          "path": "support/helper-artifacts/changed/generated/Funs.lean",
+          "bytes": 2054,
+          "sha256": "eec47c3e67986853435c512f1b8248003428da07db148b5e6362f0a0ac788880"
+        },
+        "generated_types": {
+          "path": "support/helper-artifacts/changed/generated/Types.lean",
+          "bytes": 515,
+          "sha256": "6e42a6f6721b1b7154b74a61f389284eb2ffe0cb5576e4a10b20842f212d145d"
+        },
+        "generated_entry": {
+          "path": "support/helper-artifacts/changed/generated/Current.lean",
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "funs_olean": {
+          "path": "support/helper-artifacts/changed/Current/Funs.olean",
+          "bytes": 43320,
+          "sha256": "c5e2e88431a91e97cfaf32b29d6d81461fba387d7bf98b6559601a8af48136a3"
+        },
+        "entry_olean": {
+          "path": "support/helper-artifacts/changed/Current.olean",
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "lean_check": {
+          "path": "support/helper-artifacts/changed/Check.lean",
+          "bytes": 127,
+          "sha256": "ce42cdc7fe5190f96bd759ea2b998903bf75097f373befe166b742875442fd24"
+        },
+        "goal_attempt": {
+          "path": "support/helper-artifacts/changed/Attempt.lean",
+          "bytes": 94,
+          "sha256": "88b5d6172158d0f1a018390cf5ea22ccd6f3f4409115eb8343402f3de61872fc"
+        },
+        "rust_oracle": {
+          "path": "support/helper-artifacts/changed/RustOracle.rs",
+          "bytes": 84,
+          "sha256": "c1ab8198fa660dacc5fac9c86a7b6a05dc6fa7d24588feb092b06369c5577d09"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "loop_nav::sum_to",
+            "byte_range": [
+              21,
+              153
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 132
+              }
+            },
+            "source_text_sha256": "aa322ccf66d90bd1b59dd8322dabce8e65f224ebd37c78a6fe3a0d85ef7a93dc"
+          },
+          "charon": {
+            "def_id": 0,
+            "file_id": 0
+          },
+          "aeneas": {
+            "declarations": [
+              {
+                "role": "loop_body",
+                "qualified_lean_name": "loop_nav.sum_to_loop.body",
+                "declaration_lines": [
+                  22,
+                  32
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 67
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 128
+                  }
+                },
+                "emitted_comment_kind": "loop body 0:"
+              },
+              {
+                "role": "loop",
+                "qualified_lean_name": "loop_nav.sum_to_loop",
+                "declaration_lines": [
+                  37,
+                  42
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 67
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 128
+                  }
+                },
+                "emitted_comment_kind": "loop 0:"
+              },
+              {
+                "role": "wrapper",
+                "qualified_lean_name": "loop_nav.sum_to",
+                "declaration_lines": [
+                  47,
+                  48
+                ],
+                "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/helper-artifacts/changed/source.rs",
+                "emitted_source_span": {
+                  "beg": {
+                    "line": 2,
+                    "col": 0
+                  },
+                  "end": {
+                    "line": 2,
+                    "col": 132
+                  }
+                },
+                "emitted_comment_kind": ""
+              }
+            ]
+          },
+          "obligation": {
+            "name": "selected_value_eval",
+            "proof_line": 5,
+            "goal_trace_line": 3,
+            "provenance": "fixture-authored evaluation and failed rfl attempt, not producer-issued"
+          },
+          "cross_stage_join_class": "Aeneas emitted same source item name and contained spans for three declarations; no shared producer ID"
+        }
+      ],
+      "lean_diagnostics": [
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to_loop.body (n x i : Aeneas.Std.U32) :\n  Aeneas.Std.Result (Aeneas.Std.ControlFlow (Aeneas.Std.U32 × Aeneas.Std.U32) Aeneas.Std.U32)",
+          "endPos": {
+            "column": 6,
+            "line": 2
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 2
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to_loop (n x i : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32",
+          "endPos": {
+            "column": 6,
+            "line": 3
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 3
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "loop_nav.sum_to (n : Aeneas.Std.U32) : Aeneas.Std.Result Aeneas.Std.U32",
+          "endPos": {
+            "column": 6,
+            "line": 4
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 4
+          },
+          "severity": "information"
+        },
+        {
+          "caption": "",
+          "data": "Aeneas.Std.Result.ok { bv := 0x00000004#32 }",
+          "endPos": {
+            "column": 5,
+            "line": 5
+          },
+          "fileName": "Check.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 0,
+            "line": 5
+          },
+          "severity": "information"
+        }
+      ],
+      "failed_rfl_diagnostics": [
+        {
+          "caption": "",
+          "data": "Tactic `rfl` failed: The left-hand side\n  loop_nav.sum_to 4#u32\nis not definitionally equal to the right-hand side\n  Aeneas.Std.Result.ok 4#u32\n\n⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 4#u32",
+          "endPos": {
+            "column": 5,
+            "line": 4
+          },
+          "fileName": "Attempt.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "[anonymous]",
+          "pos": {
+            "column": 2,
+            "line": 4
+          },
+          "severity": "error"
+        },
+        {
+          "caption": "",
+          "data": "⊢ loop_nav.sum_to 4#u32 = Aeneas.Std.Result.ok 4#u32",
+          "endPos": {
+            "column": 13,
+            "line": 3
+          },
+          "fileName": "Attempt.lean",
+          "isSilent": false,
+          "keepFullRange": false,
+          "kind": "trace",
+          "pos": {
+            "column": 2,
+            "line": 3
+          },
+          "severity": "information"
+        }
+      ],
+      "selected_value": 4
+    }
+  },
+  "join_assurance": "producer-emitted repeated source name and contained spans; helper relation is derived, not a shared stable ID"
+}

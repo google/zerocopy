@@ -1,0 +1,12 @@
+{
+  "tasks": 4,
+  "real_lean_goal_queries": 4,
+  "bridge_reconnect_retrieved": true,
+  "result_expired": true,
+  "cancel_before_check": true,
+  "partial_failure_after_lsp": true,
+  "recovery_after_failure": true,
+  "toy_revision_fallback": true,
+  "progress_notifications": 10,
+  "installed_mcp_sdk_or_adapter_in_scope": false
+}

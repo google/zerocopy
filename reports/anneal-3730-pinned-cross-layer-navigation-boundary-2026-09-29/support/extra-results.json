@@ -1,0 +1,429 @@
+{
+  "schema": 1,
+  "commands": [
+    {
+      "label": "ambiguous-charon",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/charon",
+        "rustc",
+        "--preset",
+        "aeneas",
+        "--dest-file",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/current.llbc",
+        "--",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/source.rs",
+        "--crate-type",
+        "lib",
+        "--crate-name",
+        "nav_ambig",
+        "--edition",
+        "2021"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-aeneas",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release/aeneas",
+        "-backend",
+        "lean",
+        "-no-progress-bar",
+        "-sequential",
+        "-split-files",
+        "-gen-lib-entry",
+        "-dest",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/generated",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/current.llbc"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "[\u001b[92mInfo\u001b[39m ] Imported: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/current.llbc\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/generated/Types.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/generated/Funs.lean\n[\u001b[92mInfo\u001b[39m ] Generated: /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/generated/Current.lean\n[\u001b[92mInfo\u001b[39m ] Total execution time: 0.129894 seconds\n",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-lean-compile-Current/Types",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Types.olean",
+        "Current/Types.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-lean-compile-Current/Funs",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current/Funs.olean",
+        "Current/Funs.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-lean-compile-Current",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "-o",
+        "Current.olean",
+        "Current.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-lean-proof",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/elan/toolchains/leanprover--lean4---v4.30.0-rc2/bin/lean",
+        "--json",
+        "Proof.lean"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "{\"caption\":\"\",\"data\":\"⊢ nav_ambig.left.step 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ nav_ambig.right.step 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":13,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ nav_ambig.both 0#u32 = Aeneas.Std.Result.ok 3#u32\",\"endPos\":{\"column\":13,\"line\":9},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":9},\"severity\":\"information\"}\n",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-rust-test-build",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/rustup/toolchains/nightly-2026-05-31-aarch64-apple-darwin/bin/rustc",
+        "--edition",
+        "2021",
+        "--test",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/source.rs",
+        "-o",
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/rust-test"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "ambiguous-rust-test",
+      "argv": [
+        "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/rust-test"
+      ],
+      "cwd": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous",
+      "exit": 0,
+      "stdout": "\nrunning 1 test\ntest tests::values ... ok\n\ntest result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s\n\n",
+      "stderr": ""
+    }
+  ],
+  "navigation": [
+    {
+      "case": "reorder-base",
+      "item": "comparator_probe::inc",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::inc",
+          "charon_def_id": 0,
+          "generated_decl": "comparator_probe.inc",
+          "generated_lines": [
+            21,
+            23
+          ],
+          "obligation": "obl_inc",
+          "proof_line": 2
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::inc",
+          "rust_byte_range": [
+            21,
+            68
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "reorder-base",
+      "item": "comparator_probe::twice",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::twice",
+          "charon_def_id": 1,
+          "generated_decl": "comparator_probe.twice",
+          "generated_lines": [
+            27,
+            30
+          ],
+          "obligation": "obl_twice",
+          "proof_line": 5
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::twice",
+          "rust_byte_range": [
+            69,
+            112
+          ],
+          "charon_def_id": 1,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "reorder-base",
+      "item": "comparator_probe::choose",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::choose",
+          "charon_def_id": 2,
+          "generated_decl": "comparator_probe.choose",
+          "generated_lines": [
+            34,
+            37
+          ],
+          "obligation": "obl_choose",
+          "proof_line": 8
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::choose",
+          "rust_byte_range": [
+            113,
+            184
+          ],
+          "charon_def_id": 2,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "reorder-reorder",
+      "item": "comparator_probe::choose",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::choose",
+          "charon_def_id": 0,
+          "generated_decl": "comparator_probe.choose",
+          "generated_lines": [
+            34,
+            37
+          ],
+          "obligation": "obl_choose",
+          "proof_line": 8
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::choose",
+          "rust_byte_range": [
+            21,
+            92
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "reorder-reorder",
+      "item": "comparator_probe::twice",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::twice",
+          "charon_def_id": 1,
+          "generated_decl": "comparator_probe.twice",
+          "generated_lines": [
+            27,
+            30
+          ],
+          "obligation": "obl_twice",
+          "proof_line": 5
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::twice",
+          "rust_byte_range": [
+            93,
+            136
+          ],
+          "charon_def_id": 1,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "reorder-reorder",
+      "item": "comparator_probe::inc",
+      "forward": [
+        {
+          "rust_item": "comparator_probe::inc",
+          "charon_def_id": 2,
+          "generated_decl": "comparator_probe.inc",
+          "generated_lines": [
+            21,
+            23
+          ],
+          "obligation": "obl_inc",
+          "proof_line": 2
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "comparator_probe::inc",
+          "rust_byte_range": [
+            137,
+            184
+          ],
+          "charon_def_id": 2,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "ambiguous",
+      "item": "nav_ambig::both",
+      "forward": [
+        {
+          "rust_item": "nav_ambig::both",
+          "charon_def_id": 0,
+          "generated_decl": "nav_ambig.both",
+          "generated_lines": [
+            33,
+            35
+          ],
+          "obligation": "obl_both",
+          "proof_line": 8
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "nav_ambig::both",
+          "rust_byte_range": [
+            154,
+            211
+          ],
+          "charon_def_id": 0,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "ambiguous",
+      "item": "nav_ambig::left::step",
+      "forward": [
+        {
+          "rust_item": "nav_ambig::left::step",
+          "charon_def_id": 1,
+          "generated_decl": "nav_ambig.left.step",
+          "generated_lines": [
+            21,
+            23
+          ],
+          "obligation": "obl_left_step",
+          "proof_line": 2
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "nav_ambig::left::step",
+          "rust_byte_range": [
+            36,
+            84
+          ],
+          "charon_def_id": 1,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    },
+    {
+      "case": "ambiguous",
+      "item": "nav_ambig::right::step",
+      "forward": [
+        {
+          "rust_item": "nav_ambig::right::step",
+          "charon_def_id": 2,
+          "generated_decl": "nav_ambig.right.step",
+          "generated_lines": [
+            27,
+            29
+          ],
+          "obligation": "obl_right_step",
+          "proof_line": 5
+        }
+      ],
+      "reverse": [
+        {
+          "rust_item": "nav_ambig::right::step",
+          "rust_byte_range": [
+            103,
+            151
+          ],
+          "charon_def_id": 2,
+          "evidence_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ]
+    }
+  ],
+  "reorder": {
+    "base_by_def_id": {
+      "0": "comparator_probe::inc",
+      "1": "comparator_probe::twice",
+      "2": "comparator_probe::choose"
+    },
+    "reordered_by_def_id": {
+      "0": "comparator_probe::choose",
+      "1": "comparator_probe::twice",
+      "2": "comparator_probe::inc"
+    },
+    "base_def_id_by_name": {
+      "comparator_probe::inc": 0,
+      "comparator_probe::twice": 1,
+      "comparator_probe::choose": 2
+    },
+    "reordered_def_id_by_name": {
+      "comparator_probe::choose": 0,
+      "comparator_probe::twice": 1,
+      "comparator_probe::inc": 2
+    },
+    "generated_order_base": [
+      "comparator_probe.inc",
+      "comparator_probe.twice",
+      "comparator_probe.choose"
+    ],
+    "generated_order_reordered": [
+      "comparator_probe.inc",
+      "comparator_probe.twice",
+      "comparator_probe.choose"
+    ],
+    "def_id_0_wrong_join_if_reused": [
+      "comparator_probe::inc",
+      "comparator_probe::choose"
+    ]
+  },
+  "ambiguity": {
+    "leaf": "step",
+    "leaf_only_candidates": [
+      "nav_ambig::left::step",
+      "nav_ambig::right::step"
+    ],
+    "qualified_span_join_unique": true,
+    "rust_test_exit": 0,
+    "lean_proof_exit": 0,
+    "lean_trace": "{\"caption\":\"\",\"data\":\"⊢ nav_ambig.left.step 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ nav_ambig.right.step 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":13,\"line\":6},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ nav_ambig.both 0#u32 = Aeneas.Std.Result.ok 3#u32\",\"endPos\":{\"column\":13,\"line\":9},\"fileName\":\"Proof.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":9},\"severity\":\"information\"}\n"
+  },
+  "stale_rejections": {
+    "reordered-rust-under-base": "Rust source digest differs from selected generation",
+    "reordered-lean-under-base": "generated_funs digest differs from selected generation"
+  }
+}

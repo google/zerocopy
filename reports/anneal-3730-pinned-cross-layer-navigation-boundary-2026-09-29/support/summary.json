@@ -1,0 +1,28 @@
+{
+  "generations": 2,
+  "items_per_generation": 3,
+  "forward_reverse_checks": 6,
+  "fresh_goal_traces": 6,
+  "stale_rejections": 3,
+  "same_name_span_id_and_lean_lines_despite_changed_bytes": true,
+  "shared_producer_id_across_charon_aeneas_and_obligation": false,
+  "additional_join_controls": {
+    "reorder_generations": 2,
+    "ambiguous_generations": 1,
+    "additional_navigation_links": 9,
+    "additional_stale_rejections": 2,
+    "leaf_only_candidate_count": 2,
+    "def_id_0_changed_item": true,
+    "ambiguous_lean_goal_traces": 3,
+    "ambiguous_rust_test_passed": true
+  },
+  "generated_helper_fanout": {
+    "loop_generations": 2,
+    "rust_items_per_generation": 1,
+    "generated_declarations_per_item": 3,
+    "reverse_helper_links": 6,
+    "additional_stale_rejections": 2,
+    "lean_evaluations_passed": 2,
+    "rfl_attempts_failed": 2
+  }
+}

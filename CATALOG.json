@@ -1740,6 +1740,47 @@
         "aeneas/lean-generation"
       ]
     },
+    "anneal-3730-aeneas-restricted-reuse-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned local Charon CLI"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned local Aeneas CLI"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc"
+          },
+          "name": "Lean 4.30.0-rc2 and cached Aeneas Lean runtime"
+        },
+        {
+          "identity": {
+            "artifact": "support/source-base.rs",
+            "sha256": "ed29b097aacbf211949aab72a03c28fbd7aab19bf8cebf18a1100f42a72ef773"
+          },
+          "name": "Local three-variant Rust trait fixture"
+        }
+      ],
+      "topics": [
+        "aeneas/invalidation",
+        "aeneas/trait-translation",
+        "lean/import-artifacts",
+        "anneal/interactive-architecture"
+      ]
+    },
     "anneal-3730-aeneas-trait-output-shrink-matrix-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -2317,6 +2358,84 @@
         "anneal/cancellation"
       ]
     },
+    "anneal-3730-combined-pipeline-concurrency-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "version": "0.1.210"
+          },
+          "name": "Pinned local Charon CLI"
+        },
+        {
+          "identity": {
+            "release": "nightly-2026.06.03",
+            "sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03"
+          },
+          "name": "Pinned local Aeneas CLI"
+        },
+        {
+          "identity": {
+            "sha256": "71d7b3f81809731f3c95737386b0056cf0a335dd1e3dcb42ac4e3d81599480b1",
+            "toolchain": "nightly-2026-05-31-aarch64-apple-darwin"
+          },
+          "name": "Pinned local Rust nightly Cargo"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 batch checker and cached Aeneas library"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-architecture",
+        "charon/concurrency",
+        "aeneas/concurrency",
+        "lean/resource-use"
+      ]
+    },
+    "anneal-3730-compatible-bundle-upgrade-golden-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "june1_aeneas_source_commit": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+            "june1_charon_source_pin": "42836b36b666a980cbc9d438a8aed340ad3b848b",
+            "june3_aeneas_source_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+            "june3_charon_source_pin": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+          },
+          "name": "two compatible cached Charon/Aeneas bundles"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "Lean v4.30.0-rc2 local checker"
+        },
+        {
+          "identity": {
+            "file": "support/probe.py",
+            "fixture": "support/fixture/src/lib.rs",
+            "observations": "support/results.json"
+          },
+          "name": "two-bundle Rust-to-Lean replay and controls"
+        }
+      ],
+      "topics": [
+        "anneal/cross-tool-golden-vertical",
+        "charon/cargo-extraction",
+        "aeneas/lean-generation",
+        "anneal/upgrade-replay",
+        "anneal/batch-acceptance"
+      ]
+    },
     "anneal-3730-cross-layer-comparator-mutants-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -2691,6 +2810,55 @@
         "anneal/failure-recovery",
         "filesystem/atomic-publication",
         "filesystem/retention"
+      ]
+    },
+    "anneal-3730-h08-project-switch-router-v4-30-0-rc2": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "launch_mode": "separate direct lean --server processes with private LEAN_PATH",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean 4 direct-server A/B project-switch fixture"
+        }
+      ],
+      "topics": [
+        "anneal/project-routing",
+        "lean/language-server",
+        "lean/workspace-isolation",
+        "research/h08"
+      ]
+    },
+    "anneal-3730-h09-lsp-to-upstream-cancellation-boundaries-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean direct-server cancellation fixture"
+        },
+        {
+          "identity": {
+            "binary_sha256": "778478868dbfe74960e49329bb5813d2f5ba95c8bfb1f37cd626c62cb26a214a",
+            "host": "arm64-apple-darwin",
+            "version": "1.98.1"
+          },
+          "name": "Cargo private process-group control"
+        }
+      ],
+      "topics": [
+        "anneal/interactive-cancellation",
+        "lean/language-server",
+        "cargo/process-lifecycle",
+        "research/h09"
       ]
     },
     "anneal-3730-human-freshness-study-protocol-2026-09-29": {
@@ -3552,6 +3720,65 @@
         "anneal/cyclic-import-residual"
       ]
     },
+    "anneal-3730-m06-generated-lake-source-order-trace-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "version": "5.0.0-src+3dc1a08"
+          },
+          "name": "Lake v4.30.0-rc2"
+        },
+        {
+          "identity": {
+            "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb",
+            "manifest_sha256": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb"
+          },
+          "name": "Cached Aeneas Lean backend"
+        }
+      ],
+      "topics": [
+        "aeneas",
+        "lean",
+        "lake",
+        "anneal/invalidation",
+        "anneal/performance"
+      ]
+    },
+    "anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "cached Lean 4.30.0-rc2 language server"
+        },
+        {
+          "identity": {
+            "bridge": "support/bridge.py",
+            "fixture_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "observations": "support/results.json"
+          },
+          "name": "toy stdio task bridge and pinned fixture"
+        }
+      ],
+      "topics": [
+        "anneal/mcp-task-lifecycle",
+        "lean/lsp-goal-query",
+        "anneal/cancellation",
+        "anneal/reconnect-and-expiry",
+        "anneal/capability-negotiation"
+      ]
+    },
     "anneal-3730-multiclient-editor-contract-2026-09-29": {
       "observed_at": "2026-09-29",
       "subjects": [
@@ -3669,6 +3896,37 @@
         "lean/artifact-sharing",
         "anneal/workspace-isolation",
         "anneal/resource-economics"
+      ]
+    },
+    "anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+            "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+          },
+          "name": "R44 cached June 3 Charon/Aeneas/Lean bundle"
+        },
+        {
+          "identity": {
+            "extra_manifest_sha256": "4a903e94ede9668f2d734fa0fe5597c2fc15e108730b71fdffbf3b16260a8942",
+            "helper_manifest_sha256": "9c0655062bc22faf3d8670fe1e9d0b5fa13c70564f6544e202fc72f71e44394c",
+            "manifest": "support/manifest.json",
+            "manifest_sha256": "c897830c70cd75c9c1e036fd8ef4f12cb0732d8748eadde402e09f73bbed6c37",
+            "results": "support/results.json",
+            "source_report": "anneal-3730-compatible-bundle-upgrade-golden-2026-09-29"
+          },
+          "name": "content-pinned derived navigation manifest"
+        }
+      ],
+      "topics": [
+        "anneal/cross-layer-provenance",
+        "anneal/rust-to-lean-navigation",
+        "charon/source-spans",
+        "aeneas/generated-lean",
+        "lean/goal-query"
       ]
     },
     "anneal-3730-platform-filesystem-boundary-2026-09-29": {
@@ -3805,6 +4063,40 @@
         "aeneas/generated-provenance",
         "lsp/coordinates",
         "lsp/workspace-edits"
+      ]
+    },
+    "anneal-3730-real-archive-manifest-gate-2026-09-29": {
+      "observed_at": "2026-09-29",
+      "subjects": [
+        {
+          "identity": {
+            "lake_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb",
+            "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+            "repository": "leanprover/lean4",
+            "revision": "3dc1a088b6d2d8eafe25a7cd7ec7b58d731bd7cc",
+            "version": "v4.30.0-rc2"
+          },
+          "name": "Lean and Lake 4.30.0-rc2 local executables"
+        },
+        {
+          "identity": {
+            "artifact": "aeneas-macos-aarch64.tar.gz",
+            "sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61"
+          },
+          "name": "Aeneas macOS arm64 release tar, examined as an archive-availability distinction"
+        },
+        {
+          "identity": {
+            "artifact": "support/probe.py",
+            "sha256": "d1fc309aeeb98bf146cc5e2d078b2ae193c6fb4159f0b58c9dfe14c1c75414dd"
+          },
+          "name": "Synthetic prepared Lake producer and fresh consumers"
+        }
+      ],
+      "topics": [
+        "anneal/prepared-environments",
+        "lake/manifest",
+        "lake/read-only-dependencies"
       ]
     },
     "anneal-3730-real-lean-filesystem-lifetimes-2026-09-29": {

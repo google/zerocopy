@@ -1,0 +1,490 @@
+{
+  "schema": 1,
+  "origin_report": "anneal-3730-compatible-bundle-upgrade-golden-2026-09-29",
+  "origin_results_sha256": "dc95ef79a9e31d2f37ac48f5e73e05dc49b11cc15265be79225582347d1f73ef",
+  "join_assurance": "content-pinned artifacts and checked emitted spans; Charon ID-to-Lean declaration and obligation links are derived/manual, not authenticated by a shared producer key",
+  "generations": {
+    "base": {
+      "source_case": "june3-base",
+      "tool_pins": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "charon_llbc_version": "0.1.210"
+      },
+      "artifacts": {
+        "rust_source": {
+          "path": "support/artifacts/base/Rust.lean-input.rs",
+          "bytes": 310,
+          "sha256": "c571b242f56aea2c4ca6227b40590d982bb3ab674d0a24b8f32467407e139293"
+        },
+        "llbc": {
+          "path": "support/artifacts/base/current.llbc",
+          "bytes": 16361,
+          "sha256": "7c7643ea2b4dbf613920d166adf3cdd26c5b040ea532b78b943ed646a944bbbd"
+        },
+        "generated_funs": {
+          "path": "support/artifacts/base/Funs.lean",
+          "bytes": 1096,
+          "sha256": "9d85e4b057d5e99599114bc400dd49b5c639a078c14cd6879ebe608947cf4519"
+        },
+        "generated_types": {
+          "path": "support/artifacts/base/Types.lean",
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "generated_entry": {
+          "path": "support/artifacts/base/Current.lean",
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "proof": {
+          "path": "support/artifacts/base/Proof.lean",
+          "bytes": 288,
+          "sha256": "6ac94761f534663c710b14916d1412d9a35d252bf5b20db6be9d9ae1c25d42d5"
+        },
+        "types_olean": {
+          "path": "support/artifacts/base/Current/Types.olean",
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "funs_olean": {
+          "path": "support/artifacts/base/Current/Funs.olean",
+          "bytes": 23496,
+          "sha256": "ca69b5dc0c90278c5131f878f33697dc07477d6d8c3ede3f152e84919d885f09"
+        },
+        "entry_olean": {
+          "path": "support/artifacts/base/Current.olean",
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "goal_probe": {
+          "path": "support/artifacts/base/GoalProbe.lean",
+          "bytes": 265,
+          "sha256": "7db4a867420442082f8c8e7410350171b48442f51a126c0766f3aa2773b10fcb"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "fresh_goal_probe": {
+        "exit": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 1#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ bundle_golden.twice 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":13,\"line\":6},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ bundle_golden.choose 0#u32 = Aeneas.Std.Result.ok 3#u32\",\"endPos\":{\"column\":13,\"line\":9},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":9},\"severity\":\"information\"}\n",
+        "stderr": ""
+      },
+      "prior_proof_exit": 0,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::inc",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              61,
+              108
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 47
+              }
+            },
+            "source_text_sha256": "78cbc12ab7655d6cf0b17b329ebd29d559c2564496f23a4706075ddbef4f57b2"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 0,
+            "qualified_name": "bundle_golden::inc",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 47
+              }
+            },
+            "emitted_name": "bundle_golden::inc",
+            "qualified_lean_name": "bundle_golden.inc",
+            "declaration_lines": [
+              21,
+              23
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_inc",
+            "proof_line": 2,
+            "proposition": "theorem obl_inc : bundle_golden.inc",
+            "goal_trace_line": 3,
+            "goal_text": "⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 1#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::twice",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              151,
+              194
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 43
+              }
+            },
+            "source_text_sha256": "c669fc8d8b0ae37c2cb2f7ada5c7ba38bbc874ba88a13af3ec8d234525363219"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 1,
+            "qualified_name": "bundle_golden::twice",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 43
+              }
+            },
+            "emitted_name": "bundle_golden::twice",
+            "qualified_lean_name": "bundle_golden.twice",
+            "declaration_lines": [
+              27,
+              30
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_twice",
+            "proof_line": 4,
+            "proposition": "theorem obl_twice : bundle_golden.twice",
+            "goal_trace_line": 6,
+            "goal_text": "⊢ bundle_golden.twice 0#u32 = Aeneas.Std.Result.ok 2#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::choose",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              238,
+              309
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 71
+              }
+            },
+            "source_text_sha256": "ec106a02cd42bcf3b91c83a44f3fcf8699ad51522c93e22ea14329cb87d2fdc8"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 2,
+            "qualified_name": "bundle_golden::choose",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 71
+              }
+            },
+            "emitted_name": "bundle_golden::choose",
+            "qualified_lean_name": "bundle_golden.choose",
+            "declaration_lines": [
+              34,
+              37
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_choose",
+            "proof_line": 6,
+            "proposition": "theorem obl_choose : bundle_golden.choose",
+            "goal_trace_line": 9,
+            "goal_text": "⊢ bundle_golden.choose 0#u32 = Aeneas.Std.Result.ok 3#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        }
+      ]
+    },
+    "changed": {
+      "source_case": "june3-changed",
+      "tool_pins": {
+        "charon_sha256": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+        "aeneas_sha256": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+        "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "charon_llbc_version": "0.1.210"
+      },
+      "artifacts": {
+        "rust_source": {
+          "path": "support/artifacts/changed/Rust.lean-input.rs",
+          "bytes": 310,
+          "sha256": "dbc00097eb89527ec411dee5f437701c0aa9980bed747724dabe818daa428979"
+        },
+        "llbc": {
+          "path": "support/artifacts/changed/current.llbc",
+          "bytes": 16364,
+          "sha256": "5e51de06bcc0eeb1e12c73a00fad80a8fe4ccdee9b2b2d05864286bbb9647bda"
+        },
+        "generated_funs": {
+          "path": "support/artifacts/changed/Funs.lean",
+          "bytes": 1096,
+          "sha256": "ecc34d8ba16ff2f2345c5100d4110a15399468b46356367a039379ecd9b8ca14"
+        },
+        "generated_types": {
+          "path": "support/artifacts/changed/Types.lean",
+          "bytes": 530,
+          "sha256": "4af6239d04ae98fa8cad6d1930e0d91fefa2a037635e9989cb671464e33e0a13"
+        },
+        "generated_entry": {
+          "path": "support/artifacts/changed/Current.lean",
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "proof": {
+          "path": "support/artifacts/changed/Proof.lean",
+          "bytes": 288,
+          "sha256": "73f1c4b3b51394c010a3a9e4f3b1501aede460568974be849cb1404106a6700c"
+        },
+        "types_olean": {
+          "path": "support/artifacts/changed/Current/Types.olean",
+          "bytes": 1608,
+          "sha256": "d2edfb339576f29243e83d8ffd1bd6c30f7217b7d5bd8312e63bb49570e972a3"
+        },
+        "funs_olean": {
+          "path": "support/artifacts/changed/Current/Funs.olean",
+          "bytes": 24392,
+          "sha256": "6785de9473752af8b4ad1a68fb6f44f1a505831889608fa919e2e43b09a4826f"
+        },
+        "entry_olean": {
+          "path": "support/artifacts/changed/Current.olean",
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        },
+        "goal_probe": {
+          "path": "support/artifacts/changed/GoalProbe.lean",
+          "bytes": 265,
+          "sha256": "8676f5e379bfc3e52436b59779d43e37d65e742912dcd4c9737c28a62af2d2fd"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "fresh_goal_probe": {
+        "exit": 0,
+        "stdout": "{\"caption\":\"\",\"data\":\"⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 2#u32\",\"endPos\":{\"column\":13,\"line\":3},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":3},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ bundle_golden.twice 0#u32 = Aeneas.Std.Result.ok 4#u32\",\"endPos\":{\"column\":13,\"line\":6},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":6},\"severity\":\"information\"}\n{\"caption\":\"\",\"data\":\"⊢ bundle_golden.choose 0#u32 = Aeneas.Std.Result.ok 5#u32\",\"endPos\":{\"column\":13,\"line\":9},\"fileName\":\"GoalProbe.lean\",\"isSilent\":false,\"keepFullRange\":false,\"kind\":\"trace\",\"pos\":{\"column\":2,\"line\":9},\"severity\":\"information\"}\n",
+        "stderr": ""
+      },
+      "prior_proof_exit": 0,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::inc",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              61,
+              108
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 47
+              }
+            },
+            "source_text_sha256": "571a4934d16b47e1cf69a40f65298d34dd5f4f27bc91723820595effdb698cf0"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 0,
+            "qualified_name": "bundle_golden::inc",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 47
+              }
+            },
+            "emitted_name": "bundle_golden::inc",
+            "qualified_lean_name": "bundle_golden.inc",
+            "declaration_lines": [
+              21,
+              23
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_inc",
+            "proof_line": 2,
+            "proposition": "theorem obl_inc : bundle_golden.inc",
+            "goal_trace_line": 3,
+            "goal_text": "⊢ bundle_golden.inc 0#u32 = Aeneas.Std.Result.ok 2#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::twice",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              151,
+              194
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 43
+              }
+            },
+            "source_text_sha256": "c669fc8d8b0ae37c2cb2f7ada5c7ba38bbc874ba88a13af3ec8d234525363219"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 1,
+            "qualified_name": "bundle_golden::twice",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 5,
+                "col": 0
+              },
+              "end": {
+                "line": 5,
+                "col": 43
+              }
+            },
+            "emitted_name": "bundle_golden::twice",
+            "qualified_lean_name": "bundle_golden.twice",
+            "declaration_lines": [
+              27,
+              30
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_twice",
+            "proof_line": 4,
+            "proposition": "theorem obl_twice : bundle_golden.twice",
+            "goal_trace_line": 6,
+            "goal_text": "⊢ bundle_golden.twice 0#u32 = Aeneas.Std.Result.ok 4#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "bundle_golden::choose",
+            "source_path": "src/lib.rs",
+            "byte_range": [
+              238,
+              309
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 71
+              }
+            },
+            "source_text_sha256": "ec106a02cd42bcf3b91c83a44f3fcf8699ad51522c93e22ea14329cb87d2fdc8"
+          },
+          "charon": {
+            "file_id": 0,
+            "def_id": 2,
+            "qualified_name": "bundle_golden::choose",
+            "source_text_matches_rust": true
+          },
+          "aeneas": {
+            "emitted_source_path": "src/lib.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 7,
+                "col": 0
+              },
+              "end": {
+                "line": 7,
+                "col": 71
+              }
+            },
+            "emitted_name": "bundle_golden::choose",
+            "qualified_lean_name": "bundle_golden.choose",
+            "declaration_lines": [
+              34,
+              37
+            ],
+            "emitted_comment_matches_charon_name_span": true
+          },
+          "obligation": {
+            "name": "obl_choose",
+            "proof_line": 6,
+            "proposition": "theorem obl_choose : bundle_golden.choose",
+            "goal_trace_line": 9,
+            "goal_text": "⊢ bundle_golden.choose 0#u32 = Aeneas.Std.Result.ok 5#u32",
+            "provenance": "fixture-authored theorem/probe, not Aeneas or Anneal producer issued"
+          },
+          "cross_stage_join_class": "derived match on producer-emitted qualified name and source span; no shared producer ID"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/cross-tool-golden-vertical",
+    "charon/cargo-extraction",
+    "aeneas/lean-generation",
+    "anneal/upgrade-replay",
+    "anneal/batch-acceptance"
+  ],
+  "subjects": [
+    {
+      "name": "two compatible cached Charon/Aeneas bundles",
+      "identity": {
+        "june1_aeneas_source_commit": "f95a80abaf554d4612cb60ef9ec8e849139bec44",
+        "june1_charon_source_pin": "42836b36b666a980cbc9d438a8aed340ad3b848b",
+        "june3_aeneas_source_commit": "ac9f1bc5262a5e4ff1e24ca78617121382202727",
+        "june3_charon_source_pin": "a535e914f74db4fd9e6be7048f4233270d8945c0"
+      }
+    },
+    {
+      "name": "Lean v4.30.0-rc2 local checker",
+      "identity": {
+        "lean_binary_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+        "aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb"
+      }
+    },
+    {
+      "name": "two-bundle Rust-to-Lean replay and controls",
+      "identity": {
+        "file": "support/probe.py",
+        "fixture": "support/fixture/src/lib.rs",
+        "observations": "support/results.json"
+      }
+    }
+  ],
+  "observed_at": "2026-09-29"
+}

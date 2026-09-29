@@ -1,0 +1,9 @@
+{
+  "topics": ["aeneas", "lean", "lake", "anneal/invalidation", "anneal/performance"],
+  "subjects": [
+    {"name": "Lean v4.30.0-rc2", "identity": {"version": "v4.30.0-rc2", "executable_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"}},
+    {"name": "Lake v4.30.0-rc2", "identity": {"version": "5.0.0-src+3dc1a08", "executable_sha256": "9a89b2af1bddb7e6d5a8dbb2c715288bcb4f24b9129132640cee950734366bcb"}},
+    {"name": "Cached Aeneas Lean backend", "identity": {"aeneas_olean_sha256": "67701a9e8bf68cf0d51a01a4cb5648e2981c08d09402c4c4ac7bb8452d6263cb", "manifest_sha256": "92f8605a5f81a49924d1cac5e5a16d1b8328b797df787cf3afe87bdfdcc12bdb"}}
+  ],
+  "observed_at": "2026-09-29"
+}

@@ -1,0 +1,5244 @@
+{
+  "schema": 1,
+  "availability": {
+    "python_executable": "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "python_modules": {
+      "mcp": null,
+      "fastmcp": null,
+      "modelcontextprotocol": null
+    },
+    "npm_global_exit": 0,
+    "npm_global_packages": [
+      "corepack",
+      "homebridge",
+      "homebridge-config-ui-x",
+      "npm"
+    ],
+    "named_executables": {
+      "lean-mcp": null,
+      "lean_mcp": null,
+      "leanmcp": null,
+      "mcp-lean": null,
+      "lean-server-mcp": null,
+      "lean-lsp-mcp": null
+    },
+    "scope": "active Python, global npm package list and named executables in current PATH; no machine-wide package search"
+  },
+  "lean_sha256": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997",
+  "fixture": {
+    "text": "import Lean\ntheorem checked (n : Nat) : n + 0 = n := by\n  skip\n",
+    "sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+  },
+  "negotiation": {
+    "async": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "protocolVersion": "toy-async-v2",
+        "capabilities": {
+          "toyTasks": true
+        },
+        "serverInfo": {
+          "name": "synthetic-lean-task-bridge",
+          "version": "0"
+        }
+      }
+    },
+    "async_reconnect": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "protocolVersion": "toy-async-v2",
+        "capabilities": {
+          "toyTasks": true
+        },
+        "serverInfo": {
+          "name": "synthetic-lean-task-bridge",
+          "version": "0"
+        }
+      }
+    },
+    "async_tools": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "tools": [
+          {
+            "name": "start_goal"
+          },
+          {
+            "name": "get_task"
+          },
+          {
+            "name": "result_task"
+          },
+          {
+            "name": "cancel_task"
+          },
+          {
+            "name": "release_task"
+          }
+        ]
+      }
+    },
+    "legacy": {
+      "jsonrpc": "2.0",
+      "id": 10,
+      "result": {
+        "protocolVersion": "toy-sync-v1",
+        "capabilities": {
+          "toyTasks": false
+        },
+        "serverInfo": {
+          "name": "synthetic-lean-task-bridge",
+          "version": "0"
+        }
+      }
+    },
+    "legacy_tools": {
+      "jsonrpc": "2.0",
+      "id": 11,
+      "result": {
+        "tools": [
+          {
+            "name": "goal_sync"
+          }
+        ]
+      }
+    },
+    "legacy_rejected_async": {
+      "jsonrpc": "2.0",
+      "id": 12,
+      "error": {
+        "code": -32602,
+        "message": "async tool unsupported by negotiated revision"
+      }
+    },
+    "legacy_sync": {
+      "status": "complete",
+      "result": {
+        "lsp_pid": 93165,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n⊢ n + 0 = n"
+            ],
+            "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  "async_task": {
+    "accepted": {
+      "status": "accepted",
+      "handle": "task-cc38791ce67648efb1a8531284a5b003",
+      "progressToken": "task-cc38791ce67648efb1a8531284a5b003"
+    },
+    "awaiting": [
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "queued",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      }
+    ],
+    "pending": {
+      "status": "waiting",
+      "handle": "task-cc38791ce67648efb1a8531284a5b003"
+    },
+    "released": {
+      "status": "released",
+      "handle": "task-cc38791ce67648efb1a8531284a5b003"
+    },
+    "reconnect_poll": [
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-cc38791ce67648efb1a8531284a5b003",
+        "phase": "complete",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": {
+          "lsp_pid": 93152,
+          "goal_observed": true
+        },
+        "error": null
+      }
+    ],
+    "retrieved": {
+      "status": "complete",
+      "handle": "task-cc38791ce67648efb1a8531284a5b003",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "result": {
+        "lsp_pid": 93152,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n⊢ n + 0 = n"
+            ],
+            "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    },
+    "expired": {
+      "status": "expired",
+      "handle": "task-cc38791ce67648efb1a8531284a5b003"
+    },
+    "disconnected_bridge": {
+      "bridge_pid": 93148,
+      "bridge_exit": 0,
+      "bridge_stderr": ""
+    }
+  },
+  "cancellation": {
+    "accepted": {
+      "status": "accepted",
+      "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+      "progressToken": "task-d85b950c428a46c0aa30c5f91d52e828"
+    },
+    "awaiting": [
+      {
+        "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+        "phase": "queued",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+        "phase": "queued",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      }
+    ],
+    "request": {
+      "status": "cancel_requested",
+      "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+    },
+    "poll": [
+      {
+        "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+        "phase": "cancelled",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      }
+    ],
+    "result": {
+      "status": "cancelled",
+      "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+    }
+  },
+  "partial_failure": {
+    "accepted": {
+      "status": "accepted",
+      "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+      "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+    },
+    "awaiting": [
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "queued",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      }
+    ],
+    "poll": [
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+        "phase": "failed",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": {
+          "lsp_pid": 93157,
+          "goal_observed": true
+        },
+        "error": "injected failure after Lean goal before result publication"
+      }
+    ],
+    "result": {
+      "status": "failed",
+      "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+      "error": "injected failure after Lean goal before result publication",
+      "partial": {
+        "lsp_pid": 93157,
+        "goal_observed": true
+      }
+    }
+  },
+  "recovery": {
+    "accepted": {
+      "status": "accepted",
+      "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+      "progressToken": "task-dec4f03cf9754cdbbea88f03025f0238"
+    },
+    "awaiting": [
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "queued",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      }
+    ],
+    "poll": [
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "waiting",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "checking",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": null,
+        "error": null
+      },
+      {
+        "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+        "phase": "complete",
+        "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+        "partial": {
+          "lsp_pid": 93161,
+          "goal_observed": true
+        },
+        "error": null
+      }
+    ],
+    "result": {
+      "status": "complete",
+      "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "result": {
+        "lsp_pid": 93161,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n⊢ n + 0 = n"
+            ],
+            "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+          "version": 1
+        }
+      }
+    }
+  },
+  "client_transcripts": {
+    "A": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "toy-async-v2",
+            "capabilities": {
+              "toyTasks": true
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "result": {
+            "protocolVersion": "toy-async-v2",
+            "capabilities": {
+              "toyTasks": true
+            },
+            "serverInfo": {
+              "name": "synthetic-lean-task-bridge",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "method": "tools/list",
+          "params": {}
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "result": {
+            "tools": [
+              {
+                "name": "start_goal"
+              },
+              {
+                "name": "get_task"
+              },
+              {
+                "name": "result_task"
+              },
+              {
+                "name": "cancel_task"
+              },
+              {
+                "name": "release_task"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "method": "tools/call",
+          "params": {
+            "name": "start_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+              "ttl_ms": 2000
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "result": {
+            "status": "accepted",
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "progressToken": "task-cc38791ce67648efb1a8531284a5b003"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "queued",
+            "progressToken": "task-cc38791ce67648efb1a8531284a5b003"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "queued",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 14,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 14,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 15,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 15,
+          "result": {
+            "status": "waiting",
+            "handle": "task-cc38791ce67648efb1a8531284a5b003"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 16,
+          "method": "tools/call",
+          "params": {
+            "name": "release_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 16,
+          "result": {
+            "status": "released",
+            "handle": "task-cc38791ce67648efb1a8531284a5b003"
+          }
+        }
+      }
+    ],
+    "C": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "toy-async-v2"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "result": {
+            "protocolVersion": "toy-async-v2",
+            "capabilities": {
+              "toyTasks": true
+            },
+            "serverInfo": {
+              "name": "synthetic-lean-task-bridge",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 14,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 14,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 15,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 15,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 16,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 16,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 17,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 17,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 18,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 18,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 19,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 19,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 20,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 20,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 21,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 21,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 22,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 22,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 23,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 23,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 24,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 24,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 25,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 25,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 26,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 26,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 27,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 27,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 28,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 28,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 29,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 29,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 30,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 30,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 31,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 31,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 32,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 32,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 33,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 33,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 34,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 34,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 35,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 35,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 36,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 36,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 37,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 37,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 38,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 38,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 39,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 39,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 40,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 40,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 41,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 41,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 42,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 43,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 43,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 44,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 45,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 46,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 46,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 47,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 47,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 48,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 48,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 49,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 49,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 50,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 50,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 51,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 51,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 52,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 52,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 53,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 53,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 54,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 54,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 55,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 55,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 56,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 56,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 57,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 57,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 58,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 58,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 59,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 59,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 60,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 60,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 61,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 61,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 62,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 62,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 63,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 63,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 64,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 64,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 65,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 65,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 66,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 66,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 67,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 67,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 68,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 68,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 69,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 69,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 70,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 70,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 71,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 71,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 72,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 72,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 73,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 73,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 74,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 74,
+          "result": {
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "phase": "complete",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": {
+              "lsp_pid": 93152,
+              "goal_observed": true
+            },
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 75,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 75,
+          "result": {
+            "status": "complete",
+            "handle": "task-cc38791ce67648efb1a8531284a5b003",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "result": {
+              "lsp_pid": 93152,
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "n : Nat\n⊢ n + 0 = n"
+                  ],
+                  "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+                }
+              },
+              "diagnostics": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "leanTags": [
+                      1
+                    ],
+                    "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "severity": 1,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+                "version": 1
+              }
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 76,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-cc38791ce67648efb1a8531284a5b003"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 76,
+          "result": {
+            "status": "expired",
+            "handle": "task-cc38791ce67648efb1a8531284a5b003"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 77,
+          "method": "tools/call",
+          "params": {
+            "name": "start_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+              "ttl_ms": 2000
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 77,
+          "result": {
+            "status": "accepted",
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "progressToken": "task-d85b950c428a46c0aa30c5f91d52e828"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 78,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "queued",
+            "progressToken": "task-d85b950c428a46c0aa30c5f91d52e828"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 78,
+          "result": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "queued",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 79,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 79,
+          "result": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "queued",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 80,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 80,
+          "result": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 81,
+          "method": "tools/call",
+          "params": {
+            "name": "cancel_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 81,
+          "result": {
+            "status": "cancel_requested",
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 82,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 82,
+          "result": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 83,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "cancelled",
+            "progressToken": "task-d85b950c428a46c0aa30c5f91d52e828"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 83,
+          "result": {
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+            "phase": "cancelled",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 84,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 84,
+          "result": {
+            "status": "cancelled",
+            "handle": "task-d85b950c428a46c0aa30c5f91d52e828"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 85,
+          "method": "tools/call",
+          "params": {
+            "name": "start_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+              "ttl_ms": 2000,
+              "inject_failure": true
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 85,
+          "result": {
+            "status": "accepted",
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 86,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "queued",
+            "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 86,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "queued",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 87,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 87,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 88,
+          "method": "tools/call",
+          "params": {
+            "name": "release_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 88,
+          "result": {
+            "status": "released",
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 89,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 89,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 90,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "waiting",
+            "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 90,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 91,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 91,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 92,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 92,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 93,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 93,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 94,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 94,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 95,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 95,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 96,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 96,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 97,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 97,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 98,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 98,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 99,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 99,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 100,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 100,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 101,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 101,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 102,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 102,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 103,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 103,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 104,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 104,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 105,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 105,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 106,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "failed",
+            "progressToken": "task-0e47acca20f64ebca884a1c4278fd47c"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 106,
+          "result": {
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "phase": "failed",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": {
+              "lsp_pid": 93157,
+              "goal_observed": true
+            },
+            "error": "injected failure after Lean goal before result publication"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 107,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-0e47acca20f64ebca884a1c4278fd47c"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 107,
+          "result": {
+            "status": "failed",
+            "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+            "error": "injected failure after Lean goal before result publication",
+            "partial": {
+              "lsp_pid": 93157,
+              "goal_observed": true
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 108,
+          "method": "tools/call",
+          "params": {
+            "name": "start_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+              "ttl_ms": 4000
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 108,
+          "result": {
+            "status": "accepted",
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "progressToken": "task-dec4f03cf9754cdbbea88f03025f0238"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 109,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "queued",
+            "progressToken": "task-dec4f03cf9754cdbbea88f03025f0238"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 109,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "queued",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 110,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 110,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 111,
+          "method": "tools/call",
+          "params": {
+            "name": "release_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 111,
+          "result": {
+            "status": "released",
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 112,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 112,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "waiting",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 113,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "progressToken": "task-dec4f03cf9754cdbbea88f03025f0238"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 113,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 114,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 114,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 115,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 115,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 116,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 116,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 117,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 117,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 118,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 118,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 119,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 119,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 120,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 120,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 121,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 121,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 122,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 122,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 123,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 123,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 124,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 124,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 125,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 125,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 126,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 126,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 127,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 127,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "checking",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": null,
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 128,
+          "method": "tools/call",
+          "params": {
+            "name": "get_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "method": "notifications/progress",
+          "params": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "complete",
+            "progressToken": "task-dec4f03cf9754cdbbea88f03025f0238"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 128,
+          "result": {
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "phase": "complete",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "partial": {
+              "lsp_pid": 93161,
+              "goal_observed": true
+            },
+            "error": null
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 129,
+          "method": "tools/call",
+          "params": {
+            "name": "result_task",
+            "arguments": {
+              "handle": "task-dec4f03cf9754cdbbea88f03025f0238"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 129,
+          "result": {
+            "status": "complete",
+            "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+            "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+            "result": {
+              "lsp_pid": 93161,
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "n : Nat\n⊢ n + 0 = n"
+                  ],
+                  "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+                }
+              },
+              "diagnostics": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "leanTags": [
+                      1
+                    ],
+                    "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "severity": 1,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+                "version": 1
+              }
+            }
+          }
+        }
+      }
+    ],
+    "legacy": [
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "method": "initialize",
+          "params": {
+            "protocolVersion": "toy-unknown-request"
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 10,
+          "result": {
+            "protocolVersion": "toy-sync-v1",
+            "capabilities": {
+              "toyTasks": false
+            },
+            "serverInfo": {
+              "name": "synthetic-lean-task-bridge",
+              "version": "0"
+            }
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "method": "tools/list",
+          "params": {}
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 11,
+          "result": {
+            "tools": [
+              {
+                "name": "goal_sync"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "method": "tools/call",
+          "params": {
+            "name": "start_goal",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 12,
+          "error": {
+            "code": -32602,
+            "message": "async tool unsupported by negotiated revision"
+          }
+        }
+      },
+      {
+        "direction": "client",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "method": "tools/call",
+          "params": {
+            "name": "goal_sync",
+            "arguments": {
+              "expected_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3"
+            }
+          }
+        }
+      },
+      {
+        "direction": "server",
+        "message": {
+          "jsonrpc": "2.0",
+          "id": 13,
+          "result": {
+            "status": "complete",
+            "result": {
+              "lsp_pid": 93165,
+              "wait": {
+                "id": 2,
+                "jsonrpc": "2.0",
+                "result": {}
+              },
+              "goal": {
+                "id": 3,
+                "jsonrpc": "2.0",
+                "result": {
+                  "goals": [
+                    "n : Nat\n⊢ n + 0 = n"
+                  ],
+                  "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+                }
+              },
+              "diagnostics": {
+                "diagnostics": [
+                  {
+                    "fullRange": {
+                      "end": {
+                        "character": 6,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "leanTags": [
+                      1
+                    ],
+                    "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+                    "range": {
+                      "end": {
+                        "character": 0,
+                        "line": 2
+                      },
+                      "start": {
+                        "character": 41,
+                        "line": 1
+                      }
+                    },
+                    "severity": 1,
+                    "source": "Lean 4"
+                  }
+                ],
+                "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+                "version": 1
+              }
+            }
+          }
+        }
+      }
+    ]
+  },
+  "processes": {
+    "C": {
+      "bridge_pid": 93151,
+      "bridge_exit": 0,
+      "bridge_stderr": ""
+    },
+    "legacy": {
+      "bridge_pid": 93164,
+      "bridge_exit": 0,
+      "bridge_stderr": ""
+    }
+  },
+  "task_states": {
+    "task-0e47acca20f64ebca884a1c4278fd47c": {
+      "handle": "task-0e47acca20f64ebca884a1c4278fd47c",
+      "phase": "failed",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "ttl_ms": 2000,
+      "inject_failure": true,
+      "partial": {
+        "lsp_pid": 93157,
+        "goal_observed": true
+      },
+      "error": "injected failure after Lean goal before result publication",
+      "lsp_exit": 0
+    },
+    "task-cc38791ce67648efb1a8531284a5b003": {
+      "handle": "task-cc38791ce67648efb1a8531284a5b003",
+      "phase": "complete",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "ttl_ms": 2000,
+      "inject_failure": false,
+      "partial": {
+        "lsp_pid": 93152,
+        "goal_observed": true
+      },
+      "result": {
+        "lsp_pid": 93152,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n⊢ n + 0 = n"
+            ],
+            "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+          "version": 1
+        }
+      },
+      "completed_at": 1790689125.7941508,
+      "expires_at": 1790689127.7941508,
+      "lsp_exit": 0
+    },
+    "task-d85b950c428a46c0aa30c5f91d52e828": {
+      "handle": "task-d85b950c428a46c0aa30c5f91d52e828",
+      "phase": "cancelled",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "ttl_ms": 2000,
+      "inject_failure": false
+    },
+    "task-dec4f03cf9754cdbbea88f03025f0238": {
+      "handle": "task-dec4f03cf9754cdbbea88f03025f0238",
+      "phase": "complete",
+      "source_sha256": "7f26c6edb74cf1cab89a66ddcc47530d92bdd989863ebe305c6f30c9d29bd0a3",
+      "ttl_ms": 4000,
+      "inject_failure": false,
+      "partial": {
+        "lsp_pid": 93161,
+        "goal_observed": true
+      },
+      "result": {
+        "lsp_pid": 93161,
+        "wait": {
+          "id": 2,
+          "jsonrpc": "2.0",
+          "result": {}
+        },
+        "goal": {
+          "id": 3,
+          "jsonrpc": "2.0",
+          "result": {
+            "goals": [
+              "n : Nat\n⊢ n + 0 = n"
+            ],
+            "rendered": "```lean\nn : Nat\n⊢ n + 0 = n\n```"
+          }
+        },
+        "diagnostics": {
+          "diagnostics": [
+            {
+              "fullRange": {
+                "end": {
+                  "character": 6,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "leanTags": [
+                1
+              ],
+              "message": "unsolved goals\nn : Nat\n⊢ n + 0 = n",
+              "range": {
+                "end": {
+                  "character": 0,
+                  "line": 2
+                },
+                "start": {
+                  "character": 41,
+                  "line": 1
+                }
+              },
+              "severity": 1,
+              "source": "Lean 4"
+            }
+          ],
+          "uri": "file:///Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-mcp-shaped-async-task-lifecycle-2026-09-29/support/work/Proof.lean",
+          "version": 1
+        }
+      },
+      "completed_at": 1790689129.563375,
+      "expires_at": 1790689133.563375,
+      "lsp_exit": 0
+    }
+  },
+  "boundary": "Toy JSON-RPC stdio contract and durable task store over real Lean LSP; no MCP SDK, no existing adapter, no Anneal."
+}

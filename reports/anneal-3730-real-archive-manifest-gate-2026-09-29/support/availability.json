@@ -1,0 +1,39 @@
+{
+  "observed_at": "2026-09-29",
+  "searches": [
+    {
+      "command": "rg --files -g '*.tar' -g '*.tar.gz' -g '*.tgz' -g '*.zip' -g '*.nar' .",
+      "cwd": "reference-publish",
+      "matching_archive_files": []
+    },
+    {
+      "command": "find . -type f ( -iname '*.tar' -o -iname '*.tar.gz' -o -iname '*.tgz' -o -iname '*.tar.zst' -o -iname '*.zip' -o -iname '*.nar' ) -print",
+      "cwd": "reference-publish",
+      "matching_archive_files": []
+    },
+    {
+      "command": "find /Users/josh/Codex/Projects/zerocopy/.anneal-local-tools -maxdepth 5 -type f ( -iname '*omnibus*.tar*' -o -iname '*anneal*.tar*' -o -iname '*toolchain*.tar*' ) -print",
+      "matching_archive_files": []
+    },
+    {
+      "command": "find /nix/store -maxdepth 1 -iname '*anneal*' -print",
+      "matching_entries": [
+        "/nix/store/nly1j3pvz1jbsrjjca7jwhpb2zcj4h8w-anneal-toolchain-omnibus-tar-0.1.0.drv",
+        "/nix/store/zcvpbgbjbkslavdlqy8haznabjn1qsz3-anneal-toolchain-omnibus-0.1.0.drv",
+        "/nix/store/zpfd6p7pqbsvvp7ds75lzvs87356gi28-anneal-toolchain-omnibus-0.1.0.drv"
+      ],
+      "regular_built_outputs": []
+    }
+  ],
+  "nix_store_command": "not on PATH (bash exit 127)",
+  "separate_aeneas_release": {
+    "tar": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/downloads/aeneas-macos-aarch64.tar.gz",
+    "tar_sha256": "76f78b645e338ec7e89329f0ad22792997f42bd9b5eb14643ac32ade224eeb61",
+    "tar_first_members": ["aeneas", "backends/", "backends/lean/"],
+    "extracted_tree": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/aeneas-release",
+    "extracted_tree_disk_usage": "8.7G",
+    "lean_toolchain": "leanprover/lean4:v4.30.0-rc2",
+    "reason_not_substitute": "Aeneas release payload plus subsequently populated mutable .lake trees, not a prepared Anneal omnibus archive installed through its producer/consumer contract"
+  },
+  "gate": "No local actual prepared Anneal omnibus archive and matching installed consumer were found in the enumerated checkout, local-tools and top-level Nix-store locations. An actual artifact must be supplied or built before F04's real-archive trial; neither download nor build was authorized in this task."
+}

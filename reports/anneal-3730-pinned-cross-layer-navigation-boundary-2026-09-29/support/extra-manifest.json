@@ -1,0 +1,599 @@
+{
+  "schema": 1,
+  "r12_source_report": "anneal-3730-cross-layer-comparator-mutants-2026-09-29",
+  "r12_results_sha256": "31f31ee9ba00b6c1e18d00aac3a5d3f4619f889bfffded37d814d6660ccc403d",
+  "tool_sha256": {
+    "charon": "51bb6d23beab3f97a684c25162d3e402fc820c891b57b21d2ca781c1da211a8b",
+    "aeneas": "f476001e1a8e8c5cb1d8a621a25716d8e15f0809c8a023c5349357acc0911d03",
+    "lean": "b48bc5ab229bd8b320a224b87e20fc428dba6fa8a1c054bd4fa6def846e19997"
+  },
+  "generations": {
+    "reorder-base": {
+      "source_case": "reorder-base",
+      "artifacts": {
+        "rust_source": {
+          "path": "support/extra-artifacts/reorder-base/source.rs",
+          "bytes": 185,
+          "sha256": "1e7af22d8ddc414be834c97d11976d265767cb316fa5664ac45da948531bb622"
+        },
+        "llbc": {
+          "path": "support/extra-artifacts/reorder-base/Source.llbc",
+          "bytes": 16276,
+          "sha256": "ee36614785a52956a4e47fad06ff7be2dd5fe984cb67c358e08e566a3a4fb087"
+        },
+        "generated_funs": {
+          "path": "support/extra-artifacts/reorder-base/Funs.lean",
+          "bytes": 1689,
+          "sha256": "bc15e6198147e1059c25089e94eb1399538f674a96907e3a689fe019df4a4db5"
+        },
+        "proof": {
+          "path": "support/extra-artifacts/reorder-base/Proof.lean",
+          "bytes": 346,
+          "sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::inc",
+            "byte_range": [
+              21,
+              68
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "source_text_sha256": "78cbc12ab7655d6cf0b17b329ebd29d559c2564496f23a4706075ddbef4f57b2"
+          },
+          "charon": {
+            "def_id": 0,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::inc",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 47
+              }
+            },
+            "qualified_lean_name": "comparator_probe.inc",
+            "declaration_lines": [
+              21,
+              23
+            ]
+          },
+          "obligation": {
+            "name": "obl_inc",
+            "proof_line": 2,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::twice",
+            "byte_range": [
+              69,
+              112
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "source_text_sha256": "c669fc8d8b0ae37c2cb2f7ada5c7ba38bbc874ba88a13af3ec8d234525363219"
+          },
+          "charon": {
+            "def_id": 1,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::twice",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "qualified_lean_name": "comparator_probe.twice",
+            "declaration_lines": [
+              27,
+              30
+            ]
+          },
+          "obligation": {
+            "name": "obl_twice",
+            "proof_line": 5,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::choose",
+            "byte_range": [
+              113,
+              184
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "source_text_sha256": "ec106a02cd42bcf3b91c83a44f3fcf8699ad51522c93e22ea14329cb87d2fdc8"
+          },
+          "charon": {
+            "def_id": 2,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::choose",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/base/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 71
+              }
+            },
+            "qualified_lean_name": "comparator_probe.choose",
+            "declaration_lines": [
+              34,
+              37
+            ]
+          },
+          "obligation": {
+            "name": "obl_choose",
+            "proof_line": 8,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ],
+      "lean_proof_exit": 0,
+      "qualified_names": [
+        "comparator_probe::inc",
+        "comparator_probe::twice",
+        "comparator_probe::choose"
+      ]
+    },
+    "reorder-reorder": {
+      "source_case": "reorder-reorder",
+      "artifacts": {
+        "rust_source": {
+          "path": "support/extra-artifacts/reorder-reorder/source.rs",
+          "bytes": 185,
+          "sha256": "5c47f32fcd6df5061e5e1d50ffad9eb93689ee60671aed3f873b394eca9d207f"
+        },
+        "llbc": {
+          "path": "support/extra-artifacts/reorder-reorder/Source.llbc",
+          "bytes": 16283,
+          "sha256": "734568088d01882d6d09326a3b181941e9e580b451ce62a3c42279c81dcab8ec"
+        },
+        "generated_funs": {
+          "path": "support/extra-artifacts/reorder-reorder/Funs.lean",
+          "bytes": 1698,
+          "sha256": "61de570b374752a4384520d2e6a47ecbcd5004c976add6af3b7b1f9d606fbedb"
+        },
+        "proof": {
+          "path": "support/extra-artifacts/reorder-reorder/Proof.lean",
+          "bytes": 346,
+          "sha256": "82d88c924ca222ee729a9be51948f02478d762ebb6b134e115b95cc584bafed3"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::choose",
+            "byte_range": [
+              21,
+              92
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 71
+              }
+            },
+            "source_text_sha256": "ec106a02cd42bcf3b91c83a44f3fcf8699ad51522c93e22ea14329cb87d2fdc8"
+          },
+          "charon": {
+            "def_id": 0,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::choose",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 2,
+                "col": 0
+              },
+              "end": {
+                "line": 2,
+                "col": 71
+              }
+            },
+            "qualified_lean_name": "comparator_probe.choose",
+            "declaration_lines": [
+              34,
+              37
+            ]
+          },
+          "obligation": {
+            "name": "obl_choose",
+            "proof_line": 8,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::twice",
+            "byte_range": [
+              93,
+              136
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "source_text_sha256": "c669fc8d8b0ae37c2cb2f7ada5c7ba38bbc874ba88a13af3ec8d234525363219"
+          },
+          "charon": {
+            "def_id": 1,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::twice",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 3,
+                "col": 0
+              },
+              "end": {
+                "line": 3,
+                "col": 43
+              }
+            },
+            "qualified_lean_name": "comparator_probe.twice",
+            "declaration_lines": [
+              27,
+              30
+            ]
+          },
+          "obligation": {
+            "name": "obl_twice",
+            "proof_line": 5,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "comparator_probe::inc",
+            "byte_range": [
+              137,
+              184
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 47
+              }
+            },
+            "source_text_sha256": "78cbc12ab7655d6cf0b17b329ebd29d559c2564496f23a4706075ddbef4f57b2"
+          },
+          "charon": {
+            "def_id": 2,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "comparator_probe::inc",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-cross-layer-comparator-mutants-2026-09-29/support/work/reorder/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 47
+              }
+            },
+            "qualified_lean_name": "comparator_probe.inc",
+            "declaration_lines": [
+              21,
+              23
+            ]
+          },
+          "obligation": {
+            "name": "obl_inc",
+            "proof_line": 2,
+            "goal_trace_line": null,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ],
+      "lean_proof_exit": 0,
+      "qualified_names": [
+        "comparator_probe::choose",
+        "comparator_probe::twice",
+        "comparator_probe::inc"
+      ]
+    },
+    "ambiguous": {
+      "source_case": "ambiguous",
+      "artifacts": {
+        "rust_source": {
+          "path": "support/extra-artifacts/ambiguous/source.rs",
+          "bytes": 362,
+          "sha256": "a1a1783fe59d622e2314948ad7d234ed4a085145157a2ad977854ea8640a0e15"
+        },
+        "llbc": {
+          "path": "support/extra-artifacts/ambiguous/current.llbc",
+          "bytes": 13784,
+          "sha256": "024f95ad530737a4360065aaa5b79437952f1afa9369670d9dbe71d6dfc53f88"
+        },
+        "generated_funs": {
+          "path": "support/extra-artifacts/ambiguous/generated/Funs.lean",
+          "bytes": 1749,
+          "sha256": "763f0ded3a3e1fcb1b63d7732f2dc43f3f9e3e58b3a18e63df4cbee8fc760062"
+        },
+        "proof": {
+          "path": "support/extra-artifacts/ambiguous/Proof.lean",
+          "bytes": 271,
+          "sha256": "bdf5a5520d88116c429a9bb9c049cfa8b73a37ac980f6ae5e053e19e9e990a0b"
+        },
+        "generated_types": {
+          "path": "support/extra-artifacts/ambiguous/generated/Types.lean",
+          "bytes": 518,
+          "sha256": "565b891027360840288b284778448b24baa0385026f4022fcf54a49162ee5b59"
+        },
+        "generated_entry": {
+          "path": "support/extra-artifacts/ambiguous/generated/Current.lean",
+          "bytes": 20,
+          "sha256": "c62893d039c7c93787bb4c819c5fa40e6edef71cd0c3f9be5ff843df7616f49e"
+        },
+        "types_olean": {
+          "path": "support/extra-artifacts/ambiguous/Current/Types.olean",
+          "bytes": 1608,
+          "sha256": "ee0a68aac7e0b9c9056e4ffa8b458966d8f036e3eef74d59e4a935baae890265"
+        },
+        "funs_olean": {
+          "path": "support/extra-artifacts/ambiguous/Current/Funs.olean",
+          "bytes": 19848,
+          "sha256": "954b2e634e5369173239f9aecd172f0b205e044b093d14fb8bc8f50b7c01a938"
+        },
+        "entry_olean": {
+          "path": "support/extra-artifacts/ambiguous/Current.olean",
+          "bytes": 1312,
+          "sha256": "34547467aa8017d1ff0efebc746e14a1b50ef6cb446e9aa1404d09cc0ffef149"
+        }
+      },
+      "llbc_embeds_exact_rust_source": true,
+      "entries": [
+        {
+          "rust_item": {
+            "qualified_name": "nav_ambig::both",
+            "byte_range": [
+              154,
+              211
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 57
+              }
+            },
+            "source_text_sha256": "ed39bf512db9c8bb3d1dc8bb79271430f604f792d7de375bdb5ab52b6810064c"
+          },
+          "charon": {
+            "def_id": 0,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "nav_ambig::both",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 4,
+                "col": 0
+              },
+              "end": {
+                "line": 4,
+                "col": 57
+              }
+            },
+            "qualified_lean_name": "nav_ambig.both",
+            "declaration_lines": [
+              33,
+              35
+            ]
+          },
+          "obligation": {
+            "name": "obl_both",
+            "proof_line": 8,
+            "goal_trace_line": 9,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "nav_ambig::left::step",
+            "byte_range": [
+              36,
+              84
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 2,
+                "col": 15
+              },
+              "end": {
+                "line": 2,
+                "col": 63
+              }
+            },
+            "source_text_sha256": "da6ce081f567165ac732183897a50bb48253393278de123fc8f92f167e785ce7"
+          },
+          "charon": {
+            "def_id": 1,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "nav_ambig::left::step",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 2,
+                "col": 15
+              },
+              "end": {
+                "line": 2,
+                "col": 63
+              }
+            },
+            "qualified_lean_name": "nav_ambig.left.step",
+            "declaration_lines": [
+              21,
+              23
+            ]
+          },
+          "obligation": {
+            "name": "obl_left_step",
+            "proof_line": 2,
+            "goal_trace_line": 3,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        },
+        {
+          "rust_item": {
+            "qualified_name": "nav_ambig::right::step",
+            "byte_range": [
+              103,
+              151
+            ],
+            "span": {
+              "file_id": 0,
+              "beg": {
+                "line": 3,
+                "col": 16
+              },
+              "end": {
+                "line": 3,
+                "col": 64
+              }
+            },
+            "source_text_sha256": "df96b91d3cc704e7f639f27d4d44aced8150a43fea2efa39e2aee189bf419851"
+          },
+          "charon": {
+            "def_id": 2,
+            "file_id": 0
+          },
+          "aeneas": {
+            "emitted_name": "nav_ambig::right::step",
+            "emitted_source_path": "/Users/josh/Codex/Projects/zerocopy/.anneal-local-tools/scratch/20260927-reference-experiments/reference-publish/reports/anneal-3730-pinned-cross-layer-navigation-boundary-2026-09-29/support/extra-artifacts/ambiguous/source.rs",
+            "emitted_source_span": {
+              "beg": {
+                "line": 3,
+                "col": 16
+              },
+              "end": {
+                "line": 3,
+                "col": 64
+              }
+            },
+            "qualified_lean_name": "nav_ambig.right.step",
+            "declaration_lines": [
+              27,
+              29
+            ]
+          },
+          "obligation": {
+            "name": "obl_right_step",
+            "proof_line": 5,
+            "goal_trace_line": 6,
+            "provenance": "fixture-authored, not producer-authenticated"
+          },
+          "cross_stage_join_class": "derived qualified-name/span match; no shared producer ID"
+        }
+      ],
+      "lean_proof_exit": 0,
+      "qualified_names": [
+        "nav_ambig::both",
+        "nav_ambig::left::step",
+        "nav_ambig::right::step"
+      ]
+    }
+  },
+  "boundary": "fully qualified names and emitted spans are derived joins, not shared producer-issued IDs"
+}

@@ -1,0 +1,27 @@
+{
+  "case_count": 4,
+  "command_count": 52,
+  "cross_pair_rejections": 2,
+  "paired_generated_bytes_equal": {
+    "base": true,
+    "changed": true
+  },
+  "raw_llbc_equal": {
+    "base": false,
+    "changed": false
+  },
+  "default_parallel_equals_sequential": {
+    "june1": true,
+    "june3": true
+  },
+  "stale_old_import_batch_passes": {
+    "june1": true,
+    "june3": true
+  },
+  "accepted_axioms": [
+    "propext",
+    "Classical.choice",
+    "Quot.sound"
+  ],
+  "f03_later_than_4_30_available": false
+}
